@@ -1,6 +1,9 @@
-"use client";
+import type { Metadata } from "next";
 
-import Script from "next/script";
+export const metadata: Metadata = {
+  title: "Recursos Gratuitos",
+  description: "Accede gratis a los recursos que han transformado cientos de cuerpos. Guías, diagnósticos y mucho más.",
+};
 
 const recursos = [
   {
@@ -28,12 +31,6 @@ const recursos = [
 export default function RecursosPage() {
   return (
     <main className="min-h-screen bg-white">
-
-      {/* GHL form embed script */}
-      <Script
-        src="https://links.fitcondamian.com/js/form_embed.js"
-        strategy="afterInteractive"
-      />
 
       {/* HEADER */}
       <header className="py-5 px-6 text-center border-b border-gray-100">
@@ -86,7 +83,6 @@ export default function RecursosPage() {
           <p className="text-center text-gray-500 mb-6 text-sm">
             Todo lo que necesitas para empezar hoy mismo
           </p>
-
           <div className="grid grid-cols-1 gap-4">
             {recursos.map((r, i) => (
               <div
@@ -117,17 +113,18 @@ export default function RecursosPage() {
         </div>
 
         {/* GHL FORM EMBED */}
-        <div className="rounded-2xl overflow-hidden border border-gray-200">
+        <div className="rounded-2xl overflow-hidden border border-gray-200 min-h-[400px]">
           <iframe
             src="https://links.fitcondamian.com/widget/form/vmfyZr4yJIrYZYPSkuko"
             style={{ width: "100%", minHeight: "400px", border: "none" }}
             id="inline-vmfyZr4yJIrYZYPSkuko"
-            data-layout="{'id':'LAYOUT_vmfyZr4yJIrYZYPSkuko'}"
-            data-trigger-type="alwaysShow"
-            data-activation-type="alwaysActivated"
             title="Formulario de acceso a recursos gratuitos"
           />
         </div>
+
+        {/* GHL script — loaded async so it doesn't block render */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="https://links.fitcondamian.com/js/form_embed.js" async />
 
         {/* TRUST */}
         <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-500">
