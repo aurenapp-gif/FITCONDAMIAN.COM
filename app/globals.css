@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-gray-900 bg-white;
+    font-family: var(--font-inter), sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block bg-brand hover:bg-brand-dark text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 text-center cursor-pointer;
+  }
+
+  .section-divider {
+    @apply w-16 h-1 bg-brand mx-auto rounded-full my-8;
+  }
+}
