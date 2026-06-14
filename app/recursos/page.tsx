@@ -1,33 +1,6 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Recursos Gratuitos",
-  description: "Accede gratis a los recursos que han transformado cientos de cuerpos. Guías, diagnósticos y mucho más.",
-};
-
-// =====================================================
-// 👉 PEGA AQUÍ EL EMBED DE TU FORMULARIO GHL
-// Ve a GHL → Sitios → Formularios → tu formulario → Integrar
-// Copia el código iframe y reemplaza el texto de abajo
-// En GHL configura: "URL de redirección tras envío" = https://fitcondamian.com/confirmar-correo
-// =====================================================
-const GHL_FORM_EMBED = `
-  <!-- PEGA AQUÍ EL CÓDIGO IFRAME DE TU FORMULARIO GHL -->
-  <!-- Ejemplo:
-  <iframe src="https://api.leadconnectorhq.com/widget/form/XXXXXXXXXX"
-    style="width:100%;height:100%;border:none;"
-    id="inline-XXXXXXXXXX"
-    data-layout="{'id':'LAYOUT_XXXXXXXXXX'}"
-    data-trigger-type="alwaysShow"
-    data-activation-type="alwaysActivated">
-  </iframe>
-  <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
-  -->
-  <p style="text-align:center;color:#999;font-size:14px;padding:40px 20px;">
-    ⚠️ Formulario GHL pendiente de configurar.<br/>
-    Pega tu código embed en <code>app/recursos/page.tsx</code>
-  </p>
-`;
+import Script from "next/script";
 
 const recursos = [
   {
@@ -55,6 +28,12 @@ const recursos = [
 export default function RecursosPage() {
   return (
     <main className="min-h-screen bg-white">
+
+      {/* GHL form embed script */}
+      <Script
+        src="https://links.fitcondamian.com/js/form_embed.js"
+        strategy="afterInteractive"
+      />
 
       {/* HEADER */}
       <header className="py-5 px-6 text-center border-b border-gray-100">
@@ -91,8 +70,7 @@ export default function RecursosPage() {
             <div className="text-5xl mb-3">▶️</div>
             <p className="font-bold text-lg">Mira esto antes de acceder</p>
             <p className="text-gray-400 text-sm mt-1">
-              {/* 👉 Reemplaza esta sección con tu embed de video (YouTube/Vimeo) */}
-              ⚠️ Pega aquí tu video embed de YouTube o Vimeo
+              Pega aquí tu video embed de YouTube o Vimeo
             </p>
           </div>
         </div>
@@ -139,10 +117,17 @@ export default function RecursosPage() {
         </div>
 
         {/* GHL FORM EMBED */}
-        <div
-          className="min-h-[300px] rounded-2xl overflow-hidden border border-gray-200"
-          dangerouslySetInnerHTML={{ __html: GHL_FORM_EMBED }}
-        />
+        <div className="rounded-2xl overflow-hidden border border-gray-200">
+          <iframe
+            src="https://links.fitcondamian.com/widget/form/vmfyZr4yJIrYZYPSkuko"
+            style={{ width: "100%", minHeight: "400px", border: "none" }}
+            id="inline-vmfyZr4yJIrYZYPSkuko"
+            data-layout="{'id':'LAYOUT_vmfyZr4yJIrYZYPSkuko'}"
+            data-trigger-type="alwaysShow"
+            data-activation-type="alwaysActivated"
+            title="Formulario de acceso a recursos gratuitos"
+          />
+        </div>
 
         {/* TRUST */}
         <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-500">
