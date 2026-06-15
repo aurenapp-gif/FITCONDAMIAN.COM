@@ -122,13 +122,14 @@ export default function GraciasPage() {
               </div>
             </div>
 
-            {/* Placeholder imagen calendario */}
-            <div style={{
-              marginTop: "20px", borderRadius: "12px",
-              background: "#161616", border: "1px solid #252525",
-              padding: "20px", textAlign: "center",
-            }}>
-              <p style={{ color: "#444", fontSize: "13px", margin: 0 }}>📅 Aquí irá la imagen del email de confirmación</p>
+            {/* Imagen email de confirmación */}
+            <div style={{ marginTop: "20px", borderRadius: "12px", overflow: "hidden", border: "1px solid #252525" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/confirmar-calendario.png"
+                alt="Dónde hacer clic para confirmar la llamada en el email"
+                style={{ width: "100%", display: "block" }}
+              />
             </div>
           </div>
         </div>
