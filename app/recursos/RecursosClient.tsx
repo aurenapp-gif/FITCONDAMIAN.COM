@@ -277,32 +277,6 @@ export default function RecursosClient() {
             }}>→</button>
           </div>
 
-          {/* Nombre del recurso activo + CTA */}
-          <div style={{
-            background: "#111", border: "1px solid #1f1f1f",
-            borderRadius: "20px", padding: "24px 28px",
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            gap: "16px", flexWrap: "wrap",
-          }}>
-            <div>
-              <p style={{ color: "#555", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 4px 0" }}>
-                VOLUMEN {recursos[active].vol}
-              </p>
-              <h3 style={{ fontSize: "18px", fontWeight: 900, margin: 0 }}>
-                {recursos[active].nombre}
-              </h3>
-            </div>
-            <button
-              onClick={() => setModalOpen(true)}
-              style={{
-                background: "#FF5C00", color: "#fff", fontWeight: 800,
-                fontSize: "14px", padding: "12px 22px", borderRadius: "99px",
-                border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-              }}
-            >
-              Obtener acceso →
-            </button>
-          </div>
         </section>
       </div>
 
