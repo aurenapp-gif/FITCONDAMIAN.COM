@@ -5,18 +5,6 @@ export const metadata: Metadata = {
   description: "Reserva una llamada estratégica gratuita de 30 minutos. Te digo exactamente qué necesitas para transformar tu cuerpo.",
 };
 
-// Calendario GHL — Reserva de llamada 1:1 con Damián
-// En GHL ve a tu calendario → Configuración → URL de confirmación = https://fitcondamian.com/gracias
-const GHL_CALENDAR_EMBED = `
-  <iframe
-    src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian"
-    style="width:100%;min-height:700px;border:none;overflow:hidden;"
-    scrolling="no"
-    title="Reserva tu llamada con Damián"
-    loading="lazy">
-  </iframe>
-`;
-
 const beneficios = [
   { emoji: "🎯", texto: "Análisis personalizado de tu situación actual" },
   { emoji: "🗺️", texto: "Un plan de acción concreto para las próximas 4 semanas" },
@@ -26,72 +14,92 @@ const beneficios = [
 
 export default function AgendarPage() {
   return (
-    <main className="min-h-screen bg-white flex flex-col">
+    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif" }}>
 
       {/* HEADER */}
-      <header className="py-5 px-6 text-center border-b border-gray-100">
-        <p className="text-xl font-black tracking-tight text-gray-900">
-          Fit con <span className="text-brand">Damián</span>
+      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
+        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
+          Fit con <span style={{ color: "#FF5C00" }}>Damián</span>
         </p>
       </header>
 
-      <div className="max-w-2xl mx-auto px-6 py-12 w-full">
+      <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px 80px" }}>
 
         {/* BADGE */}
-        <div className="flex justify-center mb-6">
-          <span className="bg-orange-50 text-brand font-bold text-sm px-4 py-2 rounded-full border border-orange-200">
+        <div style={{ textAlign: "center", paddingTop: "48px", marginBottom: "24px" }}>
+          <span style={{
+            display: "inline-block",
+            background: "rgba(255,92,0,0.1)", border: "1px solid rgba(255,92,0,0.25)",
+            color: "#FF5C00", fontWeight: 700, fontSize: "13px",
+            padding: "8px 18px", borderRadius: "99px",
+          }}>
             📞 30 minutos · 100% Gratuito · Sin compromiso
           </span>
         </div>
 
         {/* HEADLINE */}
-        <h1 className="text-4xl md:text-5xl font-black text-center text-gray-900 leading-tight mb-5">
+        <h1 style={{ fontSize: "clamp(2.2rem, 7vw, 3.2rem)", fontWeight: 900, textAlign: "center", lineHeight: 1.05, margin: "0 0 16px 0", letterSpacing: "-1.5px" }}>
           Agenda tu llamada{" "}
-          <span className="text-brand">estratégica gratuita</span>
+          <em style={{ fontStyle: "italic", color: "#FF5C00" }}>estratégica gratuita</em>
         </h1>
 
-        <p className="text-lg text-center text-gray-600 leading-relaxed mb-10">
+        <p style={{ color: "#A0A0A0", fontSize: "17px", textAlign: "center", lineHeight: 1.6, margin: "0 0 40px 0" }}>
           En 30 minutos te digo exactamente qué necesitas cambiar para empezar a ver resultados.
           Sin rodeos. Sin venderme.
         </p>
 
         {/* BENEFICIOS */}
-        <div className="bg-gray-50 rounded-2xl p-6 mb-10 border border-gray-200">
-          <h2 className="font-black text-gray-900 mb-4 text-lg">En esta llamada vas a conseguir:</h2>
-          <ul className="space-y-3">
+        <div style={{
+          background: "#111", border: "1px solid #1f1f1f",
+          borderRadius: "20px", padding: "28px", marginBottom: "36px",
+        }}>
+          <p style={{ color: "#888", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 20px 0" }}>
+            EN ESTA LLAMADA VAS A CONSEGUIR
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             {beneficios.map((b, i) => (
-              <li key={i} className="flex items-center gap-3">
-                <span className="text-xl">{b.emoji}</span>
-                <span className="text-gray-700">{b.texto}</span>
-              </li>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <span style={{ fontSize: "22px", flexShrink: 0 }}>{b.emoji}</span>
+                <span style={{ color: "#C0C0C0", fontSize: "15px", lineHeight: 1.5 }}>{b.texto}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
-        {/* DIVIDER */}
-        <div className="section-divider" />
-
-        <h2 className="text-2xl font-black text-center text-gray-900 mb-2">
-          Elige tu horario
-        </h2>
-        <p className="text-center text-gray-500 text-sm mb-8">
-          Selecciona el día y la hora que mejor te venga
-        </p>
+        {/* SEPARADOR */}
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <p style={{ color: "#888", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 6px 0" }}>
+            ELIGE TU HORARIO
+          </p>
+          <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Selecciona el día y la hora que mejor te venga</p>
+        </div>
 
         {/* GHL CALENDAR EMBED */}
-        <div
-          className="min-h-[500px] rounded-2xl overflow-hidden border border-gray-200"
-          dangerouslySetInnerHTML={{ __html: GHL_CALENDAR_EMBED }}
-        />
+        <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid #1f1f1f", marginBottom: "36px", minHeight: "500px" }}>
+          <iframe
+            src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian"
+            style={{ width: "100%", minHeight: "700px", border: "none", display: "block" }}
+            scrolling="no"
+            title="Reserva tu llamada con Damián"
+            loading="lazy"
+          />
+        </div>
 
-        {/* QUIÉN SOY */}
-        <div className="mt-12 flex gap-4 items-start bg-orange-50 rounded-2xl p-6 border border-orange-100">
-          <div className="w-14 h-14 bg-brand rounded-full flex items-center justify-center text-white font-black text-xl flex-shrink-0">
-            D
-          </div>
+        {/* BIO */}
+        <div style={{
+          display: "flex", gap: "16px", alignItems: "flex-start",
+          background: "#111", border: "1px solid #1f1f1f",
+          borderRadius: "20px", padding: "24px",
+        }}>
+          <div style={{
+            width: "52px", height: "52px", flexShrink: 0,
+            background: "#FF5C00", borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontWeight: 900, fontSize: "20px", color: "#fff",
+          }}>D</div>
           <div>
-            <p className="font-black text-gray-900 mb-1">Damián</p>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p style={{ fontWeight: 900, fontSize: "16px", margin: "0 0 6px 0" }}>Damián</p>
+            <p style={{ color: "#888", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
               Entrenador personal y nutricionista. Más de X años transformando cuerpos
               con un método basado en la ciencia y adaptado a la vida real.
               {/* 👉 Personaliza esta bio con tu info real */}
@@ -102,13 +110,11 @@ export default function AgendarPage() {
       </div>
 
       {/* FOOTER */}
-      <footer className="mt-auto py-8 px-6 border-t border-gray-100 text-center">
-        <p className="text-xs text-gray-400">
-          © {new Date().getFullYear()} Fit con Damián · fitcondamian.com
-          {" · "}
-          <a href="/privacidad" className="hover:text-brand transition-colors">Privacidad</a>
-          {" · "}
-          <a href="/aviso-legal" className="hover:text-brand transition-colors">Aviso Legal</a>
+      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "24px", textAlign: "center" }}>
+        <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
+          © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
+          <a href="/privacidad" style={{ color: "#444", textDecoration: "none" }}>Privacidad</a>{" · "}
+          <a href="/aviso-legal" style={{ color: "#444", textDecoration: "none" }}>Aviso Legal</a>
         </p>
       </footer>
     </main>
