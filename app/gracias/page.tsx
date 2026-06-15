@@ -34,7 +34,7 @@ export default function GraciasPage() {
         {/* BARRA DE PROGRESO */}
         <div style={{ paddingTop: "36px", marginBottom: "32px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 700, color: "#888", letterSpacing: "1px", textTransform: "uppercase" }}>Progreso de confirmación</span>
+            <span style={{ fontSize: "12px", fontWeight: 700, color: "#AAAAAA", letterSpacing: "1px", textTransform: "uppercase" }}>Progreso de confirmación</span>
             <span style={{ fontSize: "13px", fontWeight: 900, color: "#FF3B30" }}>80%</span>
           </div>
           <div style={{ background: "#1a1a1a", borderRadius: "99px", height: "10px", overflow: "hidden" }}>
@@ -53,7 +53,7 @@ export default function GraciasPage() {
               <p style={{ fontWeight: 900, fontSize: "15px", color: "#FF3B30", margin: "0 0 2px 0" }}>
                 IMPORTANTE: Tu llamada No Está Confirmada
               </p>
-              <p style={{ color: "#A0A0A0", fontSize: "13px", margin: 0, lineHeight: 1.5 }}>
+              <p style={{ color: "#D8D8D8", fontSize: "13px", margin: 0, lineHeight: 1.5 }}>
                 Completa los pasos de abajo para asegurar tu plaza.
               </p>
             </div>
@@ -82,7 +82,7 @@ export default function GraciasPage() {
           }}>
             <div style={{ textAlign: "center", padding: "32px" }}>
               <div style={{ fontSize: "52px", marginBottom: "10px", color: "#00AAFF" }}>▶</div>
-              <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo — próximamente</p>
+              <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Vídeo — próximamente</p>
             </div>
           </div>
         </div>
@@ -110,13 +110,13 @@ export default function GraciasPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                 <span style={{ color: "#00AAFF", fontWeight: 900, flexShrink: 0, fontSize: "15px" }}>→</span>
-                <p style={{ color: "#C0C0C0", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                <p style={{ color: "#D8D8D8", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
                   Busca en tu email por: <strong style={{ color: "#fff" }}>Damián</strong> o <strong style={{ color: "#fff" }}>Fit con Damián</strong>
                 </p>
               </div>
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                 <span style={{ color: "#00AAFF", fontWeight: 900, flexShrink: 0, fontSize: "15px" }}>→</span>
-                <p style={{ color: "#C0C0C0", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                <p style={{ color: "#D8D8D8", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
                   Haz clic en <strong style={{ color: "#00AAFF" }}>&quot;Añadir al calendario&quot;</strong> y luego <strong style={{ color: "#fff" }}>&quot;Sí&quot;</strong> a la invitación de calendario
                 </p>
               </div>
@@ -163,7 +163,7 @@ export default function GraciasPage() {
             }}>3 MIN</div>
             <div style={{ textAlign: "center", padding: "32px" }}>
               <div style={{ fontSize: "52px", marginBottom: "10px", color: "#00AAFF" }}>▶</div>
-              <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo previo a la llamada — próximamente</p>
+              <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Vídeo previo a la llamada — próximamente</p>
             </div>
           </div>
         </div>
@@ -171,10 +171,10 @@ export default function GraciasPage() {
         {/* SEPARADOR TIMELINE */}
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
           <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "24px" }} />
-          <p style={{ color: "#888", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
             MIENTRAS ESPERAS LA LLAMADA
           </p>
-          <p style={{ color: "#555", fontSize: "14px", margin: 0 }}>Mira estos vídeos para aprovechar al máximo nuestra sesión</p>
+          <p style={{ color: "#999", fontSize: "14px", margin: 0 }}>Mira estos vídeos para aprovechar al máximo nuestra sesión</p>
         </div>
 
         {/* TIMELINE DE VÍDEOS VSL */}
@@ -249,7 +249,7 @@ export default function GraciasPage() {
         {/* SEPARADOR TESTIMONIOS */}
         <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "40px" }} />
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <p style={{ color: "#888", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
             RESULTADOS REALES
           </p>
           <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: 0, letterSpacing: "-0.5px" }}>
@@ -272,7 +272,7 @@ export default function GraciasPage() {
                   padding: "4px 10px", borderRadius: "99px", whiteSpace: "nowrap",
                 }}>{t.resultado}</span>
               </div>
-              <p style={{ color: "#A0A0A0", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: "#D8D8D8", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
                 &quot;{t.texto}&quot;
               </p>
             </div>
