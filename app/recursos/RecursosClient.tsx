@@ -137,7 +137,7 @@ export default function RecursosClient() {
                   borderRadius: "50%", display: "flex", alignItems: "center",
                   justifyContent: "center", fontSize: "24px", paddingLeft: "6px",
                   margin: "0 auto 12px", cursor: "pointer",
-                  boxShadow: "0 0 0 14px rgba(255,92,0,0.12)",
+                  boxShadow: "0 0 0 14px rgba(0,170,255,0.12)",
                 }}
               >▶</div>
               <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo de presentación — próximamente</p>
@@ -192,7 +192,7 @@ export default function RecursosClient() {
                     alignItems: "center", justifyContent: "center",
                     padding: "24px", position: "relative", overflow: "hidden",
                     boxShadow: isCenter
-                      ? "0 24px 60px rgba(255,92,0,0.18)"
+                      ? "0 24px 60px rgba(0,170,255,0.18)"
                       : "0 8px 24px rgba(0,0,0,0.5)",
                   }}>
                     <span style={{
@@ -225,7 +225,7 @@ export default function RecursosClient() {
                     {isCenter && (
                       <div style={{
                         position: "absolute", bottom: "16px",
-                        background: "rgba(255,92,0,0.15)", border: "1px solid rgba(255,92,0,0.3)",
+                        background: "rgba(0,170,255,0.15)", border: "1px solid rgba(0,170,255,0.3)",
                         borderRadius: "99px", padding: "4px 12px",
                         fontSize: "11px", color: "#00AAFF", fontWeight: 700,
                       }}>
@@ -237,7 +237,7 @@ export default function RecursosClient() {
                       <div style={{
                         position: "absolute", bottom: "-40px", left: "50%",
                         transform: "translateX(-50%)", width: "120px", height: "80px",
-                        background: "radial-gradient(ellipse, rgba(255,92,0,0.3) 0%, transparent 70%)",
+                        background: "radial-gradient(ellipse, rgba(0,170,255,0.3) 0%, transparent 70%)",
                         pointerEvents: "none",
                       }} />
                     )}

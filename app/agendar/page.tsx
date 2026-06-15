@@ -29,7 +29,7 @@ export default function AgendarPage() {
         <div style={{ textAlign: "center", paddingTop: "48px", marginBottom: "24px" }}>
           <span style={{
             display: "inline-block",
-            background: "rgba(255,92,0,0.1)", border: "1px solid rgba(255,92,0,0.25)",
+            background: "rgba(0,170,255,0.1)", border: "1px solid rgba(0,170,255,0.25)",
             color: "#00AAFF", fontWeight: 700, fontSize: "13px",
             padding: "8px 18px", borderRadius: "99px",
           }}>

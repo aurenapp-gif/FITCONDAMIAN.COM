@@ -23,8 +23,8 @@ export default function ConfirmarCorreoPage() {
           {/* ICON */}
           <div style={{
             width: "88px", height: "88px",
-            background: "rgba(255,92,0,0.1)",
-            border: "2px solid rgba(255,92,0,0.25)",
+            background: "rgba(0,170,255,0.1)",
+            border: "2px solid rgba(0,170,255,0.25)",
             borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 28px",
@@ -70,7 +70,7 @@ export default function ConfirmarCorreoPage() {
 
           {/* AVISO SPAM */}
           <div style={{
-            background: "rgba(255,92,0,0.08)", border: "1px solid rgba(255,92,0,0.2)",
+            background: "rgba(0,170,255,0.08)", border: "1px solid rgba(0,170,255,0.2)",
             borderRadius: "14px", padding: "16px 20px", marginBottom: "28px",
           }}>
             <p style={{ color: "#A0A0A0", fontSize: "13px", lineHeight: 1.6, margin: 0 }}>

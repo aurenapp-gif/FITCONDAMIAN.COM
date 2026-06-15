@@ -29,7 +29,7 @@ export default function GraciasPage() {
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
           <div style={{
             width: "88px", height: "88px",
-            background: "rgba(255,92,0,0.1)", border: "2px solid rgba(255,92,0,0.25)",
+            background: "rgba(0,170,255,0.1)", border: "2px solid rgba(0,170,255,0.25)",
             borderRadius: "50%", display: "flex", alignItems: "center",
             justifyContent: "center", margin: "0 auto 24px", fontSize: "40px",
           }}>✅</div>

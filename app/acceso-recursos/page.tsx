@@ -172,7 +172,7 @@ export default function AccesoRecursosPage() {
                     justifyContent: "center",
                     fontSize: "20px",
                     paddingLeft: "4px",
-                    boxShadow: "0 0 0 10px rgba(255,92,0,0.12)",
+                    boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
                     color: "#fff",
                   }}>
                     ▶
