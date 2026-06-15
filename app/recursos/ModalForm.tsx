@@ -29,8 +29,9 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
         maxWidth: "460px",
         padding: "32px 28px 28px",
         position: "relative",
-        maxHeight: "90vh",
+        maxHeight: "92vh",
         overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
       }}>
         {/* Botón cerrar */}
         <button
@@ -70,9 +71,10 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
         {/* GHL Form iframe */}
         <iframe
           src={`https://links.fitcondamian.com/widget/form/${GHL_FORM_ID}`}
-          style={{ width: "100%", minHeight: "380px", border: "none", borderRadius: "8px" }}
+          style={{ width: "100%", height: "520px", border: "none", borderRadius: "8px", display: "block" }}
           id={`inline-${GHL_FORM_ID}`}
           title="Formulario de acceso a recursos gratuitos"
+          scrolling="no"
         />
         <script src="https://links.fitcondamian.com/js/form_embed.js" async />
 
