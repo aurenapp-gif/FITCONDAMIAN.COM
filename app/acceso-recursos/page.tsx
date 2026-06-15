@@ -96,6 +96,41 @@ export default function AccesoRecursosPage() {
           <p style={{ color: "#444", fontSize: "12px", textAlign: "center", margin: "0 0 0 0" }}>
             🔊 Activa el sonido
           </p>
+
+          {/* CTA LLAMADA — debajo del vídeo */}
+          <div style={{
+            background: "#00AAFF",
+            borderRadius: "20px",
+            padding: "36px 28px",
+            textAlign: "center",
+            marginTop: "32px",
+          }}>
+            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0", opacity: 0.8 }}>
+              ¿QUIERES IR MÁS RÁPIDO?
+            </p>
+            <h2 style={{ fontSize: "clamp(1.3rem, 4vw, 1.8rem)", fontWeight: 900, margin: "0 0 10px 0", lineHeight: 1.15, letterSpacing: "-0.5px" }}>
+              Agenda una llamada gratuita conmigo
+            </h2>
+            <p style={{ fontSize: "15px", margin: "0 0 22px 0", opacity: 0.85, lineHeight: 1.5 }}>
+              30 minutos. Te digo exactamente qué tienes que hacer según tu caso. Sin rodeos.
+            </p>
+            <a
+              href="/agendar"
+              style={{
+                display: "inline-block",
+                background: "#0D0D0D",
+                color: "#fff",
+                fontWeight: 900,
+                fontSize: "15px",
+                padding: "14px 32px",
+                borderRadius: "99px",
+                textDecoration: "none",
+              }}
+            >
+              Agendar llamada gratuita →
+            </a>
+            <p style={{ fontSize: "12px", margin: "12px 0 0 0", opacity: 0.65 }}>Sin compromiso · 100% gratuito</p>
+          </div>
         </section>
 
         {/* SEPARADOR */}
