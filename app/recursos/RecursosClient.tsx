@@ -18,6 +18,10 @@ const stats = [
   { value: 100, suffix: "%", label: "método basado en ciencia"  },
 ];
 
+const N      = recursos.length;
+const R      = 115; // radio de la rueda
+const SIZE   = 300; // tamaño del contenedor
+
 // — Partículas —
 function ParticlesCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -82,174 +86,139 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-// — Stack tipo Tinder (DOM-driven para fluidez) —
-function TinderStack({ onOpenModal }: { onOpenModal: () => void }) {
-  const [topIndex, setTopIndex] = useState(0);
-  const [badge, setBadge]       = useState<"left" | "right" | null>(null);
-  const topRef  = useRef<HTMLDivElement>(null);
-  const drag    = useRef({ active: false, sx: 0, sy: 0, x: 0, y: 0, moved: false });
-  const flying  = useRef(false);
+// — Rueda circular —
+function CircularWheel({ onOpenModal }: { onOpenModal: () => void }) {
+  const [active, setActive] = useState(0);
+  const [prev, setPrev]     = useState(0);
 
-  // Limpia el estilo del top card cuando avanza
-  useEffect(() => {
-    const el = topRef.current;
-    if (!el) return;
-    el.style.transition = "";
-    el.style.transform  = "";
-    el.style.opacity    = "1";
-  }, [topIndex]);
+  const select = (i: number) => { setPrev(active); setActive(i); };
+  const goNext = () => select((active + 1) % N);
+  const goPrev = () => select((active - 1 + N) % N);
 
-  const doFly = (dir: "left" | "right") => {
-    if (flying.current) return;
-    flying.current = true;
-    const el = topRef.current;
-    if (el) {
-      const fx = dir === "right" ? 800 : -800;
-      const fr = dir === "right" ? 30 : -30;
-      el.style.transition = "transform 0.4s ease, opacity 0.35s ease";
-      el.style.transform  = `translateX(${fx}px) translateY(-40px) rotate(${fr}deg)`;
-      el.style.opacity    = "0";
-    }
-    setBadge(null);
-    setTimeout(() => { flying.current = false; setTopIndex(i => i + 1); }, 420);
+  // Ángulo de cada item con el activo siempre en el top (−90°)
+  const getAngle = (i: number) => {
+    let offset = i - active;
+    if (offset > N / 2) offset -= N;
+    if (offset < -N / 2) offset += N;
+    return -90 + offset * (360 / N);
   };
 
-  const doReset = () => {
-    const el = topRef.current;
-    if (el) {
-      el.style.transition = "transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s ease";
-      el.style.transform  = "";
-      el.style.opacity    = "1";
-    }
-    setBadge(null);
+  const getPos = (i: number) => {
+    const deg = getAngle(i);
+    const rad = deg * (Math.PI / 180);
+    return {
+      x: SIZE / 2 + R * Math.cos(rad),
+      y: SIZE / 2 + R * Math.sin(rad),
+    };
   };
 
-  const onDown = (e: React.PointerEvent) => {
-    if (flying.current) return;
-    drag.current = { active: true, sx: e.clientX, sy: e.clientY, x: 0, y: 0, moved: false };
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  };
-
-  const onMove = (e: React.PointerEvent) => {
-    if (!drag.current.active) return;
-    const dx = e.clientX - drag.current.sx;
-    const dy = e.clientY - drag.current.sy;
-    drag.current.x = dx; drag.current.y = dy;
-    if (Math.abs(dx) > 6) drag.current.moved = true;
-    const el = topRef.current;
-    if (el) {
-      el.style.transition = "none";
-      el.style.transform  = `translateX(${dx}px) translateY(${dy * 0.3}px) rotate(${dx * 0.07}deg)`;
-    }
-    setBadge(Math.abs(dx) > 40 ? (dx > 0 ? "right" : "left") : null);
-  };
-
-  const onUp = () => {
-    if (!drag.current.active) return;
-    drag.current.active = false;
-    Math.abs(drag.current.x) > 80 ? doFly(drag.current.x > 0 ? "right" : "left") : doReset();
-  };
-
-  const onClick = () => { if (!drag.current.moved) onOpenModal(); };
-
-  const done = topIndex >= recursos.length;
-
-  if (done) {
-    return (
-      <div style={{ textAlign: "center", padding: "60px 24px" }}>
-        <div style={{ fontSize: "52px", marginBottom: "16px" }}>🎉</div>
-        <h3 style={{ fontWeight: 900, fontSize: "1.4rem", margin: "0 0 10px 0" }}>¡Has visto todos los recursos!</h3>
-        <p style={{ color: "#888", fontSize: "14px", margin: "0 0 24px 0" }}>Accede gratis a todos ellos ahora</p>
-        <button onClick={onOpenModal} style={{ background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "16px", padding: "14px 32px", borderRadius: "99px", border: "none", cursor: "pointer" }}>
-          Quiero acceder gratis →
-        </button>
-        <br />
-        <button onClick={() => setTopIndex(0)} style={{ background: "none", border: "none", color: "#555", fontSize: "13px", cursor: "pointer", marginTop: "14px", textDecoration: "underline" }}>
-          Volver a ver las cartas
-        </button>
-      </div>
-    );
-  }
-
-  // Renderiza de atrás a delante
-  const stack = [];
-  for (let i = Math.min(topIndex + 2, recursos.length - 1); i >= topIndex; i--) {
-    const si    = i - topIndex; // 0=top
-    const isTop = si === 0;
-    const r     = recursos[i];
-    stack.push(
-      <div
-        key={r.vol}
-        ref={isTop ? topRef : undefined}
-        style={{
-          position: "absolute", width: "280px",
-          transform: isTop ? undefined : `scale(${1 - si * 0.055}) translateY(${si * 18}px)`,
-          transition: isTop ? undefined : "transform 0.4s ease",
-          zIndex: 10 - si,
-          cursor: isTop ? "grab" : "default",
-        }}
-        onPointerDown={isTop ? onDown : undefined}
-        onPointerMove={isTop ? onMove : undefined}
-        onPointerUp={isTop ? onUp : undefined}
-        onPointerCancel={isTop ? onUp : undefined}
-        onClick={isTop ? onClick : undefined}
-      >
-        {/* Badges */}
-        {isTop && badge === "right" && (
-          <div style={{ position: "absolute", top: "18px", left: "18px", zIndex: 20, background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "12px", padding: "6px 14px", borderRadius: "99px", border: "2px solid #fff", transform: "rotate(-12deg)", pointerEvents: "none" }}>
-            ✓ QUIERO ESTE
-          </div>
-        )}
-        {isTop && badge === "left" && (
-          <div style={{ position: "absolute", top: "18px", right: "18px", zIndex: 20, background: "#222", color: "#fff", fontWeight: 900, fontSize: "12px", padding: "6px 14px", borderRadius: "99px", border: "2px solid #555", transform: "rotate(12deg)", pointerEvents: "none" }}>
-            SIGUIENTE →
-          </div>
-        )}
-
-        {/* Carta */}
-        <div style={{
-          background: isTop ? "linear-gradient(145deg, #1c1c1c, #111)" : "#111",
-          border: isTop ? "1.5px solid #00AAFF" : "1px solid #222",
-          borderRadius: "24px", padding: "32px 24px 28px",
-          display: "flex", flexDirection: "column", alignItems: "center",
-          boxShadow: isTop ? "0 30px 70px rgba(0,170,255,0.2)" : "0 10px 30px rgba(0,0,0,0.4)",
-          userSelect: "none", position: "relative", overflow: "hidden",
-        }}>
-          <span style={{ position: "absolute", top: "16px", left: "16px", background: isTop ? "#00AAFF" : "#1f1f1f", color: "#fff", fontSize: "10px", fontWeight: 900, padding: "4px 10px", borderRadius: "99px", letterSpacing: "1px" }}>
-            VOL · {r.vol}
-          </span>
-          {isTop && (
-            <span style={{ position: "absolute", top: "18px", right: "16px", color: "#444", fontSize: "11px" }}>← desliza →</span>
-          )}
-          <div style={{ fontSize: "72px", lineHeight: 1, margin: "16px 0 20px" }}>{r.emoji}</div>
-          <p style={{ color: isTop ? "#00AAFF" : "#333", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
-            {r.categoria}
-          </p>
-          <h3 style={{ fontSize: "20px", fontWeight: 900, textAlign: "center", margin: "0 0 20px 0", lineHeight: 1.2, color: isTop ? "#fff" : "#666" }}>
-            {r.nombre}
-          </h3>
-          {isTop && (
-            <div style={{ background: "rgba(0,170,255,0.12)", border: "1px solid rgba(0,170,255,0.3)", borderRadius: "99px", padding: "8px 18px", fontSize: "13px", color: "#00AAFF", fontWeight: 700 }}>
-              Toca para acceder a todo →
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const r = recursos[active];
 
   return (
-    <div style={{ position: "relative", height: "420px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "40px" }}>
-      {stack}
-      {/* Dots */}
-      <div style={{ position: "absolute", bottom: "-28px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "6px" }}>
-        {recursos.map((_, i) => (
-          <div key={i} style={{
-            width: i === topIndex ? "20px" : "8px", height: "6px", borderRadius: "99px",
-            background: i < topIndex ? "#1a1a1a" : i === topIndex ? "#00AAFF" : "#333",
-            transition: "all 0.3s ease",
-          }} />
-        ))}
+    <div>
+      {/* Rueda */}
+      <div style={{ position: "relative", width: SIZE, height: SIZE, margin: "0 auto" }}>
+        {/* Órbita */}
+        <div style={{
+          position: "absolute", left: "50%", top: "50%",
+          width: R * 2, height: R * 2,
+          transform: "translate(-50%, -50%)",
+          borderRadius: "50%",
+          border: "1px dashed rgba(0,170,255,0.2)",
+        }} />
+
+        {/* Centro */}
+        <div style={{
+          position: "absolute", left: "50%", top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 60, height: 60, borderRadius: "50%",
+          background: "rgba(0,170,255,0.08)",
+          border: "1px solid rgba(0,170,255,0.25)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <span style={{ fontSize: "20px" }}>⚡</span>
+        </div>
+
+        {/* Items */}
+        {recursos.map((item, i) => {
+          const pos     = getPos(i);
+          const isActive = i === active;
+          let offset = Math.abs(i - active);
+          if (offset > N / 2) offset = N - offset;
+          const scale = isActive ? 1 : 1 - offset * 0.12;
+          const opacity = isActive ? 1 : 1 - offset * 0.2;
+
+          return (
+            <button
+              key={item.vol}
+              onClick={() => select(i)}
+              style={{
+                position: "absolute",
+                left: "50%", top: "50%",
+                transform: `translate(calc(-50% + ${pos.x - SIZE / 2}px), calc(-50% + ${pos.y - SIZE / 2}px)) scale(${scale})`,
+                transition: "transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease",
+                opacity,
+                zIndex: isActive ? 10 : 5 - offset,
+                border: "none", background: "none", padding: 0, cursor: "pointer",
+              }}
+            >
+              <div style={{
+                width: isActive ? 72 : 54,
+                height: isActive ? 72 : 54,
+                borderRadius: "50%",
+                background: isActive
+                  ? "linear-gradient(135deg, #00AAFF, #0077CC)"
+                  : "#161616",
+                border: isActive ? "none" : "1px solid #2a2a2a",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: isActive ? 30 : 22,
+                boxShadow: isActive
+                  ? "0 0 0 8px rgba(0,170,255,0.15), 0 8px 32px rgba(0,170,255,0.3)"
+                  : "none",
+                transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              }}>
+                {item.emoji}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Detalle del recurso activo */}
+      <div style={{
+        marginTop: "20px",
+        background: "#111", border: "1px solid #1f1f1f",
+        borderRadius: "20px", padding: "28px", textAlign: "center",
+        transition: "all 0.35s ease",
+      }}>
+        <p style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+          VOL · {r.vol} · {r.categoria}
+        </p>
+        <h3 style={{ fontWeight: 900, fontSize: "22px", margin: "0 0 20px 0", lineHeight: 1.2 }}>
+          {r.nombre}
+        </h3>
+
+        {/* Navegación */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "20px" }}>
+          <button onClick={goPrev} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            ←
+          </button>
+          <div style={{ display: "flex", gap: "6px" }}>
+            {recursos.map((_, i) => (
+              <div key={i} onClick={() => select(i)} style={{ width: i === active ? "20px" : "6px", height: "6px", borderRadius: "99px", background: i === active ? "#00AAFF" : "#333", transition: "all 0.3s ease", cursor: "pointer" }} />
+            ))}
+          </div>
+          <button onClick={goNext} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#00AAFF", border: "none", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            →
+          </button>
+        </div>
+
+        <button
+          onClick={onOpenModal}
+          style={{ background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "15px", padding: "13px 28px", borderRadius: "99px", border: "none", cursor: "pointer" }}
+        >
+          Acceder a todos gratis →
+        </button>
       </div>
     </div>
   );
@@ -258,7 +227,7 @@ function TinderStack({ onOpenModal }: { onOpenModal: () => void }) {
 export default function RecursosClient() {
   const [modalOpen, setModalOpen] = useState(false);
   const statsReveal = useReveal(0.2);
-  const stackReveal = useReveal(0.1);
+  const wheelReveal = useReveal(0.1);
 
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
@@ -311,16 +280,16 @@ export default function RecursosClient() {
           ))}
         </div>
 
-        {/* STACK */}
-        <section ref={stackReveal.ref} style={{ paddingBottom: "100px", opacity: stackReveal.visible ? 1 : 0, transform: stackReveal.visible ? "translateY(0)" : "translateY(50px)", transition: "opacity 0.8s ease, transform 0.8s ease" }}>
-          <div style={{ textAlign: "center", marginBottom: "48px" }}>
+        {/* RUEDA */}
+        <section ref={wheelReveal.ref} style={{ paddingBottom: "80px", opacity: wheelReveal.visible ? 1 : 0, transform: wheelReveal.visible ? "translateY(0)" : "translateY(50px)", transition: "opacity 0.8s ease, transform 0.8s ease" }}>
+          <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
             <div style={{ animation: "bounce 1.8s infinite" }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
             </div>
             <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }`}</style>
           </div>
-          <TinderStack onOpenModal={() => setModalOpen(true)} />
+          <CircularWheel onOpenModal={() => setModalOpen(true)} />
         </section>
       </div>
 
