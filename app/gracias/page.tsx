@@ -19,7 +19,7 @@ export default function GraciasPage() {
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#FF5C00" }}>Damián</span>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
         </p>
       </header>
 
@@ -54,7 +54,7 @@ export default function GraciasPage() {
               <div key={p.num} style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
                 <span style={{
                   flexShrink: 0, width: "28px", height: "28px",
-                  background: "#FF5C00", borderRadius: "50%",
+                  background: "#00AAFF", borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 900, fontSize: "13px", color: "#fff",
                 }}>{p.num}</span>
@@ -69,7 +69,7 @@ export default function GraciasPage() {
 
         {/* RECURSOS */}
         <div style={{
-          background: "#FF5C00", borderRadius: "20px",
+          background: "#00AAFF", borderRadius: "20px",
           padding: "28px", textAlign: "center", marginBottom: "20px",
         }}>
           <p style={{ fontSize: "13px", fontWeight: 700, margin: "0 0 8px 0", opacity: 0.85 }}>
@@ -98,7 +98,7 @@ export default function GraciasPage() {
               fontWeight: 700, textDecoration: "none",
             }}>Instagram</a>
             <a href="#" target="_blank" rel="noopener noreferrer" style={{
-              padding: "10px 22px", background: "#FF5C00",
+              padding: "10px 22px", background: "#00AAFF",
               color: "#fff", borderRadius: "99px", fontSize: "14px",
               fontWeight: 700, textDecoration: "none", border: "none",
             }}>YouTube</a>

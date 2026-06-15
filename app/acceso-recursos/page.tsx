@@ -54,7 +54,7 @@ export default function AccesoRecursosPage() {
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#FF5C00" }}>Damián</span>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
         </p>
       </header>
 
@@ -68,7 +68,7 @@ export default function AccesoRecursosPage() {
 
           <h1 style={{ fontSize: "clamp(2.4rem, 8vw, 3.6rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 20px 0", letterSpacing: "-1.5px" }}>
             Bienvenido a los{" "}
-            <em style={{ fontStyle: "italic", color: "#FF5C00" }}>recursos.</em>
+            <em style={{ fontStyle: "italic", color: "#00AAFF" }}>recursos.</em>
           </h1>
 
           <p style={{ color: "#A0A0A0", fontSize: "17px", lineHeight: 1.6, margin: "0 0 36px 0" }}>
@@ -89,7 +89,7 @@ export default function AccesoRecursosPage() {
             marginBottom: "8px",
           }}>
             <div style={{ textAlign: "center", padding: "32px" }}>
-              <div style={{ fontSize: "48px", marginBottom: "12px", color: "#FF5C00" }}>▶</div>
+              <div style={{ fontSize: "48px", marginBottom: "12px", color: "#00AAFF" }}>▶</div>
               <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo de bienvenida — próximamente</p>
             </div>
           </div>
@@ -121,8 +121,8 @@ export default function AccesoRecursosPage() {
             </span>
             <h2 style={{ fontSize: "clamp(1.8rem, 5vw, 2.4rem)", fontWeight: 900, margin: 0, letterSpacing: "-1px", lineHeight: 1.1 }}>
               Cada recurso,{" "}
-              <em style={{ fontStyle: "italic", color: "#FF5C00" }}>tu acceso</em>
-              <span style={{ color: "#FF5C00" }}>.</span>
+              <em style={{ fontStyle: "italic", color: "#00AAFF" }}>tu acceso</em>
+              <span style={{ color: "#00AAFF" }}>.</span>
             </h2>
           </div>
 
@@ -152,7 +152,7 @@ export default function AccesoRecursosPage() {
                     position: "absolute",
                     top: "12px",
                     left: "12px",
-                    background: "#FF5C00",
+                    background: "#00AAFF",
                     color: "#fff",
                     fontSize: "11px",
                     fontWeight: 900,
@@ -165,7 +165,7 @@ export default function AccesoRecursosPage() {
                   <div style={{
                     width: "56px",
                     height: "56px",
-                    background: "#FF5C00",
+                    background: "#00AAFF",
                     borderRadius: "50%",
                     display: "flex",
                     alignItems: "center",
@@ -200,7 +200,7 @@ export default function AccesoRecursosPage() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "8px",
-                        background: "#FF5C00",
+                        background: "#00AAFF",
                         color: "#fff",
                         fontWeight: 700,
                         fontSize: "14px",
@@ -239,7 +239,7 @@ export default function AccesoRecursosPage() {
 
           {/* CTA LLAMADA */}
           <div style={{
-            background: "#FF5C00",
+            background: "#00AAFF",
             borderRadius: "20px",
             padding: "40px 28px",
             textAlign: "center",

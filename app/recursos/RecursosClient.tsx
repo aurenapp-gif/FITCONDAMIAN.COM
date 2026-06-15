@@ -86,7 +86,7 @@ export default function RecursosClient() {
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#FF5C00" }}>Damián</span>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
         </p>
       </header>
 
@@ -99,7 +99,7 @@ export default function RecursosClient() {
           </p>
           <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 14px 0", letterSpacing: "-1.5px" }}>
             Accede gratis a los recursos que han transformado{" "}
-            <em style={{ fontStyle: "italic", color: "#FF5C00" }}>cientos de cuerpos.</em>
+            <em style={{ fontStyle: "italic", color: "#00AAFF" }}>cientos de cuerpos.</em>
           </h1>
           <p style={{ color: "#888", fontSize: "16px", lineHeight: 1.6, margin: "0 0 32px 0", fontStyle: "italic" }}>
             sin dietas imposibles ni horas en el gimnasio.
@@ -110,7 +110,7 @@ export default function RecursosClient() {
             onClick={() => setModalOpen(true)}
             style={{
               display: "inline-flex", alignItems: "center", gap: "10px",
-              background: "#FF5C00", color: "#fff", fontWeight: 900,
+              background: "#00AAFF", color: "#fff", fontWeight: 900,
               fontSize: "17px", padding: "16px 36px", borderRadius: "99px",
               border: "none", cursor: "pointer", letterSpacing: "-0.3px",
               marginBottom: "14px",
@@ -133,7 +133,7 @@ export default function RecursosClient() {
               <div
                 onClick={() => setModalOpen(true)}
                 style={{
-                  width: "72px", height: "72px", background: "#FF5C00",
+                  width: "72px", height: "72px", background: "#00AAFF",
                   borderRadius: "50%", display: "flex", alignItems: "center",
                   justifyContent: "center", fontSize: "24px", paddingLeft: "6px",
                   margin: "0 auto 12px", cursor: "pointer",
@@ -147,11 +147,11 @@ export default function RecursosClient() {
 
         {/* FLECHA ABAJO */}
         <div style={{ textAlign: "center", marginBottom: "36px" }}>
-          <p style={{ color: "#FF5C00", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>
+          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>
             ESTO ES LO QUE TE LLEVAS
           </p>
           <div style={{ animation: "bounce 1.8s infinite" }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF5C00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14M5 12l7 7 7-7"/>
             </svg>
           </div>
@@ -187,7 +187,7 @@ export default function RecursosClient() {
                     background: isCenter
                       ? "linear-gradient(145deg, #1a1a1a 0%, #111 100%)"
                       : "#111",
-                    border: isCenter ? "1.5px solid #FF5C00" : "1px solid #222",
+                    border: isCenter ? "1.5px solid #00AAFF" : "1px solid #222",
                     display: "flex", flexDirection: "column",
                     alignItems: "center", justifyContent: "center",
                     padding: "24px", position: "relative", overflow: "hidden",
@@ -197,7 +197,7 @@ export default function RecursosClient() {
                   }}>
                     <span style={{
                       position: "absolute", top: "16px", left: "16px",
-                      background: isCenter ? "#FF5C00" : "#1f1f1f",
+                      background: isCenter ? "#00AAFF" : "#1f1f1f",
                       color: "#fff", fontSize: "10px", fontWeight: 900,
                       padding: "4px 10px", borderRadius: "99px", letterSpacing: "1px",
                     }}>
@@ -207,7 +207,7 @@ export default function RecursosClient() {
                     <div style={{ fontSize: "56px", marginBottom: "16px", lineHeight: 1 }}>{r.emoji}</div>
 
                     <p style={{
-                      color: isCenter ? "#FF5C00" : "#444",
+                      color: isCenter ? "#00AAFF" : "#444",
                       fontSize: "10px", fontWeight: 700, letterSpacing: "2px",
                       textTransform: "uppercase", margin: "0 0 8px 0",
                     }}>
@@ -227,7 +227,7 @@ export default function RecursosClient() {
                         position: "absolute", bottom: "16px",
                         background: "rgba(255,92,0,0.15)", border: "1px solid rgba(255,92,0,0.3)",
                         borderRadius: "99px", padding: "4px 12px",
-                        fontSize: "11px", color: "#FF5C00", fontWeight: 700,
+                        fontSize: "11px", color: "#00AAFF", fontWeight: 700,
                       }}>
                         Toca para acceder →
                       </div>
@@ -252,7 +252,7 @@ export default function RecursosClient() {
             {recursos.map((_, i) => (
               <button key={i} onClick={() => setActive(i)} style={{
                 width: i === active ? "24px" : "8px", height: "8px",
-                borderRadius: "99px", background: i === active ? "#FF5C00" : "#333",
+                borderRadius: "99px", background: i === active ? "#00AAFF" : "#333",
                 border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease",
               }} />
             ))}
@@ -269,7 +269,7 @@ export default function RecursosClient() {
             }}>←</button>
             <button onClick={next} disabled={active === recursos.length - 1} style={{
               width: "48px", height: "48px", borderRadius: "50%",
-              background: active === recursos.length - 1 ? "#1a1a1a" : "#FF5C00",
+              background: active === recursos.length - 1 ? "#1a1a1a" : "#00AAFF",
               border: "none", color: "#fff", fontSize: "20px",
               cursor: active === recursos.length - 1 ? "not-allowed" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",

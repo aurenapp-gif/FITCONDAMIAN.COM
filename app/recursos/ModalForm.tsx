@@ -48,7 +48,7 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
 
         {/* Badge */}
         <p style={{
-          color: "#FF5C00", fontSize: "11px", fontWeight: 700,
+          color: "#00AAFF", fontSize: "11px", fontWeight: 700,
           letterSpacing: "2px", textTransform: "uppercase",
           margin: "0 0 14px 0",
         }}>
@@ -61,7 +61,7 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
           margin: "0 0 8px 0", lineHeight: 1.1, letterSpacing: "-0.5px", color: "#fff",
         }}>
           Accede a los recursos{" "}
-          <em style={{ fontStyle: "italic", color: "#FF5C00" }}>gratis</em>
+          <em style={{ fontStyle: "italic", color: "#00AAFF" }}>gratis</em>
         </h2>
         <p style={{ color: "#888", fontSize: "14px", margin: "0 0 24px 0", lineHeight: 1.5 }}>
           Déjanos tu correo y te los enviamos al instante.

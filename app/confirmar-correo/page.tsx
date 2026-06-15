@@ -13,7 +13,7 @@ export default function ConfirmarCorreoPage() {
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#FF5C00" }}>Damián</span>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
         </p>
       </header>
 
@@ -37,7 +37,7 @@ export default function ConfirmarCorreoPage() {
           <h1 style={{ fontSize: "clamp(2rem, 7vw, 2.8rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 12px 0", letterSpacing: "-1px" }}>
             ¡Un paso más!
           </h1>
-          <p style={{ color: "#FF5C00", fontSize: "18px", fontWeight: 700, margin: "0 0 36px 0" }}>
+          <p style={{ color: "#00AAFF", fontSize: "18px", fontWeight: 700, margin: "0 0 36px 0" }}>
             Revisa tu correo electrónico
           </p>
 
@@ -52,13 +52,13 @@ export default function ConfirmarCorreoPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
               {[
                 { n: "1", texto: <>Abre el correo que te acabamos de enviar (revisa también <strong style={{ color: "#fff" }}>Spam</strong> o <strong style={{ color: "#fff" }}>Promociones</strong>)</> },
-                { n: "2", texto: <>Haz clic en el botón <strong style={{ color: "#FF5C00" }}>&quot;Acceder a los recursos&quot;</strong></> },
+                { n: "2", texto: <>Haz clic en el botón <strong style={{ color: "#00AAFF" }}>&quot;Acceder a los recursos&quot;</strong></> },
                 { n: "3", texto: <>Entrarás directamente a todos los recursos gratuitos</> },
               ].map(({ n, texto }) => (
                 <div key={n} style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
                   <span style={{
                     flexShrink: 0, width: "28px", height: "28px",
-                    background: "#FF5C00", borderRadius: "50%",
+                    background: "#00AAFF", borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontWeight: 900, fontSize: "13px", color: "#fff",
                   }}>{n}</span>
@@ -74,7 +74,7 @@ export default function ConfirmarCorreoPage() {
             borderRadius: "14px", padding: "16px 20px", marginBottom: "28px",
           }}>
             <p style={{ color: "#A0A0A0", fontSize: "13px", lineHeight: 1.6, margin: 0 }}>
-              <strong style={{ color: "#FF5C00" }}>¿No encuentras el correo?</strong> A veces tarda 1-2 minutos.
+              <strong style={{ color: "#00AAFF" }}>¿No encuentras el correo?</strong> A veces tarda 1-2 minutos.
               Busca un email de <strong style={{ color: "#fff" }}>Damián</strong> en Spam o Promociones
               y márcalo como &quot;No es spam&quot;.
             </p>

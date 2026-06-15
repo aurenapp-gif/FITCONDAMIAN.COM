@@ -19,7 +19,7 @@ export default function AgendarPage() {
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#FF5C00" }}>Damián</span>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
         </p>
       </header>
 
@@ -30,7 +30,7 @@ export default function AgendarPage() {
           <span style={{
             display: "inline-block",
             background: "rgba(255,92,0,0.1)", border: "1px solid rgba(255,92,0,0.25)",
-            color: "#FF5C00", fontWeight: 700, fontSize: "13px",
+            color: "#00AAFF", fontWeight: 700, fontSize: "13px",
             padding: "8px 18px", borderRadius: "99px",
           }}>
             📞 30 minutos · 100% Gratuito · Sin compromiso
@@ -40,7 +40,7 @@ export default function AgendarPage() {
         {/* HEADLINE */}
         <h1 style={{ fontSize: "clamp(2.2rem, 7vw, 3.2rem)", fontWeight: 900, textAlign: "center", lineHeight: 1.05, margin: "0 0 16px 0", letterSpacing: "-1.5px" }}>
           Agenda tu llamada{" "}
-          <em style={{ fontStyle: "italic", color: "#FF5C00" }}>estratégica gratuita</em>
+          <em style={{ fontStyle: "italic", color: "#00AAFF" }}>estratégica gratuita</em>
         </h1>
 
         <p style={{ color: "#A0A0A0", fontSize: "17px", textAlign: "center", lineHeight: 1.6, margin: "0 0 40px 0" }}>
@@ -93,7 +93,7 @@ export default function AgendarPage() {
         }}>
           <div style={{
             width: "52px", height: "52px", flexShrink: 0,
-            background: "#FF5C00", borderRadius: "50%",
+            background: "#00AAFF", borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontWeight: 900, fontSize: "20px", color: "#fff",
           }}>D</div>
