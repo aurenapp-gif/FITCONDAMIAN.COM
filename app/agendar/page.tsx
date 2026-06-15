@@ -75,11 +75,10 @@ export default function AgendarPage() {
         </div>
 
         {/* GHL CALENDAR EMBED */}
-        <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid #1f1f1f", marginBottom: "36px", minHeight: "500px" }}>
+        <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid #1f1f1f", marginBottom: "36px" }}>
           <iframe
             src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian"
-            style={{ width: "100%", minHeight: "700px", border: "none", display: "block" }}
-            scrolling="no"
+            style={{ width: "100%", height: "1000px", border: "none", display: "block" }}
             title="Reserva tu llamada con Damián"
             loading="lazy"
           />
