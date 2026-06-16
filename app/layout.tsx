@@ -16,7 +16,8 @@ export const metadata: Metadata = {
   },
   description: "Recursos gratuitos de fitness y nutrición para transformar tu cuerpo.",
   metadataBase: new URL("https://fitcondamian.com"),
-  robots: { index: true, follow: true },
+  // Por defecto NADA se indexa. Solo /recursos lo activa explícitamente.
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
