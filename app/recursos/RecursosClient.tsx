@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import ModalForm from "./ModalForm";
 
 const recursos = [
-  { vol: "01", nombre: "Diagnóstico Corporal",      emoji: "📋", categoria: "DIAGNÓSTICO"   },
-  { vol: "02", nombre: "Guía de Nutrición",          emoji: "🥗", categoria: "NUTRICIÓN"     },
-  { vol: "03", nombre: "Rutina Express",             emoji: "💪", categoria: "ENTRENAMIENTO" },
-  { vol: "04", nombre: "Protocolo de Recuperación",  emoji: "😴", categoria: "RECUPERACIÓN"  },
-  { vol: "05", nombre: "Plan Primera Semana",        emoji: "📅", categoria: "PLANIFICACIÓN" },
+  { vol: "01", nombre: "Diagnóstico Corporal",      emoji: "📋", categoria: "DIAGNÓSTICO",   desc: "Descubre en 3 minutos dónde estás y qué tienes que cambiar para ver resultados de verdad." },
+  { vol: "02", nombre: "Guía de Nutrición",          emoji: "🥗", categoria: "NUTRICIÓN",     desc: "Come sin pasar hambre ni contar calorías. El sistema que aplico con todos mis clientes." },
+  { vol: "03", nombre: "Rutina Express",             emoji: "💪", categoria: "ENTRENAMIENTO", desc: "30 minutos, 3 veces por semana. El programa exacto para transformar tu cuerpo sin vivir en el gym." },
+  { vol: "04", nombre: "Protocolo de Recuperación",  emoji: "😴", categoria: "RECUPERACIÓN",  desc: "El factor que nadie te cuenta y que sabotea tus resultados. Lo cambia todo." },
+  { vol: "05", nombre: "Plan Primera Semana",        emoji: "📅", categoria: "PLANIFICACIÓN", desc: "Tu hoja de ruta para los primeros 7 días. Paso a paso, sin improvisación." },
 ];
 
 const stats = [
@@ -18,9 +18,7 @@ const stats = [
   { value: 100, suffix: "%", label: "método basado en ciencia"  },
 ];
 
-const N      = recursos.length;
-const R      = 115; // radio de la rueda
-const SIZE   = 300; // tamaño del contenedor
+const N = recursos.length;
 
 // — Partículas —
 function ParticlesCanvas() {
@@ -86,139 +84,164 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-// — Rueda circular —
-function CircularWheel({ onOpenModal }: { onOpenModal: () => void }) {
+// — Scroll horizontal bloqueado —
+function HorizontalScroll({ onOpenModal }: { onOpenModal: () => void }) {
+  const wrapperRef  = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const [prev, setPrev]     = useState(0);
+  const [tx, setTx] = useState(0);
+  const [vw, setVw] = useState(390);
 
-  const select = (i: number) => { setPrev(active); setActive(i); };
-  const goNext = () => select((active + 1) % N);
-  const goPrev = () => select((active - 1 + N) % N);
+  useEffect(() => {
+    const update = () => setVw(window.innerWidth);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
-  // Ángulo de cada item con el activo siempre en el top (−90°)
-  const getAngle = (i: number) => {
-    let offset = i - active;
-    if (offset > N / 2) offset -= N;
-    if (offset < -N / 2) offset += N;
-    return -90 + offset * (360 / N);
-  };
-
-  const getPos = (i: number) => {
-    const deg = getAngle(i);
-    const rad = deg * (Math.PI / 180);
-    return {
-      x: SIZE / 2 + R * Math.cos(rad),
-      y: SIZE / 2 + R * Math.sin(rad),
+  useEffect(() => {
+    const onScroll = () => {
+      const el = wrapperRef.current; if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const total = el.offsetHeight - window.innerHeight;
+      const scrolled = -rect.top;
+      const p = Math.max(0, Math.min(1, scrolled / total));
+      const slide = Math.round(p * (N - 1));
+      setActive(slide);
+      setTx(-p * (N - 1) * vw);
     };
-  };
-
-  const r = recursos[active];
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [vw]);
 
   return (
-    <div>
-      {/* Rueda */}
-      <div style={{ position: "relative", width: SIZE, height: SIZE, margin: "0 auto" }}>
-        {/* Órbita */}
-        <div style={{
-          position: "absolute", left: "50%", top: "50%",
-          width: R * 2, height: R * 2,
-          transform: "translate(-50%, -50%)",
-          borderRadius: "50%",
-          border: "1px dashed rgba(0,170,255,0.2)",
-        }} />
+    // Wrapper alto que "consume" scroll vertical
+    <div ref={wrapperRef} style={{ height: `${N * 100}vh` }}>
+      <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", background: "#0D0D0D" }}>
 
-        {/* Centro */}
+        {/* Barra de progreso superior */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "#1a1a1a", zIndex: 20 }}>
+          <div style={{ height: "100%", background: "#00AAFF", width: `${((active + 1) / N) * 100}%`, transition: "width 0.4s ease" }} />
+        </div>
+
+        {/* Contador de slide */}
+        <div style={{ position: "absolute", top: "18px", right: "20px", zIndex: 20, color: "#444", fontSize: "12px", fontWeight: 700 }}>
+          {active + 1} <span style={{ color: "#222" }}>/ {N}</span>
+        </div>
+
+        {/* Header */}
+        <div style={{ position: "absolute", top: "10px", left: 0, right: 0, textAlign: "center", zIndex: 20 }}>
+          <p style={{ margin: 0, fontWeight: 900, fontSize: "16px", letterSpacing: "-0.5px" }}>
+            Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
+          </p>
+        </div>
+
+        {/* Tira horizontal */}
         <div style={{
-          position: "absolute", left: "50%", top: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 60, height: 60, borderRadius: "50%",
-          background: "rgba(0,170,255,0.08)",
-          border: "1px solid rgba(0,170,255,0.25)",
-          display: "flex", alignItems: "center", justifyContent: "center",
+          display: "flex",
+          transform: `translateX(${tx}px)`,
+          transition: "transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          willChange: "transform",
+          height: "100%",
         }}>
-          <span style={{ fontSize: "20px" }}>⚡</span>
-        </div>
+          {recursos.map((r, i) => {
+            const isActive = i === active;
+            return (
+              <div
+                key={r.vol}
+                style={{
+                  width: vw, minWidth: vw, height: "100%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  padding: "80px 28px 40px",
+                  flexShrink: 0,
+                }}
+              >
+                <div style={{ maxWidth: "360px", width: "100%", textAlign: "center" }}>
 
-        {/* Items */}
-        {recursos.map((item, i) => {
-          const pos     = getPos(i);
-          const isActive = i === active;
-          let offset = Math.abs(i - active);
-          if (offset > N / 2) offset = N - offset;
-          const scale = isActive ? 1 : 1 - offset * 0.12;
-          const opacity = isActive ? 1 : 1 - offset * 0.2;
+                  {/* Emoji grande con glow */}
+                  <div style={{
+                    width: "120px", height: "120px",
+                    background: isActive ? "rgba(0,170,255,0.08)" : "rgba(255,255,255,0.03)",
+                    border: isActive ? "1.5px solid rgba(0,170,255,0.3)" : "1px solid #1f1f1f",
+                    borderRadius: "32px",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "64px", lineHeight: 1,
+                    margin: "0 auto 28px",
+                    boxShadow: isActive ? "0 0 60px rgba(0,170,255,0.15)" : "none",
+                    transition: "all 0.5s ease",
+                  }}>
+                    {r.emoji}
+                  </div>
 
-          return (
-            <button
-              key={item.vol}
-              onClick={() => select(i)}
-              style={{
-                position: "absolute",
-                left: "50%", top: "50%",
-                transform: `translate(calc(-50% + ${pos.x - SIZE / 2}px), calc(-50% + ${pos.y - SIZE / 2}px)) scale(${scale})`,
-                transition: "transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease",
-                opacity,
-                zIndex: isActive ? 10 : 5 - offset,
-                border: "none", background: "none", padding: 0, cursor: "pointer",
-              }}
-            >
-              <div style={{
-                width: isActive ? 72 : 54,
-                height: isActive ? 72 : 54,
-                borderRadius: "50%",
-                background: isActive
-                  ? "linear-gradient(135deg, #00AAFF, #0077CC)"
-                  : "#161616",
-                border: isActive ? "none" : "1px solid #2a2a2a",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: isActive ? 30 : 22,
-                boxShadow: isActive
-                  ? "0 0 0 8px rgba(0,170,255,0.15), 0 8px 32px rgba(0,170,255,0.3)"
-                  : "none",
-                transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-              }}>
-                {item.emoji}
+                  {/* Badge */}
+                  <span style={{
+                    display: "inline-block",
+                    background: "rgba(0,170,255,0.1)", border: "1px solid rgba(0,170,255,0.25)",
+                    color: "#00AAFF", fontSize: "10px", fontWeight: 900,
+                    padding: "4px 12px", borderRadius: "99px", letterSpacing: "2px",
+                    marginBottom: "16px",
+                  }}>
+                    VOL · {r.vol} · {r.categoria}
+                  </span>
+
+                  {/* Título */}
+                  <h2 style={{
+                    fontSize: "clamp(1.6rem, 6vw, 2.2rem)", fontWeight: 900,
+                    lineHeight: 1.1, letterSpacing: "-1px",
+                    margin: "0 0 16px 0",
+                    color: "#fff",
+                  }}>
+                    {r.nombre}
+                  </h2>
+
+                  {/* Descripción */}
+                  <p style={{ color: "#888", fontSize: "15px", lineHeight: 1.6, margin: "0 0 32px 0" }}>
+                    {r.desc}
+                  </p>
+
+                  {/* CTA */}
+                  <button
+                    onClick={onOpenModal}
+                    style={{
+                      background: "#00AAFF", color: "#fff",
+                      fontWeight: 900, fontSize: "15px",
+                      padding: "13px 28px", borderRadius: "99px",
+                      border: "none", cursor: "pointer",
+                    }}
+                  >
+                    Acceder gratis →
+                  </button>
+                </div>
               </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Detalle del recurso activo */}
-      <div style={{
-        marginTop: "20px",
-        background: "#111", border: "1px solid #1f1f1f",
-        borderRadius: "20px", padding: "28px", textAlign: "center",
-        transition: "all 0.35s ease",
-      }}>
-        <p style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
-          VOL · {r.vol} · {r.categoria}
-        </p>
-        <h3 style={{ fontWeight: 900, fontSize: "22px", margin: "0 0 20px 0", lineHeight: 1.2 }}>
-          {r.nombre}
-        </h3>
-
-        {/* Navegación */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "20px" }}>
-          <button onClick={goPrev} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            ←
-          </button>
-          <div style={{ display: "flex", gap: "6px" }}>
-            {recursos.map((_, i) => (
-              <div key={i} onClick={() => select(i)} style={{ width: i === active ? "20px" : "6px", height: "6px", borderRadius: "99px", background: i === active ? "#00AAFF" : "#333", transition: "all 0.3s ease", cursor: "pointer" }} />
-            ))}
-          </div>
-          <button onClick={goNext} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#00AAFF", border: "none", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            →
-          </button>
+            );
+          })}
         </div>
 
-        <button
-          onClick={onOpenModal}
-          style={{ background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "15px", padding: "13px 28px", borderRadius: "99px", border: "none", cursor: "pointer" }}
-        >
-          Acceder a todos gratis →
-        </button>
+        {/* Dots en la parte inferior */}
+        <div style={{ position: "absolute", bottom: "32px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "8px", zIndex: 20 }}>
+          {recursos.map((_, i) => (
+            <div key={i} style={{
+              width: i === active ? "24px" : "8px", height: "8px",
+              borderRadius: "99px",
+              background: i === active ? "#00AAFF" : "#2a2a2a",
+              transition: "all 0.4s ease",
+            }} />
+          ))}
+        </div>
+
+        {/* Hint de scroll */}
+        {active === 0 && (
+          <div style={{ position: "absolute", bottom: "64px", left: "50%", transform: "translateX(-50%)", textAlign: "center", animation: "fadeHint 2s ease 1s both" }}>
+            <p style={{ color: "#333", fontSize: "11px", fontWeight: 600, letterSpacing: "1px", margin: 0 }}>↓ DESLIZA PARA VER MÁS</p>
+            <style>{`
+              @keyframes fadeHint { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
+            `}</style>
+          </div>
+        )}
+
+        {/* Gradientes laterales */}
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "40px", background: "linear-gradient(90deg, #0D0D0D, transparent)", pointerEvents: "none", zIndex: 10 }} />
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "40px", background: "linear-gradient(-90deg, #0D0D0D, transparent)", pointerEvents: "none", zIndex: 10 }} />
       </div>
     </div>
   );
@@ -227,7 +250,6 @@ function CircularWheel({ onOpenModal }: { onOpenModal: () => void }) {
 export default function RecursosClient() {
   const [modalOpen, setModalOpen] = useState(false);
   const statsReveal = useReveal(0.2);
-  const wheelReveal = useReveal(0.1);
 
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
@@ -269,7 +291,7 @@ export default function RecursosClient() {
         </section>
 
         {/* CONTADORES */}
-        <div ref={statsReveal.ref} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "56px", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
+        <div ref={statsReveal.ref} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "20px", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
           {stats.map((s, i) => (
             <div key={i} style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: "16px", padding: "20px", textAlign: "center", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s` }}>
               <p style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 5vw, 2.4rem)", color: "#00AAFF", margin: "0 0 4px 0", letterSpacing: "-1px" }}>
@@ -280,18 +302,18 @@ export default function RecursosClient() {
           ))}
         </div>
 
-        {/* RUEDA */}
-        <section ref={wheelReveal.ref} style={{ paddingBottom: "80px", opacity: wheelReveal.visible ? 1 : 0, transform: wheelReveal.visible ? "translateY(0)" : "translateY(50px)", transition: "opacity 0.8s ease, transform 0.8s ease" }}>
-          <div style={{ textAlign: "center", marginBottom: "40px" }}>
-            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
-            <div style={{ animation: "bounce 1.8s infinite" }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-            </div>
-            <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }`}</style>
+        {/* Label antes del scroll */}
+        <div style={{ textAlign: "center", padding: "32px 0 24px" }}>
+          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
+          <div style={{ animation: "bounce 1.8s infinite" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
           </div>
-          <CircularWheel onOpenModal={() => setModalOpen(true)} />
-        </section>
+          <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }`}</style>
+        </div>
       </div>
+
+      {/* SCROLL HORIZONTAL — full width, fuera del contenedor */}
+      <HorizontalScroll onOpenModal={() => setModalOpen(true)} />
 
       <footer style={{ borderTop: "1px solid #1f1f1f", padding: "28px 24px", textAlign: "center" }}>
         <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
