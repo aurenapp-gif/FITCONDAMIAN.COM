@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Agenda tu Llamada Gratuita",
   description: "Reserva una llamada estratégica gratuita de 30 minutos. Te digo exactamente qué necesitas para transformar tu cuerpo.",
+  robots: { index: false, follow: false },
 };
 
 const beneficios = [
@@ -57,8 +58,8 @@ export default function AgendarPage() {
             EN ESTA LLAMADA VAS A CONSEGUIR
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            {beneficios.map((b, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            {beneficios.map((b) => (
+              <div key={b.texto} style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                 <span style={{ fontSize: "22px", flexShrink: 0 }}>{b.emoji}</span>
                 <span style={{ color: "#C0C0C0", fontSize: "15px", lineHeight: 1.5 }}>{b.texto}</span>
               </div>
@@ -75,10 +76,10 @@ export default function AgendarPage() {
         </div>
 
         {/* GHL CALENDAR EMBED */}
-        <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid #1f1f1f", marginBottom: "36px" }}>
+        <div style={{ borderRadius: "20px", border: "1px solid #1f1f1f", marginBottom: "36px" }}>
           <iframe
             src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian"
-            style={{ width: "100%", height: "1000px", border: "none", display: "block" }}
+            style={{ width: "100%", height: "1000px", border: "none", display: "block", borderRadius: "20px" }}
             title="Reserva tu llamada con Damián"
             loading="lazy"
           />
@@ -122,11 +123,11 @@ export default function AgendarPage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {[1, 2, 3].map((n) => (
-              <div key={n} style={{
+              {/* TODO: reemplaza este bloque con <iframe> de YouTube/Vimeo cuando tengas el vídeo */}
+              <div key={n} data-video-placeholder={`testimonio-${n}`} style={{
                 background: "#111", border: "1px solid #1f1f1f",
                 borderRadius: "16px", overflow: "hidden",
               }}>
-                {/* Thumbnail vídeo */}
                 <div style={{
                   aspectRatio: "16/9",
                   background: "#161616",
@@ -141,7 +142,7 @@ export default function AgendarPage() {
                     padding: "4px 10px", borderRadius: "99px",
                     border: "1px solid rgba(255,255,255,0.1)",
                   }}>Testimonio {n}</span>
-                  <div style={{
+                  <div aria-hidden="true" style={{
                     width: "52px", height: "52px",
                     background: "#00AAFF", borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center",

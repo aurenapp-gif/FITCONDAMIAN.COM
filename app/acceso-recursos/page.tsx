@@ -76,8 +76,8 @@ export default function AccesoRecursosPage() {
             Guárdalo antes de cerrar esta página.
           </p>
 
-          {/* VIDEO — 👉 Reemplaza este bloque con tu iframe de YouTube/Vimeo cuando lo tengas */}
-          <div style={{
+          {/* TODO: reemplaza el contenido de este div con <iframe src="..." width="100%" height="100%" /> */}
+          <div data-video-placeholder="bienvenida" style={{
             borderRadius: "16px",
             overflow: "hidden",
             background: "#161616",
@@ -89,7 +89,7 @@ export default function AccesoRecursosPage() {
             marginBottom: "8px",
           }}>
             <div style={{ textAlign: "center", padding: "32px" }}>
-              <div style={{ fontSize: "48px", marginBottom: "12px", color: "#00AAFF" }}>▶</div>
+              <div aria-hidden="true" style={{ fontSize: "48px", marginBottom: "12px", color: "#00AAFF" }}>▶</div>
               <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo de bienvenida — próximamente</p>
             </div>
           </div>
@@ -228,28 +228,34 @@ export default function AccesoRecursosPage() {
 
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     <a
-                      href={r.linkVideo}
+                      href={r.linkVideo !== "#" ? r.linkVideo : undefined}
+                      onClick={r.linkVideo === "#" ? (e) => e.preventDefault() : undefined}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-disabled={r.linkVideo === "#"}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "8px",
-                        background: "#00AAFF",
+                        background: r.linkVideo !== "#" ? "#00AAFF" : "#333",
                         color: "#fff",
                         fontWeight: 700,
                         fontSize: "14px",
                         padding: "11px 20px",
                         borderRadius: "99px",
                         textDecoration: "none",
+                        opacity: r.linkVideo === "#" ? 0.5 : 1,
+                        cursor: r.linkVideo === "#" ? "not-allowed" : "pointer",
                       }}
                     >
                       ▶ Ver el vídeo
                     </a>
                     <a
-                      href={r.linkDoc}
+                      href={r.linkDoc !== "#" ? r.linkDoc : undefined}
+                      onClick={r.linkDoc === "#" ? (e) => e.preventDefault() : undefined}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-disabled={r.linkDoc === "#"}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -261,7 +267,9 @@ export default function AccesoRecursosPage() {
                         padding: "11px 20px",
                         borderRadius: "99px",
                         textDecoration: "none",
-                        border: "1px solid #333",
+                        border: r.linkDoc !== "#" ? "1px solid #555" : "1px solid #2a2a2a",
+                        opacity: r.linkDoc === "#" ? 0.4 : 1,
+                        cursor: r.linkDoc === "#" ? "not-allowed" : "pointer",
                       }}
                     >
                       Abrir documento ↗

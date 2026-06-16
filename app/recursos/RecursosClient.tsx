@@ -32,7 +32,7 @@ function ParticlesCanvas() {
       dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
       a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65,
     }));
-    let id: number;
+    let id = 0;
     const draw = () => {
       ctx.clearRect(0, 0, c.width, c.height);
       for (const p of pts) {
@@ -45,7 +45,7 @@ function ParticlesCanvas() {
       }
       ctx.globalAlpha = 1; id = requestAnimationFrame(draw);
     };
-    draw();
+    id = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
   }, []);
   return <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />;
@@ -56,14 +56,16 @@ function Counter({ target, suffix, start }: { target: number; suffix: string; st
   const [val, setVal] = useState(0);
   useEffect(() => {
     if (!start) return;
+    let id = 0;
     let t0: number | null = null;
     const step = (ts: number) => {
       if (!t0) t0 = ts;
       const p = Math.min((ts - t0) / 1800, 1);
       setVal(Math.floor((1 - Math.pow(1 - p, 3)) * target));
-      if (p < 1) requestAnimationFrame(step); else setVal(target);
+      if (p < 1) { id = requestAnimationFrame(step); } else { setVal(target); }
     };
-    requestAnimationFrame(step);
+    id = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(id);
   }, [start, target]);
   return <>{val}{suffix}</>;
 }
@@ -110,6 +112,7 @@ function AccordionItem({
       {/* Cabecera — siempre visible */}
       <button
         onClick={onToggle}
+        aria-expanded={isOpen}
         style={{
           width: "100%", display: "flex", alignItems: "center",
           gap: "16px", padding: "18px 20px",
@@ -149,7 +152,7 @@ function AccordionItem({
           color: "#fff", fontSize: "14px",
           transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
           transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
-        }}>
+        }} aria-hidden="true">
           ↓
         </div>
       </button>
@@ -231,9 +234,12 @@ export default function RecursosClient() {
               Quiero acceder gratis →
             </button>
             <p style={{ color: "#555", fontSize: "13px", margin: "0 0 36px 0" }}>Material gratuito · Acceso en menos de 2 minutos</p>
-            <div style={{ borderRadius: "16px", overflow: "hidden", background: "#161616", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #252525" }}>
+            {/* TODO: replace inner div with <iframe> YouTube/Vimeo embed when ready */}
+            <div data-video-placeholder="hero" style={{ borderRadius: "16px", overflow: "hidden", background: "#161616", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #252525" }}>
               <div style={{ textAlign: "center" }}>
-                <div onClick={() => setModalOpen(true)} style={{ width: "72px", height: "72px", background: "#00AAFF", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", paddingLeft: "6px", margin: "0 auto 12px", cursor: "pointer", boxShadow: "0 0 0 14px rgba(0,170,255,0.12)" }}>▶</div>
+                <button onClick={() => setModalOpen(true)} aria-label="Acceder a los recursos gratis" style={{ width: "72px", height: "72px", background: "#00AAFF", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", paddingLeft: "6px", margin: "0 auto 12px", cursor: "pointer", boxShadow: "0 0 0 14px rgba(0,170,255,0.12)", border: "none" }}>
+                  <span aria-hidden="true">▶</span>
+                </button>
                 <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo de presentación — próximamente</p>
               </div>
             </div>
@@ -243,7 +249,7 @@ export default function RecursosClient() {
         {/* CONTADORES */}
         <div ref={statsReveal.ref} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "56px", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
           {stats.map((s, i) => (
-            <div key={i} style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: "16px", padding: "20px", textAlign: "center", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s` }}>
+            <div key={s.label} style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: "16px", padding: "20px", textAlign: "center", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s` }}>
               <p style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 5vw, 2.4rem)", color: "#00AAFF", margin: "0 0 4px 0", letterSpacing: "-1px" }}>
                 <Counter target={s.value} suffix={s.suffix} start={statsReveal.visible} />
               </p>
@@ -259,10 +265,9 @@ export default function RecursosClient() {
         >
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
-            <div style={{ animation: "bounce 1.8s infinite" }}>
+            <div style={{ animation: "bounce 1.8s infinite" }} aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
             </div>
-            <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }`}</style>
           </div>
 
           <Accordion onOpenModal={() => setModalOpen(true)} />

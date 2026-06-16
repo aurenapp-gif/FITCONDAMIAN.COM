@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "¡Llamada reservada!",
   robots: { index: false, follow: false },
 };
 
-const vslVideos = [
+const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha" }[] = [
   { id: "01", titulo: "Por qué no ves resultados aunque lo intentas todo", lado: "izquierda" },
   { id: "02", titulo: "El error que comete el 90% con la alimentación", lado: "derecha" },
   { id: "03", titulo: "Cómo entrenar sin vivir en el gimnasio", lado: "izquierda" },
@@ -123,12 +124,13 @@ export default function GraciasPage() {
             </div>
 
             {/* Imagen email de confirmación */}
-            <div style={{ marginTop: "20px", borderRadius: "12px", overflow: "hidden", border: "1px solid #252525" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div style={{ marginTop: "20px", borderRadius: "12px", overflow: "hidden", border: "1px solid #252525", position: "relative" }}>
+              <Image
                 src="/confirmar-calendario.png"
                 alt="Dónde hacer clic para confirmar la llamada en el email"
-                style={{ width: "100%", display: "block" }}
+                width={980}
+                height={520}
+                style={{ width: "100%", height: "auto", display: "block" }}
               />
             </div>
           </div>
@@ -187,29 +189,29 @@ export default function GraciasPage() {
           }} />
 
           <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-            {vslVideos.map((v, i) => (
-              <div key={v.id} style={{
+            {vslVideos.map((v) => (
+              /* TODO: reemplaza el thumbnail con <iframe> YouTube/Vimeo cuando tengas el vídeo */
+              <div key={v.id} data-video-placeholder={`vsl-${v.id}`} style={{
                 display: "flex",
                 justifyContent: v.lado === "izquierda" ? "flex-start" : "flex-end",
                 position: "relative",
               }}>
-                {/* Punto en la línea */}
+                {/* Punto en la línea — anclado arriba para no desalinearse con tarjetas de altura variable */}
                 <div style={{
-                  position: "absolute", left: "50%", top: "50%",
-                  transform: "translate(-50%, -50%)",
+                  position: "absolute", left: "50%", top: "28px",
+                  transform: "translateX(-50%)",
                   width: "14px", height: "14px",
                   background: "#00AAFF", borderRadius: "50%",
                   border: "3px solid #0D0D0D",
                   zIndex: 1,
                 }} />
 
-                {/* Tarjeta vídeo */}
+                {/* Tarjeta vídeo — mínimo 46% en escritorio, 88% en móvil estrecho */}
                 <div style={{
-                  width: "44%",
+                  width: "clamp(200px, 46%, 260px)",
                   background: "#111", border: "1px solid #1f1f1f",
                   borderRadius: "14px", overflow: "hidden",
                 }}>
-                  {/* Thumbnail */}
                   <div style={{
                     aspectRatio: "16/9",
                     background: "#161616",
@@ -225,7 +227,7 @@ export default function GraciasPage() {
                     }}>
                       VOL · {v.id}
                     </span>
-                    <div style={{
+                    <div aria-hidden="true" style={{
                       width: "36px", height: "36px",
                       background: "#00AAFF", borderRadius: "50%",
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -234,7 +236,6 @@ export default function GraciasPage() {
                       color: "#fff",
                     }}>▶</div>
                   </div>
-                  {/* Texto */}
                   <div style={{ padding: "14px" }}>
                     <p style={{ fontWeight: 800, fontSize: "12px", lineHeight: 1.4, margin: 0, color: "#E0E0E0" }}>
                       {v.titulo}

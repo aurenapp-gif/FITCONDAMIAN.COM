@@ -13,6 +13,11 @@
   }
 }
 
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
 @layer components {
   .btn-primary {
     @apply inline-block bg-brand hover:bg-brand-dark text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 text-center cursor-pointer;

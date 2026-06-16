@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Script from "next/script";
 
 const GHL_FORM_ID = "vmfyZr4yJIrYZYPSkuko";
 
@@ -36,6 +37,7 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
         {/* Botón cerrar */}
         <button
           onClick={onClose}
+          aria-label="Cerrar"
           style={{
             position: "absolute", top: "16px", right: "16px",
             background: "#222", border: "none", color: "#fff",
@@ -44,7 +46,7 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
             alignItems: "center", justifyContent: "center",
           }}
         >
-          ✕
+          <span aria-hidden="true">✕</span>
         </button>
 
         {/* Badge */}
@@ -68,14 +70,16 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
           Déjanos tu correo y te los enviamos al instante.
         </p>
 
-        {/* GHL Form iframe */}
+        {/* GHL Form iframe — altura segura para móvil con teclado abierto */}
         <iframe
           src={`https://links.fitcondamian.com/widget/form/${GHL_FORM_ID}`}
-          style={{ width: "100%", height: "680px", border: "none", borderRadius: "8px", display: "block" }}
+          style={{ width: "100%", height: "clamp(520px, 75vh, 720px)", border: "none", borderRadius: "8px", display: "block" }}
           id={`inline-${GHL_FORM_ID}`}
           title="Formulario de acceso a recursos gratuitos"
         />
-        <script src="https://links.fitcondamian.com/js/form_embed.js" async />
+
+        {/* Script cargado correctamente fuera del ciclo de render de React */}
+        <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="lazyOnload" />
 
         <p style={{ color: "#444", fontSize: "11px", textAlign: "center", margin: "12px 0 0 0" }}>
           Sin spam · Cancela cuando quieras
