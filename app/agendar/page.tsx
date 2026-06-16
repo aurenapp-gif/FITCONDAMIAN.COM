@@ -123,7 +123,6 @@ export default function AgendarPage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {[1, 2, 3].map((n) => (
-              {/* TODO: reemplaza este bloque con <iframe> de YouTube/Vimeo cuando tengas el vídeo */}
               <div key={n} data-video-placeholder={`testimonio-${n}`} style={{
                 background: "#111", border: "1px solid #1f1f1f",
                 borderRadius: "16px", overflow: "hidden",
