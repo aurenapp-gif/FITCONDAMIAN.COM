@@ -18,8 +18,6 @@ const stats = [
   { value: 100, suffix: "%", label: "método basado en ciencia"  },
 ];
 
-const N = recursos.length;
-
 // — Partículas —
 function ParticlesCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -84,172 +82,124 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-// — Scroll horizontal bloqueado —
-function HorizontalScroll({ onOpenModal }: { onOpenModal: () => void }) {
-  const wrapperRef  = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-  const [tx, setTx] = useState(0);
-  const [vw, setVw] = useState(390);
+// — Item del acordeón —
+function AccordionItem({
+  r, isOpen, onToggle, onOpenModal,
+}: {
+  r: typeof recursos[0];
+  isOpen: boolean;
+  onToggle: () => void;
+  onOpenModal: () => void;
+}) {
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    const update = () => setVw(window.innerWidth);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const el = wrapperRef.current; if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const total = el.offsetHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      const p = Math.max(0, Math.min(1, scrolled / total));
-      const slide = Math.round(p * (N - 1));
-      setActive(slide);
-      setTx(-p * (N - 1) * vw);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [vw]);
+    if (!bodyRef.current) return;
+    setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
+  }, [isOpen]);
 
   return (
-    // Wrapper alto que "consume" scroll vertical
-    <div ref={wrapperRef} style={{ height: `${N * 100}vh` }}>
-      <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", background: "#0D0D0D" }}>
-
-        {/* Barra de progreso superior */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "#1a1a1a", zIndex: 20 }}>
-          <div style={{ height: "100%", background: "#00AAFF", width: `${((active + 1) / N) * 100}%`, transition: "width 0.4s ease" }} />
+    <div style={{
+      background: isOpen ? "#111" : "#0D0D0D",
+      border: isOpen ? "1px solid #00AAFF" : "1px solid #1f1f1f",
+      borderRadius: "16px",
+      overflow: "hidden",
+      transition: "border-color 0.3s ease, background 0.3s ease",
+    }}>
+      {/* Cabecera — siempre visible */}
+      <button
+        onClick={onToggle}
+        style={{
+          width: "100%", display: "flex", alignItems: "center",
+          gap: "16px", padding: "18px 20px",
+          background: "none", border: "none", cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        {/* Número / emoji */}
+        <div style={{
+          flexShrink: 0,
+          width: "52px", height: "52px", borderRadius: "14px",
+          background: isOpen ? "rgba(0,170,255,0.12)" : "#161616",
+          border: isOpen ? "1px solid rgba(0,170,255,0.3)" : "1px solid #222",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "26px",
+          transition: "all 0.3s ease",
+        }}>
+          {r.emoji}
         </div>
 
-        {/* Contador de slide */}
-        <div style={{ position: "absolute", top: "18px", right: "20px", zIndex: 20, color: "#444", fontSize: "12px", fontWeight: 700 }}>
-          {active + 1} <span style={{ color: "#222" }}>/ {N}</span>
-        </div>
-
-        {/* Header */}
-        <div style={{ position: "absolute", top: "10px", left: 0, right: 0, textAlign: "center", zIndex: 20 }}>
-          <p style={{ margin: 0, fontWeight: 900, fontSize: "16px", letterSpacing: "-0.5px" }}>
-            Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ color: isOpen ? "#00AAFF" : "#555", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 3px 0" }}>
+            VOL · {r.vol} · {r.categoria}
+          </p>
+          <p style={{ fontWeight: 900, fontSize: "16px", color: isOpen ? "#fff" : "#C0C0C0", margin: 0, lineHeight: 1.2 }}>
+            {r.nombre}
           </p>
         </div>
 
-        {/* Tira horizontal */}
+        {/* Chevron */}
         <div style={{
-          display: "flex",
-          transform: `translateX(${tx}px)`,
-          transition: "transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          willChange: "transform",
-          height: "100%",
+          flexShrink: 0, width: "32px", height: "32px",
+          borderRadius: "50%",
+          background: isOpen ? "#00AAFF" : "#1a1a1a",
+          border: isOpen ? "none" : "1px solid #2a2a2a",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          color: "#fff", fontSize: "14px",
+          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+          transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}>
-          {recursos.map((r, i) => {
-            const isActive = i === active;
-            return (
-              <div
-                key={r.vol}
-                style={{
-                  width: vw, minWidth: vw, height: "100%",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  padding: "80px 28px 40px",
-                  flexShrink: 0,
-                }}
-              >
-                <div style={{ maxWidth: "360px", width: "100%", textAlign: "center" }}>
-
-                  {/* Emoji grande con glow */}
-                  <div style={{
-                    width: "120px", height: "120px",
-                    background: isActive ? "rgba(0,170,255,0.08)" : "rgba(255,255,255,0.03)",
-                    border: isActive ? "1.5px solid rgba(0,170,255,0.3)" : "1px solid #1f1f1f",
-                    borderRadius: "32px",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "64px", lineHeight: 1,
-                    margin: "0 auto 28px",
-                    boxShadow: isActive ? "0 0 60px rgba(0,170,255,0.15)" : "none",
-                    transition: "all 0.5s ease",
-                  }}>
-                    {r.emoji}
-                  </div>
-
-                  {/* Badge */}
-                  <span style={{
-                    display: "inline-block",
-                    background: "rgba(0,170,255,0.1)", border: "1px solid rgba(0,170,255,0.25)",
-                    color: "#00AAFF", fontSize: "10px", fontWeight: 900,
-                    padding: "4px 12px", borderRadius: "99px", letterSpacing: "2px",
-                    marginBottom: "16px",
-                  }}>
-                    VOL · {r.vol} · {r.categoria}
-                  </span>
-
-                  {/* Título */}
-                  <h2 style={{
-                    fontSize: "clamp(1.6rem, 6vw, 2.2rem)", fontWeight: 900,
-                    lineHeight: 1.1, letterSpacing: "-1px",
-                    margin: "0 0 16px 0",
-                    color: "#fff",
-                  }}>
-                    {r.nombre}
-                  </h2>
-
-                  {/* Descripción */}
-                  <p style={{ color: "#888", fontSize: "15px", lineHeight: 1.6, margin: "0 0 32px 0" }}>
-                    {r.desc}
-                  </p>
-
-                  {/* CTA */}
-                  <button
-                    onClick={onOpenModal}
-                    style={{
-                      background: "#00AAFF", color: "#fff",
-                      fontWeight: 900, fontSize: "15px",
-                      padding: "13px 28px", borderRadius: "99px",
-                      border: "none", cursor: "pointer",
-                    }}
-                  >
-                    Acceder gratis →
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+          ↓
         </div>
+      </button>
 
-        {/* Dots en la parte inferior */}
-        <div style={{ position: "absolute", bottom: "32px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "8px", zIndex: 20 }}>
-          {recursos.map((_, i) => (
-            <div key={i} style={{
-              width: i === active ? "24px" : "8px", height: "8px",
-              borderRadius: "99px",
-              background: i === active ? "#00AAFF" : "#2a2a2a",
-              transition: "all 0.4s ease",
-            }} />
-          ))}
+      {/* Cuerpo expandible */}
+      <div style={{ height, overflow: "hidden", transition: "height 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }}>
+        <div ref={bodyRef} style={{ padding: "0 20px 24px", paddingLeft: "88px" }}>
+          <p style={{ color: "#999", fontSize: "14px", lineHeight: 1.7, margin: "0 0 20px 0" }}>
+            {r.desc}
+          </p>
+          <button
+            onClick={onOpenModal}
+            style={{
+              background: "#00AAFF", color: "#fff",
+              fontWeight: 900, fontSize: "14px",
+              padding: "11px 24px", borderRadius: "99px",
+              border: "none", cursor: "pointer",
+            }}
+          >
+            Acceder gratis →
+          </button>
         </div>
-
-        {/* Hint de scroll */}
-        {active === 0 && (
-          <div style={{ position: "absolute", bottom: "64px", left: "50%", transform: "translateX(-50%)", textAlign: "center", animation: "fadeHint 2s ease 1s both" }}>
-            <p style={{ color: "#333", fontSize: "11px", fontWeight: 600, letterSpacing: "1px", margin: 0 }}>↓ DESLIZA PARA VER MÁS</p>
-            <style>{`
-              @keyframes fadeHint { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
-            `}</style>
-          </div>
-        )}
-
-        {/* Gradientes laterales */}
-        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "40px", background: "linear-gradient(90deg, #0D0D0D, transparent)", pointerEvents: "none", zIndex: 10 }} />
-        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "40px", background: "linear-gradient(-90deg, #0D0D0D, transparent)", pointerEvents: "none", zIndex: 10 }} />
       </div>
+    </div>
+  );
+}
+
+// — Acordeón completo —
+function Accordion({ onOpenModal }: { onOpenModal: () => void }) {
+  const [open, setOpen] = useState<number | null>(0);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {recursos.map((r, i) => (
+        <AccordionItem
+          key={r.vol}
+          r={r}
+          isOpen={open === i}
+          onToggle={() => setOpen(open === i ? null : i)}
+          onOpenModal={onOpenModal}
+        />
+      ))}
     </div>
   );
 }
 
 export default function RecursosClient() {
   const [modalOpen, setModalOpen] = useState(false);
-  const statsReveal = useReveal(0.2);
+  const statsReveal  = useReveal(0.2);
+  const accordReveal = useReveal(0.1);
 
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
@@ -291,7 +241,7 @@ export default function RecursosClient() {
         </section>
 
         {/* CONTADORES */}
-        <div ref={statsReveal.ref} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "20px", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
+        <div ref={statsReveal.ref} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "56px", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
           {stats.map((s, i) => (
             <div key={i} style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: "16px", padding: "20px", textAlign: "center", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s` }}>
               <p style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 5vw, 2.4rem)", color: "#00AAFF", margin: "0 0 4px 0", letterSpacing: "-1px" }}>
@@ -302,18 +252,22 @@ export default function RecursosClient() {
           ))}
         </div>
 
-        {/* Label antes del scroll */}
-        <div style={{ textAlign: "center", padding: "32px 0 24px" }}>
-          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
-          <div style={{ animation: "bounce 1.8s infinite" }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        {/* ACORDEÓN */}
+        <section
+          ref={accordReveal.ref}
+          style={{ paddingBottom: "80px", opacity: accordReveal.visible ? 1 : 0, transform: accordReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}
+        >
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
+            <div style={{ animation: "bounce 1.8s infinite" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </div>
+            <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }`}</style>
           </div>
-          <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }`}</style>
-        </div>
-      </div>
 
-      {/* SCROLL HORIZONTAL — full width, fuera del contenedor */}
-      <HorizontalScroll onOpenModal={() => setModalOpen(true)} />
+          <Accordion onOpenModal={() => setModalOpen(true)} />
+        </section>
+      </div>
 
       <footer style={{ borderTop: "1px solid #1f1f1f", padding: "28px 24px", textAlign: "center" }}>
         <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
