@@ -84,82 +84,48 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-// — Item del acordeón —
-function AccordionItem({
-  r, isOpen, onToggle, onOpenModal,
+// — Tarjeta de la pila —
+function StackCard({
+  r, index, onOpenModal,
 }: {
   r: typeof recursos[0];
-  isOpen: boolean;
-  onToggle: () => void;
+  index: number;
   onOpenModal: () => void;
 }) {
-  const bodyRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(0);
-
-  useEffect(() => {
-    if (!bodyRef.current) return;
-    setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
-  }, [isOpen]);
-
   return (
-    <div style={{
-      background: isOpen ? "#111" : "#0D0D0D",
-      border: isOpen ? "1px solid #00AAFF" : "1px solid #1f1f1f",
-      borderRadius: "16px",
-      overflow: "hidden",
-      transition: "border-color 0.3s ease, background 0.3s ease",
-    }}>
-      {/* Cabecera — siempre visible */}
-      <button
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        style={{
-          width: "100%", display: "flex", alignItems: "center",
-          gap: "16px", padding: "18px 20px",
-          background: "none", border: "none", cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        {/* Número / emoji */}
+    <div
+      style={{
+        position: "sticky",
+        top: `${88 + index * 18}px`,
+        zIndex: index + 1,
+        marginBottom: "24px",
+      }}
+    >
+      <div style={{
+        background: "#111",
+        border: "1px solid #1f1f1f",
+        borderRadius: "20px",
+        overflow: "hidden",
+        boxShadow: `0 ${14 + index * 4}px ${32 + index * 6}px rgba(0,0,0,0.5)`,
+      }}>
+        {/* Banda superior — esto es lo que "asoma" detrás de la siguiente tarjeta */}
         <div style={{
-          flexShrink: 0,
-          width: "52px", height: "52px", borderRadius: "14px",
-          background: isOpen ? "rgba(0,170,255,0.12)" : "#161616",
-          border: isOpen ? "1px solid rgba(0,170,255,0.3)" : "1px solid #222",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "26px",
-          transition: "all 0.3s ease",
+          background: "rgba(0,170,255,0.1)",
+          borderBottom: "1px solid rgba(0,170,255,0.2)",
+          padding: "14px 24px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
-          {r.emoji}
-        </div>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ color: isOpen ? "#00AAFF" : "#555", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 3px 0" }}>
+          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: 0 }}>
             VOL · {r.vol} · {r.categoria}
           </p>
-          <p style={{ fontWeight: 900, fontSize: "16px", color: isOpen ? "#fff" : "#C0C0C0", margin: 0, lineHeight: 1.2 }}>
+          <span style={{ fontSize: "22px" }} aria-hidden="true">{r.emoji}</span>
+        </div>
+
+        {/* Contenido */}
+        <div style={{ padding: "24px" }}>
+          <p style={{ fontWeight: 900, fontSize: "20px", color: "#fff", margin: "0 0 10px 0", lineHeight: 1.2, letterSpacing: "-0.5px" }}>
             {r.nombre}
           </p>
-        </div>
-
-        {/* Chevron */}
-        <div style={{
-          flexShrink: 0, width: "32px", height: "32px",
-          borderRadius: "50%",
-          background: isOpen ? "#00AAFF" : "#1a1a1a",
-          border: isOpen ? "none" : "1px solid #2a2a2a",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "#fff", fontSize: "14px",
-          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-          transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
-        }} aria-hidden="true">
-          ↓
-        </div>
-      </button>
-
-      {/* Cuerpo expandible */}
-      <div style={{ height, overflow: "hidden", transition: "height 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }}>
-        <div ref={bodyRef} style={{ padding: "0 20px 24px", paddingLeft: "88px" }}>
           <p style={{ color: "#999", fontSize: "14px", lineHeight: 1.7, margin: "0 0 20px 0" }}>
             {r.desc}
           </p>
@@ -180,20 +146,12 @@ function AccordionItem({
   );
 }
 
-// — Acordeón completo —
-function Accordion({ onOpenModal }: { onOpenModal: () => void }) {
-  const [open, setOpen] = useState<number | null>(0);
-
+// — Pila completa —
+function StickyStack({ onOpenModal }: { onOpenModal: () => void }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+    <div style={{ position: "relative", paddingBottom: "40px" }}>
       {recursos.map((r, i) => (
-        <AccordionItem
-          key={r.vol}
-          r={r}
-          isOpen={open === i}
-          onToggle={() => setOpen(open === i ? null : i)}
-          onOpenModal={onOpenModal}
-        />
+        <StackCard key={r.vol} r={r} index={i} onOpenModal={onOpenModal} />
       ))}
     </div>
   );
@@ -270,7 +228,7 @@ export default function RecursosClient() {
             </div>
           </div>
 
-          <Accordion onOpenModal={() => setModalOpen(true)} />
+          <StickyStack onOpenModal={() => setModalOpen(true)} />
         </section>
       </div>
 
