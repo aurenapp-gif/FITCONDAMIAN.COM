@@ -198,7 +198,7 @@ export default function RecursosClient() {
 
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
-      {modalOpen && <ModalForm onClose={() => setModalOpen(false)} />}
+      <ModalForm open={modalOpen} onClose={() => setModalOpen(false)} />
 
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center", position: "relative", zIndex: 10 }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>

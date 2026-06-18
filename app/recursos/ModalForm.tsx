@@ -5,21 +5,25 @@ import Script from "next/script";
 
 const GHL_FORM_ID = "vmfyZr4yJIrYZYPSkuko";
 
-export default function ModalForm({ onClose }: { onClose: () => void }) {
+export default function ModalForm({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
+    document.body.style.overflow = open ? "hidden" : "";
+  }, [open]);
 
   return (
     <div
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      aria-hidden={!open}
       style={{
         position: "fixed", inset: 0, zIndex: 1000,
         background: "rgba(0,0,0,0.85)",
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "16px",
         backdropFilter: "blur(4px)",
+        opacity: open ? 1 : 0,
+        visibility: open ? "visible" : "hidden",
+        pointerEvents: open ? "auto" : "none",
+        transition: "opacity 0.2s ease",
       }}
     >
       <div style={{
@@ -79,7 +83,7 @@ export default function ModalForm({ onClose }: { onClose: () => void }) {
         />
 
         {/* Script cargado correctamente fuera del ciclo de render de React */}
-        <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="lazyOnload" />
+        <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="afterInteractive" />
 
         <p style={{ color: "#444", fontSize: "11px", textAlign: "center", margin: "12px 0 0 0" }}>
           Sin spam · Cancela cuando quieras

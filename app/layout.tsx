@@ -41,6 +41,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={inter.variable}>
+      <head>
+        <link rel="preconnect" href="https://links.fitcondamian.com" />
+        <link rel="dns-prefetch" href="https://links.fitcondamian.com" />
+      </head>
       <body className="antialiased">{children}</body>
     </html>
   );
