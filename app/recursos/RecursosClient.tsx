@@ -84,74 +84,108 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-// — Tarjeta de la pila —
-function StackCard({
+// — Tarjeta cinematográfica con glassmorphism —
+function CinematicCard({
   r, index, onOpenModal,
 }: {
   r: typeof recursos[0];
   index: number;
   onOpenModal: () => void;
 }) {
-  return (
-    <div
-      style={{
-        position: "sticky",
-        top: `${88 + index * 18}px`,
-        zIndex: index + 1,
-        marginBottom: "24px",
-      }}
-    >
-      <div style={{
-        background: "#111",
-        border: "1px solid #1f1f1f",
-        borderRadius: "20px",
-        overflow: "hidden",
-        boxShadow: `0 ${14 + index * 4}px ${32 + index * 6}px rgba(0,0,0,0.5)`,
-      }}>
-        {/* Banda superior — esto es lo que "asoma" detrás de la siguiente tarjeta */}
-        <div style={{
-          background: "rgba(0,170,255,0.1)",
-          borderBottom: "1px solid rgba(0,170,255,0.2)",
-          padding: "14px 24px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
-          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: 0 }}>
-            VOL · {r.vol} · {r.categoria}
-          </p>
-          <span style={{ fontSize: "22px" }} aria-hidden="true">{r.emoji}</span>
-        </div>
+  const { ref, visible } = useReveal(0.35);
+  const alignRight = index % 2 === 0;
 
-        {/* Contenido */}
-        <div style={{ padding: "24px" }}>
-          <p style={{ fontWeight: 900, fontSize: "20px", color: "#fff", margin: "0 0 10px 0", lineHeight: 1.2, letterSpacing: "-0.5px" }}>
-            {r.nombre}
+  return (
+    <div ref={ref} style={{
+      position: "relative",
+      minHeight: "62vh",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: "40px 0",
+    }}>
+      {/* Resplandor */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+        <div style={{
+          width: "65%", height: "65%", borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(0,170,255,0.28), transparent 70%)",
+          filter: "blur(50px)",
+          opacity: visible ? 1 : 0,
+          transition: "opacity 1.1s ease",
+        }} />
+      </div>
+
+      {/* Número en marca de agua */}
+      <p aria-hidden="true" style={{
+        position: "absolute", top: "-6px",
+        right: alignRight ? "0px" : "auto",
+        left: alignRight ? "auto" : "0px",
+        fontSize: "clamp(6rem, 18vw, 11rem)", fontWeight: 900,
+        color: "rgba(255,255,255,0.045)",
+        margin: 0, lineHeight: 1, letterSpacing: "-4px",
+        pointerEvents: "none", userSelect: "none",
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: "transform 1s ease",
+      }}>
+        {r.vol}
+      </p>
+
+      {/* Tarjeta de cristal */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        width: "100%", maxWidth: "540px",
+        background: "rgba(255,255,255,0.035)",
+        border: "1px solid rgba(255,255,255,0.09)",
+        borderRadius: "28px",
+        padding: "clamp(28px, 5vw, 44px)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0) scale(1)" : "translateY(70px) scale(0.92)",
+        filter: visible ? "blur(0px)" : "blur(8px)",
+        transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1), filter 0.9s ease",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "22px" }}>
+          <div aria-hidden="true" style={{
+            width: "60px", height: "60px", borderRadius: "18px", flexShrink: 0,
+            background: "linear-gradient(135deg, #00AAFF, #0077CC)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "28px",
+            boxShadow: "0 8px 24px rgba(0,170,255,0.35)",
+          }}>
+            {r.emoji}
+          </div>
+          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: 0, lineHeight: 1.6 }}>
+            VOL · {r.vol}<br /><span style={{ color: "#777" }}>{r.categoria}</span>
           </p>
-          <p style={{ color: "#999", fontSize: "14px", lineHeight: 1.7, margin: "0 0 20px 0" }}>
-            {r.desc}
-          </p>
-          <button
-            onClick={onOpenModal}
-            style={{
-              background: "#00AAFF", color: "#fff",
-              fontWeight: 900, fontSize: "14px",
-              padding: "11px 24px", borderRadius: "99px",
-              border: "none", cursor: "pointer",
-            }}
-          >
-            Acceder gratis →
-          </button>
         </div>
+        <h3 style={{ fontWeight: 900, fontSize: "clamp(1.6rem, 4vw, 2.1rem)", color: "#fff", margin: "0 0 14px 0", lineHeight: 1.15, letterSpacing: "-1px" }}>
+          {r.nombre}
+        </h3>
+        <p style={{ color: "#999", fontSize: "15px", lineHeight: 1.7, margin: "0 0 26px 0" }}>
+          {r.desc}
+        </p>
+        <button
+          onClick={onOpenModal}
+          style={{
+            background: "#00AAFF", color: "#fff",
+            fontWeight: 900, fontSize: "14px",
+            padding: "13px 28px", borderRadius: "99px",
+            border: "none", cursor: "pointer",
+            boxShadow: "0 8px 24px rgba(0,170,255,0.3)",
+          }}
+        >
+          Acceder gratis →
+        </button>
       </div>
     </div>
   );
 }
 
-// — Pila completa —
-function StickyStack({ onOpenModal }: { onOpenModal: () => void }) {
+// — Secuencia cinematográfica completa —
+function CinematicReveal({ onOpenModal }: { onOpenModal: () => void }) {
   return (
-    <div style={{ position: "relative", paddingBottom: "40px" }}>
+    <div style={{ position: "relative" }}>
       {recursos.map((r, i) => (
-        <StackCard key={r.vol} r={r} index={i} onOpenModal={onOpenModal} />
+        <CinematicCard key={r.vol} r={r} index={i} onOpenModal={onOpenModal} />
       ))}
     </div>
   );
@@ -228,7 +262,7 @@ export default function RecursosClient() {
             </div>
           </div>
 
-          <StickyStack onOpenModal={() => setModalOpen(true)} />
+          <CinematicReveal onOpenModal={() => setModalOpen(true)} />
         </section>
       </div>
 
