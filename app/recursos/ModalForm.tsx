@@ -1,29 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 
 const GHL_FORM_ID = "vmfyZr4yJIrYZYPSkuko";
 
 export default function ModalForm({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      setIframeLoaded(false);
+    }
   }, [open]);
+
+  if (!open) return null;
 
   return (
     <div
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      aria-hidden={!open}
       style={{
         position: "fixed", inset: 0, zIndex: 1000,
         background: "rgba(0,0,0,0.85)",
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "16px",
         backdropFilter: "blur(4px)",
-        opacity: open ? 1 : 0,
-        visibility: open ? "visible" : "hidden",
-        pointerEvents: open ? "auto" : "none",
-        transition: "opacity 0.2s ease",
       }}
     >
       <div style={{
@@ -75,12 +79,36 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
         </p>
 
         {/* GHL Form iframe — altura segura para móvil con teclado abierto */}
-        <iframe
-          src={`https://links.fitcondamian.com/widget/form/${GHL_FORM_ID}`}
-          style={{ width: "100%", height: "clamp(520px, 75vh, 720px)", border: "none", borderRadius: "8px", display: "block" }}
-          id={`inline-${GHL_FORM_ID}`}
-          title="Formulario de acceso a recursos gratuitos"
-        />
+        <div style={{ position: "relative", minHeight: "clamp(520px, 75vh, 720px)" }}>
+          {!iframeLoaded && (
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute", inset: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "#161616", borderRadius: "8px",
+              }}
+            >
+              <div style={{
+                width: "32px", height: "32px", borderRadius: "50%",
+                border: "3px solid #2a2a2a", borderTopColor: "#00AAFF",
+                animation: "spin 0.8s linear infinite",
+              }} />
+            </div>
+          )}
+          <iframe
+            src={`https://links.fitcondamian.com/widget/form/${GHL_FORM_ID}`}
+            onLoad={() => setIframeLoaded(true)}
+            style={{
+              width: "100%", height: "clamp(520px, 75vh, 720px)", border: "none", borderRadius: "8px", display: "block",
+              opacity: iframeLoaded ? 1 : 0, transition: "opacity 0.3s ease",
+              position: "relative",
+            }}
+            id={`inline-${GHL_FORM_ID}`}
+            title="Formulario de acceso a recursos gratuitos"
+          />
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
         {/* Script cargado correctamente fuera del ciclo de render de React */}
         <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="afterInteractive" />
