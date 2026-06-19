@@ -1,0 +1,179 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Antes de tu llamada",
+  robots: { index: false, follow: false },
+};
+
+const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha" }[] = [
+  { id: "01", titulo: "Por qué no ves resultados aunque lo intentas todo", lado: "izquierda" },
+  { id: "02", titulo: "El error que comete el 90% con la alimentación", lado: "derecha" },
+  { id: "03", titulo: "Cómo entrenar sin vivir en el gimnasio", lado: "izquierda" },
+  { id: "04", titulo: "La verdad sobre los suplementos que te venden", lado: "derecha" },
+];
+
+const testimonios = [
+  { nombre: "Carlos M.", texto: "En 3 meses bajé 12 kg sin pasar hambre. El método de Damián cambia la perspectiva completamente.", resultado: "-12 kg en 3 meses" },
+  { nombre: "Laura P.", texto: "Nunca había conseguido mantener los resultados. Con Damián por fin entendí cómo funciona mi cuerpo.", resultado: "Resultados duraderos" },
+  { nombre: "Sergio R.", texto: "Pensaba que a mis 45 años ya no podía transformar mi cuerpo. Me equivocaba totalmente.", resultado: "Transformación total" },
+];
+
+export default function AntesDeLaLlamadaPage() {
+  return (
+    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
+
+      {/* HEADER */}
+      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
+        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
+        </p>
+      </header>
+
+      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "0 20px 80px", width: "100%" }}>
+
+        {/* VÍDEO PREVIO A LA LLAMADA */}
+        <div style={{ marginTop: "36px", marginBottom: "48px" }}>
+          <h1 style={{ fontWeight: 900, fontSize: "clamp(1.6rem, 5vw, 2.2rem)", margin: "0 0 16px 0", lineHeight: 1.15, letterSpacing: "-0.5px" }}>
+            Mira Este Vídeo de 3 Minutos Antes de la Llamada
+          </h1>
+          {/* Video placeholder */}
+          <div style={{
+            borderRadius: "16px", overflow: "hidden",
+            background: "#111", border: "1px solid #1f1f1f",
+            aspectRatio: "16/9", display: "flex",
+            alignItems: "center", justifyContent: "center",
+            position: "relative",
+          }}>
+            <div style={{
+              position: "absolute", top: "14px", right: "14px",
+              background: "#00AAFF", color: "#fff",
+              fontSize: "11px", fontWeight: 900, padding: "4px 12px",
+              borderRadius: "99px", letterSpacing: "1px",
+            }}>3 MIN</div>
+            <div style={{ textAlign: "center", padding: "32px" }}>
+              <div style={{ fontSize: "52px", marginBottom: "10px", color: "#00AAFF" }}>▶</div>
+              <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Vídeo previo a la llamada — próximamente</p>
+            </div>
+          </div>
+        </div>
+
+        {/* SEPARADOR TIMELINE */}
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "24px" }} />
+          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+            MIENTRAS ESPERAS LA LLAMADA
+          </p>
+          <p style={{ color: "#999", fontSize: "14px", margin: 0 }}>Mira estos vídeos para aprovechar al máximo nuestra sesión</p>
+        </div>
+
+        {/* TIMELINE DE VÍDEOS VSL */}
+        <div style={{ position: "relative", marginBottom: "60px" }}>
+          {/* Línea vertical central */}
+          <div style={{
+            position: "absolute", left: "50%", top: 0, bottom: 0,
+            width: "2px", background: "linear-gradient(180deg, #00AAFF, rgba(0,170,255,0.1))",
+            transform: "translateX(-50%)",
+          }} />
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
+            {vslVideos.map((v) => (
+              <div key={v.id} data-video-placeholder={`vsl-${v.id}`} style={{
+                display: "flex",
+                justifyContent: v.lado === "izquierda" ? "flex-start" : "flex-end",
+                position: "relative",
+              }}>
+                {/* Punto en la línea — anclado arriba para no desalinearse con tarjetas de altura variable */}
+                <div style={{
+                  position: "absolute", left: "50%", top: "28px",
+                  transform: "translateX(-50%)",
+                  width: "14px", height: "14px",
+                  background: "#00AAFF", borderRadius: "50%",
+                  border: "3px solid #0D0D0D",
+                  zIndex: 1,
+                }} />
+
+                {/* Tarjeta vídeo — mínimo 46% en escritorio, 88% en móvil estrecho */}
+                <div style={{
+                  width: "clamp(200px, 46%, 260px)",
+                  background: "#111", border: "1px solid #1f1f1f",
+                  borderRadius: "14px", overflow: "hidden",
+                }}>
+                  <div style={{
+                    aspectRatio: "16/9",
+                    background: "#161616",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    position: "relative",
+                    borderBottom: "1px solid #1f1f1f",
+                  }}>
+                    <span style={{
+                      position: "absolute", top: "8px", left: "8px",
+                      background: "#00AAFF", color: "#fff",
+                      fontSize: "10px", fontWeight: 900,
+                      padding: "3px 8px", borderRadius: "99px",
+                    }}>
+                      VOL · {v.id}
+                    </span>
+                    <div aria-hidden="true" style={{
+                      width: "36px", height: "36px",
+                      background: "#00AAFF", borderRadius: "50%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "14px", paddingLeft: "3px",
+                      boxShadow: "0 0 0 8px rgba(0,170,255,0.12)",
+                      color: "#fff",
+                    }}>▶</div>
+                  </div>
+                  <div style={{ padding: "14px" }}>
+                    <p style={{ fontWeight: 800, fontSize: "12px", lineHeight: 1.4, margin: 0, color: "#E0E0E0" }}>
+                      {v.titulo}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SEPARADOR TESTIMONIOS */}
+        <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "40px" }} />
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+            RESULTADOS REALES
+          </p>
+          <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: 0, letterSpacing: "-0.5px" }}>
+            Lo que dicen quienes ya lo han hecho
+          </h3>
+        </div>
+
+        {/* TESTIMONIOS */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "48px" }}>
+          {testimonios.map((t) => (
+            <div key={t.nombre} style={{
+              background: "#111", border: "1px solid #1f1f1f",
+              borderRadius: "16px", padding: "22px",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                <p style={{ fontWeight: 900, fontSize: "15px", margin: 0 }}>{t.nombre}</p>
+                <span style={{
+                  background: "rgba(0,170,255,0.1)", border: "1px solid rgba(0,170,255,0.25)",
+                  color: "#00AAFF", fontSize: "11px", fontWeight: 700,
+                  padding: "4px 10px", borderRadius: "99px", whiteSpace: "nowrap",
+                }}>{t.resultado}</span>
+              </div>
+              <p style={{ color: "#D8D8D8", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                &quot;{t.texto}&quot;
+              </p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+      {/* FOOTER */}
+      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "24px", textAlign: "center" }}>
+        <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
+          © {new Date().getFullYear()} Fit con Damián · fitcondamian.com
+        </p>
+      </footer>
+    </main>
+  );
+}
