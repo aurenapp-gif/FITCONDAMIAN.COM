@@ -8,7 +8,7 @@ const recursos = [
     descripcion:
       "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás.",
     linkVideo: "#",
-    linkDoc: "#",
+    linkDoc: "https://docs.google.com/document/d/1V7yt1PqsGQ94hrfg0ZvKssG5anq9YQdWChuIUWF29uk/edit?usp=sharing",
   },
   {
     vol: "02",
@@ -17,7 +17,7 @@ const recursos = [
     descripcion:
       "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo.",
     linkVideo: "#",
-    linkDoc: "#",
+    linkDoc: "https://docs.google.com/document/d/1VZ4_MZc70PqgGliHsGplkZ6xoK_r1FdxmZi_1YRyT8I/edit?usp=sharing",
   },
   {
     vol: "03",
@@ -26,7 +26,7 @@ const recursos = [
     descripcion:
       "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud.",
     linkVideo: "#",
-    linkDoc: "#",
+    linkDoc: "https://docs.google.com/document/d/1Y9gKtg2GO50LH30e8dKqpp99Y2afHN4GZlgDTZiMInU/edit?usp=sharing",
   },
   {
     vol: "04",
