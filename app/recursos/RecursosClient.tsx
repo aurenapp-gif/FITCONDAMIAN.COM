@@ -234,14 +234,10 @@ export default function RecursosClient() {
             <ParticlesCanvas />
           </div>
           <div style={{ position: "relative", zIndex: 1 }}>
-            <p style={{ color: "#666", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 14px 0" }}>ACCESO GRATUITO</p>
-            <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 14px 0", letterSpacing: "-1.5px" }}>
+            <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 32px 0", letterSpacing: "-1.5px" }}>
               Accede gratis a los recursos que han transformado{" "}
               <em style={{ fontStyle: "italic", color: "#00AAFF" }}>cientos de cuerpos.</em>
             </h1>
-            <p style={{ color: "#888", fontSize: "16px", lineHeight: 1.6, margin: "0 0 32px 0", fontStyle: "italic" }}>
-              sin dietas imposibles ni horas en el gimnasio.
-            </p>
             <button onClick={() => setModalOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "17px", padding: "16px 36px", borderRadius: "99px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "14px" }}>
               Quiero acceder gratis →
             </button>
