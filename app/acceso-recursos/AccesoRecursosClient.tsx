@@ -3,37 +3,46 @@
 const recursos = [
   {
     vol: "01",
-    categoria: "ENTRENAMIENTO",
-    titulo: "Rutina de Entrenamiento Express",
+    categoria: "DIAGNÓSTICO",
+    titulo: "Medidor de Edad-Muscular",
     descripcion:
-      "30 minutos al día, 3 veces por semana. El programa exacto que uso con mis clientes para transformar el cuerpo sin vivir en el gimnasio.",
+      "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás.",
     linkVideo: "#",
     linkDoc: "#",
   },
   {
     vol: "02",
     categoria: "NUTRICIÓN",
-    titulo: "Guía de Nutrición Sin Dietas",
+    titulo: "Test Inteligente de Hábitos",
     descripcion:
-      "El sistema de alimentación que funciona. Pierde grasa sin pasar hambre ni contar calorías. El mismo método que aplico con mis clientes de pago.",
+      "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo.",
     linkVideo: "#",
     linkDoc: "#",
   },
   {
     vol: "03",
-    categoria: "DIAGNÓSTICO",
-    titulo: "Diagnóstico de Composición Corporal",
+    categoria: "ENTRENAMIENTO",
+    titulo: "IA Experta en Sistemas",
     descripcion:
-      "Descubre en 3 minutos exactamente dónde estás y qué tienes que cambiar para empezar a ver resultados de verdad.",
+      "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud.",
     linkVideo: "#",
     linkDoc: "#",
   },
   {
     vol: "04",
     categoria: "RECUPERACIÓN",
-    titulo: "Protocolo de Recuperación",
+    titulo: "Plan de Ruta Anti Envejecimiento y Flacidez",
     descripcion:
-      "El factor oculto que sabotea tus resultados. La guía de descanso y recuperación que nadie te cuenta pero que lo cambia todo.",
+      "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido.",
+    linkVideo: "#",
+    linkDoc: "#",
+  },
+  {
+    vol: "05",
+    categoria: "EXCLUSIVO",
+    titulo: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido",
+    descripcion:
+      "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido.",
     linkVideo: "#",
     linkDoc: "#",
   },

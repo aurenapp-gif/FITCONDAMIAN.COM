@@ -4,18 +4,18 @@ import { useState, useRef, useEffect } from "react";
 import ModalForm from "./ModalForm";
 
 const recursos = [
-  { vol: "01", nombre: "Diagnóstico Corporal",      emoji: "📋", categoria: "DIAGNÓSTICO",   desc: "Descubre en 3 minutos dónde estás y qué tienes que cambiar para ver resultados de verdad." },
-  { vol: "02", nombre: "Guía de Nutrición",          emoji: "🥗", categoria: "NUTRICIÓN",     desc: "Come sin pasar hambre ni contar calorías. El sistema que aplico con todos mis clientes." },
-  { vol: "03", nombre: "Rutina Express",             emoji: "💪", categoria: "ENTRENAMIENTO", desc: "30 minutos, 3 veces por semana. El programa exacto para transformar tu cuerpo sin vivir en el gym." },
-  { vol: "04", nombre: "Protocolo de Recuperación",  emoji: "😴", categoria: "RECUPERACIÓN",  desc: "El factor que nadie te cuenta y que sabotea tus resultados. Lo cambia todo." },
-  { vol: "05", nombre: "Plan Primera Semana",        emoji: "📅", categoria: "PLANIFICACIÓN", desc: "Tu hoja de ruta para los primeros 7 días. Paso a paso, sin improvisación." },
+  { vol: "01", nombre: "Medidor de Edad-Muscular",  emoji: "📋", categoria: "DIAGNÓSTICO",  desc: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás." },
+  { vol: "02", nombre: "Test Inteligente de Hábitos", emoji: "🥗", categoria: "NUTRICIÓN",  desc: "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo." },
+  { vol: "03", nombre: "IA Experta en Sistemas",    emoji: "💪", categoria: "ENTRENAMIENTO", desc: "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud." },
+  { vol: "04", nombre: "Plan de Ruta Anti Envejecimiento y Flacidez", emoji: "😴", categoria: "RECUPERACIÓN", desc: "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido." },
+  { vol: "05", nombre: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", emoji: "📅", categoria: "EXCLUSIVO", desc: "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido." },
 ];
 
 const stats = [
-  { value: 500, suffix: "+", label: "personas transformadas"    },
-  { value: 3,   suffix: "+", label: "años de experiencia"       },
-  { value: 30,  suffix: "",  label: "minutos de llamada gratis" },
-  { value: 100, suffix: "%", label: "método basado en ciencia"  },
+  { value: 1000, suffix: "+", label: "personas transformadas"    },
+  { value: 7,    suffix: "+", label: "años de experiencia"       },
+  { value: 30,   suffix: "",  label: "minutos de llamada gratis" },
+  { value: 100,  suffix: "%", label: "método basado en ciencia"  },
 ];
 
 // — Partículas —
