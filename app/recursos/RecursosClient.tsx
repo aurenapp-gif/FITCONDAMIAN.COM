@@ -200,10 +200,16 @@ export default function RecursosClient() {
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
       <ModalForm open={modalOpen} onClose={() => setModalOpen(false)} />
 
-      {/* BANNER superior */}
+      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center", position: "relative", zIndex: 10 }}>
+        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
+          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
+        </p>
+      </header>
+
+      {/* BANNER — público objetivo */}
       <div style={{
         background: "linear-gradient(90deg, #0077CC, #00AAFF)",
-        padding: "12px 24px",
+        padding: "14px 24px",
         textAlign: "center",
         position: "relative",
         zIndex: 10,
@@ -211,20 +217,14 @@ export default function RecursosClient() {
         <p style={{
           margin: 0,
           color: "#fff",
-          fontSize: "clamp(12px, 3.2vw, 14px)",
-          fontWeight: 700,
+          fontSize: "clamp(13px, 3.4vw, 15px)",
+          fontWeight: 900,
           lineHeight: 1.45,
-          letterSpacing: "0.2px",
+          letterSpacing: "-0.3px",
         }}>
           Para mujeres que ya no se sienten atractivas, han perdido la energía y sienten que están envejeciendo
         </p>
       </div>
-
-      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center", position: "relative", zIndex: 10 }}>
-        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
-        </p>
-      </header>
 
       <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 24px" }}>
 
