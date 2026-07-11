@@ -286,6 +286,7 @@ export default function RecursosClient() {
         <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
           © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
           <a href="/privacidad" style={{ color: "#444", textDecoration: "none" }}>Privacidad</a>{" · "}
+          <a href="/politica-cookies" style={{ color: "#444", textDecoration: "none" }}>Cookies</a>{" · "}
           <a href="/aviso-legal" style={{ color: "#444", textDecoration: "none" }}>Aviso Legal</a>
         </p>
       </footer>
