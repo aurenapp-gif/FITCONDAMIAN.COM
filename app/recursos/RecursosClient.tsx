@@ -241,7 +241,7 @@ export default function RecursosClient() {
             <button onClick={() => setModalOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "17px", padding: "16px 36px", borderRadius: "99px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "14px" }}>
               Quiero acceder gratis →
             </button>
-            <p style={{ color: "#555", fontSize: "13px", margin: "0 0 36px 0" }}>Material gratuito · Acceso en menos de 2 minutos</p>
+            <p style={{ color: "#555", fontSize: "13px", margin: "0 0 36px 0" }}>Empieza a ver cambios en menos de 5 días</p>
             {/* TODO: replace inner div with <iframe> YouTube/Vimeo embed when ready */}
             <div data-video-placeholder="hero" style={{ borderRadius: "16px", overflow: "hidden", background: "#161616", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #252525" }}>
               <div style={{ textAlign: "center" }}>
