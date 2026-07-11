@@ -35,7 +35,7 @@ const recursos = [
     descripcion:
       "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido.",
     linkVideo: "#",
-    linkDoc: "#",
+    linkDoc: "https://docs.google.com/document/d/1SWwjWBsRMb1K4SEcLMGYE7ASWvjAkNXOhFFV_1u9qk8/edit?usp=sharing",
   },
   {
     vol: "05",
@@ -44,7 +44,7 @@ const recursos = [
     descripcion:
       "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido.",
     linkVideo: "#",
-    linkDoc: "#",
+    linkDoc: "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing",
   },
 ];
 
