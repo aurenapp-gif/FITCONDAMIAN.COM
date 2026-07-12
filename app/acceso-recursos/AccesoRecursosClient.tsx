@@ -25,7 +25,7 @@ const recursos = [
     titulo: "IA Experta en Sistemas",
     descripcion:
       "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud.",
-    linkVideo: "#",
+    linkVideo: "https://youtu.be/qZArQavUepk",
     linkDoc: "https://docs.google.com/document/d/1Y9gKtg2GO50LH30e8dKqpp99Y2afHN4GZlgDTZiMInU/edit?usp=sharing",
   },
   {
@@ -34,7 +34,7 @@ const recursos = [
     titulo: "Plan de Ruta Anti Envejecimiento y Flacidez",
     descripcion:
       "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido.",
-    linkVideo: "#",
+    linkVideo: "https://youtu.be/pUwfONeAbuk",
     linkDoc: "https://docs.google.com/document/d/1SWwjWBsRMb1K4SEcLMGYE7ASWvjAkNXOhFFV_1u9qk8/edit?usp=sharing",
   },
   {
@@ -289,29 +289,28 @@ export default function AccesoRecursosClient() {
                   </p>
 
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    <a
-                      href={r.linkVideo !== "#" ? r.linkVideo : undefined}
-                      onClick={r.linkVideo === "#" ? (e) => e.preventDefault() : undefined}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-disabled={r.linkVideo === "#"}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        background: r.linkVideo !== "#" ? "#00AAFF" : "#333",
-                        color: "#fff",
-                        fontWeight: 700,
-                        fontSize: "14px",
-                        padding: "11px 20px",
-                        borderRadius: "99px",
-                        textDecoration: "none",
-                        opacity: r.linkVideo === "#" ? 0.5 : 1,
-                        cursor: r.linkVideo === "#" ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      ▶ Ver el vídeo
-                    </a>
+                    {r.linkVideo !== "#" && (
+                      <a
+                        href={r.linkVideo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          background: "#00AAFF",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          padding: "11px 20px",
+                          borderRadius: "99px",
+                          textDecoration: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ▶ Ver el vídeo
+                      </a>
+                    )}
                     <a
                       href={r.linkDoc !== "#" ? r.linkDoc : undefined}
                       onClick={r.linkDoc === "#" ? (e) => e.preventDefault() : undefined}
