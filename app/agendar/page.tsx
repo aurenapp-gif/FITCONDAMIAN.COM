@@ -31,7 +31,7 @@ export default function AgendarPage() {
           lineHeight: 1.45,
           letterSpacing: "-0.3px",
         }}>
-          Para mujeres que ya no se ven atractivas y estén perdiendo energía
+          Para mujeres que ya no se ven atractivas, han desarrollado flacidez y ya no se sienten joven
         </p>
       </div>
 
