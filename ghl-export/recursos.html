@@ -1,0 +1,368 @@
+<!-- ================================================================= -->
+<!-- FIT CON DAMIAN — Pagina de recursos (captacion de lead)           -->
+<!-- Version HTML/CSS/JS plana para pegar en el bloque                 -->
+<!-- "JavaScript/HTML personalizado" de GoHighLevel.                   -->
+<!-- Replica identica de fitcondamian.com/recursos                     -->
+<!-- El formulario reutiliza el mismo GHL_FORM_ID.                     -->
+<!-- ================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+  #fcd-recursos * { margin: 0; padding: 0; box-sizing: border-box; }
+  #fcd-recursos {
+    background: #0D0D0D;
+    color: #fff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+  #fcd-recursos a { text-decoration: none; }
+  #fcd-recursos .fcd-header {
+    border-bottom: 1px solid #1f1f1f;
+    padding: 20px 24px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+  #fcd-recursos .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+  #fcd-recursos .fcd-accent { color: #00AAFF; }
+
+  /* Banner */
+  #fcd-recursos .fcd-banner {
+    background: linear-gradient(90deg, #0077CC, #00AAFF);
+    padding: 14px 24px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+  #fcd-recursos .fcd-banner p {
+    color: #fff;
+    font-size: clamp(13px, 3.4vw, 15px);
+    font-weight: 900;
+    line-height: 1.45;
+    letter-spacing: -0.3px;
+  }
+
+  #fcd-recursos .fcd-wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  #fcd-recursos .fcd-hero { padding: 48px 0 40px; text-align: center; position: relative; }
+  #fcd-recursos .fcd-hero-bg {
+    position: absolute; inset: 0; overflow: hidden; border-radius: 24px; pointer-events: none;
+  }
+  #fcd-recursos .fcd-hero-inner { position: relative; z-index: 1; }
+  #fcd-recursos .fcd-hero h1 {
+    font-size: clamp(2.2rem, 8vw, 3.4rem); font-weight: 900; line-height: 1.05;
+    margin: 0 0 32px 0; letter-spacing: -1.5px;
+  }
+  #fcd-recursos .fcd-hero h1 em { font-style: italic; color: #00AAFF; }
+  #fcd-recursos .fcd-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #00AAFF; color: #fff; font-weight: 900; font-size: 17px;
+    padding: 16px 36px; border-radius: 99px; border: none; cursor: pointer;
+    letter-spacing: -0.3px; margin-bottom: 14px; font-family: inherit;
+  }
+  #fcd-recursos .fcd-subcta { color: #00AAFF; font-size: 14px; font-weight: 700; margin: 0 0 36px 0; }
+  #fcd-recursos .fcd-video {
+    border-radius: 16px; overflow: hidden; background: #161616; aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center; border: 1px solid #252525;
+  }
+  #fcd-recursos .fcd-play {
+    width: 72px; height: 72px; background: #00AAFF; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+    padding-left: 6px; margin: 0 auto 12px; cursor: pointer;
+    box-shadow: 0 0 0 14px rgba(0,170,255,0.12); border: none; color: #fff;
+  }
+
+  /* Stats */
+  #fcd-recursos .fcd-stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 56px;
+  }
+  #fcd-recursos .fcd-stat {
+    background: #111; border: 1px solid #1f1f1f; border-radius: 16px; padding: 20px; text-align: center;
+  }
+  #fcd-recursos .fcd-stat .fcd-num {
+    font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); color: #00AAFF;
+    margin: 0 0 4px 0; letter-spacing: -1px;
+  }
+  #fcd-recursos .fcd-stat .fcd-lab { color: #888; font-size: 12px; line-height: 1.4; }
+
+  /* Seccion recursos */
+  #fcd-recursos .fcd-recursos-sec { padding-bottom: 80px; }
+  #fcd-recursos .fcd-eyebrow {
+    color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin: 0 0 10px 0; text-align: center;
+  }
+  #fcd-recursos .fcd-arrow { text-align: center; margin-bottom: 32px; animation: fcd-bounce 1.8s infinite; }
+
+  #fcd-recursos .fcd-card-slot {
+    position: relative; min-height: 62vh;
+    display: flex; align-items: center; justify-content: center; padding: 40px 0;
+  }
+  #fcd-recursos .fcd-glow {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;
+  }
+  #fcd-recursos .fcd-glow > div {
+    width: 65%; height: 65%; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,170,255,0.28), transparent 70%);
+    filter: blur(50px); opacity: 0; transition: opacity 1.1s ease;
+  }
+  #fcd-recursos .fcd-watermark {
+    position: absolute; top: -6px; font-size: clamp(6rem, 18vw, 11rem); font-weight: 900;
+    color: rgba(255,255,255,0.045); margin: 0; line-height: 1; letter-spacing: -4px;
+    pointer-events: none; user-select: none; transform: translateY(20px); transition: transform 1s ease;
+  }
+  #fcd-recursos .fcd-card {
+    position: relative; z-index: 1; width: 100%; max-width: 540px;
+    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 28px; padding: clamp(28px, 5vw, 44px);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    opacity: 0; transform: translateY(70px) scale(0.92); filter: blur(8px);
+    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1), filter 0.9s ease;
+  }
+  #fcd-recursos .fcd-card-slot.fcd-visible .fcd-glow > div { opacity: 1; }
+  #fcd-recursos .fcd-card-slot.fcd-visible .fcd-watermark { transform: translateY(0); }
+  #fcd-recursos .fcd-card-slot.fcd-visible .fcd-card { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  #fcd-recursos .fcd-card-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+  #fcd-recursos .fcd-card-emoji {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    background: linear-gradient(135deg, #00AAFF, #0077CC);
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
+    box-shadow: 0 8px 24px rgba(0,170,255,0.35);
+  }
+  #fcd-recursos .fcd-card-meta {
+    color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin: 0; line-height: 1.6;
+  }
+  #fcd-recursos .fcd-card-meta span { color: #777; }
+  #fcd-recursos .fcd-card h3 {
+    font-weight: 900; font-size: clamp(1.6rem, 4vw, 2.1rem); color: #fff;
+    margin: 0 0 14px 0; line-height: 1.15; letter-spacing: -1px;
+  }
+  #fcd-recursos .fcd-card p.fcd-desc { color: #999; font-size: 15px; line-height: 1.7; margin: 0 0 26px 0; }
+  #fcd-recursos .fcd-card button {
+    background: #00AAFF; color: #fff; font-weight: 900; font-size: 14px;
+    padding: 13px 28px; border-radius: 99px; border: none; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,170,255,0.3); font-family: inherit;
+  }
+
+  /* Footer */
+  #fcd-recursos .fcd-footer { border-top: 1px solid #1f1f1f; padding: 28px 24px; text-align: center; }
+  #fcd-recursos .fcd-footer p { color: #444; font-size: 12px; }
+  #fcd-recursos .fcd-footer a { color: #444; }
+
+  /* Modal */
+  #fcd-recursos .fcd-modal {
+    position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.85);
+    display: none; align-items: center; justify-content: center; padding: 16px;
+    backdrop-filter: blur(4px);
+  }
+  #fcd-recursos .fcd-modal.fcd-open { display: flex; }
+  #fcd-recursos .fcd-modal-box {
+    background: #111; border: 1px solid #2a2a2a; border-radius: 20px;
+    width: 100%; max-width: 460px; padding: 32px 28px 28px; position: relative;
+    max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  #fcd-recursos .fcd-modal-close {
+    position: absolute; top: 16px; right: 16px; background: #222; border: none; color: #fff;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #fcd-recursos .fcd-modal-badge {
+    color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin: 0 0 14px 0;
+  }
+  #fcd-recursos .fcd-modal-box h2 {
+    font-size: clamp(1.6rem, 5vw, 2rem); font-weight: 900; margin: 0 0 8px 0;
+    line-height: 1.1; letter-spacing: -0.5px; color: #fff;
+  }
+  #fcd-recursos .fcd-modal-box h2 em { font-style: italic; color: #00AAFF; }
+  #fcd-recursos .fcd-modal-sub { color: #888; font-size: 14px; margin: 0 0 24px 0; line-height: 1.5; }
+  #fcd-recursos .fcd-modal-iframe { width: 100%; height: clamp(520px, 75vh, 720px); border: none; border-radius: 8px; display: block; }
+  #fcd-recursos .fcd-modal-fine { color: #444; font-size: 11px; text-align: center; margin: 12px 0 0 0; }
+
+  @keyframes fcd-bounce { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(8px);} }
+</style>
+
+<div id="fcd-recursos">
+
+  <!-- MODAL -->
+  <div class="fcd-modal" id="fcd-modal">
+    <div class="fcd-modal-box">
+      <button class="fcd-modal-close" id="fcd-modal-close" aria-label="Cerrar">&#10005;</button>
+      <p class="fcd-modal-badge">ACCESO INMEDIATO</p>
+      <h2>Accede a los recursos <em>gratis</em></h2>
+      <p class="fcd-modal-sub">Déjanos tu correo y te los enviamos al instante.</p>
+      <iframe class="fcd-modal-iframe"
+        src="https://links.fitcondamian.com/widget/form/vmfyZr4yJIrYZYPSkuko"
+        id="inline-vmfyZr4yJIrYZYPSkuko"
+        title="Formulario de acceso a recursos gratuitos"></iframe>
+      <p class="fcd-modal-fine">Sin spam · Cancela cuando quieras</p>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="fcd-header">
+    <p>Fit con <span class="fcd-accent">Damián</span></p>
+  </header>
+
+  <!-- BANNER -->
+  <div class="fcd-banner">
+    <p>Para mujeres que ya no se sienten atractivas, han perdido la energía y sienten que están envejeciendo</p>
+  </div>
+
+  <div class="fcd-wrap">
+
+    <!-- HERO -->
+    <section class="fcd-hero">
+      <div class="fcd-hero-bg"><canvas id="fcd-particles"></canvas></div>
+      <div class="fcd-hero-inner">
+        <h1>Accede gratis a los recursos que han transformado <em>cientos de cuerpos.</em></h1>
+        <button class="fcd-cta" data-open-modal>Quiero acceder gratis →</button>
+        <p class="fcd-subcta">Empieza a ver cambios en menos de 5 días</p>
+        <div class="fcd-video">
+          <div style="text-align:center;">
+            <button class="fcd-play" data-open-modal aria-label="Acceder a los recursos gratis">▶</button>
+            <p style="color:#555;font-size:13px;margin:0;">Vídeo de presentación — próximamente</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="fcd-stats" id="fcd-stats">
+      <div class="fcd-stat"><p class="fcd-num" data-count="1000" data-suffix="+">0</p><p class="fcd-lab">personas transformadas</p></div>
+      <div class="fcd-stat"><p class="fcd-num" data-count="7" data-suffix="+">0</p><p class="fcd-lab">años de experiencia</p></div>
+      <div class="fcd-stat"><p class="fcd-num" data-count="30" data-suffix="">0</p><p class="fcd-lab">minutos de llamada gratis</p></div>
+      <div class="fcd-stat"><p class="fcd-num" data-count="100" data-suffix="%">0</p><p class="fcd-lab">método basado en ciencia</p></div>
+    </div>
+
+    <!-- RECURSOS -->
+    <section class="fcd-recursos-sec">
+      <p class="fcd-eyebrow">ESTO ES LO QUE TE LLEVAS</p>
+      <div class="fcd-arrow">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </div>
+      <div id="fcd-cards"></div>
+    </section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fcd-footer">
+    <p>© <span id="fcd-year"></span> Fit con Damián · fitcondamian.com ·
+      <a href="/privacidad">Privacidad</a> ·
+      <a href="/politica-cookies">Cookies</a> ·
+      <a href="/aviso-legal">Aviso Legal</a>
+    </p>
+  </footer>
+</div>
+
+<script src="https://links.fitcondamian.com/js/form_embed.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('fcd-recursos');
+  if (!root) return;
+
+  // Año footer
+  var y = document.getElementById('fcd-year');
+  if (y) y.textContent = new Date().getFullYear();
+
+  // ---- Modal ----
+  var modal = document.getElementById('fcd-modal');
+  function openModal() { modal.classList.add('fcd-open'); document.body.style.overflow = 'hidden'; }
+  function closeModal() { modal.classList.remove('fcd-open'); document.body.style.overflow = ''; }
+  root.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
+  document.getElementById('fcd-modal-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+
+  // ---- Recursos (tarjetas) ----
+  var recursos = [
+    { vol: "01", nombre: "Medidor de Edad-Muscular", emoji: "📋", categoria: "DIAGNÓSTICO", desc: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás." },
+    { vol: "02", nombre: "Test Inteligente de Hábitos", emoji: "🥗", categoria: "NUTRICIÓN", desc: "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo." },
+    { vol: "03", nombre: "IA Experta en Sistemas", emoji: "💪", categoria: "ENTRENAMIENTO", desc: "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud." },
+    { vol: "04", nombre: "Plan de Ruta Anti Envejecimiento y Flacidez", emoji: "😴", categoria: "RECUPERACIÓN", desc: "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido." },
+    { vol: "05", nombre: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", emoji: "📅", categoria: "EXCLUSIVO", desc: "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido." }
+  ];
+  var cont = document.getElementById('fcd-cards');
+  recursos.forEach(function (r, i) {
+    var alignRight = (i % 2 === 0);
+    var slot = document.createElement('div');
+    slot.className = 'fcd-card-slot';
+    slot.innerHTML =
+      '<div class="fcd-glow"><div></div></div>' +
+      '<p class="fcd-watermark" style="' + (alignRight ? 'right:0;left:auto;' : 'left:0;right:auto;') + '">' + r.vol + '</p>' +
+      '<div class="fcd-card">' +
+        '<div class="fcd-card-head">' +
+          '<div class="fcd-card-emoji">' + r.emoji + '</div>' +
+          '<p class="fcd-card-meta">VOL · ' + r.vol + '<br><span>' + r.categoria + '</span></p>' +
+        '</div>' +
+        '<h3>' + r.nombre + '</h3>' +
+        '<p class="fcd-desc">' + r.desc + '</p>' +
+        '<button data-open-modal>Acceder gratis →</button>' +
+      '</div>';
+    cont.appendChild(slot);
+  });
+  // re-enlaza los botones de las tarjetas
+  cont.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
+
+  // ---- Scroll reveal ----
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('fcd-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.35 });
+  cont.querySelectorAll('.fcd-card-slot').forEach(function (s) { io.observe(s); });
+
+  // ---- Contadores ----
+  var counted = false;
+  function runCounters() {
+    if (counted) return; counted = true;
+    root.querySelectorAll('[data-count]').forEach(function (el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var suffix = el.getAttribute('data-suffix') || '';
+      var t0 = null;
+      function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / 1800, 1);
+        el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target) + suffix;
+        if (p < 1) requestAnimationFrame(step); else el.textContent = target + suffix;
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  var statsEl = document.getElementById('fcd-stats');
+  var io2 = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { runCounters(); io2.disconnect(); } });
+  }, { threshold: 0.2 });
+  io2.observe(statsEl);
+
+  // ---- Particulas ----
+  var c = document.getElementById('fcd-particles');
+  if (c && c.getContext) {
+    var ctx = c.getContext('2d');
+    function resize() { c.width = c.offsetWidth; c.height = c.offsetHeight; }
+    c.style.position = 'absolute'; c.style.inset = '0'; c.style.width = '100%'; c.style.height = '100%'; c.style.pointerEvents = 'none';
+    resize(); window.addEventListener('resize', resize);
+    var pts = [];
+    for (var k = 0; k < 70; k++) {
+      pts.push({ x: Math.random() * c.width, y: Math.random() * c.height, r: Math.random() * 1.8 + 0.3,
+        dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
+        a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65 });
+    }
+    function draw() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (var j = 0; j < pts.length; j++) {
+        var p = pts[j]; p.x += p.dx; p.y += p.dy;
+        if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
+        if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.blue ? '#00AAFF' : '#fff'; ctx.globalAlpha = p.a; ctx.fill();
+      }
+      ctx.globalAlpha = 1; requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+})();
+</script>
