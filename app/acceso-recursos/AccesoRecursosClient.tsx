@@ -83,6 +83,13 @@ const ctaBlock = (
   </div>
 );
 
+// Extrae el ID de un enlace de YouTube (youtu.be/ID o youtube.com/watch?v=ID) para la miniatura.
+function youtubeId(url: string): string | null {
+  if (!url || url === "#") return null;
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
 export default function AccesoRecursosClient() {
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif" }}>
@@ -176,46 +183,77 @@ export default function AccesoRecursosClient() {
                   overflow: "hidden",
                 }}
               >
-                {/* Thumbnail placeholder */}
-                <div style={{
-                  background: "#161616",
-                  aspectRatio: "16/8",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                  borderBottom: "1px solid #1f1f1f",
-                }}>
-                  <span style={{
-                    position: "absolute",
-                    top: "12px",
-                    left: "12px",
-                    background: "#00AAFF",
-                    color: "#fff",
-                    fontSize: "11px",
-                    fontWeight: 900,
-                    padding: "4px 10px",
-                    borderRadius: "99px",
-                    letterSpacing: "1px",
-                  }}>
-                    VOL · {r.vol}
-                  </span>
-                  <div aria-hidden="true" style={{
-                    width: "56px",
-                    height: "56px",
-                    background: "#00AAFF",
-                    borderRadius: "50%",
+                {/* Thumbnail: miniatura de YouTube si hay vídeo, si no placeholder */}
+                {(() => {
+                  const ytId = youtubeId(r.linkVideo);
+                  const thumbInner = (
+                    <>
+                      <span style={{
+                        position: "absolute",
+                        top: "12px",
+                        left: "12px",
+                        background: "#00AAFF",
+                        color: "#fff",
+                        fontSize: "11px",
+                        fontWeight: 900,
+                        padding: "4px 10px",
+                        borderRadius: "99px",
+                        letterSpacing: "1px",
+                        zIndex: 1,
+                      }}>
+                        VOL · {r.vol}
+                      </span>
+                      <div aria-hidden="true" style={{
+                        width: "56px",
+                        height: "56px",
+                        background: "#00AAFF",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
+                        paddingLeft: "4px",
+                        boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
+                        color: "#fff",
+                      }}>
+                        ▶
+                      </div>
+                    </>
+                  );
+                  const baseStyle = {
+                    aspectRatio: "16/8",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "20px",
-                    paddingLeft: "4px",
-                    boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
-                    color: "#fff",
-                  }}>
-                    ▶
-                  </div>
-                </div>
+                    position: "relative" as const,
+                    borderBottom: "1px solid #1f1f1f",
+                  };
+                  if (ytId) {
+                    return (
+                      <a
+                        href={r.linkVideo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Ver el vídeo: ${r.titulo}`}
+                        style={{
+                          ...baseStyle,
+                          backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(https://img.youtube.com/vi/${ytId}/hqdefault.jpg)`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          textDecoration: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {thumbInner}
+                      </a>
+                    );
+                  }
+                  return (
+                    <div style={{ ...baseStyle, background: "#161616" }}>
+                      {thumbInner}
+                    </div>
+                  );
+                })()}
 
                 {/* Contenido */}
                 <div style={{ padding: "24px" }}>
