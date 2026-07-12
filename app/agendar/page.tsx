@@ -73,28 +73,6 @@ export default function AgendarPage() {
           />
         </div>
 
-        {/* BIO */}
-        <div style={{
-          display: "flex", gap: "16px", alignItems: "flex-start",
-          background: "#111", border: "1px solid #1f1f1f",
-          borderRadius: "20px", padding: "24px",
-        }}>
-          <div style={{
-            width: "52px", height: "52px", flexShrink: 0,
-            background: "#00AAFF", borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: 900, fontSize: "20px", color: "#fff",
-          }}>D</div>
-          <div>
-            <p style={{ fontWeight: 900, fontSize: "16px", margin: "0 0 6px 0" }}>Damián</p>
-            <p style={{ color: "#888", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
-              Entrenador personal y nutricionista. Más de X años transformando cuerpos
-              con un método basado en la ciencia y adaptado a la vida real.
-              {/* 👉 Personaliza esta bio con tu info real */}
-            </p>
-          </div>
-        </div>
-
       </div>
 
       {/* FOOTER */}
