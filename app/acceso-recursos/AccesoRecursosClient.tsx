@@ -237,13 +237,30 @@ export default function AccesoRecursosClient() {
                         aria-label={`Ver el vídeo: ${r.titulo}`}
                         style={{
                           ...baseStyle,
-                          backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(https://img.youtube.com/vi/${ytId}/hqdefault.jpg)`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
+                          background: "#000",
                           textDecoration: "none",
                           cursor: "pointer",
+                          overflow: "hidden",
                         }}
                       >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`}
+                          alt={`Miniatura del vídeo: ${r.titulo}`}
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            if (!img.dataset.fallback) {
+                              img.dataset.fallback = "1";
+                              img.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                            }
+                          }}
+                          style={{
+                            position: "absolute", inset: 0,
+                            width: "100%", height: "100%",
+                            objectFit: "cover",
+                            filter: "brightness(0.8)",
+                          }}
+                        />
                         {thumbInner}
                       </a>
                     );
