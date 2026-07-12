@@ -16,7 +16,7 @@ const recursos = [
     titulo: "Test Inteligente de Hábitos",
     descripcion:
       "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo.",
-    linkVideo: "#",
+    linkVideo: "https://youtu.be/WFn9kDt3FsA",
     linkDoc: "https://docs.google.com/document/d/1VZ4_MZc70PqgGliHsGplkZ6xoK_r1FdxmZi_1YRyT8I/edit?usp=sharing",
   },
   {
