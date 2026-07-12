@@ -237,7 +237,7 @@ export default function AccesoRecursosClient() {
                         aria-label={`Ver el vídeo: ${r.titulo}`}
                         style={{
                           ...baseStyle,
-                          background: "#000",
+                          background: "#161616",
                           textDecoration: "none",
                           cursor: "pointer",
                           overflow: "hidden",
@@ -249,9 +249,13 @@ export default function AccesoRecursosClient() {
                           alt={`Miniatura del vídeo: ${r.titulo}`}
                           onError={(e) => {
                             const img = e.currentTarget;
-                            if (!img.dataset.fallback) {
-                              img.dataset.fallback = "1";
+                            if (img.dataset.step === undefined) {
+                              // 1er fallo: prueba con la miniatura de menor resolución.
+                              img.dataset.step = "1";
                               img.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                            } else {
+                              // 2º fallo (p. ej. vídeo privado): oculta la imagen y deja el placeholder oscuro.
+                              img.style.display = "none";
                             }
                           }}
                           style={{
