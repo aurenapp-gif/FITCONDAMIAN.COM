@@ -95,59 +95,6 @@ export default function AgendarPage() {
           </div>
         </div>
 
-        {/* TESTIMONIOS EN VÍDEO */}
-        <div style={{ marginTop: "56px" }}>
-          <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "40px" }} />
-
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>
-              RESULTADOS REALES
-            </p>
-            <h2 style={{ fontWeight: 900, fontSize: "clamp(1.6rem, 5vw, 2.2rem)", margin: 0, letterSpacing: "-1px", lineHeight: 1.1 }}>
-              Lo que dicen quienes ya{" "}
-              <em style={{ fontStyle: "italic", color: "#00AAFF" }}>han pasado por aquí</em>
-            </h2>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {[1, 2, 3].map((n) => (
-              <div key={n} data-video-placeholder={`testimonio-${n}`} style={{
-                background: "#111", border: "1px solid #1f1f1f",
-                borderRadius: "16px", overflow: "hidden",
-              }}>
-                <div style={{
-                  aspectRatio: "16/9",
-                  background: "#161616",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  position: "relative",
-                  borderBottom: "1px solid #1f1f1f",
-                }}>
-                  <span style={{
-                    position: "absolute", top: "12px", left: "12px",
-                    background: "rgba(0,0,0,0.6)", color: "#fff",
-                    fontSize: "11px", fontWeight: 700,
-                    padding: "4px 10px", borderRadius: "99px",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                  }}>Testimonio {n}</span>
-                  <div aria-hidden="true" style={{
-                    width: "52px", height: "52px",
-                    background: "#00AAFF", borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "20px", paddingLeft: "4px",
-                    boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
-                    color: "#fff",
-                  }}>▶</div>
-                </div>
-                {/* Pie */}
-                <div style={{ padding: "16px 20px" }}>
-                  <p style={{ fontWeight: 800, fontSize: "14px", margin: "0 0 4px 0" }}>Testimonio en vídeo {n}</p>
-                  <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Próximamente</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
       </div>
 
       {/* FOOTER */}
