@@ -44,6 +44,7 @@ const recursos = [
     descripcion:
       "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido.",
     linkVideo: "#",
+    imagen: "/lead-05-laboratorio.jpg",
     linkDoc: "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing",
   },
 ];
@@ -186,38 +187,45 @@ export default function AccesoRecursosClient() {
                 {/* Thumbnail: miniatura de YouTube si hay vídeo, si no placeholder */}
                 {(() => {
                   const ytId = youtubeId(r.linkVideo);
+                  const customImg = (r as { imagen?: string }).imagen;
+                  const volBadge = (
+                    <span style={{
+                      position: "absolute",
+                      top: "12px",
+                      left: "12px",
+                      background: "#00AAFF",
+                      color: "#fff",
+                      fontSize: "11px",
+                      fontWeight: 900,
+                      padding: "4px 10px",
+                      borderRadius: "99px",
+                      letterSpacing: "1px",
+                      zIndex: 1,
+                    }}>
+                      VOL · {r.vol}
+                    </span>
+                  );
+                  const playBtn = (
+                    <div aria-hidden="true" style={{
+                      width: "56px",
+                      height: "56px",
+                      background: "#00AAFF",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px",
+                      paddingLeft: "4px",
+                      boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
+                      color: "#fff",
+                    }}>
+                      ▶
+                    </div>
+                  );
                   const thumbInner = (
                     <>
-                      <span style={{
-                        position: "absolute",
-                        top: "12px",
-                        left: "12px",
-                        background: "#00AAFF",
-                        color: "#fff",
-                        fontSize: "11px",
-                        fontWeight: 900,
-                        padding: "4px 10px",
-                        borderRadius: "99px",
-                        letterSpacing: "1px",
-                        zIndex: 1,
-                      }}>
-                        VOL · {r.vol}
-                      </span>
-                      <div aria-hidden="true" style={{
-                        width: "56px",
-                        height: "56px",
-                        background: "#00AAFF",
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "20px",
-                        paddingLeft: "4px",
-                        boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
-                        color: "#fff",
-                      }}>
-                        ▶
-                      </div>
+                      {volBadge}
+                      {playBtn}
                     </>
                   );
                   const baseStyle = {
@@ -228,6 +236,20 @@ export default function AccesoRecursosClient() {
                     position: "relative" as const,
                     borderBottom: "1px solid #1f1f1f",
                   };
+                  // Imagen fija (recurso sin vídeo): muestra la imagen sin botón de play.
+                  if (!ytId && customImg) {
+                    return (
+                      <div style={{ ...baseStyle, background: "#161616", overflow: "hidden" }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={customImg}
+                          alt={r.titulo}
+                          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                        {volBadge}
+                      </div>
+                    );
+                  }
                   if (ytId) {
                     return (
                       <a
