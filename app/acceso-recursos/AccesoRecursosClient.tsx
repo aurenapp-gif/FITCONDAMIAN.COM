@@ -7,7 +7,7 @@ const recursos = [
     titulo: "Medidor de Edad-Muscular",
     descripcion:
       "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás.",
-    linkVideo: "#",
+    linkVideo: "https://youtu.be/0b7aIuPJaKo",
     linkDoc: "https://docs.google.com/document/d/1V7yt1PqsGQ94hrfg0ZvKssG5anq9YQdWChuIUWF29uk/edit?usp=sharing",
   },
   {
