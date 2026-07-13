@@ -1,6 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+// Fondo de partículas animadas (igual que en /recursos).
+function ParticlesCanvas() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current; if (!c) return;
+    const ctx = c.getContext("2d"); if (!ctx) return;
+    const resize = () => { c.width = c.offsetWidth; c.height = c.offsetHeight; };
+    resize(); window.addEventListener("resize", resize);
+    const pts = Array.from({ length: 70 }, () => ({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      r: Math.random() * 1.8 + 0.3,
+      dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
+      a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65,
+    }));
+    let id = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (const p of pts) {
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
+        if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.blue ? "#00AAFF" : "#fff";
+        ctx.globalAlpha = p.a; ctx.fill();
+      }
+      ctx.globalAlpha = 1; id = requestAnimationFrame(draw);
+    };
+    id = requestAnimationFrame(draw);
+    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} />;
+}
 
 const recursos = [
   {
@@ -97,7 +130,10 @@ export default function AccesoRecursosClient() {
   const [videoAbierto, setVideoAbierto] = useState<string | null>(null);
 
   return (
-    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif" }}>
+    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", position: "relative", overflowX: "hidden" }}>
+
+      {/* FONDO DE PARTÍCULAS */}
+      <ParticlesCanvas />
 
       {/* MODAL REPRODUCTOR DE VÍDEO */}
       {videoAbierto && (
@@ -138,13 +174,13 @@ export default function AccesoRecursosClient() {
       )}
 
       {/* HEADER */}
-      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
+      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
           Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
         </p>
       </header>
 
-      <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px" }}>
+      <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 1 }}>
 
         {/* HERO */}
         <section style={{ paddingTop: "56px", paddingBottom: "48px" }}>
@@ -413,7 +449,7 @@ export default function AccesoRecursosClient() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "28px 24px", textAlign: "center" }}>
+      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "28px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
         <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
           © {new Date().getFullYear()} Fit con Damián · fitcondamian.com
           {" · "}
