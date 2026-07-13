@@ -50,28 +50,30 @@ function useReveal(threshold = 0.2) {
   return { ref, visible };
 }
 
-// Envuelve cada recurso: destello azul detrás + entrada deslizante desde el lateral.
+// Envuelve cada recurso: destello azul + entrada deslizante desde el lateral.
 function RevealCard({ index, children }: { index: number; children: ReactNode }) {
   const { ref, visible } = useReveal(0.2);
   const fromLeft = index % 2 === 0;
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      {/* Destello azul */}
+      {/* Destello azul difuminado detrás (asoma alrededor de la tarjeta) */}
       <div aria-hidden="true" style={{
-        position: "absolute", inset: "-18% -12%",
-        background: "radial-gradient(ellipse at center, rgba(0,170,255,0.38), transparent 70%)",
-        filter: "blur(45px)",
+        position: "absolute", inset: "-14% -8%",
+        background: "radial-gradient(ellipse at center, rgba(0,170,255,0.55), rgba(0,170,255,0.15) 45%, transparent 72%)",
+        filter: "blur(40px)",
         opacity: visible ? 1 : 0,
         transition: "opacity 1.1s ease",
         pointerEvents: "none",
         zIndex: 0,
       }} />
-      {/* Tarjeta con entrada lateral */}
+      {/* Tarjeta con entrada lateral + halo azul alrededor */}
       <div style={{
         position: "relative", zIndex: 1,
+        borderRadius: "16px",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateX(0)" : `translateX(${fromLeft ? "-64px" : "64px"})`,
-        transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+        boxShadow: visible ? "0 0 45px rgba(0,170,255,0.45)" : "0 0 0 rgba(0,170,255,0)",
+        transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1), box-shadow 1.1s ease",
       }}>
         {children}
       </div>
