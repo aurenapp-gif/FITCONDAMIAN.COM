@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 
 // Fondo de partículas animadas (igual que en /recursos).
 function ParticlesCanvas() {
@@ -33,6 +33,50 @@ function ParticlesCanvas() {
     return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
   }, []);
   return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} />;
+}
+
+// Detecta cuándo el elemento entra en pantalla (una sola vez).
+function useReveal(threshold = 0.2) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el); return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, visible };
+}
+
+// Envuelve cada recurso: destello azul detrás + entrada deslizante desde el lateral.
+function RevealCard({ index, children }: { index: number; children: ReactNode }) {
+  const { ref, visible } = useReveal(0.2);
+  const fromLeft = index % 2 === 0;
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      {/* Destello azul */}
+      <div aria-hidden="true" style={{
+        position: "absolute", inset: "-18% -12%",
+        background: "radial-gradient(ellipse at center, rgba(0,170,255,0.38), transparent 70%)",
+        filter: "blur(45px)",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 1.1s ease",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
+      {/* Tarjeta con entrada lateral */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateX(0)" : `translateX(${fromLeft ? "-64px" : "64px"})`,
+        transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+      }}>
+        {children}
+      </div>
+    </div>
+  );
 }
 
 const recursos = [
@@ -251,10 +295,10 @@ export default function AccesoRecursosClient() {
           </div>
 
           {/* CARDS */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {recursos.map((r) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            {recursos.map((r, i) => (
+              <RevealCard key={r.vol} index={i}>
               <article
-                key={r.vol}
                 style={{
                   background: "#111",
                   border: "1px solid #1f1f1f",
@@ -440,6 +484,7 @@ export default function AccesoRecursosClient() {
                   </div>
                 </div>
               </article>
+              </RevealCard>
             ))}
           </div>
 
