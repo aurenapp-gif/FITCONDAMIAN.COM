@@ -242,14 +242,15 @@ export default function RecursosClient() {
               Quiero acceder gratis →
             </button>
             <p style={{ color: "#00AAFF", fontSize: "14px", fontWeight: 700, margin: "0 0 36px 0" }}>Empieza a ver cambios en menos de 5 días</p>
-            {/* TODO: replace inner div with <iframe> YouTube/Vimeo embed when ready */}
-            <div data-video-placeholder="hero" style={{ borderRadius: "16px", overflow: "hidden", background: "#161616", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #252525" }}>
-              <div style={{ textAlign: "center" }}>
-                <button onClick={() => setModalOpen(true)} aria-label="Acceder a los recursos gratis" style={{ width: "72px", height: "72px", background: "#00AAFF", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", paddingLeft: "6px", margin: "0 auto 12px", cursor: "pointer", boxShadow: "0 0 0 14px rgba(0,170,255,0.12)", border: "none" }}>
-                  <span aria-hidden="true">▶</span>
-                </button>
-                <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo de presentación — próximamente</p>
-              </div>
+            <div style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid #252525", background: "#000" }}>
+              <video
+                src="/inicio-lead.mp4"
+                poster="/inicio-lead-poster.jpg"
+                controls
+                playsInline
+                preload="metadata"
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
             </div>
           </div>
         </section>
