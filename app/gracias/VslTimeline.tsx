@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; youtube: string }[] = [
-  { id: "01", titulo: "Por qué no ves resultados aunque lo intentas todo", lado: "izquierda", youtube: "pUwfONeAbuk" },
-  { id: "02", titulo: "El error que comete el 90% con la alimentación", lado: "derecha", youtube: "WFn9kDt3FsA" },
-  { id: "03", titulo: "Cómo entrenar sin vivir en el gimnasio", lado: "izquierda", youtube: "0b7aIuPJaKo" },
-  { id: "04", titulo: "La verdad sobre los suplementos que te venden", lado: "derecha", youtube: "qZArQavUepk" },
+  { id: "01", titulo: "De la FLACIDEZ a la VITALIDAD: Recupera tu atractivo, energía y confianza pasados los 35", lado: "izquierda", youtube: "pUwfONeAbuk" },
+  { id: "02", titulo: "Cómo TRANSFORMAR tu físico de 40 años para volver a SENTIR QUE TIENES 25", lado: "derecha", youtube: "WFn9kDt3FsA" },
+  { id: "03", titulo: "Cómo ELIMINAR la flacidez a los 35 años: EL SECRETO DEL MÚSCULO", lado: "izquierda", youtube: "0b7aIuPJaKo" },
+  { id: "04", titulo: "El SISTEMA que usan las mujeres que siguen JÓVENES a los 40 años (y tú no conoces)", lado: "derecha", youtube: "qZArQavUepk" },
 ];
 
 export default function VslTimeline() {
