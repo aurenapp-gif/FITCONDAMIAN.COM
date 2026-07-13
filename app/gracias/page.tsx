@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import VslTimeline from "./VslTimeline";
+import VslTimeline from "../_components/VslTimeline";
 
 export const metadata: Metadata = {
   title: "¡Llamada reservada!",
