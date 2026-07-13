@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; youtube: string }[] = [
   { id: "01", titulo: "De la FLACIDEZ a la VITALIDAD: Recupera tu atractivo, energía y confianza pasados los 35", lado: "izquierda", youtube: "pUwfONeAbuk" },
@@ -12,8 +12,41 @@ const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; yo
 export default function VslTimeline() {
   const [videoAbierto, setVideoAbierto] = useState<string | null>(null);
 
+  // Estela de scroll: la línea se ilumina y las bolas se encienden al bajar.
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [fillPx, setFillPx] = useState(0);
+  const [activos, setActivos] = useState<boolean[]>(() => vslVideos.map(() => false));
+
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const cont = timelineRef.current;
+      if (!cont) return;
+      const rect = cont.getBoundingClientRect();
+      const refLineY = window.innerHeight * 0.5; // línea de referencia: mitad de la pantalla
+      const fill = Math.max(0, Math.min(refLineY - rect.top, rect.height));
+      setFillPx(fill);
+      setActivos(rowRefs.current.map((row) => {
+        if (!row) return false;
+        const r = row.getBoundingClientRect();
+        return (r.top + 28) <= refLineY; // la bola se enciende al pasar la mitad de la pantalla
+      }));
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
-    <div style={{ position: "relative", marginBottom: "60px" }}>
+    <div ref={timelineRef} style={{ position: "relative", marginBottom: "60px" }}>
       {/* MODAL REPRODUCTOR */}
       {videoAbierto && (
         <div
@@ -52,27 +85,43 @@ export default function VslTimeline() {
         </div>
       )}
 
-      {/* Línea vertical central */}
+      {/* Línea vertical central (base tenue) */}
       <div style={{
         position: "absolute", left: "50%", top: 0, bottom: 0,
-        width: "2px", background: "linear-gradient(180deg, #00AAFF, rgba(0,170,255,0.1))",
+        width: "2px", background: "rgba(0,170,255,0.15)",
         transform: "translateX(-50%)",
+      }} />
+      {/* Estela iluminada que crece con el scroll */}
+      <div aria-hidden="true" style={{
+        position: "absolute", left: "50%", top: 0,
+        width: "3px", height: `${fillPx}px`,
+        transform: "translateX(-50%)",
+        background: "linear-gradient(180deg, rgba(0,170,255,0.2), #00AAFF)",
+        boxShadow: "0 0 12px rgba(0,170,255,0.8), 0 0 24px rgba(0,170,255,0.5)",
+        borderRadius: "2px",
       }} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-        {vslVideos.map((v) => (
-          <div key={v.id} style={{
-            display: "flex",
-            justifyContent: v.lado === "izquierda" ? "flex-start" : "flex-end",
-            position: "relative",
-          }}>
-            {/* Punto en la línea */}
+        {vslVideos.map((v, i) => (
+          <div
+            key={v.id}
+            ref={(el) => { rowRefs.current[i] = el; }}
+            style={{
+              display: "flex",
+              justifyContent: v.lado === "izquierda" ? "flex-start" : "flex-end",
+              position: "relative",
+            }}
+          >
+            {/* Punto en la línea — se ilumina al llegar a su altura */}
             <div style={{
               position: "absolute", left: "50%", top: "28px",
               transform: "translateX(-50%)",
               width: "14px", height: "14px",
-              background: "#00AAFF", borderRadius: "50%",
+              background: activos[i] ? "#00AAFF" : "#1b2b33",
+              borderRadius: "50%",
               border: "3px solid #0D0D0D",
+              boxShadow: activos[i] ? "0 0 0 4px rgba(0,170,255,0.25), 0 0 14px rgba(0,170,255,0.9)" : "none",
+              transition: "background 0.4s ease, box-shadow 0.4s ease",
               zIndex: 1,
             }} />
 
