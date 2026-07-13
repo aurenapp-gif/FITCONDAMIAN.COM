@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 const recursos = [
   {
     vol: "01",
@@ -92,8 +94,48 @@ function youtubeId(url: string): string | null {
 }
 
 export default function AccesoRecursosClient() {
+  const [videoAbierto, setVideoAbierto] = useState<string | null>(null);
+
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif" }}>
+
+      {/* MODAL REPRODUCTOR DE VÍDEO */}
+      {videoAbierto && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setVideoAbierto(null); }}
+          style={{
+            position: "fixed", inset: 0, zIndex: 1000,
+            background: "rgba(0,0,0,0.9)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "16px", backdropFilter: "blur(4px)",
+          }}
+        >
+          <div style={{ position: "relative", width: "100%", maxWidth: "900px" }}>
+            <button
+              onClick={() => setVideoAbierto(null)}
+              aria-label="Cerrar vídeo"
+              style={{
+                position: "absolute", top: "-44px", right: "0",
+                background: "#222", border: "none", color: "#fff",
+                width: "36px", height: "36px", borderRadius: "50%",
+                cursor: "pointer", fontSize: "18px", display: "flex",
+                alignItems: "center", justifyContent: "center",
+              }}
+            >
+              <span aria-hidden="true">✕</span>
+            </button>
+            <div style={{ position: "relative", aspectRatio: "16/9", background: "#000", borderRadius: "12px", overflow: "hidden" }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${videoAbierto}?autoplay=1&rel=0`}
+                title="Reproductor de vídeo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
@@ -252,17 +294,19 @@ export default function AccesoRecursosClient() {
                   }
                   if (ytId) {
                     return (
-                      <a
-                        href={r.linkVideo}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() => setVideoAbierto(ytId)}
                         aria-label={`Ver el vídeo: ${r.titulo}`}
                         style={{
                           ...baseStyle,
+                          width: "100%",
                           background: "#161616",
                           textDecoration: "none",
                           cursor: "pointer",
                           overflow: "hidden",
+                          border: "none",
+                          padding: 0,
                         }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -288,7 +332,7 @@ export default function AccesoRecursosClient() {
                           }}
                         />
                         {thumbInner}
-                      </a>
+                      </button>
                     );
                   }
                   return (
@@ -311,11 +355,10 @@ export default function AccesoRecursosClient() {
                   </p>
 
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    {r.linkVideo !== "#" && (
-                      <a
-                        href={r.linkVideo}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    {youtubeId(r.linkVideo) && (
+                      <button
+                        type="button"
+                        onClick={() => setVideoAbierto(youtubeId(r.linkVideo)!)}
                         style={{
                           display: "inline-flex",
                           alignItems: "center",
@@ -326,12 +369,13 @@ export default function AccesoRecursosClient() {
                           fontSize: "14px",
                           padding: "11px 20px",
                           borderRadius: "99px",
-                          textDecoration: "none",
+                          border: "none",
+                          fontFamily: "inherit",
                           cursor: "pointer",
                         }}
                       >
                         ▶ Ver el vídeo
-                      </a>
+                      </button>
                     )}
                     <a
                       href={r.linkDoc !== "#" ? r.linkDoc : undefined}
