@@ -68,17 +68,19 @@ export default function GraciasPage() {
               Mira Este Vídeo Corto
             </h2>
           </div>
-          {/* Video placeholder paso 1 */}
+          {/* Vídeo paso 1 */}
           <div style={{
             borderRadius: "16px", overflow: "hidden",
-            background: "#111", border: "1px solid #1f1f1f",
-            aspectRatio: "16/9", display: "flex",
-            alignItems: "center", justifyContent: "center",
+            background: "#000", border: "1px solid #1f1f1f",
           }}>
-            <div style={{ textAlign: "center", padding: "32px" }}>
-              <div style={{ fontSize: "52px", marginBottom: "10px", color: "#00AAFF" }}>▶</div>
-              <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Vídeo — próximamente</p>
-            </div>
+            <video
+              src="/paso1-gracias.mp4"
+              poster="/paso1-gracias-poster.jpg"
+              controls
+              playsInline
+              preload="metadata"
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
           </div>
         </div>
 
