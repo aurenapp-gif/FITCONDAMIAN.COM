@@ -143,24 +143,25 @@ export default function GraciasPage() {
               Mira Este Vídeo de 3 Minutos Antes de la Llamada
             </h2>
           </div>
-          {/* Video placeholder paso 3 */}
+          {/* Imagen paso 3 (provisional, hasta tener el vídeo) */}
           <div style={{
             borderRadius: "16px", overflow: "hidden",
             background: "#111", border: "1px solid #1f1f1f",
-            aspectRatio: "16/9", display: "flex",
-            alignItems: "center", justifyContent: "center",
-            position: "relative",
+            aspectRatio: "16/9", position: "relative",
           }}>
+            <Image
+              src="/paso3-foto-fondo.jpg"
+              alt="Lo que tienes que saber en 3 minutos"
+              fill
+              sizes="(max-width: 680px) 100vw, 680px"
+              style={{ objectFit: "cover" }}
+            />
             <div style={{
               position: "absolute", top: "14px", right: "14px",
               background: "#00AAFF", color: "#fff",
               fontSize: "11px", fontWeight: 900, padding: "4px 12px",
-              borderRadius: "99px", letterSpacing: "1px",
+              borderRadius: "99px", letterSpacing: "1px", zIndex: 1,
             }}>3 MIN</div>
-            <div style={{ textAlign: "center", padding: "32px" }}>
-              <div style={{ fontSize: "52px", marginBottom: "10px", color: "#00AAFF" }}>▶</div>
-              <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Vídeo previo a la llamada — próximamente</p>
-            </div>
           </div>
         </div>
 
