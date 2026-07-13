@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
+import VslTimeline from "../_components/VslTimeline";
 
 export const metadata: Metadata = {
   title: "Antes de tu llamada",
   robots: { index: false, follow: false },
 };
-
-const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha" }[] = [
-  { id: "01", titulo: "Por qué no ves resultados aunque lo intentas todo", lado: "izquierda" },
-  { id: "02", titulo: "El error que comete el 90% con la alimentación", lado: "derecha" },
-  { id: "03", titulo: "Cómo entrenar sin vivir en el gimnasio", lado: "izquierda" },
-  { id: "04", titulo: "La verdad sobre los suplementos que te venden", lado: "derecha" },
-];
 
 const testimonios = [
   { nombre: "Carlos M.", texto: "En 3 meses bajé 12 kg sin pasar hambre. El método de Damián cambia la perspectiva completamente.", resultado: "-12 kg en 3 meses" },
@@ -67,71 +61,7 @@ export default function AntesDeLaLlamadaPage() {
         </div>
 
         {/* TIMELINE DE VÍDEOS VSL */}
-        <div style={{ position: "relative", marginBottom: "60px" }}>
-          {/* Línea vertical central */}
-          <div style={{
-            position: "absolute", left: "50%", top: 0, bottom: 0,
-            width: "2px", background: "linear-gradient(180deg, #00AAFF, rgba(0,170,255,0.1))",
-            transform: "translateX(-50%)",
-          }} />
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-            {vslVideos.map((v) => (
-              <div key={v.id} data-video-placeholder={`vsl-${v.id}`} style={{
-                display: "flex",
-                justifyContent: v.lado === "izquierda" ? "flex-start" : "flex-end",
-                position: "relative",
-              }}>
-                {/* Punto en la línea — anclado arriba para no desalinearse con tarjetas de altura variable */}
-                <div style={{
-                  position: "absolute", left: "50%", top: "28px",
-                  transform: "translateX(-50%)",
-                  width: "14px", height: "14px",
-                  background: "#00AAFF", borderRadius: "50%",
-                  border: "3px solid #0D0D0D",
-                  zIndex: 1,
-                }} />
-
-                {/* Tarjeta vídeo — mínimo 46% en escritorio, 88% en móvil estrecho */}
-                <div style={{
-                  width: "clamp(200px, 46%, 260px)",
-                  background: "#111", border: "1px solid #1f1f1f",
-                  borderRadius: "14px", overflow: "hidden",
-                }}>
-                  <div style={{
-                    aspectRatio: "16/9",
-                    background: "#161616",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    position: "relative",
-                    borderBottom: "1px solid #1f1f1f",
-                  }}>
-                    <span style={{
-                      position: "absolute", top: "8px", left: "8px",
-                      background: "#00AAFF", color: "#fff",
-                      fontSize: "10px", fontWeight: 900,
-                      padding: "3px 8px", borderRadius: "99px",
-                    }}>
-                      VOL · {v.id}
-                    </span>
-                    <div aria-hidden="true" style={{
-                      width: "36px", height: "36px",
-                      background: "#00AAFF", borderRadius: "50%",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "14px", paddingLeft: "3px",
-                      boxShadow: "0 0 0 8px rgba(0,170,255,0.12)",
-                      color: "#fff",
-                    }}>▶</div>
-                  </div>
-                  <div style={{ padding: "14px" }}>
-                    <p style={{ fontWeight: 800, fontSize: "12px", lineHeight: 1.4, margin: 0, color: "#E0E0E0" }}>
-                      {v.titulo}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <VslTimeline />
 
         {/* SEPARADOR TESTIMONIOS */}
         <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "40px" }} />
