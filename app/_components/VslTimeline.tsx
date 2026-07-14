@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 
 const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; youtube: string }[] = [
-  { id: "01", titulo: "De la FLACIDEZ a la VITALIDAD: Recupera tu atractivo, energía y confianza pasados los 35", lado: "izquierda", youtube: "pUwfONeAbuk" },
+  { id: "01", titulo: "¿Qué es lo que te Está Restando Vitalidad y Atractivo?", lado: "izquierda", youtube: "pUwfONeAbuk" },
   { id: "02", titulo: "Cómo TRANSFORMAR tu físico de 40 años para volver a SENTIR QUE TIENES 25", lado: "derecha", youtube: "WFn9kDt3FsA" },
   { id: "03", titulo: "Cómo ELIMINAR la flacidez a los 35 años: EL SECRETO DEL MÚSCULO", lado: "izquierda", youtube: "0b7aIuPJaKo" },
-  { id: "04", titulo: "El SISTEMA que usan las mujeres que siguen JÓVENES a los 40 años (y tú no conoces)", lado: "derecha", youtube: "qZArQavUepk" },
+  { id: "04", titulo: "¿Estás Lista para Descubrir el Secreto de las Mujeres Jóvenes a los 40 Años?", lado: "derecha", youtube: "qZArQavUepk" },
 ];
 
 export default function VslTimeline() {
