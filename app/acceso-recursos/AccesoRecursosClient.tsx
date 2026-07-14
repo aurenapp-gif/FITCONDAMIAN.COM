@@ -32,7 +32,7 @@ function ParticlesCanvas() {
     id = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
   }, []);
-  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} />;
+  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, transform: "translateZ(0)", willChange: "transform" }} />;
 }
 
 // Detecta cuándo el elemento entra en pantalla (una sola vez).
@@ -56,23 +56,13 @@ function RevealCard({ index, children }: { index: number; children: ReactNode })
   const fromLeft = index % 2 === 0;
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      {/* Destello azul difuminado detrás (asoma alrededor de la tarjeta) */}
-      <div aria-hidden="true" style={{
-        position: "absolute", inset: "-14% -8%",
-        background: "radial-gradient(ellipse at center, rgba(0,170,255,0.55), rgba(0,170,255,0.15) 45%, transparent 72%)",
-        filter: "blur(40px)",
-        opacity: visible ? 1 : 0,
-        transition: "opacity 1.1s ease",
-        pointerEvents: "none",
-        zIndex: 0,
-      }} />
-      {/* Tarjeta con entrada lateral + halo azul alrededor */}
+      {/* Tarjeta con entrada lateral + halo azul alrededor (box-shadow, sin filtros pesados) */}
       <div style={{
         position: "relative", zIndex: 1,
         borderRadius: "16px",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateX(0)" : `translateX(${fromLeft ? "-64px" : "64px"})`,
-        boxShadow: visible ? "0 0 45px rgba(0,170,255,0.45)" : "0 0 0 rgba(0,170,255,0)",
+        boxShadow: visible ? "0 0 40px rgba(0,170,255,0.4)" : "0 0 0 rgba(0,170,255,0)",
         transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1), box-shadow 1.1s ease",
       }}>
         {children}
