@@ -235,21 +235,21 @@ export default function AccesoRecursosClient() {
           </p>
 
           {/* Vídeo de bienvenida */}
-          <div data-video-placeholder="bienvenida" style={{
+          <div style={{
             borderRadius: "16px",
             overflow: "hidden",
-            background: "#161616",
-            aspectRatio: "16/9",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            background: "#000",
             border: "1px solid #252525",
             marginBottom: "8px",
           }}>
-            <div style={{ textAlign: "center", padding: "32px" }}>
-              <div aria-hidden="true" style={{ fontSize: "48px", marginBottom: "12px", color: "#00AAFF" }}>▶</div>
-              <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Vídeo de bienvenida — próximamente</p>
-            </div>
+            <video
+              src="/video-recursos.mp4"
+              poster="/video-recursos-poster.jpg"
+              controls
+              playsInline
+              preload="metadata"
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
           </div>
           <p style={{ color: "#444", fontSize: "12px", textAlign: "center", margin: "0 0 32px 0" }}>
             🔊 Activa el sonido
