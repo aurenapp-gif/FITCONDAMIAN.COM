@@ -30,24 +30,27 @@ export default function AntesDeLaLlamadaPage() {
           <h1 style={{ fontWeight: 900, fontSize: "clamp(1.6rem, 5vw, 2.2rem)", margin: "0 0 16px 0", lineHeight: 1.15, letterSpacing: "-0.5px" }}>
             Mira Este Vídeo de 3 Minutos Antes de la Llamada
           </h1>
-          {/* Video placeholder */}
+          {/* Vídeo previo a la llamada */}
           <div style={{
             borderRadius: "16px", overflow: "hidden",
-            background: "#111", border: "1px solid #1f1f1f",
-            aspectRatio: "16/9", display: "flex",
-            alignItems: "center", justifyContent: "center",
+            background: "#000", border: "1px solid #1f1f1f",
             position: "relative",
           }}>
+            <video
+              src="/paso3-video.mp4"
+              poster="/paso3-video-poster.jpg"
+              controls
+              playsInline
+              preload="metadata"
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
             <div style={{
               position: "absolute", top: "14px", right: "14px",
               background: "#00AAFF", color: "#fff",
               fontSize: "11px", fontWeight: 900, padding: "4px 12px",
-              borderRadius: "99px", letterSpacing: "1px",
+              borderRadius: "99px", letterSpacing: "1px", zIndex: 1,
+              pointerEvents: "none",
             }}>3 MIN</div>
-            <div style={{ textAlign: "center", padding: "32px" }}>
-              <div style={{ fontSize: "52px", marginBottom: "10px", color: "#00AAFF" }}>▶</div>
-              <p style={{ color: "#999", fontSize: "13px", margin: 0 }}>Vídeo previo a la llamada — próximamente</p>
-            </div>
           </div>
         </div>
 
