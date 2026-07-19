@@ -78,8 +78,8 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
           Déjanos tu correo y te los enviamos al instante.
         </p>
 
-        {/* GHL Form iframe — altura segura para móvil con teclado abierto */}
-        <div style={{ position: "relative", minHeight: "clamp(520px, 75vh, 720px)" }}>
+        {/* GHL Form iframe — embed oficial completo con auto-resize (form_embed.js) */}
+        <div style={{ position: "relative", minHeight: "645px" }}>
           {!iframeLoaded && (
             <div
               aria-hidden="true"
@@ -100,12 +100,23 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
             src={`https://links.fitcondamian.com/widget/form/${GHL_FORM_ID}`}
             onLoad={() => setIframeLoaded(true)}
             style={{
-              width: "100%", height: "clamp(520px, 75vh, 720px)", border: "none", borderRadius: "8px", display: "block",
+              width: "100%", height: "645px", border: "none", borderRadius: "8px", display: "block",
               opacity: iframeLoaded ? 1 : 0, transition: "opacity 0.3s ease",
               position: "relative",
             }}
             id={`inline-${GHL_FORM_ID}`}
-            title="Formulario de acceso a recursos gratuitos"
+            data-layout="{'id':'INLINE'}"
+            data-trigger-type="alwaysShow"
+            data-trigger-value=""
+            data-activation-type="alwaysActivated"
+            data-activation-value=""
+            data-deactivation-type="neverDeactivate"
+            data-deactivation-value=""
+            data-form-name="01 - Formulario LM Youtube"
+            data-height="645"
+            data-layout-iframe-id={`inline-${GHL_FORM_ID}`}
+            data-form-id={GHL_FORM_ID}
+            title="01 - Formulario LM Youtube"
           />
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
