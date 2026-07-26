@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Testimonios en vídeo (YouTube). Para añadir más, añade su ID aquí.
+const testimoniosVideo = [
+  "wnaKW0mFnHw",
+];
+
 export default function GraciasPage() {
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
@@ -186,20 +191,23 @@ export default function GraciasPage() {
           </h3>
         </div>
 
-        {/* TESTIMONIO EN VÍDEO */}
-        <div style={{
-          position: "relative", aspectRatio: "16/9",
-          borderRadius: "16px", overflow: "hidden",
-          border: "1px solid #1f1f1f", background: "#000",
-          marginBottom: "48px",
-        }}>
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0"
-            title="Testimonio en vídeo"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
-          />
+        {/* TESTIMONIOS EN VÍDEO */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "48px" }}>
+          {testimoniosVideo.map((id, i) => (
+            <div key={id} style={{
+              position: "relative", aspectRatio: "16/9",
+              borderRadius: "16px", overflow: "hidden",
+              border: "1px solid #1f1f1f", background: "#000",
+            }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
+                title={`Testimonio en vídeo ${i + 1}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+              />
+            </div>
+          ))}
         </div>
 
       </div>
