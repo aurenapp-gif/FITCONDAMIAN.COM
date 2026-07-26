@@ -7,12 +7,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const testimonios = [
-  { nombre: "Carlos M.", texto: "En 3 meses bajé 12 kg sin pasar hambre. El método de Damián cambia la perspectiva completamente.", resultado: "-12 kg en 3 meses" },
-  { nombre: "Laura P.", texto: "Nunca había conseguido mantener los resultados. Con Damián por fin entendí cómo funciona mi cuerpo.", resultado: "Resultados duraderos" },
-  { nombre: "Sergio R.", texto: "Pensaba que a mis 45 años ya no podía transformar mi cuerpo. Me equivocaba totalmente.", resultado: "Transformación total" },
-];
-
 export default function GraciasPage() {
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
@@ -192,26 +186,20 @@ export default function GraciasPage() {
           </h3>
         </div>
 
-        {/* TESTIMONIOS */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "48px" }}>
-          {testimonios.map((t) => (
-            <div key={t.nombre} style={{
-              background: "#111", border: "1px solid #1f1f1f",
-              borderRadius: "16px", padding: "22px",
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                <p style={{ fontWeight: 900, fontSize: "15px", margin: 0 }}>{t.nombre}</p>
-                <span style={{
-                  background: "rgba(0,170,255,0.1)", border: "1px solid rgba(0,170,255,0.25)",
-                  color: "#00AAFF", fontSize: "11px", fontWeight: 700,
-                  padding: "4px 10px", borderRadius: "99px", whiteSpace: "nowrap",
-                }}>{t.resultado}</span>
-              </div>
-              <p style={{ color: "#D8D8D8", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
-                &quot;{t.texto}&quot;
-              </p>
-            </div>
-          ))}
+        {/* TESTIMONIO EN VÍDEO */}
+        <div style={{
+          position: "relative", aspectRatio: "16/9",
+          borderRadius: "16px", overflow: "hidden",
+          border: "1px solid #1f1f1f", background: "#000",
+          marginBottom: "48px",
+        }}>
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0"
+            title="Testimonio en vídeo"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+          />
         </div>
 
       </div>
