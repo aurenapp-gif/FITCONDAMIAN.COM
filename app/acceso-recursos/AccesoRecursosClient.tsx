@@ -119,6 +119,16 @@ const recursos = [
     imagen: "/lead-05-laboratorio.jpg",
     linkDoc: "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing",
   },
+  {
+    vol: "06",
+    categoria: "NUTRICIÓN",
+    titulo: "Guía de Alimentación en la Menopausia",
+    descripcion:
+      "La guía de alimentación para atravesar la menopausia con energía, sin flacidez y sintiéndote en tu mejor versión.",
+    linkVideo: "https://youtu.be/oQqtijKMbHw",
+    linkDoc: "https://guialaimentacionmenopausia.netlify.app",
+    docLabel: "Abrir guía",
+  },
 ];
 
 const ctaBlock = (
@@ -465,7 +475,7 @@ export default function AccesoRecursosClient() {
                         cursor: r.linkDoc === "#" ? "not-allowed" : "pointer",
                       }}
                     >
-                      Abrir documento ↗
+                      {(r as { docLabel?: string }).docLabel ?? "Abrir documento"} ↗
                     </a>
                   </div>
                 </div>
