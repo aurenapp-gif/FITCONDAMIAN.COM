@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import VslTimeline from "../_components/VslTimeline";
+import VideoPlayer from "../_components/VideoPlayer";
 
 export const metadata: Metadata = {
   title: "¡Llamada reservada!",
@@ -72,14 +73,7 @@ export default function GraciasPage() {
             borderRadius: "16px", overflow: "hidden",
             background: "#000", border: "1px solid #1f1f1f",
           }}>
-            <video
-              src="/paso1-gracias.mp4"
-              poster="/paso1-gracias-poster.jpg"
-              controls
-              playsInline
-              preload="metadata"
-              style={{ width: "100%", height: "auto", display: "block" }}
-            />
+            <VideoPlayer src="/paso1-gracias.mp4" poster="/paso1-gracias-poster.jpg" />
           </div>
         </div>
 
@@ -150,14 +144,7 @@ export default function GraciasPage() {
             background: "#000", border: "1px solid #1f1f1f",
             position: "relative",
           }}>
-            <video
-              src="/paso3-video.mp4"
-              poster="/paso3-video-poster.jpg"
-              controls
-              playsInline
-              preload="metadata"
-              style={{ width: "100%", height: "auto", display: "block" }}
-            />
+            <VideoPlayer src="/paso3-video.mp4" poster="/paso3-video-poster.jpg" />
             <div style={{
               position: "absolute", top: "14px", right: "14px",
               background: "#00AAFF", color: "#fff",

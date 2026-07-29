@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type ReactNode } from "react";
+import VideoPlayer from "../_components/VideoPlayer";
 
 // Fondo de partículas animadas (igual que en /recursos).
 function ParticlesCanvas() {
@@ -242,14 +243,7 @@ export default function AccesoRecursosClient() {
             border: "1px solid #252525",
             marginBottom: "8px",
           }}>
-            <video
-              src="/video-recursos.mp4"
-              poster="/video-recursos-poster.jpg"
-              controls
-              playsInline
-              preload="metadata"
-              style={{ width: "100%", height: "auto", display: "block" }}
-            />
+            <VideoPlayer src="/video-recursos.mp4" poster="/video-recursos-poster.jpg" />
           </div>
           <p style={{ color: "#444", fontSize: "12px", textAlign: "center", margin: "0 0 32px 0" }}>
             🔊 Activa el sonido
