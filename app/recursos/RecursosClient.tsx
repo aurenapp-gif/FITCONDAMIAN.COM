@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import ModalForm from "./ModalForm";
 import VideoPlayer from "../_components/VideoPlayer";
+import { track } from "@vercel/analytics";
 
 const recursos = [
   { vol: "01", nombre: "Medidor de Edad-Muscular",  emoji: "📋", categoria: "DIAGNÓSTICO",  desc: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás." },
@@ -198,6 +199,12 @@ export default function RecursosClient() {
   const statsReveal  = useReveal(0.2);
   const accordReveal = useReveal(0.1);
 
+  // Abre el formulario y registra el evento de conversión "registro".
+  const openModal = () => {
+    track("registro");
+    setModalOpen(true);
+  };
+
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
       <ModalForm open={modalOpen} onClose={() => setModalOpen(false)} />
@@ -240,7 +247,7 @@ export default function RecursosClient() {
               Accede gratis a los recursos que han transformado{" "}
               <em style={{ fontStyle: "italic", color: "#00AAFF" }}>cientos de cuerpos.</em>
             </h1>
-            <button onClick={() => setModalOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "17px", padding: "16px 36px", borderRadius: "99px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "14px" }}>
+            <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "17px", padding: "16px 36px", borderRadius: "99px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "14px" }}>
               Quiero acceder gratis →
             </button>
             <p style={{ color: "#00AAFF", fontSize: "14px", fontWeight: 700, margin: "0 0 36px 0" }}>Empieza a ver cambios en menos de 5 días</p>
@@ -274,7 +281,7 @@ export default function RecursosClient() {
             </div>
           </div>
 
-          <CinematicReveal onOpenModal={() => setModalOpen(true)} />
+          <CinematicReveal onOpenModal={openModal} />
         </section>
       </div>
 
