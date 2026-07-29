@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ModalForm from "./ModalForm";
+import VideoPlayer from "../_components/VideoPlayer";
 
 const recursos = [
   { vol: "01", nombre: "Medidor de Edad-Muscular",  emoji: "📋", categoria: "DIAGNÓSTICO",  desc: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás." },
@@ -243,14 +244,7 @@ export default function RecursosClient() {
             </button>
             <p style={{ color: "#00AAFF", fontSize: "14px", fontWeight: 700, margin: "0 0 36px 0" }}>Empieza a ver cambios en menos de 5 días</p>
             <div style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid #252525", background: "#000" }}>
-              <video
-                src="/inicio-lead.mp4"
-                poster="/inicio-lead-poster.jpg"
-                controls
-                playsInline
-                preload="metadata"
-                style={{ width: "100%", height: "auto", display: "block" }}
-              />
+              <VideoPlayer src="/inicio-lead.mp4" poster="/inicio-lead-poster.jpg" />
             </div>
           </div>
         </section>
