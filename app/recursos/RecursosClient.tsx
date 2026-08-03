@@ -232,8 +232,8 @@ export default function RecursosClient() {
           lineHeight: 1.45,
           letterSpacing: "-0.3px",
         }}>
-          Para mujeres que ya no se sienten atractivas al mirarse al espejo y se sienten cansadas todo el día.<br />
-          Que ya no se ponen la ropa que tanto les gustaba.
+          Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día<br />
+          y ya no se ponen la ropa que tanto les gustaba
         </p>
       </div>
 
