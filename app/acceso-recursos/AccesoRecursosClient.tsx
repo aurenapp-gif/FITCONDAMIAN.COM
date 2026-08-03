@@ -129,6 +129,16 @@ const recursos = [
     linkDoc: "https://guialaimentacionmenopausia.netlify.app",
     docLabel: "Abrir guía",
   },
+  {
+    vol: "07",
+    categoria: "PÉRDIDA DE GRASA",
+    titulo: "Pierde Grasa Más Rápido con Estos 3 Cambios",
+    descripcion:
+      "Los 3 cambios que aceleran la pérdida de grasa sin pasar hambre ni vivir en el gimnasio. Aplícalos desde hoy.",
+    linkVideo: "#",
+    linkDoc: "https://guiaperdidadegrasa.netlify.app",
+    docLabel: "Abrir guía",
+  },
 ];
 
 const ctaBlock = (

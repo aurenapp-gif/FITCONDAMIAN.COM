@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Testimonios en vídeo (YouTube). Para añadir más, añade su ID aquí.
+const testimoniosVideo = [
+  "wnaKW0mFnHw",
+  "hrVa6H6ankg",
+];
+
 export default function AgendarPage() {
   return (
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif" }}>
@@ -71,6 +77,36 @@ export default function AgendarPage() {
             title="Reserva tu llamada con Damián"
             loading="lazy"
           />
+        </div>
+
+        {/* SEPARADOR TESTIMONIOS */}
+        <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "40px" }} />
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+            RESULTADOS REALES
+          </p>
+          <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: 0, letterSpacing: "-0.5px" }}>
+            Lo que dicen quienes ya lo han hecho
+          </h3>
+        </div>
+
+        {/* TESTIMONIOS EN VÍDEO */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "48px" }}>
+          {testimoniosVideo.map((id, i) => (
+            <div key={id} style={{
+              position: "relative", aspectRatio: "16/9",
+              borderRadius: "16px", overflow: "hidden",
+              border: "1px solid #1f1f1f", background: "#000",
+            }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
+                title={`Testimonio en vídeo ${i + 1}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+              />
+            </div>
+          ))}
         </div>
 
       </div>

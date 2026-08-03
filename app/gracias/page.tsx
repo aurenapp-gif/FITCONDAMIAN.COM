@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 // Testimonios en vídeo (YouTube). Para añadir más, añade su ID aquí.
 const testimoniosVideo = [
   "wnaKW0mFnHw",
+  "hrVa6H6ankg",
 ];
 
 export default function GraciasPage() {
