@@ -232,7 +232,7 @@ export default function RecursosClient() {
           lineHeight: 1.45,
           letterSpacing: "-0.3px",
         }}>
-          Para mujeres que ya no se sienten atractivas, han perdido la energía y sienten que están envejeciendo
+          Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día y ya no se ponen la ropa que tanto les gustaba
         </p>
       </div>
 
