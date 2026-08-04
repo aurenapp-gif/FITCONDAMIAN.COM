@@ -216,69 +216,34 @@ export default function RecursosClient() {
         </p>
       </header>
 
-      {/* BANNER — titular + público objetivo */}
-      <div style={{
-        background: "linear-gradient(90deg, #0077CC, #00AAFF)",
-        padding: "20px 24px 16px",
-        textAlign: "center",
-        position: "relative",
-        zIndex: 10,
-      }}>
-        <p style={{
-          margin: "0 auto 8px",
-          maxWidth: "760px",
-          color: "#fff",
-          fontSize: "clamp(1.15rem, 5vw, 1.75rem)",
-          fontWeight: 900,
-          lineHeight: 1.2,
-          letterSpacing: "-0.5px",
-        }}>
-          Descubre cómo eliminar la flacidez, terminar con el cansancio y recuperar tu figura sin esfuerzo
-        </p>
-        <p style={{
-          margin: "0 auto",
-          maxWidth: "620px",
-          color: "rgba(255,255,255,0.92)",
-          fontSize: "clamp(12px, 3.2vw, 14px)",
-          fontWeight: 700,
-          lineHeight: 1.45,
-          letterSpacing: "-0.2px",
-        }}>
-          Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día y ya no se ponen la ropa que tanto les gustaba
-        </p>
-      </div>
-
       <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 24px" }}>
 
         {/* HERO */}
-        <section style={{ paddingTop: "48px", paddingBottom: "40px", textAlign: "center", position: "relative" }}>
+        <section style={{ paddingTop: "40px", paddingBottom: "40px", textAlign: "center", position: "relative" }}>
           <div style={{ position: "absolute", inset: 0, overflow: "hidden", borderRadius: "24px", pointerEvents: "none" }}>
             <ParticlesCanvas />
           </div>
           <div style={{ position: "relative", zIndex: 1 }}>
-            <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 28px 0", letterSpacing: "-1.5px" }}>
-              <em style={{ fontStyle: "italic", color: "#00AAFF" }}>7 recursos gratis</em>{" "}
-              para verte más firme, recuperar tu energía y volver a tu ropa favorita.
+
+            {/* Calificador (público objetivo) */}
+            <p style={{ color: "#00AAFF", fontSize: "clamp(13px, 3.4vw, 15px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px", margin: "0 auto 20px", maxWidth: "560px" }}>
+              Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día y ya no se ponen la ropa que tanto les gustaba
+            </p>
+
+            {/* Titular principal (dos tonos, estilo del ejemplo) */}
+            <h1 style={{ fontSize: "clamp(2rem, 7.5vw, 3.2rem)", fontWeight: 900, lineHeight: 1.08, margin: "0 0 28px 0", letterSpacing: "-1.5px", textTransform: "uppercase" }}>
+              Descubre cómo eliminar la flacidez, terminar con el cansancio y{" "}
+              <span style={{ color: "#00AAFF" }}>recuperar tu figura sin esfuerzo</span>
             </h1>
 
-            {/* Bullets de valor — qué te llevas (visible sin scroll) */}
-            <ul style={{ listStyle: "none", padding: 0, margin: "0 auto 28px", maxWidth: "440px", textAlign: "left", display: "inline-block" }}>
-              {[
-                "Sabrás exactamente en qué punto está tu cuerpo hoy",
-                "Qué cambiar para verte más firme y con energía",
-                "Acceso inmediato y gratuito, solo con tu correo",
-              ].map((b) => (
-                <li key={b} style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "12px" }}>
-                  <span aria-hidden="true" style={{ flexShrink: 0, color: "#00AAFF", fontWeight: 900, fontSize: "16px", lineHeight: 1.5 }}>✓</span>
-                  <span style={{ color: "#D8D8D8", fontSize: "15px", lineHeight: 1.5 }}>{b}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "17px", padding: "16px 36px", borderRadius: "99px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "14px" }}>
-              Sí, quiero mis recursos gratis →
+            <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "10px", width: "100%", maxWidth: "520px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "clamp(16px, 4.2vw, 19px)", padding: "20px 32px", borderRadius: "16px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "16px", boxShadow: "0 10px 30px rgba(0,170,255,0.35)", textTransform: "uppercase" }}>
+              Acceder a los recursos
             </button>
-            <p style={{ color: "#00AAFF", fontSize: "14px", fontWeight: 700, margin: "0 0 36px 0" }}>Empieza a ver cambios en menos de 5 días</p>
+
+            {/* Subtexto / promesa */}
+            <p style={{ color: "#B8B8B8", fontSize: "15px", fontWeight: 500, lineHeight: 1.6, margin: "0 auto 36px", maxWidth: "560px" }}>
+              Te regalo los <strong style={{ color: "#fff" }}>7 recursos gratis</strong> que han ayudado a cientos de mujeres a verse más firmes, recuperar su energía y volver a su ropa favorita. <span style={{ color: "#00AAFF", fontWeight: 700 }}>Empieza a ver cambios en menos de 5 días.</span>
+            </p>
             <div style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid #252525", background: "#000" }}>
               <VideoPlayer src="/inicio-lead.mp4" poster="/inicio-lead-poster.jpg" />
             </div>
