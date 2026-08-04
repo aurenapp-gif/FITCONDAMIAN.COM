@@ -245,12 +245,27 @@ export default function RecursosClient() {
             <ParticlesCanvas />
           </div>
           <div style={{ position: "relative", zIndex: 1 }}>
-            <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 32px 0", letterSpacing: "-1.5px" }}>
-              Accede gratis a los recursos que han transformado{" "}
-              <em style={{ fontStyle: "italic", color: "#00AAFF" }}>cientos de cuerpos.</em>
+            <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 28px 0", letterSpacing: "-1.5px" }}>
+              <em style={{ fontStyle: "italic", color: "#00AAFF" }}>7 recursos gratis</em>{" "}
+              para verte más firme, recuperar tu energía y volver a tu ropa favorita.
             </h1>
+
+            {/* Bullets de valor — qué te llevas (visible sin scroll) */}
+            <ul style={{ listStyle: "none", padding: 0, margin: "0 auto 28px", maxWidth: "440px", textAlign: "left", display: "inline-block" }}>
+              {[
+                "Sabrás exactamente en qué punto está tu cuerpo hoy",
+                "Qué cambiar para verte más firme y con energía",
+                "Acceso inmediato y gratuito, solo con tu correo",
+              ].map((b) => (
+                <li key={b} style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "12px" }}>
+                  <span aria-hidden="true" style={{ flexShrink: 0, color: "#00AAFF", fontWeight: 900, fontSize: "16px", lineHeight: 1.5 }}>✓</span>
+                  <span style={{ color: "#D8D8D8", fontSize: "15px", lineHeight: 1.5 }}>{b}</span>
+                </li>
+              ))}
+            </ul>
+
             <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "17px", padding: "16px 36px", borderRadius: "99px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "14px" }}>
-              Quiero acceder gratis →
+              Sí, quiero mis recursos gratis →
             </button>
             <p style={{ color: "#00AAFF", fontSize: "14px", fontWeight: 700, margin: "0 0 36px 0" }}>Empieza a ver cambios en menos de 5 días</p>
             <div style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid #252525", background: "#000" }}>
