@@ -37,10 +37,9 @@
   #fcd-acceso .fcd-hero h1 em { font-style: italic; color: #00AAFF; }
   #fcd-acceso .fcd-hero-lead { color: #A0A0A0; font-size: 17px; line-height: 1.6; margin: 0 0 36px 0; }
   #fcd-acceso .fcd-hero-video {
-    border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #252525;
-    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+    border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #252525; margin-bottom: 8px;
   }
-  #fcd-acceso .fcd-hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #fcd-acceso .fcd-hero-video video { width: 100%; height: auto; display: block; }
   #fcd-acceso .fcd-play-static {
     width: 68px; height: 68px; background: #00AAFF; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; font-size: 22px;
@@ -136,11 +135,13 @@
       <h1>Bienvenido a los <em>recursos.</em></h1>
       <p class="fcd-hero-lead">Todo el material que necesitas para transformar tu cuerpo. Guárdalo antes de cerrar esta página.</p>
 
-      <!-- VIDEO BIENVENIDA: sube el .mp4 a Contenido multimedia de GHL y reemplaza -->
-      <!-- este bloque por: <div class="fcd-hero-video"><video controls             -->
-      <!-- preload="metadata" poster="URL_POSTER" src="URL_VIDEO"></video></div>    -->
+      <!-- VIDEO BIENVENIDA. Enlazado desde Vercel (fitcondamian.com).       -->
+      <!-- Si migras el dominio raiz a GHL, sube el .mp4 a Contenido         -->
+      <!-- multimedia de GHL y cambia estas dos URLs.                        -->
       <div class="fcd-hero-video">
-        <div style="text-align:center;"><div class="fcd-play-static">▶</div></div>
+        <video controls playsinline preload="metadata"
+          poster="https://fitcondamian.com/video-recursos-poster.jpg"
+          src="https://fitcondamian.com/video-recursos.mp4"></video>
       </div>
       <p class="fcd-sound">🔊 Activa el sonido</p>
 
