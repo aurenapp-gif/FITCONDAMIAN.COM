@@ -1,0 +1,260 @@
+<!-- ================================================================= -->
+<!-- FIT CON DAMIAN — Despues de agendar (llamada agendada)            -->
+<!-- Pegar en el bloque "JavaScript/HTML personalizado" de GoHighLevel -->
+<!-- Los videos de pasos 1 y 3 son .mp4 propios: subelos a GHL y pega  -->
+<!-- su URL donde se indica. La imagen del paso 2 igual.               -->
+<!-- Los videos de la linea de tiempo y testimonios son de YouTube.    -->
+<!-- ================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  #fcd-gracias * { margin: 0; padding: 0; box-sizing: border-box; }
+  #fcd-gracias { background: #0D0D0D; color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; display: flex; flex-direction: column; line-height: 1.5; }
+  #fcd-gracias a { text-decoration: none; }
+  #fcd-gracias .fcd-accent { color: #00AAFF; }
+  #fcd-gracias .fcd-header { border-bottom: 1px solid #1f1f1f; padding: 20px 24px; text-align: center; }
+  #fcd-gracias .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+  #fcd-gracias .fcd-wrap { max-width: 640px; margin: 0 auto; padding: 0 20px 80px; width: 100%; }
+
+  /* Progreso */
+  #fcd-gracias .fcd-prog { padding-top: 36px; margin-bottom: 32px; }
+  #fcd-gracias .fcd-prog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  #fcd-gracias .fcd-prog-top .fcd-l { font-size: 12px; font-weight: 700; color: #AAAAAA; letter-spacing: 1px; text-transform: uppercase; }
+  #fcd-gracias .fcd-prog-top .fcd-r { font-size: 13px; font-weight: 900; color: #FF3B30; }
+  #fcd-gracias .fcd-prog-bar { background: #1a1a1a; border-radius: 99px; height: 10px; overflow: hidden; }
+  #fcd-gracias .fcd-prog-fill { width: 80%; height: 100%; background: linear-gradient(90deg, #00AAFF, #0077CC); border-radius: 99px; }
+  #fcd-gracias .fcd-warn { margin-top: 20px; background: rgba(255,59,48,0.08); border: 1px solid rgba(255,59,48,0.3); border-radius: 14px; padding: 16px 20px; display: flex; gap: 12px; align-items: center; }
+  #fcd-gracias .fcd-warn .fcd-ico { font-size: 22px; flex-shrink: 0; }
+  #fcd-gracias .fcd-warn .fcd-t1 { font-weight: 900; font-size: 15px; color: #FF3B30; margin: 0 0 2px 0; }
+  #fcd-gracias .fcd-warn .fcd-t2 { color: #D8D8D8; font-size: 13px; margin: 0; line-height: 1.5; }
+
+  /* Pasos */
+  #fcd-gracias .fcd-paso { margin-bottom: 32px; }
+  #fcd-gracias .fcd-paso-head { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+  #fcd-gracias .fcd-paso-n { flex-shrink: 0; width: 36px; height: 36px; background: #00AAFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #fff; }
+  #fcd-gracias .fcd-paso-head h2 { font-weight: 900; font-size: clamp(1.2rem, 4vw, 1.5rem); margin: 0; line-height: 1.2; }
+  #fcd-gracias .fcd-paso-head .fcd-red { color: #FF3B30; font-size: 13px; font-weight: 700; margin: 2px 0 0 0; }
+  #fcd-gracias .fcd-media { border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #1f1f1f; position: relative; }
+  #fcd-gracias .fcd-media video { width: 100%; height: auto; display: block; }
+  #fcd-gracias .fcd-media-ph { aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; text-align: center; }
+  #fcd-gracias .fcd-play { width: 68px; height: 68px; background: #00AAFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; padding-left: 5px; margin: 0 auto; color: #fff; box-shadow: 0 0 0 12px rgba(0,170,255,0.12); }
+  #fcd-gracias .fcd-min-badge { position: absolute; top: 14px; right: 14px; background: #00AAFF; color: #fff; font-size: 11px; font-weight: 900; padding: 4px 12px; border-radius: 99px; letter-spacing: 1px; }
+  #fcd-gracias .fcd-box { background: #111; border: 1px solid #1f1f1f; border-radius: 16px; padding: 24px; }
+  #fcd-gracias .fcd-arrow-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+  #fcd-gracias .fcd-arrow-row:last-of-type { margin-bottom: 0; }
+  #fcd-gracias .fcd-arrow { color: #00AAFF; font-weight: 900; flex-shrink: 0; font-size: 15px; }
+  #fcd-gracias .fcd-arrow-row p { color: #D8D8D8; font-size: 14px; line-height: 1.6; margin: 0; }
+  #fcd-gracias .fcd-arrow-row strong { color: #fff; }
+  #fcd-gracias .fcd-arrow-row strong.fcd-accent { color: #00AAFF; }
+  #fcd-gracias .fcd-img { margin-top: 20px; border-radius: 12px; overflow: hidden; border: 1px solid #252525; }
+  #fcd-gracias .fcd-img img { width: 100%; height: auto; display: block; }
+  #fcd-gracias .fcd-img-ph { margin-top: 20px; border-radius: 12px; border: 1px dashed #333; padding: 28px; text-align: center; color: #555; font-size: 13px; }
+
+  /* Separadores */
+  #fcd-gracias .fcd-sep-block { text-align: center; margin-bottom: 40px; }
+  #fcd-gracias .fcd-sep-line { border-top: 1px solid #1f1f1f; margin-bottom: 24px; }
+  #fcd-gracias .fcd-sep-eyebrow { color: #AAAAAA; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-gracias .fcd-sep-sub { color: #999; font-size: 14px; margin: 0; }
+  #fcd-gracias .fcd-sep-h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0; letter-spacing: -0.5px; }
+
+  /* Timeline */
+  #fcd-gracias .fcd-tl { position: relative; margin-bottom: 60px; }
+  #fcd-gracias .fcd-tl-base { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(0,170,255,0.15); transform: translateX(-50%); }
+  #fcd-gracias .fcd-tl-fill { position: absolute; left: 50%; top: 0; width: 3px; height: 0; transform: translateX(-50%); background: linear-gradient(180deg, rgba(0,170,255,0.2), #00AAFF); box-shadow: 0 0 12px rgba(0,170,255,0.8), 0 0 24px rgba(0,170,255,0.5); border-radius: 2px; }
+  #fcd-gracias .fcd-tl-rows { display: flex; flex-direction: column; gap: 48px; }
+  #fcd-gracias .fcd-tl-row { display: flex; position: relative; }
+  #fcd-gracias .fcd-tl-row.fcd-left { justify-content: flex-start; }
+  #fcd-gracias .fcd-tl-row.fcd-right { justify-content: flex-end; }
+  #fcd-gracias .fcd-dot { position: absolute; left: 50%; top: 28px; transform: translateX(-50%); width: 14px; height: 14px; background: #1b2b33; border-radius: 50%; border: 3px solid #0D0D0D; transition: background 0.4s ease, box-shadow 0.4s ease; z-index: 1; }
+  #fcd-gracias .fcd-dot.fcd-on { background: #00AAFF; box-shadow: 0 0 0 4px rgba(0,170,255,0.25), 0 0 14px rgba(0,170,255,0.9); }
+  #fcd-gracias .fcd-tl-card { width: clamp(200px, 46%, 260px); background: #111; border: 1px solid #1f1f1f; border-radius: 14px; overflow: hidden; }
+  #fcd-gracias .fcd-tl-thumb { aspect-ratio: 16/9; width: 100%; background: #161616; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #1f1f1f; border: none; padding: 0; cursor: pointer; overflow: hidden; }
+  #fcd-gracias .fcd-tl-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
+  #fcd-gracias .fcd-tl-vol { position: absolute; top: 8px; left: 8px; background: #00AAFF; color: #fff; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 99px; z-index: 1; }
+  #fcd-gracias .fcd-tl-play { width: 36px; height: 36px; background: #00AAFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; padding-left: 3px; box-shadow: 0 0 0 8px rgba(0,170,255,0.12); color: #fff; position: relative; z-index: 1; }
+  #fcd-gracias .fcd-tl-card-body { padding: 14px; }
+  #fcd-gracias .fcd-tl-card-body p { font-weight: 800; font-size: 12px; line-height: 1.4; margin: 0; color: #E0E0E0; }
+
+  /* Testimonios */
+  #fcd-gracias .fcd-tts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+  #fcd-gracias .fcd-tt { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
+  #fcd-gracias .fcd-tt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+  #fcd-gracias .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; }
+  #fcd-gracias .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
+
+  /* Modal video */
+  #fcd-gracias .fcd-vmodal { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  #fcd-gracias .fcd-vmodal.fcd-open { display: flex; }
+  #fcd-gracias .fcd-vmodal-inner { position: relative; width: 100%; max-width: 900px; }
+  #fcd-gracias .fcd-vmodal-close { position: absolute; top: -44px; right: 0; background: #222; border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  #fcd-gracias .fcd-vmodal-frame { position: relative; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
+  #fcd-gracias .fcd-vmodal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+</style>
+
+<div id="fcd-gracias">
+
+  <div class="fcd-vmodal" id="fcd-vmodal-g">
+    <div class="fcd-vmodal-inner">
+      <button class="fcd-vmodal-close" id="fcd-vmodal-close-g" aria-label="Cerrar vídeo">&#10005;</button>
+      <div class="fcd-vmodal-frame" id="fcd-vmodal-frame-g"></div>
+    </div>
+  </div>
+
+  <header class="fcd-header"><p>Fit con <span class="fcd-accent">Damián</span></p></header>
+
+  <div class="fcd-wrap">
+
+    <!-- PROGRESO -->
+    <div class="fcd-prog">
+      <div class="fcd-prog-top"><span class="fcd-l">Progreso de confirmación</span><span class="fcd-r">80%</span></div>
+      <div class="fcd-prog-bar"><div class="fcd-prog-fill"></div></div>
+      <div class="fcd-warn">
+        <span class="fcd-ico">⚠️</span>
+        <div>
+          <p class="fcd-t1">IMPORTANTE: Tu llamada No Está Confirmada</p>
+          <p class="fcd-t2">Completa los pasos de abajo para asegurar tu plaza.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 1 -->
+    <div class="fcd-paso">
+      <div class="fcd-paso-head">
+        <span class="fcd-paso-n">1</span>
+        <h2>Mira Este Vídeo Corto</h2>
+      </div>
+      <!-- VIDEO PASO 1: sube el .mp4 a GHL y reemplaza el bloque por:
+           <div class="fcd-media"><video controls preload="metadata" poster="URL_POSTER" src="URL_VIDEO"></video></div> -->
+      <div class="fcd-media"><div class="fcd-media-ph"><div class="fcd-play">▶</div></div></div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div class="fcd-paso">
+      <div class="fcd-paso-head">
+        <span class="fcd-paso-n">2</span>
+        <div>
+          <h2>Confirma la Llamada en el Email</h2>
+          <p class="fcd-red">(Revisa la carpeta de Spam / Promociones)</p>
+        </div>
+      </div>
+      <div class="fcd-box">
+        <div class="fcd-arrow-row"><span class="fcd-arrow">→</span><p>Busca en tu email por: <strong>Damián</strong> o <strong>Fit con Damián</strong></p></div>
+        <div class="fcd-arrow-row"><span class="fcd-arrow">→</span><p>Haz clic en <strong class="fcd-accent">"Añadir al calendario"</strong> y luego <strong>"Sí"</strong> a la invitación de calendario</p></div>
+        <!-- IMAGEN PASO 2: sube "confirmar-calendario.png" a GHL y reemplaza el bloque por:
+             <div class="fcd-img"><img src="URL_IMAGEN" alt="Dónde hacer clic para confirmar la llamada"></div> -->
+        <div class="fcd-img-ph">📷 Imagen: dónde hacer clic para confirmar la llamada (súbela a GHL)</div>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div class="fcd-paso">
+      <div class="fcd-paso-head">
+        <span class="fcd-paso-n">3</span>
+        <h2>Mira Este Vídeo de 3 Minutos Antes de la Llamada</h2>
+      </div>
+      <!-- VIDEO PASO 3: sube el .mp4 a GHL y reemplaza el bloque por:
+           <div class="fcd-media"><video controls preload="metadata" poster="URL_POSTER" src="URL_VIDEO"></video><span class="fcd-min-badge">3 MIN</span></div> -->
+      <div class="fcd-media"><div class="fcd-media-ph"><div class="fcd-play">▶</div></div><span class="fcd-min-badge">3 MIN</span></div>
+    </div>
+
+    <!-- SEPARADOR TIMELINE -->
+    <div class="fcd-sep-block">
+      <div class="fcd-sep-line"></div>
+      <p class="fcd-sep-eyebrow">MIENTRAS ESPERAS LA LLAMADA</p>
+      <p class="fcd-sep-sub">Mira estos vídeos para aprovechar al máximo nuestra sesión</p>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="fcd-tl" id="fcd-tl">
+      <div class="fcd-tl-base"></div>
+      <div class="fcd-tl-fill" id="fcd-tl-fill"></div>
+      <div class="fcd-tl-rows" id="fcd-tl-rows"></div>
+    </div>
+
+    <!-- SEPARADOR TESTIMONIOS -->
+    <div class="fcd-sep-line" style="margin-bottom:40px;"></div>
+    <div class="fcd-sep-block">
+      <p class="fcd-sep-eyebrow">RESULTADOS REALES</p>
+      <h3 class="fcd-sep-h3">Lo que dicen quienes ya lo han hecho</h3>
+    </div>
+
+    <div class="fcd-tts">
+      <div class="fcd-tt"><iframe src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0" title="Testimonio en vídeo 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+  </div>
+
+  <footer class="fcd-footer">
+    <p>© <span id="fcd-year-g"></span> Fit con Damián · fitcondamian.com</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('fcd-gracias'); if (!root) return;
+  var y = document.getElementById('fcd-year-g'); if (y) y.textContent = new Date().getFullYear();
+
+  // Modal video
+  var vmodal = document.getElementById('fcd-vmodal-g');
+  var vframe = document.getElementById('fcd-vmodal-frame-g');
+  function openVideo(id) { vframe.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0" title="Reproductor de vídeo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'; vmodal.classList.add('fcd-open'); }
+  function closeVideo() { vmodal.classList.remove('fcd-open'); vframe.innerHTML = ''; }
+  document.getElementById('fcd-vmodal-close-g').addEventListener('click', closeVideo);
+  vmodal.addEventListener('click', function (e) { if (e.target === vmodal) closeVideo(); });
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Timeline
+  var vsl = [
+    { id: "01", titulo: "¿Qué es lo que te Está Restando Vitalidad y Atractivo?", lado: "left", youtube: "pUwfONeAbuk" },
+    { id: "02", titulo: "Cómo TRANSFORMAR tu físico de 40 años para volver a SENTIR QUE TIENES 25", lado: "right", youtube: "WFn9kDt3FsA" },
+    { id: "03", titulo: "Cómo ELIMINAR la flacidez a los 35 años: EL SECRETO DEL MÚSCULO", lado: "left", youtube: "0b7aIuPJaKo" },
+    { id: "04", titulo: "¿Estás Lista para Descubrir el Secreto de las Mujeres Jóvenes a los 40 Años?", lado: "right", youtube: "qZArQavUepk" }
+  ];
+  var rowsCont = document.getElementById('fcd-tl-rows');
+  var rowEls = [];
+  vsl.forEach(function (v) {
+    var row = document.createElement('div');
+    row.className = 'fcd-tl-row ' + (v.lado === 'left' ? 'fcd-left' : 'fcd-right');
+    row.innerHTML =
+      '<div class="fcd-dot"></div>' +
+      '<div class="fcd-tl-card">' +
+        '<button type="button" class="fcd-tl-thumb" data-video="' + v.youtube + '" aria-label="Ver el vídeo: ' + esc(v.titulo) + '">' +
+          '<img src="https://img.youtube.com/vi/' + v.youtube + '/maxresdefault.jpg" alt="Miniatura: ' + esc(v.titulo) + '" data-yt="' + v.youtube + '">' +
+          '<span class="fcd-tl-vol">VOL · ' + v.id + '</span>' +
+          '<span class="fcd-tl-play">▶</span>' +
+        '</button>' +
+        '<div class="fcd-tl-card-body"><p>' + esc(v.titulo) + '</p></div>' +
+      '</div>';
+    rowsCont.appendChild(row);
+    rowEls.push(row);
+  });
+  rowsCont.querySelectorAll('[data-video]').forEach(function (el) { el.addEventListener('click', function () { openVideo(el.getAttribute('data-video')); }); });
+  rowsCont.querySelectorAll('img[data-yt]').forEach(function (img) { img.addEventListener('error', function () { if (!img.dataset.step) { img.dataset.step = '1'; img.src = 'https://img.youtube.com/vi/' + img.getAttribute('data-yt') + '/hqdefault.jpg'; } else { img.style.display = 'none'; } }); });
+
+  // Estela de scroll
+  var cont = document.getElementById('fcd-tl');
+  var fillEl = document.getElementById('fcd-tl-fill');
+  var dots = rowsCont.querySelectorAll('.fcd-dot');
+  var raf = 0;
+  function update() {
+    raf = 0;
+    var rect = cont.getBoundingClientRect();
+    var refLineY = window.innerHeight * 0.5;
+    var fill = Math.max(0, Math.min(refLineY - rect.top, rect.height));
+    fillEl.style.height = fill + 'px';
+    rowEls.forEach(function (row, i) {
+      var r = row.getBoundingClientRect();
+      if ((r.top + 28) <= refLineY) dots[i].classList.add('fcd-on');
+      else dots[i].classList.remove('fcd-on');
+    });
+  }
+  function onScroll() { if (!raf) raf = requestAnimationFrame(update); }
+  update();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+})();
+</script>

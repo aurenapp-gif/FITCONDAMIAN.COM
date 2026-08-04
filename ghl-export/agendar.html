@@ -1,0 +1,87 @@
+<!-- ================================================================= -->
+<!-- FIT CON DAMIAN — Agendar llamada                                  -->
+<!-- Pegar en el bloque "JavaScript/HTML personalizado" de GoHighLevel -->
+<!-- El calendario es el widget de GHL (funciona tal cual).            -->
+<!-- ================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+  #fcd-agendar * { margin: 0; padding: 0; box-sizing: border-box; }
+  #fcd-agendar { background: #0D0D0D; color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; line-height: 1.5; }
+  #fcd-agendar a { text-decoration: none; }
+  #fcd-agendar .fcd-accent { color: #00AAFF; }
+  #fcd-agendar .fcd-header { border-bottom: 1px solid #1f1f1f; padding: 20px 24px; text-align: center; }
+  #fcd-agendar .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+  #fcd-agendar .fcd-banner { background: linear-gradient(90deg, #0077CC, #00AAFF); padding: 14px 24px; text-align: center; }
+  #fcd-agendar .fcd-banner p { color: #fff; font-size: clamp(13px, 3.4vw, 15px); font-weight: 900; line-height: 1.45; letter-spacing: -0.3px; }
+  #fcd-agendar .fcd-wrap { max-width: 680px; margin: 0 auto; padding: 0 24px 80px; }
+  #fcd-agendar .fcd-badge-row { text-align: center; padding-top: 48px; margin-bottom: 24px; }
+  #fcd-agendar .fcd-badge { display: inline-block; background: rgba(0,170,255,0.1); border: 1px solid rgba(0,170,255,0.25); color: #00AAFF; font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 99px; }
+  #fcd-agendar h1 { font-size: clamp(2.2rem, 7vw, 3.2rem); font-weight: 900; text-align: center; line-height: 1.05; margin: 0 0 40px 0; letter-spacing: -1.5px; }
+  #fcd-agendar h1 em { font-style: italic; color: #00AAFF; }
+  #fcd-agendar .fcd-sep-txt { text-align: center; margin-bottom: 28px; }
+  #fcd-agendar .fcd-sep-txt .fcd-eyebrow { color: #888; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 6px 0; }
+  #fcd-agendar .fcd-sep-txt .fcd-small { color: #555; font-size: 13px; margin: 0; }
+  #fcd-agendar .fcd-cal { border-radius: 20px; border: 1px solid #1f1f1f; margin-bottom: 36px; overflow: hidden; }
+  #fcd-agendar .fcd-cal iframe { width: 100%; height: 1000px; border: none; display: block; }
+  #fcd-agendar .fcd-line { border-top: 1px solid #1f1f1f; margin-bottom: 40px; }
+  #fcd-agendar .fcd-tt-head { text-align: center; margin-bottom: 32px; }
+  #fcd-agendar .fcd-tt-head .fcd-eyebrow { color: #AAAAAA; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-agendar .fcd-tt-head h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0; letter-spacing: -0.5px; }
+  #fcd-agendar .fcd-tts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+  #fcd-agendar .fcd-tt { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
+  #fcd-agendar .fcd-tt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  #fcd-agendar .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; }
+  #fcd-agendar .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
+  #fcd-agendar .fcd-footer a { color: #444; }
+</style>
+
+<div id="fcd-agendar">
+
+  <header class="fcd-header"><p>Fit con <span class="fcd-accent">Damián</span></p></header>
+
+  <div class="fcd-banner">
+    <p>Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día<br>y ya no se ponen la ropa que tanto les gustaba</p>
+  </div>
+
+  <div class="fcd-wrap">
+
+    <div class="fcd-badge-row">
+      <span class="fcd-badge">📞 30 minutos · 100% Gratuito · Sin compromiso</span>
+    </div>
+
+    <h1>Agenda tu llamada <em>estratégica gratuita</em></h1>
+
+    <div class="fcd-sep-txt">
+      <p class="fcd-eyebrow">ELIGE TU HORARIO</p>
+      <p class="fcd-small">Selecciona el día y la hora que mejor te venga</p>
+    </div>
+
+    <div class="fcd-cal">
+      <iframe src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian" title="Reserva tu llamada con Damián" loading="lazy"></iframe>
+    </div>
+
+    <div class="fcd-line"></div>
+    <div class="fcd-tt-head">
+      <p class="fcd-eyebrow">RESULTADOS REALES</p>
+      <h3>Lo que dicen quienes ya lo han hecho</h3>
+    </div>
+
+    <div class="fcd-tts">
+      <div class="fcd-tt"><iframe src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0" title="Testimonio en vídeo 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="fcd-tt"><iframe src="https://www.youtube-nocookie.com/embed/hrVa6H6ankg?rel=0" title="Testimonio en vídeo 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+  </div>
+
+  <footer class="fcd-footer">
+    <p>© <span id="fcd-year-ag"></span> Fit con Damián · fitcondamian.com · <a href="/privacidad">Privacidad</a> · <a href="/politica-cookies">Cookies</a> · <a href="/aviso-legal">Aviso Legal</a></p>
+  </footer>
+</div>
+
+<script>
+  (function () { var y = document.getElementById('fcd-year-ag'); if (y) y.textContent = new Date().getFullYear(); })();
+</script>
