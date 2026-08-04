@@ -11,6 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+  /* Fondo negro en toda la pagina (elimina los bordes grises de GHL) */
+  html, body { background: #0D0D0D !important; margin: 0 !important; }
   #fcd-recursos * { margin: 0; padding: 0; box-sizing: border-box; }
   #fcd-recursos {
     background: #0D0D0D;
@@ -18,6 +20,7 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow-x: hidden;
     line-height: 1.5;
+    width: 100%;
   }
   #fcd-recursos a { text-decoration: none; }
   #fcd-recursos .fcd-accent { color: #00AAFF; }
@@ -244,6 +247,18 @@
 (function () {
   var root = document.getElementById('fcd-recursos');
   if (!root) return;
+
+  // Pinta de negro los contenedores de GHL alrededor (quita el gris de los bordes)
+  try {
+    document.documentElement.style.background = '#0D0D0D';
+    document.body.style.background = '#0D0D0D';
+    var node = root.parentElement;
+    while (node && node !== document.body) {
+      node.style.background = '#0D0D0D';
+      node.style.backgroundColor = '#0D0D0D';
+      node = node.parentElement;
+    }
+  } catch (e) {}
 
   // Año footer
   var y = document.getElementById('fcd-year');
