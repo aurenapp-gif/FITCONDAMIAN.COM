@@ -1,0 +1,198 @@
+<!-- ================================================================= -->
+<!-- FIT CON DAMIAN — Antes de la llamada (pre-llamada)                -->
+<!-- Pegar en el bloque "JavaScript/HTML personalizado" de GoHighLevel -->
+<!-- El video es un .mp4 propio (enlazado desde Vercel).               -->
+<!-- Los videos de la linea de tiempo y testimonios son de YouTube.    -->
+<!-- ================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  html, body { background: #0D0D0D !important; margin: 0 !important; }
+  #fcd-prell * { margin: 0; padding: 0; box-sizing: border-box; }
+  #fcd-prell { background: #0D0D0D; color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; display: flex; flex-direction: column; line-height: 1.5; width: 100%; }
+  #fcd-prell a { text-decoration: none; }
+  #fcd-prell .fcd-accent { color: #00AAFF; }
+  #fcd-prell .fcd-header { border-bottom: 1px solid #1f1f1f; padding: 20px 24px; text-align: center; }
+  #fcd-prell .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+  #fcd-prell .fcd-wrap { max-width: 640px; margin: 0 auto; padding: 0 20px 80px; width: 100%; }
+
+  #fcd-prell .fcd-vid-block { margin-top: 36px; margin-bottom: 48px; }
+  #fcd-prell .fcd-vid-block h1 { font-weight: 900; font-size: clamp(1.6rem, 5vw, 2.2rem); margin: 0 0 16px 0; line-height: 1.15; letter-spacing: -0.5px; }
+  #fcd-prell .fcd-media { border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #1f1f1f; position: relative; }
+  #fcd-prell .fcd-media video { width: 100%; height: auto; display: block; }
+  #fcd-prell .fcd-min-badge { position: absolute; top: 14px; right: 14px; background: #00AAFF; color: #fff; font-size: 11px; font-weight: 900; padding: 4px 12px; border-radius: 99px; letter-spacing: 1px; pointer-events: none; z-index: 1; }
+
+  #fcd-prell .fcd-sep-block { text-align: center; margin-bottom: 40px; }
+  #fcd-prell .fcd-sep-line { border-top: 1px solid #1f1f1f; margin-bottom: 24px; }
+  #fcd-prell .fcd-sep-eyebrow { color: #AAAAAA; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-prell .fcd-sep-sub { color: #999; font-size: 14px; margin: 0; }
+  #fcd-prell .fcd-sep-h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0; letter-spacing: -0.5px; }
+
+  /* Timeline */
+  #fcd-prell .fcd-tl { position: relative; margin-bottom: 60px; }
+  #fcd-prell .fcd-tl-base { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(0,170,255,0.15); transform: translateX(-50%); }
+  #fcd-prell .fcd-tl-fill { position: absolute; left: 50%; top: 0; width: 3px; height: 0; transform: translateX(-50%); background: linear-gradient(180deg, rgba(0,170,255,0.2), #00AAFF); box-shadow: 0 0 12px rgba(0,170,255,0.8), 0 0 24px rgba(0,170,255,0.5); border-radius: 2px; }
+  #fcd-prell .fcd-tl-rows { display: flex; flex-direction: column; gap: 48px; }
+  #fcd-prell .fcd-tl-row { display: flex; position: relative; }
+  #fcd-prell .fcd-tl-row.fcd-left { justify-content: flex-start; }
+  #fcd-prell .fcd-tl-row.fcd-right { justify-content: flex-end; }
+  #fcd-prell .fcd-dot { position: absolute; left: 50%; top: 28px; transform: translateX(-50%); width: 14px; height: 14px; background: #1b2b33; border-radius: 50%; border: 3px solid #0D0D0D; transition: background 0.4s ease, box-shadow 0.4s ease; z-index: 1; }
+  #fcd-prell .fcd-dot.fcd-on { background: #00AAFF; box-shadow: 0 0 0 4px rgba(0,170,255,0.25), 0 0 14px rgba(0,170,255,0.9); }
+  #fcd-prell .fcd-tl-card { width: clamp(200px, 46%, 260px); background: #111; border: 1px solid #1f1f1f; border-radius: 14px; overflow: hidden; }
+  #fcd-prell .fcd-tl-thumb { aspect-ratio: 16/9; width: 100%; background: #161616; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #1f1f1f; border: none; padding: 0; cursor: pointer; overflow: hidden; }
+  #fcd-prell .fcd-tl-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
+  #fcd-prell .fcd-tl-vol { position: absolute; top: 8px; left: 8px; background: #00AAFF; color: #fff; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 99px; z-index: 1; }
+  #fcd-prell .fcd-tl-play { width: 36px; height: 36px; background: #00AAFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; padding-left: 3px; box-shadow: 0 0 0 8px rgba(0,170,255,0.12); color: #fff; position: relative; z-index: 1; }
+  #fcd-prell .fcd-tl-card-body { padding: 14px; }
+  #fcd-prell .fcd-tl-card-body p { font-weight: 800; font-size: 12px; line-height: 1.4; margin: 0; color: #E0E0E0; }
+
+  /* Testimonios */
+  #fcd-prell .fcd-tts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+  #fcd-prell .fcd-tt { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
+  #fcd-prell .fcd-tt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+  #fcd-prell .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; }
+  #fcd-prell .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
+
+  /* Modal video */
+  #fcd-prell .fcd-vmodal { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  #fcd-prell .fcd-vmodal.fcd-open { display: flex; }
+  #fcd-prell .fcd-vmodal-inner { position: relative; width: 100%; max-width: 900px; }
+  #fcd-prell .fcd-vmodal-close { position: absolute; top: -44px; right: 0; background: #222; border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  #fcd-prell .fcd-vmodal-frame { position: relative; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
+  #fcd-prell .fcd-vmodal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+</style>
+
+<div id="fcd-prell">
+
+  <div class="fcd-vmodal" id="fcd-vmodal-p">
+    <div class="fcd-vmodal-inner">
+      <button class="fcd-vmodal-close" id="fcd-vmodal-close-p" aria-label="Cerrar vídeo">&#10005;</button>
+      <div class="fcd-vmodal-frame" id="fcd-vmodal-frame-p"></div>
+    </div>
+  </div>
+
+  <header class="fcd-header"><p>Fit con <span class="fcd-accent">Damián</span></p></header>
+
+  <div class="fcd-wrap">
+
+    <!-- VIDEO 3 MIN -->
+    <div class="fcd-vid-block">
+      <h1>Mira Este Vídeo de 3 Minutos Antes de la Llamada</h1>
+      <div class="fcd-media">
+        <video controls playsinline preload="metadata"
+          poster="https://fitcondamian.com/paso3-video-poster.jpg"
+          src="https://fitcondamian.com/paso3-video.mp4"></video>
+        <span class="fcd-min-badge">3 MIN</span>
+      </div>
+    </div>
+
+    <!-- SEPARADOR TIMELINE -->
+    <div class="fcd-sep-block">
+      <div class="fcd-sep-line"></div>
+      <p class="fcd-sep-eyebrow">MIENTRAS ESPERAS LA LLAMADA</p>
+      <p class="fcd-sep-sub">Mira estos vídeos para aprovechar al máximo nuestra sesión</p>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="fcd-tl" id="fcd-tl">
+      <div class="fcd-tl-base"></div>
+      <div class="fcd-tl-fill" id="fcd-tl-fill"></div>
+      <div class="fcd-tl-rows" id="fcd-tl-rows"></div>
+    </div>
+
+    <!-- SEPARADOR TESTIMONIOS -->
+    <div class="fcd-sep-line" style="margin-bottom:40px;"></div>
+    <div class="fcd-sep-block">
+      <p class="fcd-sep-eyebrow">RESULTADOS REALES</p>
+      <h3 class="fcd-sep-h3">Lo que dicen quienes ya lo han hecho</h3>
+    </div>
+
+    <div class="fcd-tts">
+      <div class="fcd-tt"><iframe src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0" title="Testimonio en vídeo 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="fcd-tt"><iframe src="https://www.youtube-nocookie.com/embed/hrVa6H6ankg?rel=0" title="Testimonio en vídeo 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+  </div>
+
+  <footer class="fcd-footer">
+    <p>© <span id="fcd-year-p"></span> Fit con Damián · fitcondamian.com</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('fcd-prell'); if (!root) return;
+  function fcdBlacken() {
+    try {
+      var B = '#0D0D0D';
+      function paint(el) { if (el && el.style) { el.style.background = B; el.style.backgroundColor = B; } }
+      paint(document.documentElement); paint(document.body);
+      var node = root.parentElement;
+      while (node) { paint(node); node = node.parentElement; }
+      document.querySelectorAll('.c-section, .c-row, .c-column, .section, .row, .container, [class*="section"], [class*="Section"], [class*="row"], [class*="wrapper"], [class*="Wrapper"], [class*="fullSection"]').forEach(paint);
+    } catch (e) {}
+  }
+  fcdBlacken(); window.addEventListener('load', fcdBlacken); setTimeout(fcdBlacken, 400);
+  var y = document.getElementById('fcd-year-p'); if (y) y.textContent = new Date().getFullYear();
+
+  var vmodal = document.getElementById('fcd-vmodal-p');
+  var vframe = document.getElementById('fcd-vmodal-frame-p');
+  function openVideo(id) { vframe.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0" title="Reproductor de vídeo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'; vmodal.classList.add('fcd-open'); }
+  function closeVideo() { vmodal.classList.remove('fcd-open'); vframe.innerHTML = ''; }
+  document.getElementById('fcd-vmodal-close-p').addEventListener('click', closeVideo);
+  vmodal.addEventListener('click', function (e) { if (e.target === vmodal) closeVideo(); });
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  var vsl = [
+    { id: "01", titulo: "¿Qué es lo que te Está Restando Vitalidad y Atractivo?", lado: "left", youtube: "pUwfONeAbuk" },
+    { id: "02", titulo: "Cómo TRANSFORMAR tu físico de 40 años para volver a SENTIR QUE TIENES 25", lado: "right", youtube: "WFn9kDt3FsA" },
+    { id: "03", titulo: "Cómo ELIMINAR la flacidez a los 35 años: EL SECRETO DEL MÚSCULO", lado: "left", youtube: "0b7aIuPJaKo" },
+    { id: "04", titulo: "¿Estás Lista para Descubrir el Secreto de las Mujeres Jóvenes a los 40 Años?", lado: "right", youtube: "qZArQavUepk" }
+  ];
+  var rowsCont = document.getElementById('fcd-tl-rows');
+  var rowEls = [];
+  vsl.forEach(function (v) {
+    var row = document.createElement('div');
+    row.className = 'fcd-tl-row ' + (v.lado === 'left' ? 'fcd-left' : 'fcd-right');
+    row.innerHTML =
+      '<div class="fcd-dot"></div>' +
+      '<div class="fcd-tl-card">' +
+        '<button type="button" class="fcd-tl-thumb" data-video="' + v.youtube + '" aria-label="Ver el vídeo: ' + esc(v.titulo) + '">' +
+          '<img src="https://img.youtube.com/vi/' + v.youtube + '/maxresdefault.jpg" alt="Miniatura: ' + esc(v.titulo) + '" data-yt="' + v.youtube + '">' +
+          '<span class="fcd-tl-vol">VOL · ' + v.id + '</span>' +
+          '<span class="fcd-tl-play">▶</span>' +
+        '</button>' +
+        '<div class="fcd-tl-card-body"><p>' + esc(v.titulo) + '</p></div>' +
+      '</div>';
+    rowsCont.appendChild(row);
+    rowEls.push(row);
+  });
+  rowsCont.querySelectorAll('[data-video]').forEach(function (el) { el.addEventListener('click', function () { openVideo(el.getAttribute('data-video')); }); });
+  rowsCont.querySelectorAll('img[data-yt]').forEach(function (img) { img.addEventListener('error', function () { if (!img.dataset.step) { img.dataset.step = '1'; img.src = 'https://img.youtube.com/vi/' + img.getAttribute('data-yt') + '/hqdefault.jpg'; } else { img.style.display = 'none'; } }); });
+
+  var cont = document.getElementById('fcd-tl');
+  var fillEl = document.getElementById('fcd-tl-fill');
+  var dots = rowsCont.querySelectorAll('.fcd-dot');
+  var raf = 0;
+  function update() {
+    raf = 0;
+    var rect = cont.getBoundingClientRect();
+    var refLineY = window.innerHeight * 0.5;
+    var fill = Math.max(0, Math.min(refLineY - rect.top, rect.height));
+    fillEl.style.height = fill + 'px';
+    rowEls.forEach(function (row, i) {
+      var r = row.getBoundingClientRect();
+      if ((r.top + 28) <= refLineY) dots[i].classList.add('fcd-on');
+      else dots[i].classList.remove('fcd-on');
+    });
+  }
+  function onScroll() { if (!raf) raf = requestAnimationFrame(update); }
+  update();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+})();
+</script>

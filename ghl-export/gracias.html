@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+  html, body { background: #0D0D0D !important; margin: 0 !important; }
   #fcd-gracias * { margin: 0; padding: 0; box-sizing: border-box; }
   #fcd-gracias { background: #0D0D0D; color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; display: flex; flex-direction: column; line-height: 1.5; }
   #fcd-gracias a { text-decoration: none; }
@@ -127,9 +128,7 @@
         <span class="fcd-paso-n">1</span>
         <h2>Mira Este Vídeo Corto</h2>
       </div>
-      <!-- VIDEO PASO 1: sube el .mp4 a GHL y reemplaza el bloque por:
-           <div class="fcd-media"><video controls preload="metadata" poster="URL_POSTER" src="URL_VIDEO"></video></div> -->
-      <div class="fcd-media"><div class="fcd-media-ph"><div class="fcd-play">▶</div></div></div>
+      <div class="fcd-media"><video controls playsinline preload="metadata" poster="https://fitcondamian.com/paso1-gracias-poster.jpg" src="https://fitcondamian.com/paso1-gracias.mp4"></video></div>
     </div>
 
     <!-- PASO 2 -->
@@ -144,9 +143,7 @@
       <div class="fcd-box">
         <div class="fcd-arrow-row"><span class="fcd-arrow">→</span><p>Busca en tu email por: <strong>Damián</strong> o <strong>Fit con Damián</strong></p></div>
         <div class="fcd-arrow-row"><span class="fcd-arrow">→</span><p>Haz clic en <strong class="fcd-accent">"Añadir al calendario"</strong> y luego <strong>"Sí"</strong> a la invitación de calendario</p></div>
-        <!-- IMAGEN PASO 2: sube "confirmar-calendario.png" a GHL y reemplaza el bloque por:
-             <div class="fcd-img"><img src="URL_IMAGEN" alt="Dónde hacer clic para confirmar la llamada"></div> -->
-        <div class="fcd-img-ph">📷 Imagen: dónde hacer clic para confirmar la llamada (súbela a GHL)</div>
+        <div class="fcd-img"><img src="https://fitcondamian.com/confirmar-calendario.png" alt="Dónde hacer clic para confirmar la llamada en el email"></div>
       </div>
     </div>
 
@@ -156,9 +153,7 @@
         <span class="fcd-paso-n">3</span>
         <h2>Mira Este Vídeo de 3 Minutos Antes de la Llamada</h2>
       </div>
-      <!-- VIDEO PASO 3: sube el .mp4 a GHL y reemplaza el bloque por:
-           <div class="fcd-media"><video controls preload="metadata" poster="URL_POSTER" src="URL_VIDEO"></video><span class="fcd-min-badge">3 MIN</span></div> -->
-      <div class="fcd-media"><div class="fcd-media-ph"><div class="fcd-play">▶</div></div><span class="fcd-min-badge">3 MIN</span></div>
+      <div class="fcd-media"><video controls playsinline preload="metadata" poster="https://fitcondamian.com/paso3-video-poster.jpg" src="https://fitcondamian.com/paso3-video.mp4"></video><span class="fcd-min-badge">3 MIN</span></div>
     </div>
 
     <!-- SEPARADOR TIMELINE -->
@@ -196,6 +191,17 @@
 <script>
 (function () {
   var root = document.getElementById('fcd-gracias'); if (!root) return;
+  function fcdBlacken() {
+    try {
+      var B = '#0D0D0D';
+      function paint(el) { if (el && el.style) { el.style.background = B; el.style.backgroundColor = B; } }
+      paint(document.documentElement); paint(document.body);
+      var node = root.parentElement;
+      while (node) { paint(node); node = node.parentElement; }
+      document.querySelectorAll('.c-section, .c-row, .c-column, .section, .row, .container, [class*="section"], [class*="Section"], [class*="row"], [class*="wrapper"], [class*="Wrapper"], [class*="fullSection"]').forEach(paint);
+    } catch (e) {}
+  }
+  fcdBlacken(); window.addEventListener('load', fcdBlacken); setTimeout(fcdBlacken, 400);
   var y = document.getElementById('fcd-year-g'); if (y) y.textContent = new Date().getFullYear();
 
   // Modal video
