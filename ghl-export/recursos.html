@@ -39,8 +39,8 @@
     line-height: 1.4; letter-spacing: -0.2px; margin: 0 auto 20px; max-width: 560px;
   }
   #fcd-recursos .fcd-hero h1 {
-    font-size: clamp(2rem, 7.5vw, 3.2rem); font-weight: 900; line-height: 1.08;
-    margin: 0 0 28px 0; letter-spacing: -1.5px; text-transform: uppercase;
+    font-size: clamp(1.9rem, 7vw, 3.2rem); font-weight: 900; line-height: 1.08;
+    margin: 0 0 28px 0; letter-spacing: -1.5px; text-transform: uppercase; overflow-wrap: break-word;
   }
   #fcd-recursos .fcd-cta {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -83,7 +83,7 @@
   #fcd-recursos .fcd-sec-head h2 { font-weight: 900; font-size: clamp(1.4rem, 5vw, 2rem); margin: 0; letter-spacing: -0.8px; }
 
   /* Cuadricula compacta */
-  #fcd-recursos .fcd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  #fcd-recursos .fcd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
   #fcd-recursos .fcd-gcard {
     text-align: left; cursor: pointer; font: inherit; color: inherit;
     background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
@@ -142,6 +142,18 @@
   #fcd-recursos .fcd-modal-sub { color: #888; font-size: 14px; margin: 0 0 24px 0; line-height: 1.5; }
   #fcd-recursos .fcd-modal-iframe { width: 100%; height: clamp(520px, 75vh, 720px); border: none; border-radius: 8px; display: block; }
   #fcd-recursos .fcd-modal-fine { color: #444; font-size: 11px; text-align: center; margin: 12px 0 0 0; }
+
+  /* Ajustes finos para móvil */
+  @media (max-width: 480px) {
+    #fcd-recursos .fcd-wrap { padding: 0 16px; }
+    #fcd-recursos .fcd-hero { padding: 28px 0 32px; }
+    #fcd-recursos .fcd-hero h1 { letter-spacing: -0.8px; }
+    #fcd-recursos .fcd-cta { padding: 17px 20px; font-size: 16px; }
+    #fcd-recursos .fcd-stats { gap: 10px; margin-bottom: 44px; }
+    #fcd-recursos .fcd-stat { padding: 16px; }
+    #fcd-recursos .fcd-grid { gap: 10px; }
+    #fcd-recursos .fcd-gcard { padding: 15px 13px; min-height: 156px; }
+  }
 </style>
 
 <div id="fcd-recursos">
