@@ -216,24 +216,35 @@ export default function RecursosClient() {
         </p>
       </header>
 
-      {/* BANNER — público objetivo */}
+      {/* BANNER — titular + público objetivo */}
       <div style={{
         background: "linear-gradient(90deg, #0077CC, #00AAFF)",
-        padding: "14px 24px",
+        padding: "20px 24px 16px",
         textAlign: "center",
         position: "relative",
         zIndex: 10,
       }}>
         <p style={{
-          margin: 0,
+          margin: "0 auto 8px",
+          maxWidth: "760px",
           color: "#fff",
-          fontSize: "clamp(13px, 3.4vw, 15px)",
+          fontSize: "clamp(1.15rem, 5vw, 1.75rem)",
           fontWeight: 900,
-          lineHeight: 1.45,
-          letterSpacing: "-0.3px",
+          lineHeight: 1.2,
+          letterSpacing: "-0.5px",
         }}>
-          Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día<br />
-          y ya no se ponen la ropa que tanto les gustaba
+          Descubre cómo eliminar la flacidez, terminar con el cansancio y recuperar tu figura sin esfuerzo
+        </p>
+        <p style={{
+          margin: "0 auto",
+          maxWidth: "620px",
+          color: "rgba(255,255,255,0.92)",
+          fontSize: "clamp(12px, 3.2vw, 14px)",
+          fontWeight: 700,
+          lineHeight: 1.45,
+          letterSpacing: "-0.2px",
+        }}>
+          Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día y ya no se ponen la ropa que tanto les gustaba
         </p>
       </div>
 
