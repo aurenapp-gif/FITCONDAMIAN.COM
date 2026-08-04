@@ -1,0 +1,320 @@
+<!-- ================================================================= -->
+<!-- FIT CON DAMIAN — Acceso a los recursos (catalogo)                 -->
+<!-- Pegar en el bloque "JavaScript/HTML personalizado" de GoHighLevel -->
+<!-- Replica de fitcondamian.com/acceso-recursos                       -->
+<!-- Los videos del catalogo son de YouTube (funcionan tal cual).      -->
+<!-- El video de bienvenida es un .mp4 propio: subelo a GHL y pega su  -->
+<!-- URL donde se indica mas abajo.                                    -->
+<!-- ================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+  #fcd-acceso * { margin: 0; padding: 0; box-sizing: border-box; }
+  #fcd-acceso {
+    background: #0D0D0D; color: #fff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh; position: relative; overflow-x: hidden; line-height: 1.5;
+  }
+  #fcd-acceso a { text-decoration: none; }
+  #fcd-acceso .fcd-accent { color: #00AAFF; }
+  #fcd-acceso #fcd-particles-a {
+    position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
+  }
+  #fcd-acceso .fcd-z { position: relative; z-index: 1; }
+
+  #fcd-acceso .fcd-header { border-bottom: 1px solid #1f1f1f; padding: 20px 24px; text-align: center; position: relative; z-index: 1; }
+  #fcd-acceso .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+
+  #fcd-acceso .fcd-wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* Hero */
+  #fcd-acceso .fcd-hero { padding: 56px 0 48px; }
+  #fcd-acceso .fcd-eyebrow-top { color: #666; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+  #fcd-acceso .fcd-hero h1 { font-size: clamp(2.4rem, 8vw, 3.6rem); font-weight: 900; line-height: 1.05; margin: 0 0 20px 0; letter-spacing: -1.5px; }
+  #fcd-acceso .fcd-hero h1 em { font-style: italic; color: #00AAFF; }
+  #fcd-acceso .fcd-hero-lead { color: #A0A0A0; font-size: 17px; line-height: 1.6; margin: 0 0 36px 0; }
+  #fcd-acceso .fcd-hero-video {
+    border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #252525;
+    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+  }
+  #fcd-acceso .fcd-hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #fcd-acceso .fcd-play-static {
+    width: 68px; height: 68px; background: #00AAFF; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    padding-left: 5px; margin: 0 auto; color: #fff; box-shadow: 0 0 0 12px rgba(0,170,255,0.12);
+  }
+  #fcd-acceso .fcd-sound { color: #444; font-size: 12px; text-align: center; margin: 0 0 32px 0; }
+
+  /* CTA azul */
+  #fcd-acceso .fcd-ctablock { background: #00AAFF; border-radius: 20px; padding: 36px 28px; text-align: center; }
+  #fcd-acceso .fcd-ctablock .fcd-ct-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 10px 0; opacity: 0.8; }
+  #fcd-acceso .fcd-ctablock h2 { font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 900; margin: 0 0 10px 0; line-height: 1.15; letter-spacing: -0.5px; }
+  #fcd-acceso .fcd-ctablock p { font-size: 15px; margin: 0 0 22px 0; opacity: 0.85; line-height: 1.5; }
+  #fcd-acceso .fcd-ctablock .fcd-ct-btn { display: inline-block; background: #0D0D0D; color: #fff; font-weight: 900; font-size: 15px; padding: 14px 32px; border-radius: 99px; }
+  #fcd-acceso .fcd-ctablock .fcd-ct-fine { font-size: 12px; margin: 12px 0 0 0; opacity: 0.65; }
+
+  #fcd-acceso .fcd-sep { border-top: 1px solid #1f1f1f; margin-bottom: 48px; }
+
+  /* Catalogo */
+  #fcd-acceso .fcd-cat { padding-bottom: 80px; }
+  #fcd-acceso .fcd-cat-head { margin-bottom: 36px; }
+  #fcd-acceso .fcd-cat-badge {
+    display: inline-block; border: 1px solid #252525; color: #666; font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; padding: 6px 14px; border-radius: 99px; margin-bottom: 16px; text-transform: uppercase;
+  }
+  #fcd-acceso .fcd-cat-head h2 { font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 900; margin: 0; letter-spacing: -1px; line-height: 1.1; }
+  #fcd-acceso .fcd-cat-head h2 em { font-style: italic; color: #00AAFF; }
+
+  #fcd-acceso .fcd-cards { display: flex; flex-direction: column; gap: 28px; }
+
+  /* Reveal */
+  #fcd-acceso .fcd-reveal { opacity: 0; border-radius: 16px; transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1), box-shadow 1.1s ease; }
+  #fcd-acceso .fcd-reveal-left { transform: translateX(-64px); }
+  #fcd-acceso .fcd-reveal-right { transform: translateX(64px); }
+  #fcd-acceso .fcd-reveal.fcd-visible { opacity: 1; transform: translateX(0); box-shadow: 0 0 40px rgba(0,170,255,0.4); }
+
+  #fcd-acceso .fcd-card { background: #111; border: 1px solid #1f1f1f; border-radius: 16px; overflow: hidden; }
+  #fcd-acceso .fcd-thumb { aspect-ratio: 16/8; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #1f1f1f; background: #161616; width: 100%; border: none; padding: 0; overflow: hidden; }
+  #fcd-acceso button.fcd-thumb { cursor: pointer; }
+  #fcd-acceso .fcd-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  #fcd-acceso .fcd-thumb.fcd-yt img { filter: brightness(0.8); }
+  #fcd-acceso .fcd-vol-badge {
+    position: absolute; top: 12px; left: 12px; background: #00AAFF; color: #fff; font-size: 11px;
+    font-weight: 900; padding: 4px 10px; border-radius: 99px; letter-spacing: 1px; z-index: 1;
+  }
+  #fcd-acceso .fcd-play {
+    width: 56px; height: 56px; background: #00AAFF; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 20px; padding-left: 4px; box-shadow: 0 0 0 10px rgba(0,170,255,0.12);
+    color: #fff; position: relative; z-index: 1;
+  }
+  #fcd-acceso .fcd-card-body { padding: 24px; }
+  #fcd-acceso .fcd-card-body .fcd-vol { color: #555; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-acceso .fcd-card-body h3 { font-size: 19px; font-weight: 900; margin: 0 0 10px 0; line-height: 1.2; letter-spacing: -0.5px; }
+  #fcd-acceso .fcd-card-body .fcd-desc { color: #A0A0A0; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0; }
+  #fcd-acceso .fcd-btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  #fcd-acceso .fcd-btn-video { display: inline-flex; align-items: center; gap: 8px; background: #00AAFF; color: #fff; font-weight: 700; font-size: 14px; padding: 11px 20px; border-radius: 99px; border: none; font-family: inherit; cursor: pointer; }
+  #fcd-acceso .fcd-btn-doc { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #fff; font-weight: 700; font-size: 14px; padding: 11px 20px; border-radius: 99px; border: 1px solid #555; }
+  #fcd-acceso .fcd-btn-doc.fcd-disabled { border-color: #2a2a2a; opacity: 0.4; cursor: not-allowed; }
+
+  #fcd-acceso .fcd-footer { border-top: 1px solid #1f1f1f; padding: 28px 24px; text-align: center; position: relative; z-index: 1; }
+  #fcd-acceso .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
+  #fcd-acceso .fcd-footer a { color: #444; }
+
+  /* Modal video */
+  #fcd-acceso .fcd-vmodal { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  #fcd-acceso .fcd-vmodal.fcd-open { display: flex; }
+  #fcd-acceso .fcd-vmodal-inner { position: relative; width: 100%; max-width: 900px; }
+  #fcd-acceso .fcd-vmodal-close { position: absolute; top: -44px; right: 0; background: #222; border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  #fcd-acceso .fcd-vmodal-frame { position: relative; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
+  #fcd-acceso .fcd-vmodal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+</style>
+
+<div id="fcd-acceso">
+
+  <canvas id="fcd-particles-a"></canvas>
+
+  <!-- MODAL VIDEO -->
+  <div class="fcd-vmodal" id="fcd-vmodal">
+    <div class="fcd-vmodal-inner">
+      <button class="fcd-vmodal-close" id="fcd-vmodal-close" aria-label="Cerrar vídeo">&#10005;</button>
+      <div class="fcd-vmodal-frame" id="fcd-vmodal-frame"></div>
+    </div>
+  </div>
+
+  <header class="fcd-header">
+    <p>Fit con <span class="fcd-accent">Damián</span></p>
+  </header>
+
+  <div class="fcd-wrap">
+
+    <!-- HERO -->
+    <section class="fcd-hero">
+      <p class="fcd-eyebrow-top">RECURSOS GRATUITOS · ACCESO COMPLETO</p>
+      <h1>Bienvenido a los <em>recursos.</em></h1>
+      <p class="fcd-hero-lead">Todo el material que necesitas para transformar tu cuerpo. Guárdalo antes de cerrar esta página.</p>
+
+      <!-- VIDEO BIENVENIDA: sube el .mp4 a Contenido multimedia de GHL y reemplaza -->
+      <!-- este bloque por: <div class="fcd-hero-video"><video controls             -->
+      <!-- preload="metadata" poster="URL_POSTER" src="URL_VIDEO"></video></div>    -->
+      <div class="fcd-hero-video">
+        <div style="text-align:center;"><div class="fcd-play-static">▶</div></div>
+      </div>
+      <p class="fcd-sound">🔊 Activa el sonido</p>
+
+      <!-- CTA -->
+      <div class="fcd-ctablock">
+        <p class="fcd-ct-eyebrow">¿QUIERES IR MÁS RÁPIDO?</p>
+        <h2>Agenda una llamada gratuita conmigo</h2>
+        <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso. Sin rodeos.</p>
+        <a href="/agendar" class="fcd-ct-btn">Agendar llamada gratuita →</a>
+        <p class="fcd-ct-fine">Sin compromiso · 100% gratuito</p>
+      </div>
+    </section>
+
+    <div class="fcd-sep"></div>
+
+    <!-- CATALOGO -->
+    <section class="fcd-cat">
+      <div class="fcd-cat-head">
+        <span class="fcd-cat-badge">EL CATÁLOGO</span>
+        <h2>Cada recurso, <em>tu acceso</em><span class="fcd-accent">.</span></h2>
+      </div>
+
+      <div class="fcd-cards" id="fcd-cards-a"></div>
+
+      <div style="margin-top:32px;">
+        <div class="fcd-ctablock">
+          <p class="fcd-ct-eyebrow">¿QUIERES IR MÁS RÁPIDO?</p>
+          <h2>Agenda una llamada gratuita conmigo</h2>
+          <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso. Sin rodeos.</p>
+          <a href="/agendar" class="fcd-ct-btn">Agendar llamada gratuita →</a>
+          <p class="fcd-ct-fine">Sin compromiso · 100% gratuito</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="fcd-footer">
+    <p>© <span id="fcd-year-a"></span> Fit con Damián · fitcondamian.com ·
+      <a href="/privacidad">Privacidad</a> · <a href="/aviso-legal">Aviso Legal</a>
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('fcd-acceso');
+  if (!root) return;
+
+  var y = document.getElementById('fcd-year-a');
+  if (y) y.textContent = new Date().getFullYear();
+
+  function youtubeId(url) {
+    if (!url || url === '#') return null;
+    var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  // ---- Datos del catalogo ----
+  var recursos = [
+    { vol: "01", categoria: "DIAGNÓSTICO", titulo: "Medidor de Edad-Muscular", descripcion: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás.", linkVideo: "https://youtu.be/0b7aIuPJaKo", linkDoc: "https://docs.google.com/document/d/1V7yt1PqsGQ94hrfg0ZvKssG5anq9YQdWChuIUWF29uk/edit?usp=sharing" },
+    { vol: "02", categoria: "NUTRICIÓN", titulo: "Test Inteligente de Hábitos", descripcion: "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo.", linkVideo: "https://youtu.be/WFn9kDt3FsA", linkDoc: "https://docs.google.com/document/d/1VZ4_MZc70PqgGliHsGplkZ6xoK_r1FdxmZi_1YRyT8I/edit?usp=sharing" },
+    { vol: "03", categoria: "ENTRENAMIENTO", titulo: "IA Experta en Sistemas", descripcion: "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud.", linkVideo: "https://youtu.be/qZArQavUepk", linkDoc: "https://docs.google.com/document/d/1Y9gKtg2GO50LH30e8dKqpp99Y2afHN4GZlgDTZiMInU/edit?usp=sharing" },
+    { vol: "04", categoria: "RECUPERACIÓN", titulo: "Plan de Ruta Anti Envejecimiento y Flacidez", descripcion: "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido.", linkVideo: "https://youtu.be/pUwfONeAbuk", linkDoc: "https://docs.google.com/document/d/1SWwjWBsRMb1K4SEcLMGYE7ASWvjAkNXOhFFV_1u9qk8/edit?usp=sharing" },
+    { vol: "05", categoria: "EXCLUSIVO", titulo: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", descripcion: "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido.", linkVideo: "#", imagen: "", linkDoc: "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing" },
+    { vol: "06", categoria: "NUTRICIÓN", titulo: "Guía de Alimentación en la Menopausia", descripcion: "La guía de alimentación para atravesar la menopausia con energía, sin flacidez y sintiéndote en tu mejor versión.", linkVideo: "https://youtu.be/oQqtijKMbHw", linkDoc: "https://guialaimentacionmenopausia.netlify.app", docLabel: "Abrir guía" },
+    { vol: "07", categoria: "PÉRDIDA DE GRASA", titulo: "Pierde Grasa Más Rápido con Estos 3 Cambios", descripcion: "Los 3 cambios que aceleran la pérdida de grasa sin pasar hambre ni vivir en el gimnasio. Aplícalos desde hoy.", linkVideo: "#", linkDoc: "https://guiaperdidadegrasa.netlify.app", docLabel: "Abrir guía" }
+  ];
+
+  // ---- Modal video ----
+  var vmodal = document.getElementById('fcd-vmodal');
+  var vframe = document.getElementById('fcd-vmodal-frame');
+  function openVideo(id) {
+    vframe.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0" title="Reproductor de vídeo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+    vmodal.classList.add('fcd-open');
+  }
+  function closeVideo() { vmodal.classList.remove('fcd-open'); vframe.innerHTML = ''; }
+  document.getElementById('fcd-vmodal-close').addEventListener('click', closeVideo);
+  vmodal.addEventListener('click', function (e) { if (e.target === vmodal) closeVideo(); });
+
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // ---- Construir tarjetas ----
+  var cont = document.getElementById('fcd-cards-a');
+  recursos.forEach(function (r, i) {
+    var ytId = youtubeId(r.linkVideo);
+    var fromLeft = (i % 2 === 0);
+
+    var wrap = document.createElement('div');
+    wrap.className = 'fcd-reveal ' + (fromLeft ? 'fcd-reveal-left' : 'fcd-reveal-right');
+
+    // Thumbnail
+    var thumbHTML;
+    if (ytId) {
+      thumbHTML = '<button type="button" class="fcd-thumb fcd-yt" data-video="' + ytId + '" aria-label="Ver el vídeo: ' + esc(r.titulo) + '">' +
+        '<img src="https://img.youtube.com/vi/' + ytId + '/maxresdefault.jpg" alt="Miniatura del vídeo: ' + esc(r.titulo) + '" data-yt="' + ytId + '">' +
+        '<span class="fcd-vol-badge">VOL · ' + r.vol + '</span>' +
+        '<span class="fcd-play">▶</span>' +
+      '</button>';
+    } else if (r.imagen) {
+      thumbHTML = '<div class="fcd-thumb"><img src="' + r.imagen + '" alt="' + esc(r.titulo) + '"><span class="fcd-vol-badge">VOL · ' + r.vol + '</span></div>';
+    } else {
+      thumbHTML = '<div class="fcd-thumb"><span class="fcd-vol-badge">VOL · ' + r.vol + '</span></div>';
+    }
+
+    // Botones
+    var btns = '';
+    if (ytId) {
+      btns += '<button type="button" class="fcd-btn-video" data-video="' + ytId + '">▶ Ver el vídeo</button>';
+    }
+    var docLabel = r.docLabel || 'Abrir documento';
+    if (r.linkDoc && r.linkDoc !== '#') {
+      btns += '<a class="fcd-btn-doc" href="' + r.linkDoc + '" target="_blank" rel="noopener noreferrer">' + esc(docLabel) + ' ↗</a>';
+    } else {
+      btns += '<span class="fcd-btn-doc fcd-disabled">' + esc(docLabel) + ' ↗</span>';
+    }
+
+    wrap.innerHTML =
+      '<article class="fcd-card">' +
+        thumbHTML +
+        '<div class="fcd-card-body">' +
+          '<p class="fcd-vol">VOLUMEN ' + r.vol + ' · ' + r.categoria + '</p>' +
+          '<h3>' + esc(r.titulo) + '</h3>' +
+          '<p class="fcd-desc">' + esc(r.descripcion) + '</p>' +
+          '<div class="fcd-btn-row">' + btns + '</div>' +
+        '</div>' +
+      '</article>';
+
+    cont.appendChild(wrap);
+  });
+
+  // Click en miniaturas/botones de video
+  cont.querySelectorAll('[data-video]').forEach(function (el) {
+    el.addEventListener('click', function () { openVideo(el.getAttribute('data-video')); });
+  });
+
+  // Fallback de miniaturas de YouTube (maxres -> hq -> ocultar)
+  cont.querySelectorAll('img[data-yt]').forEach(function (img) {
+    img.addEventListener('error', function () {
+      if (!img.dataset.step) { img.dataset.step = '1'; img.src = 'https://img.youtube.com/vi/' + img.getAttribute('data-yt') + '/hqdefault.jpg'; }
+      else { img.style.display = 'none'; }
+    });
+  });
+
+  // ---- Scroll reveal ----
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('fcd-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  cont.querySelectorAll('.fcd-reveal').forEach(function (s) { io.observe(s); });
+
+  // ---- Particulas ----
+  var c = document.getElementById('fcd-particles-a');
+  if (c && c.getContext) {
+    var ctx = c.getContext('2d');
+    function resize() { c.width = c.offsetWidth; c.height = c.offsetHeight; }
+    resize(); window.addEventListener('resize', resize);
+    var pts = [];
+    for (var k = 0; k < 70; k++) {
+      pts.push({ x: Math.random() * c.width, y: Math.random() * c.height, r: Math.random() * 1.8 + 0.3,
+        dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
+        a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65 });
+    }
+    function draw() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (var j = 0; j < pts.length; j++) {
+        var p = pts[j]; p.x += p.dx; p.y += p.dy;
+        if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
+        if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.blue ? '#00AAFF' : '#fff'; ctx.globalAlpha = p.a; ctx.fill();
+      }
+      ctx.globalAlpha = 1; requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+})();
+</script>
