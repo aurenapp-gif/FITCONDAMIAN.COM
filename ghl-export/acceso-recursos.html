@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
+  html, body { background: #0D0D0D !important; margin: 0 !important; }
   #fcd-acceso * { margin: 0; padding: 0; box-sizing: border-box; }
   #fcd-acceso {
     background: #0D0D0D; color: #fff;
@@ -190,6 +191,21 @@
 (function () {
   var root = document.getElementById('fcd-acceso');
   if (!root) return;
+
+  // Fondo negro: pinta los contenedores de GHL (quita el gris de los bordes)
+  function fcdBlacken() {
+    try {
+      var B = '#0D0D0D';
+      function paint(el) { if (el && el.style) { el.style.background = B; el.style.backgroundColor = B; } }
+      paint(document.documentElement); paint(document.body);
+      var node = root.parentElement;
+      while (node) { paint(node); node = node.parentElement; }
+      document.querySelectorAll('.c-section, .c-row, .c-column, .section, .row, .container, [class*="section"], [class*="Section"], [class*="row"], [class*="wrapper"], [class*="Wrapper"], [class*="fullSection"]').forEach(paint);
+    } catch (e) {}
+  }
+  fcdBlacken();
+  window.addEventListener('load', fcdBlacken);
+  setTimeout(fcdBlacken, 400);
 
   var y = document.getElementById('fcd-year-a');
   if (y) y.textContent = new Date().getFullYear();
