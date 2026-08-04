@@ -248,17 +248,20 @@
   var root = document.getElementById('fcd-recursos');
   if (!root) return;
 
-  // Pinta de negro los contenedores de GHL alrededor (quita el gris de los bordes)
-  try {
-    document.documentElement.style.background = '#0D0D0D';
-    document.body.style.background = '#0D0D0D';
-    var node = root.parentElement;
-    while (node && node !== document.body) {
-      node.style.background = '#0D0D0D';
-      node.style.backgroundColor = '#0D0D0D';
-      node = node.parentElement;
-    }
-  } catch (e) {}
+  // Pinta de negro TODOS los contenedores de GHL (quita el gris de los bordes, arriba/abajo/lados)
+  function fcdBlacken() {
+    try {
+      var B = '#0D0D0D';
+      function paint(el) { if (el && el.style) { el.style.background = B; el.style.backgroundColor = B; } }
+      paint(document.documentElement); paint(document.body);
+      var node = root.parentElement;
+      while (node) { paint(node); node = node.parentElement; }
+      document.querySelectorAll('.c-section, .c-row, .c-column, .section, .row, .container, [class*="section"], [class*="Section"], [class*="row"], [class*="wrapper"], [class*="Wrapper"], [class*="fullSection"]').forEach(paint);
+    } catch (e) {}
+  }
+  fcdBlacken();
+  window.addEventListener('load', fcdBlacken);
+  setTimeout(fcdBlacken, 400);
 
   // Año footer
   var y = document.getElementById('fcd-year');
