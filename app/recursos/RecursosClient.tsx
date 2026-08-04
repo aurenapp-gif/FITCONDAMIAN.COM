@@ -88,108 +88,70 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-// — Tarjeta cinematográfica con glassmorphism —
-function CinematicCard({
-  r, index, onOpenModal,
+// — Tarjeta compacta de recurso (cuadrícula) —
+function RecursoCard({
+  r, index, visible, onOpenModal,
 }: {
   r: typeof recursos[0];
   index: number;
+  visible: boolean;
   onOpenModal: () => void;
 }) {
-  const { ref, visible } = useReveal(0.35);
-  const alignRight = index % 2 === 0;
-
+  const [hover, setHover] = useState(false);
   return (
-    <div ref={ref} style={{
-      position: "relative",
-      minHeight: "62vh",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      padding: "40px 0",
-    }}>
-      {/* Resplandor */}
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-        <div style={{
-          width: "65%", height: "65%", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(0,170,255,0.28), transparent 70%)",
-          filter: "blur(50px)",
-          opacity: visible ? 1 : 0,
-          transition: "opacity 1.1s ease",
-        }} />
-      </div>
-
-      {/* Número en marca de agua */}
-      <p aria-hidden="true" style={{
-        position: "absolute", top: "-6px",
-        right: alignRight ? "0px" : "auto",
-        left: alignRight ? "auto" : "0px",
-        fontSize: "clamp(6rem, 18vw, 11rem)", fontWeight: 900,
-        color: "rgba(255,255,255,0.045)",
-        margin: 0, lineHeight: 1, letterSpacing: "-4px",
-        pointerEvents: "none", userSelect: "none",
-        transform: visible ? "translateY(0)" : "translateY(20px)",
-        transition: "transform 1s ease",
-      }}>
-        {r.vol}
-      </p>
-
-      {/* Tarjeta de cristal */}
-      <div style={{
-        position: "relative", zIndex: 1,
-        width: "100%", maxWidth: "540px",
-        background: "rgba(255,255,255,0.035)",
-        border: "1px solid rgba(255,255,255,0.09)",
-        borderRadius: "28px",
-        padding: "clamp(28px, 5vw, 44px)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
+    <button
+      type="button"
+      onClick={onOpenModal}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        textAlign: "left", cursor: "pointer", font: "inherit", color: "inherit",
+        background: hover ? "rgba(0,170,255,0.08)" : "rgba(255,255,255,0.04)",
+        border: `1px solid ${hover ? "rgba(0,170,255,0.55)" : "rgba(255,255,255,0.09)"}`,
+        borderRadius: "18px",
+        padding: "18px 16px",
+        display: "flex", flexDirection: "column", gap: "10px",
+        minHeight: "170px",
+        boxShadow: hover ? "0 14px 34px rgba(0,170,255,0.25)" : "none",
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0) scale(1)" : "translateY(70px) scale(0.92)",
-        filter: visible ? "blur(0px)" : "blur(8px)",
-        transition: "opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1), filter 0.9s ease",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "22px" }}>
-          <div aria-hidden="true" style={{
-            width: "60px", height: "60px", borderRadius: "18px", flexShrink: 0,
-            background: "linear-gradient(135deg, #00AAFF, #0077CC)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "28px",
-            boxShadow: "0 8px 24px rgba(0,170,255,0.35)",
-          }}>
-            {r.emoji}
-          </div>
-          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: 0, lineHeight: 1.6 }}>
-            VOL · {r.vol}<br /><span style={{ color: "#777" }}>{r.categoria}</span>
-          </p>
-        </div>
-        <h3 style={{ fontWeight: 900, fontSize: "clamp(1.6rem, 4vw, 2.1rem)", color: "#fff", margin: "0 0 14px 0", lineHeight: 1.15, letterSpacing: "-1px" }}>
-          {r.nombre}
-        </h3>
-        <p style={{ color: "#999", fontSize: "15px", lineHeight: 1.7, margin: "0 0 26px 0" }}>
-          {r.desc}
-        </p>
-        <button
-          onClick={onOpenModal}
-          style={{
-            background: "#00AAFF", color: "#fff",
-            fontWeight: 900, fontSize: "14px",
-            padding: "13px 28px", borderRadius: "99px",
-            border: "none", cursor: "pointer",
-            boxShadow: "0 8px 24px rgba(0,170,255,0.3)",
-          }}
-        >
-          Acceder gratis →
-        </button>
+        transform: visible ? (hover ? "translateY(-4px)" : "translateY(0)") : "translateY(24px)",
+        transition: `opacity 0.5s ease ${index * 0.06}s, transform 0.3s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span aria-hidden="true" style={{
+          width: "44px", height: "44px", borderRadius: "13px", flexShrink: 0,
+          background: "linear-gradient(135deg, #00AAFF, #0077CC)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "22px", boxShadow: "0 6px 18px rgba(0,170,255,0.35)",
+        }}>
+          {r.emoji}
+        </span>
+        <span style={{ color: "#444", fontSize: "12px", fontWeight: 900, letterSpacing: "-0.5px" }}>{r.vol}</span>
       </div>
-    </div>
+      <span style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase" }}>
+        {r.categoria}
+      </span>
+      <h3 style={{
+        fontWeight: 900, fontSize: "15px", color: "#fff", margin: 0, lineHeight: 1.2, letterSpacing: "-0.3px",
+        display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden",
+      }}>
+        {r.nombre}
+      </h3>
+      <span style={{ marginTop: "auto", color: hover ? "#00AAFF" : "#8a8a8a", fontSize: "13px", fontWeight: 800, transition: "color 0.25s ease" }}>
+        Acceder →
+      </span>
+    </button>
   );
 }
 
-// — Secuencia cinematográfica completa —
-function CinematicReveal({ onOpenModal }: { onOpenModal: () => void }) {
+// — Cuadrícula compacta de recursos —
+function RecursosGrid({ onOpenModal }: { onOpenModal: () => void }) {
+  const { ref, visible } = useReveal(0.1);
   return (
-    <div style={{ position: "relative" }}>
+    <div ref={ref} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "12px" }}>
       {recursos.map((r, i) => (
-        <CinematicCard key={r.vol} r={r} index={i} onOpenModal={onOpenModal} />
+        <RecursoCard key={r.vol} r={r} index={i} visible={visible} onOpenModal={onOpenModal} />
       ))}
     </div>
   );
@@ -227,7 +189,7 @@ export default function RecursosClient() {
 
             {/* Calificador (público objetivo) */}
             <p style={{ color: "#00AAFF", fontSize: "clamp(13px, 3.4vw, 15px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px", margin: "0 auto 20px", maxWidth: "560px" }}>
-              Para mujeres que ya no se sienten atractivas al mirarse al espejo, se sienten cansadas todo el día y ya no se ponen la ropa que tanto les gustaba
+              Para mujeres que se miran al espejo y no se ven atractivas, arrastran cansancio todo el día y han dejado de ponerse la ropa que antes les encantaba
             </p>
 
             {/* Titular principal (dos tonos, estilo del ejemplo) */}
@@ -262,19 +224,27 @@ export default function RecursosClient() {
           ))}
         </div>
 
-        {/* ACORDEÓN */}
+        {/* RECURSOS — cuadrícula compacta */}
         <section
           ref={accordReveal.ref}
-          style={{ paddingBottom: "80px", opacity: accordReveal.visible ? 1 : 0, transform: accordReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}
+          style={{ paddingBottom: "56px", opacity: accordReveal.visible ? 1 : 0, transform: accordReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}
         >
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
-            <div style={{ animation: "bounce 1.8s infinite" }} aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-            </div>
+          <div style={{ textAlign: "center", marginBottom: "24px" }}>
+            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
+            <h2 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 5vw, 2rem)", margin: 0, letterSpacing: "-0.8px" }}>
+              7 recursos, <span style={{ color: "#00AAFF" }}>acceso inmediato y gratis</span>
+            </h2>
           </div>
 
-          <CinematicReveal onOpenModal={openModal} />
+          <RecursosGrid onOpenModal={openModal} />
+
+          {/* CTA final */}
+          <div style={{ textAlign: "center", marginTop: "32px" }}>
+            <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "10px", width: "100%", maxWidth: "520px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "clamp(16px, 4.2vw, 19px)", padding: "20px 32px", borderRadius: "16px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", boxShadow: "0 10px 30px rgba(0,170,255,0.35)", textTransform: "uppercase" }}>
+              Acceder a los recursos
+            </button>
+            <p style={{ color: "#666", fontSize: "12px", margin: "12px 0 0 0" }}>Sin tarjeta · Acceso inmediato · Solo tu correo</p>
+          </div>
         </section>
       </div>
 
