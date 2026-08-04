@@ -53,7 +53,7 @@
   #fcd-acceso .fcd-ctablock .fcd-ct-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 10px 0; opacity: 0.8; }
   #fcd-acceso .fcd-ctablock h2 { font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 900; margin: 0 0 10px 0; line-height: 1.15; letter-spacing: -0.5px; }
   #fcd-acceso .fcd-ctablock p { font-size: 15px; margin: 0 0 22px 0; opacity: 0.85; line-height: 1.5; }
-  #fcd-acceso .fcd-ctablock .fcd-ct-btn { display: inline-block; background: #0D0D0D; color: #fff; font-weight: 900; font-size: 15px; padding: 14px 32px; border-radius: 99px; }
+  #fcd-acceso .fcd-ctablock .fcd-ct-btn { display: inline-block; background: #0D0D0D; color: #fff; font-weight: 900; font-size: 15px; padding: 14px 32px; border-radius: 99px; border: none; cursor: pointer; font-family: inherit; }
   #fcd-acceso .fcd-ctablock .fcd-ct-fine { font-size: 12px; margin: 12px 0 0 0; opacity: 0.65; }
 
   #fcd-acceso .fcd-sep { border-top: 1px solid #1f1f1f; margin-bottom: 48px; }
@@ -110,6 +110,11 @@
   #fcd-acceso .fcd-vmodal-close { position: absolute; top: -44px; right: 0; background: #222; border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
   #fcd-acceso .fcd-vmodal-frame { position: relative; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
   #fcd-acceso .fcd-vmodal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  #fcd-acceso .fcd-calmodal { position: fixed; inset: 0; z-index: 100001; background: rgba(0,0,0,0.88); display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  #fcd-acceso .fcd-calmodal.fcd-open { display: flex; }
+  #fcd-acceso .fcd-calmodal-box { background: #0D0D0D; border: 1px solid #2a2a2a; border-radius: 20px; width: 100%; max-width: 540px; position: relative; overflow: hidden; }
+  #fcd-acceso .fcd-calmodal-close { position: absolute; top: 10px; right: 10px; z-index: 2; background: #222; border: none; color: #fff; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  #fcd-acceso .fcd-calmodal-box iframe { width: 100%; height: 80vh; max-height: 780px; border: none; display: block; background: #0D0D0D; }
 </style>
 
 <div id="fcd-acceso">
@@ -121,6 +126,14 @@
     <div class="fcd-vmodal-inner">
       <button class="fcd-vmodal-close" id="fcd-vmodal-close" aria-label="Cerrar vídeo">&#10005;</button>
       <div class="fcd-vmodal-frame" id="fcd-vmodal-frame"></div>
+    </div>
+  </div>
+
+  <!-- MODAL CALENDARIO -->
+  <div class="fcd-calmodal" id="fcd-calmodal">
+    <div class="fcd-calmodal-box">
+      <button class="fcd-calmodal-close" id="fcd-calmodal-close" aria-label="Cerrar">&#10005;</button>
+      <iframe id="fcd-cal-iframe" src="about:blank" data-src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian" scrolling="yes" title="Reserva tu llamada con Damián"></iframe>
     </div>
   </div>
 
@@ -151,7 +164,7 @@
         <p class="fcd-ct-eyebrow">¿QUIERES IR MÁS RÁPIDO?</p>
         <h2>Agenda una llamada gratuita conmigo</h2>
         <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso. Sin rodeos.</p>
-        <a href="/agendar" class="fcd-ct-btn">Agendar llamada gratuita →</a>
+        <button type="button" class="fcd-ct-btn" data-open-cal>Agendar llamada gratuita →</button>
         <p class="fcd-ct-fine">Sin compromiso · 100% gratuito</p>
       </div>
     </section>
@@ -172,7 +185,7 @@
           <p class="fcd-ct-eyebrow">¿QUIERES IR MÁS RÁPIDO?</p>
           <h2>Agenda una llamada gratuita conmigo</h2>
           <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso. Sin rodeos.</p>
-          <a href="/agendar" class="fcd-ct-btn">Agendar llamada gratuita →</a>
+          <button type="button" class="fcd-ct-btn" data-open-cal>Agendar llamada gratuita →</button>
           <p class="fcd-ct-fine">Sin compromiso · 100% gratuito</p>
         </div>
       </div>
@@ -187,6 +200,7 @@
   </footer>
 </div>
 
+<script src="https://links.fitcondamian.com/js/form_embed.js"></script>
 <script>
 (function () {
   var root = document.getElementById('fcd-acceso');
@@ -237,6 +251,18 @@
   function closeVideo() { vmodal.classList.remove('fcd-open'); vframe.innerHTML = ''; }
   document.getElementById('fcd-vmodal-close').addEventListener('click', closeVideo);
   vmodal.addEventListener('click', function (e) { if (e.target === vmodal) closeVideo(); });
+
+  // ---- Modal calendario (Agendar llamada) ----
+  var calmodal = document.getElementById('fcd-calmodal');
+  var calIframe = document.getElementById('fcd-cal-iframe');
+  function openCal() {
+    if (calIframe && calIframe.getAttribute('src') === 'about:blank') { calIframe.src = calIframe.getAttribute('data-src'); }
+    calmodal.classList.add('fcd-open'); document.body.style.overflow = 'hidden';
+  }
+  function closeCal() { calmodal.classList.remove('fcd-open'); document.body.style.overflow = ''; }
+  root.querySelectorAll('[data-open-cal]').forEach(function (b) { b.addEventListener('click', openCal); });
+  document.getElementById('fcd-calmodal-close').addEventListener('click', closeCal);
+  calmodal.addEventListener('click', function (e) { if (e.target === calmodal) closeCal(); });
 
   function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
