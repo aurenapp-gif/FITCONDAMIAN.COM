@@ -2,13 +2,13 @@
 <!-- FIT CON DAMIAN — Pagina de recursos (captacion de lead)           -->
 <!-- Version HTML/CSS/JS plana para pegar en el bloque                 -->
 <!-- "JavaScript/HTML personalizado" de GoHighLevel.                   -->
-<!-- Replica identica de fitcondamian.com/recursos                     -->
+<!-- Replica de fitcondamian.com/recursos (diseno actual).             -->
 <!-- El formulario reutiliza el mismo GHL_FORM_ID.                     -->
 <!-- ================================================================= -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
 <style>
   #fcd-recursos * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,56 +20,50 @@
     line-height: 1.5;
   }
   #fcd-recursos a { text-decoration: none; }
-  #fcd-recursos .fcd-header {
-    border-bottom: 1px solid #1f1f1f;
-    padding: 20px 24px;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-  #fcd-recursos .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
   #fcd-recursos .fcd-accent { color: #00AAFF; }
 
-  /* Banner */
-  #fcd-recursos .fcd-banner {
-    background: linear-gradient(90deg, #0077CC, #00AAFF);
-    padding: 14px 24px;
-    text-align: center;
-    position: relative;
-    z-index: 10;
+  #fcd-recursos .fcd-header {
+    border-bottom: 1px solid #1f1f1f;
+    padding: 20px 24px; text-align: center; position: relative; z-index: 10;
   }
-  #fcd-recursos .fcd-banner p {
-    color: #fff;
-    font-size: clamp(13px, 3.4vw, 15px);
-    font-weight: 900;
-    line-height: 1.45;
-    letter-spacing: -0.3px;
-  }
+  #fcd-recursos .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
 
   #fcd-recursos .fcd-wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
 
   /* Hero */
-  #fcd-recursos .fcd-hero { padding: 48px 0 40px; text-align: center; position: relative; }
-  #fcd-recursos .fcd-hero-bg {
-    position: absolute; inset: 0; overflow: hidden; border-radius: 24px; pointer-events: none;
-  }
+  #fcd-recursos .fcd-hero { padding: 40px 0; text-align: center; position: relative; }
+  #fcd-recursos .fcd-hero-bg { position: absolute; inset: 0; overflow: hidden; border-radius: 24px; pointer-events: none; }
   #fcd-recursos .fcd-hero-inner { position: relative; z-index: 1; }
+  #fcd-recursos .fcd-qualifier {
+    color: #00AAFF; font-size: clamp(13px, 3.4vw, 15px); font-weight: 800;
+    line-height: 1.4; letter-spacing: -0.2px; margin: 0 auto 20px; max-width: 560px;
+  }
   #fcd-recursos .fcd-hero h1 {
-    font-size: clamp(2.2rem, 8vw, 3.4rem); font-weight: 900; line-height: 1.05;
-    margin: 0 0 32px 0; letter-spacing: -1.5px;
+    font-size: clamp(2rem, 7.5vw, 3.2rem); font-weight: 900; line-height: 1.08;
+    margin: 0 0 28px 0; letter-spacing: -1.5px; text-transform: uppercase;
   }
-  #fcd-recursos .fcd-hero h1 em { font-style: italic; color: #00AAFF; }
   #fcd-recursos .fcd-cta {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: #00AAFF; color: #fff; font-weight: 900; font-size: 17px;
-    padding: 16px 36px; border-radius: 99px; border: none; cursor: pointer;
-    letter-spacing: -0.3px; margin-bottom: 14px; font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; max-width: 520px; background: #00AAFF; color: #fff; font-weight: 900;
+    font-size: clamp(16px, 4.2vw, 19px); padding: 20px 32px; border-radius: 16px; border: none;
+    cursor: pointer; letter-spacing: -0.3px; font-family: inherit; text-transform: uppercase;
+    box-shadow: 0 10px 30px rgba(0,170,255,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  #fcd-recursos .fcd-subcta { color: #00AAFF; font-size: 14px; font-weight: 700; margin: 0 0 36px 0; }
+  #fcd-recursos .fcd-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(0,170,255,0.45); }
+  #fcd-recursos .fcd-hero .fcd-cta { margin-bottom: 16px; }
+  #fcd-recursos .fcd-subcta {
+    color: #B8B8B8; font-size: 15px; font-weight: 500; line-height: 1.6;
+    margin: 0 auto 36px; max-width: 560px;
+  }
+  #fcd-recursos .fcd-subcta strong { color: #fff; }
+  #fcd-recursos .fcd-subcta .fcd-accent { font-weight: 700; }
+
   #fcd-recursos .fcd-video {
-    border-radius: 16px; overflow: hidden; background: #161616; aspect-ratio: 16/9;
-    display: flex; align-items: center; justify-content: center; border: 1px solid #252525;
+    border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #252525;
+    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; position: relative;
   }
+  #fcd-recursos .fcd-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
   #fcd-recursos .fcd-play {
     width: 72px; height: 72px; background: #00AAFF; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; font-size: 24px;
@@ -78,76 +72,49 @@
   }
 
   /* Stats */
-  #fcd-recursos .fcd-stats {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 56px;
-  }
-  #fcd-recursos .fcd-stat {
-    background: #111; border: 1px solid #1f1f1f; border-radius: 16px; padding: 20px; text-align: center;
-  }
-  #fcd-recursos .fcd-stat .fcd-num {
-    font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); color: #00AAFF;
-    margin: 0 0 4px 0; letter-spacing: -1px;
-  }
+  #fcd-recursos .fcd-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 56px; }
+  #fcd-recursos .fcd-stat { background: #111; border: 1px solid #1f1f1f; border-radius: 16px; padding: 20px; text-align: center; }
+  #fcd-recursos .fcd-stat .fcd-num { font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); color: #00AAFF; margin: 0 0 4px 0; letter-spacing: -1px; }
   #fcd-recursos .fcd-stat .fcd-lab { color: #888; font-size: 12px; line-height: 1.4; }
 
   /* Seccion recursos */
-  #fcd-recursos .fcd-recursos-sec { padding-bottom: 80px; }
-  #fcd-recursos .fcd-eyebrow {
-    color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; margin: 0 0 10px 0; text-align: center;
-  }
-  #fcd-recursos .fcd-arrow { text-align: center; margin-bottom: 32px; animation: fcd-bounce 1.8s infinite; }
+  #fcd-recursos .fcd-recursos-sec { padding-bottom: 56px; }
+  #fcd-recursos .fcd-sec-head { text-align: center; margin-bottom: 24px; }
+  #fcd-recursos .fcd-eyebrow { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-recursos .fcd-sec-head h2 { font-weight: 900; font-size: clamp(1.4rem, 5vw, 2rem); margin: 0; letter-spacing: -0.8px; }
 
-  #fcd-recursos .fcd-card-slot {
-    position: relative; min-height: 62vh;
-    display: flex; align-items: center; justify-content: center; padding: 40px 0;
+  /* Cuadricula compacta */
+  #fcd-recursos .fcd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  #fcd-recursos .fcd-gcard {
+    text-align: left; cursor: pointer; font: inherit; color: inherit;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 18px; padding: 18px 16px; display: flex; flex-direction: column; gap: 10px;
+    min-height: 170px; opacity: 0;
+    transition: opacity 0.5s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.3s ease;
   }
-  #fcd-recursos .fcd-glow {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;
+  #fcd-recursos .fcd-grid.fcd-visible .fcd-gcard { opacity: 1; }
+  #fcd-recursos .fcd-gcard:hover {
+    background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.55);
+    box-shadow: 0 14px 34px rgba(0,170,255,0.25); transform: translateY(-4px);
   }
-  #fcd-recursos .fcd-glow > div {
-    width: 65%; height: 65%; border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,170,255,0.28), transparent 70%);
-    filter: blur(50px); opacity: 0; transition: opacity 1.1s ease;
-  }
-  #fcd-recursos .fcd-watermark {
-    position: absolute; top: -6px; font-size: clamp(6rem, 18vw, 11rem); font-weight: 900;
-    color: rgba(255,255,255,0.045); margin: 0; line-height: 1; letter-spacing: -4px;
-    pointer-events: none; user-select: none; transform: translateY(20px); transition: transform 1s ease;
-  }
-  #fcd-recursos .fcd-card {
-    position: relative; z-index: 1; width: 100%; max-width: 540px;
-    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 28px; padding: clamp(28px, 5vw, 44px);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    opacity: 0; transform: translateY(70px) scale(0.92); filter: blur(8px);
-    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1), filter 0.9s ease;
-  }
-  #fcd-recursos .fcd-card-slot.fcd-visible .fcd-glow > div { opacity: 1; }
-  #fcd-recursos .fcd-card-slot.fcd-visible .fcd-watermark { transform: translateY(0); }
-  #fcd-recursos .fcd-card-slot.fcd-visible .fcd-card { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-  #fcd-recursos .fcd-card-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
-  #fcd-recursos .fcd-card-emoji {
-    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+  #fcd-recursos .fcd-gtop { display: flex; align-items: center; justify-content: space-between; }
+  #fcd-recursos .fcd-gemoji {
+    width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
     background: linear-gradient(135deg, #00AAFF, #0077CC);
-    display: flex; align-items: center; justify-content: center; font-size: 28px;
-    box-shadow: 0 8px 24px rgba(0,170,255,0.35);
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    box-shadow: 0 6px 18px rgba(0,170,255,0.35);
   }
-  #fcd-recursos .fcd-card-meta {
-    color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; margin: 0; line-height: 1.6;
+  #fcd-recursos .fcd-gvol { color: #444; font-size: 12px; font-weight: 900; letter-spacing: -0.5px; }
+  #fcd-recursos .fcd-gcat { color: #00AAFF; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  #fcd-recursos .fcd-gcard h3 {
+    font-weight: 900; font-size: 15px; color: #fff; margin: 0; line-height: 1.2; letter-spacing: -0.3px;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
-  #fcd-recursos .fcd-card-meta span { color: #777; }
-  #fcd-recursos .fcd-card h3 {
-    font-weight: 900; font-size: clamp(1.6rem, 4vw, 2.1rem); color: #fff;
-    margin: 0 0 14px 0; line-height: 1.15; letter-spacing: -1px;
-  }
-  #fcd-recursos .fcd-card p.fcd-desc { color: #999; font-size: 15px; line-height: 1.7; margin: 0 0 26px 0; }
-  #fcd-recursos .fcd-card button {
-    background: #00AAFF; color: #fff; font-weight: 900; font-size: 14px;
-    padding: 13px 28px; border-radius: 99px; border: none; cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0,170,255,0.3); font-family: inherit;
-  }
+  #fcd-recursos .fcd-glink { margin-top: auto; color: #8a8a8a; font-size: 13px; font-weight: 800; transition: color 0.25s ease; }
+  #fcd-recursos .fcd-gcard:hover .fcd-glink { color: #00AAFF; }
+
+  #fcd-recursos .fcd-final-cta { text-align: center; margin-top: 32px; }
+  #fcd-recursos .fcd-final-cta .fcd-fine { color: #666; font-size: 12px; margin: 12px 0 0 0; }
 
   /* Footer */
   #fcd-recursos .fcd-footer { border-top: 1px solid #1f1f1f; padding: 28px 24px; text-align: center; }
@@ -157,8 +124,7 @@
   /* Modal */
   #fcd-recursos .fcd-modal {
     position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.85);
-    display: none; align-items: center; justify-content: center; padding: 16px;
-    backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px);
   }
   #fcd-recursos .fcd-modal.fcd-open { display: flex; }
   #fcd-recursos .fcd-modal-box {
@@ -171,20 +137,12 @@
     width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;
     display: flex; align-items: center; justify-content: center;
   }
-  #fcd-recursos .fcd-modal-badge {
-    color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; margin: 0 0 14px 0;
-  }
-  #fcd-recursos .fcd-modal-box h2 {
-    font-size: clamp(1.6rem, 5vw, 2rem); font-weight: 900; margin: 0 0 8px 0;
-    line-height: 1.1; letter-spacing: -0.5px; color: #fff;
-  }
+  #fcd-recursos .fcd-modal-badge { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 14px 0; }
+  #fcd-recursos .fcd-modal-box h2 { font-size: clamp(1.6rem, 5vw, 2rem); font-weight: 900; margin: 0 0 8px 0; line-height: 1.1; letter-spacing: -0.5px; color: #fff; }
   #fcd-recursos .fcd-modal-box h2 em { font-style: italic; color: #00AAFF; }
   #fcd-recursos .fcd-modal-sub { color: #888; font-size: 14px; margin: 0 0 24px 0; line-height: 1.5; }
   #fcd-recursos .fcd-modal-iframe { width: 100%; height: clamp(520px, 75vh, 720px); border: none; border-radius: 8px; display: block; }
   #fcd-recursos .fcd-modal-fine { color: #444; font-size: 11px; text-align: center; margin: 12px 0 0 0; }
-
-  @keyframes fcd-bounce { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(8px);} }
 </style>
 
 <div id="fcd-recursos">
@@ -209,24 +167,29 @@
     <p>Fit con <span class="fcd-accent">Damián</span></p>
   </header>
 
-  <!-- BANNER -->
-  <div class="fcd-banner">
-    <p>Para mujeres que ya no se sienten atractivas, han perdido la energía y sienten que están envejeciendo</p>
-  </div>
-
   <div class="fcd-wrap">
 
     <!-- HERO -->
     <section class="fcd-hero">
       <div class="fcd-hero-bg"><canvas id="fcd-particles"></canvas></div>
       <div class="fcd-hero-inner">
-        <h1>Accede gratis a los recursos que han transformado <em>cientos de cuerpos.</em></h1>
-        <button class="fcd-cta" data-open-modal>Quiero acceder gratis →</button>
-        <p class="fcd-subcta">Empieza a ver cambios en menos de 5 días</p>
+
+        <p class="fcd-qualifier">Para mujeres que se miran al espejo y no se ven atractivas, arrastran cansancio todo el día y han dejado de ponerse la ropa que antes les encantaba</p>
+
+        <h1>Descubre cómo eliminar la flacidez, terminar con el cansancio y <span class="fcd-accent">recuperar tu figura sin esfuerzo</span></h1>
+
+        <button class="fcd-cta" data-open-modal>Acceder a los recursos</button>
+
+        <p class="fcd-subcta">Te regalo los <strong>7 recursos gratis</strong> que han ayudado a cientos de mujeres a verse más firmes, recuperar su energía y volver a su ropa favorita. <span class="fcd-accent">Empieza a ver cambios en menos de 5 días.</span></p>
+
+        <!-- VIDEO: sustituye el bloque de abajo por tu video real.       -->
+        <!-- Sube el .mp4 a "Contenido multimedia" de GHL y usa:          -->
+        <!-- <div class="fcd-video"><video controls preload="metadata"    -->
+        <!--   poster="URL_DEL_POSTER" src="URL_DEL_VIDEO"></video></div>  -->
         <div class="fcd-video">
           <div style="text-align:center;">
             <button class="fcd-play" data-open-modal aria-label="Acceder a los recursos gratis">▶</button>
-            <p style="color:#555;font-size:13px;margin:0;">Vídeo de presentación — próximamente</p>
+            <p style="color:#555;font-size:13px;margin:0;">Vídeo de presentación</p>
           </div>
         </div>
       </div>
@@ -242,11 +205,17 @@
 
     <!-- RECURSOS -->
     <section class="fcd-recursos-sec">
-      <p class="fcd-eyebrow">ESTO ES LO QUE TE LLEVAS</p>
-      <div class="fcd-arrow">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00AAFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      <div class="fcd-sec-head">
+        <p class="fcd-eyebrow">ESTO ES LO QUE TE LLEVAS</p>
+        <h2>7 recursos, <span class="fcd-accent">acceso inmediato y gratis</span></h2>
       </div>
-      <div id="fcd-cards"></div>
+
+      <div class="fcd-grid" id="fcd-grid"></div>
+
+      <div class="fcd-final-cta">
+        <button class="fcd-cta" data-open-modal>Acceder a los recursos</button>
+        <p class="fcd-fine">Sin tarjeta · Acceso inmediato · Solo tu correo</p>
+      </div>
     </section>
 
   </div>
@@ -275,45 +244,46 @@
   var modal = document.getElementById('fcd-modal');
   function openModal() { modal.classList.add('fcd-open'); document.body.style.overflow = 'hidden'; }
   function closeModal() { modal.classList.remove('fcd-open'); document.body.style.overflow = ''; }
-  root.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
+  function bindOpeners(scope) {
+    scope.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
+  }
+  bindOpeners(root);
   document.getElementById('fcd-modal-close').addEventListener('click', closeModal);
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
-  // ---- Recursos (tarjetas) ----
+  // ---- Recursos (cuadricula compacta) ----
   var recursos = [
-    { vol: "01", nombre: "Medidor de Edad-Muscular", emoji: "📋", categoria: "DIAGNÓSTICO", desc: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás." },
-    { vol: "02", nombre: "Test Inteligente de Hábitos", emoji: "🥗", categoria: "NUTRICIÓN", desc: "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo." },
-    { vol: "03", nombre: "IA Experta en Sistemas", emoji: "💪", categoria: "ENTRENAMIENTO", desc: "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud." },
-    { vol: "04", nombre: "Plan de Ruta Anti Envejecimiento y Flacidez", emoji: "😴", categoria: "RECUPERACIÓN", desc: "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido." },
-    { vol: "05", nombre: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", emoji: "📅", categoria: "EXCLUSIVO", desc: "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido." }
+    { vol: "01", nombre: "Medidor de Edad-Muscular", emoji: "📋", categoria: "DIAGNÓSTICO" },
+    { vol: "02", nombre: "Test Inteligente de Hábitos", emoji: "🥗", categoria: "NUTRICIÓN" },
+    { vol: "03", nombre: "IA Experta en Sistemas", emoji: "💪", categoria: "ENTRENAMIENTO" },
+    { vol: "04", nombre: "Plan de Ruta Anti Envejecimiento y Flacidez", emoji: "😴", categoria: "RECUPERACIÓN" },
+    { vol: "05", nombre: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", emoji: "📅", categoria: "EXCLUSIVO" },
+    { vol: "06", nombre: "Guía de Alimentación en la Menopausia", emoji: "🍽️", categoria: "NUTRICIÓN" },
+    { vol: "07", nombre: "Pierde Grasa Más Rápido con Estos 3 Cambios", emoji: "🔥", categoria: "PÉRDIDA DE GRASA" }
   ];
-  var cont = document.getElementById('fcd-cards');
-  recursos.forEach(function (r, i) {
-    var alignRight = (i % 2 === 0);
-    var slot = document.createElement('div');
-    slot.className = 'fcd-card-slot';
-    slot.innerHTML =
-      '<div class="fcd-glow"><div></div></div>' +
-      '<p class="fcd-watermark" style="' + (alignRight ? 'right:0;left:auto;' : 'left:0;right:auto;') + '">' + r.vol + '</p>' +
-      '<div class="fcd-card">' +
-        '<div class="fcd-card-head">' +
-          '<div class="fcd-card-emoji">' + r.emoji + '</div>' +
-          '<p class="fcd-card-meta">VOL · ' + r.vol + '<br><span>' + r.categoria + '</span></p>' +
-        '</div>' +
-        '<h3>' + r.nombre + '</h3>' +
-        '<p class="fcd-desc">' + r.desc + '</p>' +
-        '<button data-open-modal>Acceder gratis →</button>' +
-      '</div>';
-    cont.appendChild(slot);
+  var grid = document.getElementById('fcd-grid');
+  recursos.forEach(function (r) {
+    var card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'fcd-gcard';
+    card.setAttribute('data-open-modal', '');
+    card.innerHTML =
+      '<div class="fcd-gtop">' +
+        '<span class="fcd-gemoji">' + r.emoji + '</span>' +
+        '<span class="fcd-gvol">' + r.vol + '</span>' +
+      '</div>' +
+      '<span class="fcd-gcat">' + r.categoria + '</span>' +
+      '<h3>' + r.nombre + '</h3>' +
+      '<span class="fcd-glink">Acceder →</span>';
+    grid.appendChild(card);
   });
-  // re-enlaza los botones de las tarjetas
-  cont.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
+  bindOpeners(grid);
 
-  // ---- Scroll reveal ----
+  // ---- Scroll reveal (fade de la cuadricula) ----
   var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('fcd-visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.35 });
-  cont.querySelectorAll('.fcd-card-slot').forEach(function (s) { io.observe(s); });
+    entries.forEach(function (e) { if (e.isIntersecting) { grid.classList.add('fcd-visible'); io.disconnect(); } });
+  }, { threshold: 0.1 });
+  io.observe(grid);
 
   // ---- Contadores ----
   var counted = false;
