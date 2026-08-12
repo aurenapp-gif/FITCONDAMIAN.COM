@@ -81,6 +81,12 @@
   #fcd-acceso button.fcd-thumb { cursor: pointer; }
   #fcd-acceso .fcd-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   #fcd-acceso .fcd-thumb.fcd-yt img { filter: brightness(0.8); }
+  #fcd-acceso .fcd-cover { background: linear-gradient(135deg, #102a3a, #0D0D0D 65%); }
+  #fcd-acceso .fcd-cover::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 28% 22%, rgba(0,170,255,0.20), transparent 60%); pointer-events: none; }
+  #fcd-acceso .fcd-cover-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 18px 24px; gap: 10px; }
+  #fcd-acceso .fcd-cover-icon { width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(135deg,#00AAFF,#0077CC); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 8px 22px rgba(0,170,255,0.4); }
+  #fcd-acceso .fcd-cover-cat { color: #00AAFF; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  #fcd-acceso .fcd-cover-title { color: #fff; font-weight: 900; font-size: clamp(15px, 3.5vw, 19px); line-height: 1.2; letter-spacing: -0.4px; margin: 0; max-width: 320px; }
   #fcd-acceso .fcd-vol-badge {
     position: absolute; top: 12px; left: 12px; background: #00AAFF; color: #fff; font-size: 11px;
     font-weight: 900; padding: 4px 10px; border-radius: 99px; letter-spacing: 1px; z-index: 1;
@@ -289,7 +295,7 @@
     } else if (r.imagen) {
       thumbHTML = '<div class="fcd-thumb"><img src="' + r.imagen + '" alt="' + esc(r.titulo) + '"><span class="fcd-vol-badge">VOL · ' + r.vol + '</span></div>';
     } else {
-      thumbHTML = '<div class="fcd-thumb"><span class="fcd-vol-badge">VOL · ' + r.vol + '</span></div>';
+      thumbHTML = '<div class="fcd-thumb fcd-cover"><span class="fcd-vol-badge">VOL · ' + r.vol + '</span><div class="fcd-cover-inner"><span class="fcd-cover-icon">📄</span><span class="fcd-cover-cat">' + r.categoria + '</span><p class="fcd-cover-title">' + esc(r.titulo) + '</p></div></div>';
     }
 
     // Botones

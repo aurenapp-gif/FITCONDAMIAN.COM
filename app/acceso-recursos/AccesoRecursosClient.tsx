@@ -451,9 +451,16 @@ export default function AccesoRecursosClient() {
                       </button>
                     );
                   }
+                  // Recurso sin vídeo: portada de diseño con el nombre.
                   return (
-                    <div style={{ ...baseStyle, background: "#161616" }}>
-                      {thumbInner}
+                    <div style={{ ...baseStyle, background: "linear-gradient(135deg, #102a3a, #0D0D0D 65%)", overflow: "hidden" }}>
+                      {volBadge}
+                      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 28% 22%, rgba(0,170,255,0.20), transparent 60%)", pointerEvents: "none" }} />
+                      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "18px 24px", gap: "10px" }}>
+                        <span aria-hidden="true" style={{ width: "48px", height: "48px", borderRadius: "13px", background: "linear-gradient(135deg,#00AAFF,#0077CC)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", boxShadow: "0 8px 22px rgba(0,170,255,0.4)" }}>📄</span>
+                        <span style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase" }}>{r.categoria}</span>
+                        <p style={{ color: "#fff", fontWeight: 900, fontSize: "clamp(15px, 3.5vw, 19px)", lineHeight: 1.2, letterSpacing: "-0.4px", margin: 0, maxWidth: "320px" }}>{r.titulo}</p>
+                      </div>
                     </div>
                   );
                 })()}
