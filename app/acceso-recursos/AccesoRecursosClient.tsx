@@ -149,6 +149,16 @@ const recursos = [
     linkDoc: "https://test-amticansancio.netlify.app",
     docLabel: "Abrir test",
   },
+  {
+    vol: "09",
+    categoria: "PÉRDIDA DE GRASA",
+    titulo: "Estrategia para Pérdida de Grasa",
+    descripcion:
+      "La estrategia paso a paso para perder grasa de forma sostenible y sin recuperarla.",
+    linkVideo: "#",
+    linkDoc: "https://estrategia-perdida-grasa.netlify.app",
+    docLabel: "Abrir recurso",
+  },
 ];
 
 const ctaBlock = (
