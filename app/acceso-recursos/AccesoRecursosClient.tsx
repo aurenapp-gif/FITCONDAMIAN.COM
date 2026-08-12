@@ -139,6 +139,16 @@ const recursos = [
     linkDoc: "https://guiaperdidadegrasa.netlify.app",
     docLabel: "Abrir guía",
   },
+  {
+    vol: "08",
+    categoria: "ENERGÍA",
+    titulo: "Test Anti-Cansancio",
+    descripcion:
+      "Descubre qué te está robando la energía y cómo recuperarla para sentirte activa todo el día.",
+    linkVideo: "#",
+    linkDoc: "https://test-amticansancio.netlify.app",
+    docLabel: "Abrir test",
+  },
 ];
 
 const ctaBlock = (
