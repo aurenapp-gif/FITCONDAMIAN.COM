@@ -15,6 +15,7 @@ const recursos = [
   { vol: "07", nombre: "Pierde Grasa Más Rápido con Estos 3 Cambios", emoji: "🔥", categoria: "PÉRDIDA DE GRASA", desc: "Los 3 cambios que aceleran la pérdida de grasa sin pasar hambre ni vivir en el gimnasio. Aplícalos desde hoy." },
   { vol: "08", nombre: "Test Anti-Cansancio", emoji: "⚡", categoria: "ENERGÍA", desc: "Descubre qué te está robando la energía y cómo recuperarla para sentirte activa todo el día." },
   { vol: "09", nombre: "Estrategia para Pérdida de Grasa", emoji: "🎯", categoria: "PÉRDIDA DE GRASA", desc: "La estrategia paso a paso para perder grasa de forma sostenible y sin recuperarla." },
+  { vol: "10", nombre: "Protocolo de Masa Muscular", emoji: "🏋️", categoria: "MÚSCULO", desc: "El protocolo para ganar masa muscular de forma eficiente y verte más firme y tonificada." },
 ];
 
 const stats = [
@@ -206,7 +207,7 @@ export default function RecursosClient() {
 
             {/* Subtexto / promesa */}
             <p style={{ color: "#B8B8B8", fontSize: "15px", fontWeight: 500, lineHeight: 1.6, margin: "0 auto 36px", maxWidth: "560px" }}>
-              Te regalo los <strong style={{ color: "#fff" }}>9 recursos gratis</strong> que han ayudado a cientos de mujeres a verse más firmes, recuperar su energía y volver a su ropa favorita. <span style={{ color: "#00AAFF", fontWeight: 700 }}>Empieza a ver cambios en menos de 5 días.</span>
+              Te regalo los <strong style={{ color: "#fff" }}>10 recursos gratis</strong> que han ayudado a cientos de mujeres a verse más firmes, recuperar su energía y volver a su ropa favorita. <span style={{ color: "#00AAFF", fontWeight: 700 }}>Empieza a ver cambios en menos de 5 días.</span>
             </p>
             <div style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid #252525", background: "#000" }}>
               <VideoPlayer src="/inicio-lead.mp4" poster="/inicio-lead-poster.jpg" />
@@ -234,7 +235,7 @@ export default function RecursosClient() {
           <div style={{ textAlign: "center", marginBottom: "24px" }}>
             <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
             <h2 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 5vw, 2rem)", margin: 0, letterSpacing: "-0.8px" }}>
-              9 recursos, <span style={{ color: "#00AAFF" }}>acceso inmediato y gratis</span>
+              10 recursos, <span style={{ color: "#00AAFF" }}>acceso inmediato y gratis</span>
             </h2>
           </div>
 

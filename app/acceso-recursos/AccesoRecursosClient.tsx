@@ -159,6 +159,16 @@ const recursos = [
     linkDoc: "https://estrategia-perdida-grasa.netlify.app",
     docLabel: "Abrir recurso",
   },
+  {
+    vol: "10",
+    categoria: "MÚSCULO",
+    titulo: "Protocolo de Masa Muscular",
+    descripcion:
+      "El protocolo para ganar masa muscular de forma eficiente y verte más firme y tonificada.",
+    linkVideo: "#",
+    linkDoc: "https://protocolomasamuscular.netlify.app",
+    docLabel: "Abrir protocolo",
+  },
 ];
 
 const ctaBlock = (
