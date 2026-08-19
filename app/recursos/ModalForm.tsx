@@ -79,7 +79,7 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
         </p>
 
         {/* GHL Form iframe — embed oficial completo con auto-resize (form_embed.js) */}
-        <div style={{ position: "relative", minHeight: "645px" }}>
+        <div style={{ position: "relative", minHeight: "792px" }}>
           {!iframeLoaded && (
             <div
               aria-hidden="true"
@@ -100,7 +100,7 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
             src={`https://links.fitcondamian.com/widget/form/${GHL_FORM_ID}`}
             onLoad={() => setIframeLoaded(true)}
             style={{
-              width: "100%", height: "645px", border: "none", borderRadius: "8px", display: "block",
+              width: "100%", height: "792px", border: "none", borderRadius: "8px", display: "block",
               opacity: iframeLoaded ? 1 : 0, transition: "opacity 0.3s ease",
               position: "relative",
             }}
@@ -113,7 +113,7 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
             data-deactivation-type="neverDeactivate"
             data-deactivation-value=""
             data-form-name="01 - Formulario LM Youtube"
-            data-height="645"
+            data-height="792"
             data-layout-iframe-id={`inline-${GHL_FORM_ID}`}
             data-form-id={GHL_FORM_ID}
             title="01 - Formulario LM Youtube"
