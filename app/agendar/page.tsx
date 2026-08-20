@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Agenda tu Llamada Gratuita",
@@ -65,20 +66,32 @@ export default function AgendarPage() {
         {/* SEPARADOR */}
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <p style={{ color: "#888", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 6px 0" }}>
-            ELIGE TU HORARIO
+            RESERVA TU LLAMADA
           </p>
-          <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Selecciona el día y la hora que mejor te venga</p>
+          <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Completa el formulario para reservar tu llamada gratuita</p>
         </div>
 
-        {/* GHL CALENDAR EMBED */}
-        <div style={{ borderRadius: "20px", border: "1px solid #1f1f1f", marginBottom: "36px" }}>
+        {/* GHL FORM — Llamada de Ventas 1 a 1 */}
+        <div style={{ borderRadius: "20px", border: "1px solid #1f1f1f", marginBottom: "36px", overflow: "hidden" }}>
           <iframe
-            src="https://links.fitcondamian.com/widget/bookings/reserva-de-llamada-1a1-damian"
-            style={{ width: "100%", height: "1000px", border: "none", display: "block", borderRadius: "20px" }}
-            title="Reserva tu llamada con Damián"
-            loading="lazy"
+            src="https://links.fitcondamian.com/widget/form/Oi9B4gQQsDHKiE6cw5qs"
+            style={{ width: "100%", height: "1289px", border: "none", display: "block", borderRadius: "20px" }}
+            id="inline-Oi9B4gQQsDHKiE6cw5qs"
+            data-layout="{'id':'INLINE'}"
+            data-trigger-type="alwaysShow"
+            data-trigger-value=""
+            data-activation-type="alwaysActivated"
+            data-activation-value=""
+            data-deactivation-type="neverDeactivate"
+            data-deactivation-value=""
+            data-form-name="00- Formulario Llamada de Ventas 1 a 1 "
+            data-height="1289"
+            data-layout-iframe-id="inline-Oi9B4gQQsDHKiE6cw5qs"
+            data-form-id="Oi9B4gQQsDHKiE6cw5qs"
+            title="00- Formulario Llamada de Ventas 1 a 1 "
           />
         </div>
+        <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="afterInteractive" />
 
         {/* SEPARADOR TESTIMONIOS */}
         <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "40px" }} />
