@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 const testimoniosVideo = [
   "wnaKW0mFnHw",
   "hrVa6H6ankg",
+  "E8AU7yjUHGA",
 ];
 
 export default function GraciasPage() {
