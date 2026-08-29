@@ -65,7 +65,7 @@ export default function VideosAntesLlamadaPage() {
           <p style={{ color: "#777", fontSize: "13px", margin: 0 }}>Desliza para ver más →</p>
         </div>
         <div style={{ display: "flex", gap: "12px", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: "8px", marginBottom: "48px" }}>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((n) => (
             <div key={n} style={{ flex: "0 0 auto", width: "min(78%, 300px)", scrollSnapAlign: "center" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
