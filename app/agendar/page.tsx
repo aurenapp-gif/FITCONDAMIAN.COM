@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import TransformacionesCarrusel from "../_components/TransformacionesCarrusel";
 
 export const metadata: Metadata = {
   title: "Agenda tu Llamada Gratuita",
@@ -113,6 +114,9 @@ export default function AgendarPage() {
             </div>
           ))}
         </div>
+
+        {/* CARRUSEL DE TRANSFORMACIONES */}
+        <TransformacionesCarrusel />
 
       </div>
 
