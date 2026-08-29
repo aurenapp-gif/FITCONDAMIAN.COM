@@ -23,6 +23,12 @@
   #fcd-vids .fcd-vids-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
   #fcd-vids .fcd-vid { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
   #fcd-vids .fcd-vid iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  #fcd-vids .fcd-slider-head { text-align: center; margin-bottom: 16px; }
+  #fcd-vids .fcd-slider-head .fcd-eyebrow { margin: 0 0 6px 0; }
+  #fcd-vids .fcd-slider-head .fcd-hint { color: #777; font-size: 13px; margin: 0; }
+  #fcd-vids .fcd-slider { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 8px; margin-bottom: 48px; }
+  #fcd-vids .fcd-slide { flex: 0 0 auto; width: min(78%, 300px); scroll-snap-align: center; }
+  #fcd-vids .fcd-slide img { width: 100%; height: auto; border-radius: 16px; border: 1px solid #1f1f1f; display: block; }
   #fcd-vids .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; margin-top: auto; }
   #fcd-vids .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
   @media (max-width: 480px) {
@@ -46,6 +52,19 @@
       <div class="fcd-vid"><iframe src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0" title="Caso de éxito 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
       <div class="fcd-vid"><iframe src="https://www.youtube-nocookie.com/embed/hrVa6H6ankg?rel=0" title="Caso de éxito 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
       <div class="fcd-vid"><iframe src="https://www.youtube-nocookie.com/embed/E8AU7yjUHGA?rel=0" title="Caso de éxito 3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <!-- CARRUSEL DE TRANSFORMACIONES (imagenes servidas desde Vercel) -->
+    <div class="fcd-slider-head">
+      <p class="fcd-eyebrow">TRANSFORMACIONES REALES</p>
+      <p class="fcd-hint">Desliza para ver más →</p>
+    </div>
+    <div class="fcd-slider">
+      <div class="fcd-slide"><img src="https://fitcondamian.com/caso-exito-1.jpg" alt="Transformación real 1" loading="lazy"></div>
+      <div class="fcd-slide"><img src="https://fitcondamian.com/caso-exito-2.jpg" alt="Transformación real 2" loading="lazy"></div>
+      <div class="fcd-slide"><img src="https://fitcondamian.com/caso-exito-3.jpg" alt="Transformación real 3" loading="lazy"></div>
+      <div class="fcd-slide"><img src="https://fitcondamian.com/caso-exito-4.jpg" alt="Transformación real 4" loading="lazy"></div>
+      <div class="fcd-slide"><img src="https://fitcondamian.com/caso-exito-5.jpg" alt="Transformación real 5" loading="lazy"></div>
     </div>
   </div>
 
