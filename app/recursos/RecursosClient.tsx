@@ -25,6 +25,13 @@ const stats = [
   { value: 100,  suffix: "%", label: "método basado en ciencia"  },
 ];
 
+// Testimonios en vídeo (YouTube). Para añadir más, añade su ID aquí.
+const testimoniosVideo = [
+  "wnaKW0mFnHw",
+  "hrVa6H6ankg",
+  "E8AU7yjUHGA",
+];
+
 // — Partículas —
 function ParticlesCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -226,6 +233,33 @@ export default function RecursosClient() {
             </div>
           ))}
         </div>
+
+        {/* CASOS DE ÉXITO EN VÍDEO */}
+        <section style={{ paddingBottom: "56px" }}>
+          <div style={{ textAlign: "center", marginBottom: "28px" }}>
+            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>CASOS DE ÉXITO REALES</p>
+            <h2 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 5vw, 2rem)", margin: 0, letterSpacing: "-0.8px" }}>
+              Mujeres que ya lo han <span style={{ color: "#00AAFF" }}>conseguido</span>
+            </h2>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {testimoniosVideo.map((id, i) => (
+              <div key={id} style={{
+                position: "relative", aspectRatio: "16/9",
+                borderRadius: "16px", overflow: "hidden",
+                border: "1px solid #1f1f1f", background: "#000",
+              }}>
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
+                  title={`Caso de éxito ${i + 1}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* RECURSOS — cuadrícula compacta */}
         <section
