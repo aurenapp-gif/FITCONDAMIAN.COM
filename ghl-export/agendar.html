@@ -34,12 +34,6 @@
   #fcd-agendar .fcd-tts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
   #fcd-agendar .fcd-tt { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
   #fcd-agendar .fcd-tt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-  #fcd-agendar .fcd-slider-head { text-align: center; margin-bottom: 16px; }
-  #fcd-agendar .fcd-sl-eyebrow { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 6px 0; }
-  #fcd-agendar .fcd-sl-hint { color: #777; font-size: 13px; margin: 0; }
-  #fcd-agendar .fcd-slider { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 8px; margin-bottom: 48px; }
-  #fcd-agendar .fcd-slide { flex: 0 0 auto; width: min(78%, 300px); scroll-snap-align: center; }
-  #fcd-agendar .fcd-slide img { width: 100%; height: auto; border-radius: 16px; border: 1px solid #1f1f1f; display: block; }
   #fcd-agendar .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; }
   #fcd-agendar .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
   #fcd-agendar .fcd-footer a { color: #444; }
@@ -87,13 +81,6 @@
       <div class="fcd-tt"><iframe src="https://www.youtube-nocookie.com/embed/E8AU7yjUHGA?rel=0" title="Testimonio en vídeo 3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
     </div>
 
-    <!-- CARRUSEL DE TRANSFORMACIONES (imagenes servidas desde Vercel) -->
-    <div class="fcd-slider-head">
-      <p class="fcd-sl-eyebrow">TRANSFORMACIONES REALES</p>
-      <p class="fcd-sl-hint">Desliza para ver más →</p>
-    </div>
-    <div class="fcd-slider" id="fcd-slider-ag"></div>
-
   </div>
 
   <footer class="fcd-footer">
@@ -103,16 +90,5 @@
 
 <script src="https://links.fitcondamian.com/js/form_embed.js"></script>
 <script>
-  (function () {
-    var y = document.getElementById('fcd-year-ag'); if (y) y.textContent = new Date().getFullYear();
-    var slider = document.getElementById('fcd-slider-ag');
-    if (slider) {
-      for (var cn = 1; cn <= 18; cn++) {
-        var sd = document.createElement('div');
-        sd.className = 'fcd-slide';
-        sd.innerHTML = '<img src="https://fitcondamian.com/caso-exito-' + cn + '.jpg" alt="Transformación real ' + cn + '" loading="lazy">';
-        slider.appendChild(sd);
-      }
-    }
-  })();
+  (function () { var y = document.getElementById('fcd-year-ag'); if (y) y.textContent = new Date().getFullYear(); })();
 </script>

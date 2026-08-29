@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import VslTimeline from "../_components/VslTimeline";
 import VideoPlayer from "../_components/VideoPlayer";
-import TransformacionesCarrusel from "../_components/TransformacionesCarrusel";
 
 export const metadata: Metadata = {
   title: "Antes de tu llamada",
@@ -91,9 +90,6 @@ export default function AntesDeLaLlamadaPage() {
             </div>
           ))}
         </div>
-
-        {/* CARRUSEL DE TRANSFORMACIONES */}
-        <TransformacionesCarrusel />
 
       </div>
 

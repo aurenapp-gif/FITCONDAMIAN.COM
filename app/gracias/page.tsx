@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import VslTimeline from "../_components/VslTimeline";
 import VideoPlayer from "../_components/VideoPlayer";
-import TransformacionesCarrusel from "../_components/TransformacionesCarrusel";
 
 export const metadata: Metadata = {
   title: "¡Llamada reservada!",
@@ -199,9 +198,6 @@ export default function GraciasPage() {
             </div>
           ))}
         </div>
-
-        {/* CARRUSEL DE TRANSFORMACIONES */}
-        <TransformacionesCarrusel />
 
       </div>
 
