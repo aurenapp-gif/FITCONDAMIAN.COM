@@ -4,54 +4,69 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Panel de Contabilidad y Márgenes</title>
+<title>Mi Panel de Contabilidad</title>
 <style>
   :root{
-    --bg:#0b0f14; --panel:#121923; --panel2:#18212e; --line:#243040;
+    --bg:#0b0f14; --panel:#121923; --panel2:#18212e; --line:#243040; --line2:#2f3f54;
     --txt:#e8eef6; --muted:#8ea0b8; --accent:#c8f31d; --accent2:#3ddc97;
-    --warn:#ffb020; --bad:#ff5c5c; --good:#3ddc97;
+    --warn:#ffb020; --bad:#ff5c5c; --good:#3ddc97; --info:#5aa9ff;
     --radius:14px;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;background:var(--bg);color:var(--txt);
     font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-  a{color:var(--accent)}
-  .wrap{max-width:1240px;margin:0 auto;padding:24px 18px 80px}
+  .wrap{max-width:1240px;margin:0 auto;padding:20px 18px 96px}
 
+  /* ---------- cabecera ---------- */
   header.top{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;
-    padding:18px 0 20px;border-bottom:1px solid var(--line);margin-bottom:20px}
+    padding:16px 0 18px;border-bottom:1px solid var(--line);margin-bottom:16px}
   .brand{display:flex;align-items:center;gap:12px}
   .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));
     display:grid;place-items:center;color:#0b0f14;font-weight:800;font-size:18px}
-  h1{font-size:20px;margin:0;letter-spacing:-.3px}
+  h1{font-size:19px;margin:0;letter-spacing:-.3px}
   .sub{color:var(--muted);font-size:13px;margin-top:2px}
-  .tools{display:flex;gap:8px;flex-wrap:wrap}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
   button,.btn{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);
     background:var(--panel2);color:var(--txt);padding:8px 13px;transition:.15s}
-  button:hover,.btn:hover{border-color:#3a4a60;background:#1e2937}
+  button:hover,.btn:hover{border-color:var(--line2);background:#1e2937}
   .btn-accent{background:var(--accent);color:#0b0f14;border-color:var(--accent);font-weight:600}
   .btn-accent:hover{background:#d6ff3a;border-color:#d6ff3a}
   .btn-ghost{background:transparent}
-  .btn-sm{padding:4px 9px;font-size:13px}
+  .btn-sm{padding:5px 10px;font-size:13px}
+  .btn-lg{padding:12px 22px;font-size:16px;font-weight:600}
   .btn-del{background:transparent;border-color:transparent;color:var(--muted);padding:4px 8px}
   .btn-del:hover{color:var(--bad);background:#2a1a1e;border-color:#402028}
+  button:disabled{opacity:.4;cursor:not-allowed}
 
-  nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
-  nav.tabs button{background:transparent;border-color:transparent;color:var(--muted);padding:9px 14px}
+  /* interruptor simple/experto */
+  .switch{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:3px}
+  .switch button{border:0;background:transparent;border-radius:99px;padding:6px 14px;font-size:13px;color:var(--muted)}
+  .switch button.on{background:var(--accent);color:#0b0f14;font-weight:600}
+
+  nav.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px}
+  nav.tabs button{background:transparent;border-color:transparent;color:var(--muted);padding:9px 13px;font-size:14px}
   nav.tabs button.active{background:var(--panel);border-color:var(--line);color:var(--txt);font-weight:600}
+  nav.tabs button .dot{display:inline-block;width:7px;height:7px;border-radius:99px;background:var(--warn);margin-left:6px;vertical-align:middle}
 
   .grid{display:grid;gap:16px}
   .g2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
   .g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
-  .g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(195px,1fr))}
+  .span2{grid-column:span 2}
+  @media(max-width:720px){.span2{grid-column:span 1}}
 
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
-  .card h2{font-size:15px;margin:0 0 4px;letter-spacing:-.2px}
+  .card h2{font-size:15px;margin:0 0 4px;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
   .card .hint{color:var(--muted);font-size:12.5px;margin:0 0 14px}
+  .card .hint b{color:#c3cfdd}
+  h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);
+    margin:26px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 
-  .field{margin-bottom:12px}
+  /* ---------- campos ---------- */
+  .field{margin-bottom:13px}
   .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
   .field label b{color:var(--txt);font-weight:600}
   .inp{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--line);
@@ -59,68 +74,126 @@
   .inp:focus-within{border-color:var(--accent)}
   .inp input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--txt);
     font:inherit;padding:9px 11px}
-  .inp .unit{color:var(--muted);font-size:12.5px;padding:0 11px;border-left:1px solid var(--line);align-self:stretch;
-    display:grid;place-items:center;background:#0f1620}
-  .inp input[type=text]{font-size:14px}
+  .inp .unit{color:var(--muted);font-size:12.5px;padding:0 11px;border-left:1px solid var(--line);
+    align-self:stretch;display:grid;place-items:center;background:#0f1620;white-space:nowrap}
+  .inp.big input{font-size:20px;font-weight:600;padding:12px}
   select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
     color:var(--txt);font:inherit;padding:9px 11px;outline:0}
-  .tip{color:var(--muted);font-size:12px;margin-top:4px;display:block}
+  .tip{color:var(--muted);font-size:12px;margin-top:5px;display:block}
+  .tip b{color:#b9c6d6}
 
+  /* ayuda "?" */
+  .q{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:99px;
+    border:1px solid var(--line2);color:var(--muted);font-size:11px;cursor:pointer;
+    background:var(--panel2);vertical-align:middle;margin-left:5px;user-select:none}
+  .q:hover{color:var(--accent);border-color:var(--accent)}
+  .qbox{display:none;margin-top:6px;background:#0f1620;border:1px solid var(--line);
+    border-left:3px solid var(--info);border-radius:8px;padding:9px 11px;font-size:12.5px;color:#c3cfdd}
+  .qbox.open{display:block}
+
+  /* opciones tipo tarjeta */
+  .opts{display:grid;gap:9px}
+  .opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);background:var(--panel2);
+    border-radius:11px;padding:12px 13px;cursor:pointer;transition:.15s}
+  .opt:hover{border-color:var(--line2)}
+  .opt.on{border-color:var(--accent);background:#171f13}
+  .opt .mark{width:18px;height:18px;border-radius:99px;border:2px solid var(--line2);flex:none;margin-top:2px}
+  .opt.on .mark{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px #171f13}
+  .opt .t{font-weight:600;font-size:14px}
+  .opt .d{color:var(--muted);font-size:12.5px;margin-top:2px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .chip{border:1px dashed var(--line2);background:transparent;color:var(--muted);
+    border-radius:99px;padding:5px 12px;font-size:12.5px;cursor:pointer}
+  .chip:hover{border-style:solid;border-color:var(--accent);color:var(--accent)}
+  .chip.on{border-style:solid;border-color:var(--accent);background:#171f13;color:var(--accent)}
+
+  /* ---------- filas dinámicas ---------- */
   .rows{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-  .row{display:grid;grid-template-columns:1fr 118px 34px;gap:8px;align-items:center}
-  .row.sal{grid-template-columns:1fr 108px 84px 34px}
-  .rowhead{display:grid;grid-template-columns:1fr 118px 34px;gap:8px;font-size:11.5px;
-    color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-  .rowhead.sal{grid-template-columns:1fr 108px 84px 34px}
+  .row{display:grid;gap:8px;align-items:center}
+  .row.gasto{grid-template-columns:1fr 116px 34px}
+  .row.sal{grid-template-columns:1fr 106px 78px 34px}
+  .row.serv{grid-template-columns:1.4fr 96px 84px 92px 96px 34px}
+  .rowhead{display:grid;gap:8px;font-size:11px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.5px;margin-bottom:3px}
+  .rowhead.gasto{grid-template-columns:1fr 116px 34px}
+  .rowhead.sal{grid-template-columns:1fr 106px 78px 34px}
+  .rowhead.serv{grid-template-columns:1.4fr 96px 84px 92px 96px 34px}
+  .rowhead span:not(:first-child){text-align:right}
+  @media(max-width:820px){
+    .row.serv,.rowhead.serv{grid-template-columns:1fr 1fr 1fr}
+    .rowhead.serv{display:none}
+  }
+  .subtot{display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;
+    border-top:2px solid var(--line);font-weight:700}
 
+  /* ---------- kpis ---------- */
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px}
-  .kpi .lab{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .kpi .lab{font-size:12px;color:var(--muted)}
   .kpi .val{font-size:25px;font-weight:700;letter-spacing:-.7px;margin-top:6px;line-height:1.15}
   .kpi .foot{font-size:12px;color:var(--muted);margin-top:5px}
   .kpi.hi{border-color:#2f4a1e;background:linear-gradient(180deg,#16200f,#121923)}
-  .kpi.bad .val{color:var(--bad)}
-  .kpi.good .val{color:var(--good)}
-  .kpi.warn .val{color:var(--warn)}
+  .kpi.bad .val{color:var(--bad)} .kpi.good .val{color:var(--good)} .kpi.warn .val{color:var(--warn)}
 
   .pill{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:99px;
-    border:1px solid var(--line);color:var(--muted)}
+    border:1px solid var(--line);color:var(--muted);white-space:nowrap}
   .pill.good{color:var(--good);border-color:#1f4436;background:#0f2019}
   .pill.warn{color:var(--warn);border-color:#4a3a12;background:#1f1a0c}
   .pill.bad{color:var(--bad);border-color:#4a1f24;background:#201013}
+  .pill.info{color:var(--info);border-color:#1d3a5c;background:#0d1a2a}
 
   table{width:100%;border-collapse:collapse;font-size:13.5px}
   th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
   th:first-child,td:first-child{text-align:left}
-  th{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+  th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
   tbody tr:hover{background:#151d28}
   tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:none}
   .tscroll{overflow-x:auto;margin:0 -4px}
-  .neg{color:var(--bad)}
-  .pos{color:var(--good)}
+  #tablaMeses td{padding:5px 4px}
+  #tablaMeses .inp input{padding:7px 8px;width:100%;font-size:13px}
+  #tablaMeses td:first-child .inp{width:132px}
+  #tablaMeses td .inp{min-width:0}
+  #tablaMeses td:not(:first-child) .inp{width:82px;margin-left:auto}
+  td.wrap,th.wrap{white-space:normal;text-align:left}
+  .neg{color:var(--bad)} .pos{color:var(--good)}
 
   .pl{font-size:14px}
   .pl .line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed #1e2836}
-  .pl .line span:last-child{font-variant-numeric:tabular-nums;font-weight:600}
+  .pl .line span:last-child{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
   .pl .line.tot{border-bottom:none;border-top:2px solid var(--line);margin-top:6px;padding-top:12px;font-size:16px}
   .pl .line.sub{color:var(--muted)}
   .pl .line.ind span:first-child{padding-left:14px;color:var(--muted);font-size:13px}
 
   .bar{height:9px;border-radius:99px;background:#1b2431;overflow:hidden;display:flex;margin-top:10px}
   .bar i{display:block;height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
 
-  details.faq{border:1px solid var(--line);border-radius:12px;padding:0;margin-bottom:10px;background:var(--panel)}
-  details.faq summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14.5px;list-style:none}
-  details.faq summary::-webkit-details-marker{display:none}
-  details.faq summary:before{content:"+";color:var(--accent);margin-right:10px;font-weight:700}
-  details.faq[open] summary:before{content:"−"}
-  details.faq .body{padding:0 16px 15px;color:#c3cfdd;font-size:14px}
-  details.faq .body p{margin:8px 0}
-  details.faq .body code{background:#0f1620;border:1px solid var(--line);border-radius:6px;
-    padding:2px 6px;font-size:13px;color:var(--accent)}
+  /* ---------- salud ---------- */
+  .health{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .ring{position:relative;width:126px;height:126px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .mid{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .ring .mid b{display:block;font-size:31px;letter-spacing:-1px;line-height:1}
+  .ring .mid span{font-size:11px;color:var(--muted)}
+  .hlist{display:grid;gap:8px;flex:1;min-width:260px}
+  .hrow{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;
+    padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);font-size:13.5px}
+  .hrow i{width:10px;height:10px;border-radius:99px;display:block}
+  .hrow .nm{display:flex;flex-direction:column}
+  .hrow .nm small{color:var(--muted);font-size:11.5px}
+  .hrow b{font-variant-numeric:tabular-nums}
 
-  .note{background:#0f1620;border:1px solid var(--line);border-left:3px solid var(--accent);
-    border-radius:10px;padding:12px 14px;font-size:13.5px;color:#c3cfdd;margin-top:14px}
-  .note b{color:var(--txt)}
+  .acts{display:grid;gap:10px}
+  .act{display:grid;grid-template-columns:28px 1fr;gap:12px;border:1px solid var(--line);
+    border-radius:11px;padding:13px 14px;background:var(--panel2)}
+  .act .num{width:28px;height:28px;border-radius:99px;display:grid;place-items:center;
+    background:var(--accent);color:#0b0f14;font-weight:700;font-size:13px}
+  .act.b1 .num{background:var(--bad);color:#fff} .act.b2 .num{background:var(--warn);color:#0b0f14}
+  .act .t{font-weight:600;margin-bottom:3px}
+  .act .d{color:#c3cfdd;font-size:13.5px}
+  .act .d b{color:var(--txt)}
+
   .alerts{display:flex;flex-direction:column;gap:9px}
   .alert{border-radius:10px;padding:11px 13px;font-size:13.5px;border:1px solid var(--line);background:var(--panel2)}
   .alert.good{border-color:#1f4436;background:#0f2019}
@@ -128,320 +201,464 @@
   .alert.bad{border-color:#4a1f24;background:#201013}
   .alert b{display:block;margin-bottom:2px}
 
-  .savebar{position:fixed;left:0;right:0;bottom:0;background:rgba(11,15,20,.92);backdrop-filter:blur(8px);
+  .note{background:#0f1620;border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:10px;padding:12px 14px;font-size:13.5px;color:#c3cfdd;margin-top:14px}
+  .note b{color:var(--txt)}
+  .note.info{border-left-color:var(--info)}
+
+  /* ---------- gráficos ---------- */
+  .chart{width:100%;height:auto;display:block}
+  .chart .gl{stroke:#1e2836;stroke-width:1}
+  .chart .ax{fill:var(--muted);font-size:10px}
+
+  /* ---------- guía ---------- */
+  details.faq{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--panel)}
+  details.faq summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14.5px;list-style:none}
+  details.faq summary::-webkit-details-marker{display:none}
+  details.faq summary:before{content:"+";color:var(--accent);margin-right:10px;font-weight:700}
+  details.faq[open] summary:before{content:"\2212"}
+  details.faq .body{padding:0 16px 15px;color:#c3cfdd;font-size:14px}
+  details.faq .body p{margin:8px 0}
+  details.faq .body code{background:#0f1620;border:1px solid var(--line);border-radius:6px;
+    padding:2px 6px;font-size:13px;color:var(--accent)}
+
+  /* ---------- asistente ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(5,8,12,.82);backdrop-filter:blur(5px);
+    z-index:50;display:grid;place-items:center;padding:18px;overflow:auto}
+  .modal{background:var(--panel);border:1px solid var(--line2);border-radius:18px;
+    width:min(660px,100%);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .modal .mhead{padding:20px 24px 0}
+  .modal .mbody{padding:14px 24px 4px}
+  .modal .mfoot{padding:16px 24px 20px;display:flex;justify-content:space-between;gap:12px;align-items:center;
+    position:sticky;bottom:0;background:var(--panel);border-top:1px solid var(--line);margin-top:10px}
+  .steps{display:flex;gap:4px;margin-bottom:14px}
+  .steps i{height:4px;flex:1;border-radius:99px;background:#1e2836}
+  .steps i.on{background:var(--accent)}
+  .modal h3{margin:0 0 6px;font-size:21px;letter-spacing:-.4px}
+  .modal .lead{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .modal .stepno{font-size:11.5px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .exline{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .exline .chip{font-size:12px}
+
+  .savebar{position:fixed;left:0;right:0;bottom:0;background:rgba(11,15,20,.94);backdrop-filter:blur(8px);
     border-top:1px solid var(--line);padding:9px 18px;display:flex;justify-content:space-between;
     align-items:center;gap:12px;font-size:12.5px;color:var(--muted);z-index:20}
   .savebar .mini{display:flex;gap:18px;flex-wrap:wrap}
   .savebar .mini b{color:var(--txt)}
   .hidden{display:none!important}
+  body.simple .adv{display:none!important}
+
   @media (max-width:640px){
     .kpi .val{font-size:21px}
     .savebar .mini{display:none}
+    .wrap{padding:14px 12px 90px}
+    .modal .mhead,.modal .mbody,.modal .mfoot{padding-left:16px;padding-right:16px}
   }
   @media print{
-    .savebar,nav.tabs,.tools{display:none}
+    .savebar,nav.tabs,.tools,.overlay{display:none!important}
     body{background:#fff;color:#000}
-    .card,.kpi{border-color:#ccc;background:#fff}
+    .card,.kpi,.hrow,.act{border-color:#ccc;background:#fff}
+    .tab{display:block!important}
   }
 </style>
 </head>
-<body>
+<body class="simple">
 <div class="wrap">
 
   <header class="top">
     <div class="brand">
       <div class="logo">€</div>
       <div>
-        <h1>Panel de Contabilidad y Márgenes</h1>
-        <div class="sub">Controla gastos, margen por cliente y cuánto puedes invertir cada mes</div>
+        <h1>Mi Panel de Contabilidad</h1>
+        <div class="sub" id="subTitulo">Gastos, márgenes y decisiones, explicado paso a paso</div>
       </div>
     </div>
     <div class="tools">
-      <button id="btnGuia" class="btn-ghost">📘 Guía rápida</button>
-      <button id="btnExport">⬇ Exportar datos</button>
-      <button id="btnImport">⬆ Importar</button>
-      <button id="btnCsv">📊 CSV</button>
-      <button id="btnPrint">🖨 Imprimir</button>
-      <button id="btnReset" class="btn-ghost">↺ Reiniciar</button>
+      <div class="switch" id="switchModo">
+        <button data-modo="simple" class="on">Sencillo</button>
+        <button data-modo="experto">Experto</button>
+      </div>
+      <button id="btnWizard" class="btn-accent">🧭 Asistente</button>
+      <button id="btnExport" title="Guardar una copia de tus datos">⬇</button>
+      <button id="btnImport" title="Cargar una copia">⬆</button>
+      <button id="btnCsv" title="Exportar resumen a Excel">📊</button>
+      <button id="btnPrint" title="Imprimir o guardar en PDF">🖨</button>
+      <button id="btnReset" class="btn-ghost" title="Empezar de cero">↺</button>
       <input type="file" id="fileIn" accept="application/json" class="hidden">
     </div>
   </header>
 
   <nav class="tabs" id="tabs">
-    <button data-tab="servicio" class="active">1 · Mi servicio</button>
-    <button data-tab="gastos">2 · Gastos</button>
-    <button data-tab="marketing">3 · Marketing y ventas</button>
+    <button data-tab="inicio" class="active">🏠 Inicio</button>
+    <button data-tab="servicio">1 · Mis servicios</button>
+    <button data-tab="gastos">2 · Mis gastos</button>
+    <button data-tab="marketing">3 · Captar clientes</button>
     <button data-tab="resultados">4 · Resultados</button>
     <button data-tab="decisiones">5 · Qué me puedo permitir</button>
-    <button data-tab="proyeccion">6 · Proyección 12 meses</button>
-    <button data-tab="guia">7 · Guía</button>
+    <button data-tab="proyeccion">6 · Futuro</button>
+    <button data-tab="meses">7 · Mis meses</button>
+    <button data-tab="guia">8 · Aprender</button>
   </nav>
 
-  <!-- ============ 1. SERVICIO ============ -->
-  <section id="tab-servicio" class="tab">
+  <!-- ================= INICIO ================= -->
+  <section id="tab-inicio" class="tab">
+    <div id="onboarding" class="card hidden" style="border-color:#3f5a1c;background:linear-gradient(180deg,#18220f,#121923);margin-bottom:16px">
+      <h2>👋 Empieza por aquí</h2>
+      <p class="hint">No hace falta que sepas contabilidad. El asistente te hace 9 preguntas sencillas y monta el panel entero por ti. Tardas unos 5 minutos.</p>
+      <button class="btn-accent btn-lg" id="btnWizard2">Empezar el asistente</button>
+      <button class="btn-ghost" id="btnSkipWizard">Prefiero rellenarlo a mano</button>
+    </div>
+
     <div class="grid g2">
       <div class="card">
-        <h2>Tu servicio y tu precio</h2>
-        <p class="hint">Lo que cobras y cuánto tiempo se queda de media un cliente contigo.</p>
-
-        <div class="field">
-          <label><b>Precio por cliente al mes</b> — lo que te paga de media un cliente cada mes</label>
-          <div class="inp"><input type="number" id="precio" min="0" step="1"><span class="unit">€ / mes</span></div>
-          <span class="tip">Si vendes un programa cerrado (ej. 900 € por 3 meses), pon 300 y permanencia 3.</span>
-        </div>
-
-        <div class="field">
-          <label><b>Permanencia media</b> — cuántos meses se queda de media un cliente</label>
-          <div class="inp"><input type="number" id="meses" min="1" step="0.5"><span class="unit">meses</span></div>
-          <span class="tip">Si no lo sabes aún, empieza con la duración de tu programa.</span>
-        </div>
-
-        <div class="field">
-          <label><b>Clientes activos ahora mismo</b></label>
-          <div class="inp"><input type="number" id="clientes" min="0" step="1"><span class="unit">clientes</span></div>
-        </div>
-
-        <div class="field">
-          <label><b>IVA</b> — cómo tratas el impuesto en el precio de arriba</label>
-          <select id="ivaModo">
-            <option value="incluido">El precio YA incluye IVA (se lo resto para calcular)</option>
-            <option value="excluido">El precio es SIN IVA (lo añado aparte al cliente)</option>
-            <option value="exento">Servicio exento / no repercuto IVA</option>
-          </select>
-          <div class="inp" style="margin-top:8px"><input type="number" id="iva" min="0" step="1"><span class="unit">% IVA</span></div>
-          <span class="tip">El IVA nunca es tuyo: lo recaudas y lo devuelves a Hacienda. Por eso no cuenta como ingreso.</span>
+        <h2>La salud de tu negocio</h2>
+        <p class="hint">Siete señales. Verde va bien, ámbar vigílalo, rojo arréglalo ya.</p>
+        <div class="health">
+          <div class="ring">
+            <svg width="126" height="126" viewBox="0 0 126 126">
+              <circle cx="63" cy="63" r="54" fill="none" stroke="#1e2836" stroke-width="13"></circle>
+              <circle id="ringArc" cx="63" cy="63" r="54" fill="none" stroke="#3ddc97" stroke-width="13"
+                stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3"></circle>
+            </svg>
+            <div class="mid"><div><b id="scoreVal">—</b><span id="scoreTxt">de 100</span></div></div>
+          </div>
+          <div class="hlist" id="healthList"></div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Coste variable por cliente</h2>
-        <p class="hint">Lo que te cuesta atender a UN cliente más. Si mañana entra un cliente nuevo, esto es lo que se gasta de más.</p>
-
-        <div class="field">
-          <label><b>Comisión de la pasarela de pago</b> (Stripe, PayPal…)</label>
-          <div class="inp"><input type="number" id="pasarela" min="0" step="0.1"><span class="unit">% del cobro</span></div>
-          <span class="tip">Stripe en España ≈ 1,5 % + 0,25 € (tarjeta europea). Redondea a 2 %.</span>
-        </div>
-
-        <div class="field">
-          <label><b>Coste de entrega del servicio</b> por cliente y mes</label>
-          <div class="inp"><input type="number" id="costeEntrega" min="0" step="1"><span class="unit">€ / cliente / mes</span></div>
-          <span class="tip">App de entrenos por usuario, nutricionista externo, revisiones pagadas, material que envías…</span>
-        </div>
-
-        <div class="field">
-          <label><b>Comisión de venta</b> del closer / comercial</label>
-          <div class="inp"><input type="number" id="comisionVenta" min="0" step="0.5"><span class="unit">% facturado</span></div>
-          <span class="tip">Pon 0 si vendes tú. Si pagas fijo al comercial, ponlo en Sueldos en vez de aquí.</span>
-        </div>
-
-        <div class="field">
-          <label><b>Otros costes por cliente</b> (regalos, envíos, licencias…)</label>
-          <div class="inp"><input type="number" id="otrosVar" min="0" step="1"><span class="unit">€ / cliente / mes</span></div>
-        </div>
+        <h2>Qué hacer ahora</h2>
+        <p class="hint">Tus tres prioridades, calculadas con tus números. Por orden de impacto.</p>
+        <div class="acts" id="acciones"></div>
       </div>
     </div>
 
     <div class="grid g4" style="margin-top:16px">
-      <div class="kpi"><div class="lab">Ingreso neto por cliente/mes</div><div class="val" id="k_neto">—</div><div class="foot">precio sin IVA</div></div>
-      <div class="kpi"><div class="lab">Coste variable por cliente/mes</div><div class="val" id="k_cvar">—</div><div class="foot" id="k_cvarpct">—</div></div>
-      <div class="kpi hi"><div class="lab">Margen bruto por cliente/mes</div><div class="val" id="k_margen">—</div><div class="foot" id="k_margenpct">—</div></div>
-      <div class="kpi hi"><div class="lab">LTV — margen total por cliente</div><div class="val" id="k_ltv">—</div><div class="foot" id="k_ltvfoot">—</div></div>
-    </div>
-
-    <div class="note"><b>Léelo así:</b> el <b>margen bruto por cliente</b> es el dinero que te queda de cada cliente para pagar tus gastos fijos (alquiler, sueldos, publicidad) y para ganar. El <b>LTV</b> es ese margen multiplicado por los meses que se queda. Es el número que marca cuánto puedes pagar por conseguir un cliente.</div>
-  </section>
-
-  <!-- ============ 2. GASTOS ============ -->
-  <section id="tab-gastos" class="tab hidden">
-    <div class="grid g2">
-      <div class="card">
-        <h2>Gastos fijos mensuales</h2>
-        <p class="hint">Los que pagas cada mes tengas 5 clientes o 50. Añade todos, aunque sean pequeños.</p>
-        <div class="rowhead"><span>Concepto</span><span style="text-align:right">Importe</span><span></span></div>
-        <div class="rows" id="fijosRows"></div>
-        <button class="btn-sm" id="addFijo">+ Añadir gasto fijo</button>
-        <div class="line" style="display:flex;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:2px solid var(--line);font-weight:700">
-          <span>Total gastos fijos</span><span id="totFijos">—</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Sueldos del equipo</h2>
-        <p class="hint">Incluye tu propio sueldo. Cobrarte a ti mismo es la única forma de saber si el negocio gana dinero de verdad.</p>
-        <div class="rowhead sal"><span>Rol / persona</span><span style="text-align:right">Bruto/mes</span><span style="text-align:right">+ SS %</span><span></span></div>
-        <div class="rows" id="sueldosRows"></div>
-        <button class="btn-sm" id="addSueldo">+ Añadir persona</button>
-        <span class="tip" style="margin-top:8px">«+ SS %» es el coste de Seguridad Social que paga la empresa. En España ronda el <b>32 %</b> sobre el bruto en régimen general. Si es un autónomo que te factura, pon 0.</span>
-        <div class="line" style="display:flex;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:2px solid var(--line);font-weight:700">
-          <span>Coste total de sueldos</span><span id="totSueldos">—</span>
-        </div>
-      </div>
+      <div class="kpi"><div class="lab">Ganas al mes (limpio)</div><div class="val" id="i_ben">—</div><div class="foot" id="i_benfoot">—</div></div>
+      <div class="kpi"><div class="lab">Ganas por cada cliente</div><div class="val" id="i_margen">—</div><div class="foot" id="i_margenfoot">—</div></div>
+      <div class="kpi"><div class="lab">Clientes para no perder dinero</div><div class="val" id="i_be">—</div><div class="foot" id="i_befoot">—</div></div>
+      <div class="kpi"><div class="lab">Puedes invertir en publicidad</div><div class="val" id="i_ads">—</div><div class="foot" id="i_adsfoot">—</div></div>
     </div>
 
     <div class="grid g2" style="margin-top:16px">
       <div class="card">
-        <h2>Impuestos sobre el beneficio</h2>
-        <p class="hint">Lo que se lleva Hacienda de lo que ganas (no del que facturas).</p>
-        <div class="field">
-          <label><b>Tipo impositivo estimado</b></label>
-          <div class="inp"><input type="number" id="impuesto" min="0" max="60" step="1"><span class="unit">%</span></div>
-          <span class="tip">Sociedad: 25 % (15 % los 2 primeros años con beneficio, si aplica). Autónomo: IRPF progresivo, estima 25–35 %.</span>
-        </div>
-        <div class="field">
-          <label><b>Colchón de seguridad</b> — meses de gastos fijos que quieres tener guardados</label>
-          <div class="inp"><input type="number" id="colchonMeses" min="0" step="1"><span class="unit">meses</span></div>
-          <span class="tip">Recomendado: 3 a 6 meses. Es tu red de seguridad si un mes no entra nadie.</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Estructura de costes</h2>
-        <p class="hint">De cada 100 € que entran (sin IVA), a dónde van.</p>
-        <div class="pl" id="estructura"></div>
+        <h2>A dónde va tu dinero</h2>
+        <p class="hint">De cada 100 € que facturas (sin IVA).</p>
         <div class="bar" id="barCostes"></div>
-        <div class="note" style="margin-top:14px" id="notaEstructura"></div>
+        <div class="legend" id="legendCostes"></div>
+        <div class="pl" id="estructura" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h2>Resumen en una frase</h2>
+        <p class="hint">Tu situación contada como se la contarías a un amigo.</p>
+        <div id="resumenFrase" style="font-size:16px;line-height:1.65;color:#d8e2ee"></div>
+        <div class="note" id="notaSiguiente"></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ 3. MARKETING ============ -->
-  <section id="tab-marketing" class="tab hidden">
+  <!-- ================= SERVICIOS ================= -->
+  <section id="tab-servicio" class="tab hidden">
+    <div class="card">
+      <h2>¿Qué vendes y a qué precio?</h2>
+      <p class="hint">Una línea por cada servicio o plan que ofrezcas. Si solo tienes uno, deja una sola línea. <b>Permanencia</b> = cuántos meses se queda de media un cliente contigo.</p>
+      <div class="rowhead serv"><span>Servicio o plan</span><span>Precio/mes</span><span>Clientes</span><span>Permanencia</span><span>Coste entrega</span><span></span></div>
+      <div class="rows" id="servRows"></div>
+      <button class="btn-sm" id="addServ">+ Añadir otro servicio</button>
+      <div class="note info">
+        <b>¿Vendes programas cerrados?</b> Si cobras 900 € por un plan de 3 meses, pon <b>300</b> de precio y <b>3</b> de permanencia. El panel ya lo trata bien.<br>
+        <b>Coste entrega</b> = lo que te cuesta atender a ESE cliente cada mes: app de entrenos, nutricionista externo, material. Si no gastas nada extra, pon 0.
+      </div>
+    </div>
+
+    <div class="grid g4" style="margin-top:16px">
+      <div class="kpi"><div class="lab">Ingreso medio por cliente/mes</div><div class="val" id="k_neto">—</div><div class="foot">sin IVA</div></div>
+      <div class="kpi"><div class="lab">Coste medio por cliente/mes</div><div class="val" id="k_cvar">—</div><div class="foot" id="k_cvarpct">—</div></div>
+      <div class="kpi hi"><div class="lab">Te queda por cliente/mes<span class="q" data-q="margen">?</span></div><div class="val" id="k_margen">—</div><div class="foot" id="k_margenpct">—</div></div>
+      <div class="kpi hi"><div class="lab">Valor total de un cliente (LTV)<span class="q" data-q="ltv">?</span></div><div class="val" id="k_ltv">—</div><div class="foot" id="k_ltvfoot">—</div></div>
+    </div>
+    <div class="qbox" id="q-margen"><b>Lo que te queda por cliente</b> es el dinero que sobra después de pagar lo que cuesta atenderle. Con ese dinero pagas alquiler, sueldos y publicidad, y lo que sobre es tu beneficio. Es el número más importante de todo el panel.</div>
+    <div class="qbox" id="q-ltv"><b>LTV</b> = lo que te queda por cliente × los meses que se queda. Es el techo de lo que te puedes gastar en conseguir un cliente nuevo.</div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Comparativa de tus servicios</h2>
+      <p class="hint">Cuál te da más dinero de verdad. A veces el plan más caro no es el más rentable.</p>
+      <div class="tscroll">
+        <table id="tablaServ">
+          <thead><tr><th>Servicio</th><th>Clientes</th><th>Facturación/mes</th><th>Te queda/cliente</th><th>% margen</th><th>LTV</th><th>% de tu facturación</th></tr></thead>
+          <tbody></tbody><tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="card adv" style="margin-top:16px">
+      <h2>Ajustes finos <span class="pill">experto</span></h2>
+      <p class="hint">Detalles que afinan el cálculo. Si no los conoces, los valores por defecto son razonables.</p>
+      <div class="grid g3">
+        <div class="field">
+          <label><b>IVA</b> — cómo lo tratas<span class="q" data-q="iva">?</span></label>
+          <select id="ivaModo">
+            <option value="incluido">El precio ya incluye IVA</option>
+            <option value="excluido">El precio es sin IVA (lo sumo aparte)</option>
+            <option value="exento">Exento / no repercuto IVA</option>
+          </select>
+          <div class="inp" style="margin-top:8px"><input type="number" id="iva" min="0" step="1"><span class="unit">% IVA</span></div>
+        </div>
+        <div class="field">
+          <label><b>Comisión de la pasarela</b> de pago</label>
+          <div class="inp"><input type="number" id="pasarela" min="0" step="0.1"><span class="unit">%</span></div>
+          <span class="tip">Stripe España ≈ 1,5 % + 0,25 €. Pon 2 y acertarás.</span>
+        </div>
+        <div class="field">
+          <label><b>Comisión al comercial</b> por venta</label>
+          <div class="inp"><input type="number" id="comisionVenta" min="0" step="0.5"><span class="unit">%</span></div>
+          <span class="tip">0 si vendes tú. Si le pagas fijo, ponlo en Sueldos.</span>
+        </div>
+        <div class="field">
+          <label><b>Otros costes</b> por cliente y mes</label>
+          <div class="inp"><input type="number" id="otrosVar" min="0" step="1"><span class="unit">€</span></div>
+        </div>
+        <div class="field">
+          <label><b>Horas que dedicas</b> a cada cliente al mes</label>
+          <div class="inp"><input type="number" id="horasCliente" min="0" step="0.5"><span class="unit">h</span></div>
+          <span class="tip">Para saber cuánto ganas por hora trabajada.</span>
+        </div>
+        <div class="field">
+          <label><b>Horas útiles</b> de una persona al mes</label>
+          <div class="inp"><input type="number" id="horasMes" min="1" step="5"><span class="unit">h</span></div>
+          <span class="tip">Jornada completa ≈ 160 h, pero solo 100–120 son facturables.</span>
+        </div>
+      </div>
+      <div class="qbox" id="q-iva"><b>El IVA nunca es tuyo.</b> Lo cobras al cliente y se lo devuelves a Hacienda cada trimestre. Por eso el panel lo resta antes de calcular nada: si no, creerías que ganas más de lo que ganas.</div>
+      <div class="pl" id="horasBox" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- ================= GASTOS ================= -->
+  <section id="tab-gastos" class="tab hidden">
     <div class="grid g2">
       <div class="card">
-        <h2>Tu embudo de captación</h2>
-        <p class="hint">Cuánto inviertes y qué pasa con ese dinero hasta que entra un cliente. Si no tienes datos aún, usa estimaciones y ajústalas cada mes.</p>
-
-        <div class="field">
-          <label><b>Inversión en publicidad</b> al mes (Meta, Google, TikTok…)</label>
-          <div class="inp"><input type="number" id="ads" min="0" step="10"><span class="unit">€ / mes</span></div>
-        </div>
-        <div class="field">
-          <label><b>Coste por lead (CPL)</b> — lo que te cuesta un contacto interesado</label>
-          <div class="inp"><input type="number" id="cpl" min="0.1" step="0.5"><span class="unit">€ / lead</span></div>
-        </div>
-        <div class="field">
-          <label><b>% de leads que agendan llamada</b></label>
-          <div class="inp"><input type="number" id="tasaAgenda" min="0" max="100" step="1"><span class="unit">%</span></div>
-        </div>
-        <div class="field">
-          <label><b>% de agendadas que asisten</b> (show rate)</label>
-          <div class="inp"><input type="number" id="tasaShow" min="0" max="100" step="1"><span class="unit">%</span></div>
-        </div>
-        <div class="field">
-          <label><b>% de cierre</b> — de las llamadas que haces, cuántas compran</label>
-          <div class="inp"><input type="number" id="tasaCierre" min="0" max="100" step="1"><span class="unit">%</span></div>
-        </div>
-        <div class="field">
-          <label><b>Otros gastos de marketing</b> (editor de vídeo, creatividades, CRM, agencia…)</label>
-          <div class="inp"><input type="number" id="otrosMkt" min="0" step="10"><span class="unit">€ / mes</span></div>
-        </div>
+        <h2>Gastos fijos de cada mes</h2>
+        <p class="hint">Los que pagas tengas 5 clientes o 50. <b>Apúntalos todos, aunque sean de 9 €.</b> Es lo que más se subestima.</p>
+        <div class="rowhead gasto"><span>Concepto</span><span>Importe</span><span></span></div>
+        <div class="rows" id="fijosRows"></div>
+        <button class="btn-sm" id="addFijo">+ Añadir gasto</button>
+        <p class="tip" style="margin-top:14px"><b>¿Se te olvida alguno?</b> Toca para añadirlo con un importe orientativo que luego puedes cambiar:</p>
+        <div class="chips" id="chipsGastos"></div>
+        <div class="subtot"><span>Total gastos fijos</span><span id="totFijos">—</span></div>
       </div>
 
       <div>
         <div class="card">
-          <h2>Tu embudo, mes a mes</h2>
-          <p class="hint">Con los números de la izquierda, esto es lo que consigues cada mes.</p>
-          <div class="pl" id="embudo"></div>
+          <h2>Sueldos</h2>
+          <p class="hint"><b>Incluye tu propio sueldo.</b> Si no te lo cuentas, el panel te dirá que ganas dinero cuando en realidad estás trabajando gratis.</p>
+          <div class="rowhead sal"><span>Quién</span><span>Bruto/mes</span><span>+ SS %</span><span></span></div>
+          <div class="rows" id="sueldosRows"></div>
+          <button class="btn-sm" id="addSueldo">+ Añadir persona</button>
+          <span class="tip" style="margin-top:8px"><b>+ SS %</b> es lo que la empresa paga de Seguridad Social encima del bruto: en España ronda el <b>32 %</b>. Si es un autónomo que te pasa factura, pon <b>0</b>.</span>
+          <div class="subtot"><span>Coste total de sueldos</span><span id="totSueldos">—</span></div>
         </div>
 
-        <div class="grid g2" style="margin-top:16px">
-          <div class="kpi"><div class="lab">CAC publicitario</div><div class="val" id="k_cac">—</div><div class="foot">solo la inversión en anuncios</div></div>
-          <div class="kpi"><div class="lab">CAC total</div><div class="val" id="k_cactot">—</div><div class="foot">anuncios + marketing + comisiones</div></div>
-          <div class="kpi" id="kpiRatio"><div class="lab">Ratio LTV / CAC</div><div class="val" id="k_ratio">—</div><div class="foot" id="k_ratiofoot">—</div></div>
-          <div class="kpi" id="kpiPayback"><div class="lab">Recuperas la inversión en</div><div class="val" id="k_payback">—</div><div class="foot">meses hasta cubrir el CAC</div></div>
+        <div class="card" style="margin-top:16px">
+          <h2>Impuestos y colchón</h2>
+          <div class="field">
+            <label><b>¿Cómo tributas?</b></label>
+            <div class="opts">
+              <div class="opt" data-perfil="autonomo"><div class="mark"></div><div><div class="t">Autónomo</div><div class="d">Pagas IRPF por tus beneficios. Estimación razonable: 25–30 %.</div></div></div>
+              <div class="opt" data-perfil="sociedad"><div class="mark"></div><div><div class="t">Sociedad (S.L.)</div><div class="d">Impuesto de Sociedades: 25 %, o 15 % los dos primeros años con beneficio.</div></div></div>
+            </div>
+          </div>
+          <div class="field">
+            <label><b>Tipo que quieres aplicar</b><span class="q" data-q="imp">?</span></label>
+            <div class="inp"><input type="number" id="impuesto" min="0" max="60" step="1"><span class="unit">%</span></div>
+            <div class="qbox" id="q-imp">Los impuestos se pagan sobre el <b>beneficio</b> (lo que ganas), no sobre la facturación. Si no ganas, no pagas este impuesto. Esto es una estimación para decidir: la cifra exacta la calcula tu gestoría.</div>
+          </div>
+          <div class="field">
+            <label><b>Colchón de seguridad</b> — meses de gastos guardados</label>
+            <div class="inp"><input type="number" id="colchonMeses" min="0" step="1"><span class="unit">meses</span></div>
+            <span class="tip">Recomendado 3–6 meses. Es el dinero parado que te permite dormir tranquilo.</span>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="card" style="margin-top:16px">
+      <h2>Tus gastos, de mayor a menor</h2>
+      <p class="hint">Por dónde se te va el dinero. Empieza a recortar por arriba, no por abajo.</p>
+      <div class="tscroll">
+        <table id="tablaGastos">
+          <thead><tr><th>Concepto</th><th>Tipo</th><th>€ / mes</th><th>€ / año</th><th>% de tus gastos</th><th>Equivale a</th></tr></thead>
+          <tbody></tbody><tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MARKETING ================= -->
+  <section id="tab-marketing" class="tab hidden">
+    <div class="grid g2">
+      <div class="card">
+        <h2>¿Cómo consigues clientes?</h2>
+        <p class="hint">Elige la opción con la que te sientas cómodo. Puedes cambiarla cuando quieras.</p>
+        <div class="opts" style="margin-bottom:16px">
+          <div class="opt" data-mkt="simple"><div class="mark"></div><div><div class="t">Modo sencillo</div><div class="d">Solo dime cuánto inviertes y cuántos clientes nuevos entran al mes.</div></div></div>
+          <div class="opt" data-mkt="embudo"><div class="mark"></div><div><div class="t">Modo embudo</div><div class="d">Desglosa leads, llamadas y cierre para ver dónde pierdes gente.</div></div></div>
+        </div>
+
+        <div class="field">
+          <label><b>Inversión en publicidad</b> al mes (Meta, Google, TikTok…)</label>
+          <div class="inp big"><input type="number" id="ads" min="0" step="10"><span class="unit">€ / mes</span></div>
+        </div>
+        <div class="field">
+          <label><b>Otros gastos de captación</b> (editor de vídeo, agencia, CRM…)</label>
+          <div class="inp"><input type="number" id="otrosMkt" min="0" step="10"><span class="unit">€ / mes</span></div>
+        </div>
+
+        <div id="boxSimple">
+          <div class="field">
+            <label><b>Clientes nuevos que entran al mes</b></label>
+            <div class="inp big"><input type="number" id="nuevosMes" min="0" step="1"><span class="unit">clientes</span></div>
+            <span class="tip">Cuenta los del último mes. Si varía mucho, haz la media de los 3 últimos.</span>
+          </div>
+        </div>
+
+        <div id="boxEmbudo" class="hidden">
+          <div class="field">
+            <label><b>Coste por lead</b> — lo que te cuesta un contacto interesado</label>
+            <div class="inp"><input type="number" id="cpl" min="0.1" step="0.5"><span class="unit">€ / lead</span></div>
+          </div>
+          <div class="field">
+            <label><b>De cada 100 leads, cuántos agendan llamada</b></label>
+            <div class="inp"><input type="number" id="tasaAgenda" min="0" max="100" step="1"><span class="unit">%</span></div>
+          </div>
+          <div class="field">
+            <label><b>De las agendadas, cuántas asisten</b></label>
+            <div class="inp"><input type="number" id="tasaShow" min="0" max="100" step="1"><span class="unit">%</span></div>
+          </div>
+          <div class="field">
+            <label><b>De las llamadas que haces, cuántas compran</b></label>
+            <div class="inp"><input type="number" id="tasaCierre" min="0" max="100" step="1"><span class="unit">%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>Lo que consigues cada mes</h2>
+          <p class="hint">Con lo que inviertes hoy.</p>
+          <div class="pl" id="embudo"></div>
+        </div>
+        <div class="grid g2" style="margin-top:16px">
+          <div class="kpi"><div class="lab">Te cuesta conseguir un cliente<span class="q" data-q="cac">?</span></div><div class="val" id="k_cactot">—</div><div class="foot">CAC — todo lo invertido ÷ clientes</div></div>
+          <div class="kpi" id="kpiRatio"><div class="lab">Por cada € invertido recuperas</div><div class="val" id="k_ratio">—</div><div class="foot" id="k_ratiofoot">—</div></div>
+          <div class="kpi" id="kpiPayback"><div class="lab">Recuperas lo invertido en</div><div class="val" id="k_payback">—</div><div class="foot">meses de vida del cliente</div></div>
+          <div class="kpi"><div class="lab">Beneficio por cliente captado</div><div class="val" id="k_benCli">—</div><div class="foot">LTV menos lo que cuesta captarlo</div></div>
+        </div>
+        <div class="qbox" id="q-cac"><b>CAC</b> = coste de adquisición de cliente. Suma todo lo que gastas en captar (anuncios, agencia, herramientas) y divídelo entre los clientes que entran. Si el CAC supera el LTV, cada cliente nuevo te empobrece.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
       <h2>Cuánto puedes pagar como máximo por un cliente</h2>
-      <p class="hint">Tu techo de CAC según el retorno que quieras. Por encima de esa cifra, cada cliente nuevo te empobrece.</p>
+      <p class="hint">Tu techo según lo exigente que quieras ser. Por encima de esa cifra, captar te cuesta dinero.</p>
       <div class="tscroll">
         <table id="tablaCac">
-          <thead><tr><th>Objetivo</th><th>CAC máximo</th><th>Coste por lead máximo</th><th>Qué significa</th></tr></thead>
+          <thead><tr><th>Objetivo</th><th>CAC máximo</th><th class="adv">Coste por lead máximo</th><th class="wrap">Qué significa</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="note" id="notaCac"></div>
+    </div>
+
+    <div class="card adv" style="margin-top:16px">
+      <h2>Dónde estás perdiendo gente <span class="pill">experto</span></h2>
+      <p class="hint">Qué pasaría si mejoras cada paso del embudo un 20 %. Empieza por el que más clientes te dé.</p>
+      <div class="tscroll">
+        <table id="tablaPalancas">
+          <thead><tr><th>Si mejoras…</th><th>Ahora</th><th>Mejorado</th><th>Clientes nuevos/mes</th><th>Beneficio mensual</th><th>Ganancia</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- ============ 4. RESULTADOS ============ -->
+  <!-- ================= RESULTADOS ================= -->
   <section id="tab-resultados" class="tab hidden">
     <div class="grid g4">
-      <div class="kpi"><div class="lab">Facturación mensual (sin IVA)</div><div class="val" id="r_ingresos">—</div><div class="foot" id="r_ingfoot">—</div></div>
-      <div class="kpi"><div class="lab">Gastos totales del mes</div><div class="val" id="r_gastos">—</div><div class="foot">variables + fijos + sueldos + marketing</div></div>
-      <div class="kpi hi" id="kpiBeneficio"><div class="lab">Beneficio neto (tras impuestos)</div><div class="val" id="r_beneficio">—</div><div class="foot" id="r_benfoot">—</div></div>
-      <div class="kpi"><div class="lab">Punto de equilibrio</div><div class="val" id="r_breakeven">—</div><div class="foot">clientes para no perder dinero</div></div>
+      <div class="kpi"><div class="lab">Facturas al mes (sin IVA)</div><div class="val" id="r_ingresos">—</div><div class="foot" id="r_ingfoot">—</div></div>
+      <div class="kpi"><div class="lab">Te gastas al mes</div><div class="val" id="r_gastos">—</div><div class="foot">todo incluido</div></div>
+      <div class="kpi hi" id="kpiBeneficio"><div class="lab">Te queda limpio</div><div class="val" id="r_beneficio">—</div><div class="foot" id="r_benfoot">—</div></div>
+      <div class="kpi"><div class="lab">Punto de equilibrio<span class="q" data-q="be">?</span></div><div class="val" id="r_breakeven">—</div><div class="foot" id="r_befoot">—</div></div>
     </div>
+    <div class="qbox" id="q-be"><b>Punto de equilibrio</b> = los clientes que necesitas para cubrir todos tus gastos y no perder dinero. Por debajo pierdes; por encima, casi todo lo que entra es beneficio.</div>
 
     <div class="grid g2" style="margin-top:16px">
       <div class="card">
         <h2>Cuenta de resultados del mes</h2>
-        <p class="hint">De arriba abajo: lo que entra, lo que se va y lo que queda.</p>
+        <p class="hint">De arriba abajo: lo que entra, lo que se va y lo que queda. Léelo siempre en este orden.</p>
         <div class="pl" id="pyg"></div>
       </div>
 
       <div>
         <div class="card">
           <h2>Diagnóstico</h2>
-          <p class="hint">Los avisos que te importan ahora mismo.</p>
+          <p class="hint">Lo que te importa ahora mismo, con tus números.</p>
           <div class="alerts" id="alertas"></div>
         </div>
         <div class="card" style="margin-top:16px">
-          <h2>Rotación de clientes</h2>
-          <p class="hint">Cada mes se te van clientes. Estos son los que necesitas captar solo para no bajar.</p>
+          <h2>Entran y salen clientes</h2>
+          <p class="hint">Cada mes se te van algunos. Estos son los que necesitas captar solo para no bajar.</p>
           <div class="pl" id="churnBox"></div>
         </div>
       </div>
     </div>
 
     <div class="card" style="margin-top:16px">
-      <h2>Sensibilidad: beneficio según número de clientes</h2>
-      <p class="hint">Con tus costes actuales, cuánto ganarías con más o menos clientes. Sirve para ponerte objetivos realistas.</p>
+      <h2>Cuánto ganarías con más o menos clientes</h2>
+      <p class="hint">Con tus costes de hoy. Sirve para ponerte objetivos que de verdad se sostienen.</p>
       <div class="tscroll">
         <table id="tablaSens">
-          <thead><tr><th>Clientes activos</th><th>Facturación</th><th>Margen bruto</th><th>Beneficio antes de impuestos</th><th>Beneficio neto</th><th>Margen neto</th></tr></thead>
+          <thead><tr><th>Clientes</th><th>Facturación</th><th>Margen bruto</th><th class="adv">Antes de impuestos</th><th>Te queda limpio</th><th>% margen</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- ============ 5. DECISIONES ============ -->
+  <!-- ================= DECISIONES ================= -->
   <section id="tab-decisiones" class="tab hidden">
     <div class="grid g2">
       <div class="card">
-        <h2>Tu objetivo</h2>
-        <p class="hint">Dime cuánto quieres ganar limpio y qué reglas quieres seguir. El panel calcula el resto.</p>
+        <h2>Dime qué quieres conseguir</h2>
+        <p class="hint">Con esto el panel calcula todo lo demás: cuánto puedes gastar, cuántos clientes necesitas y cuándo contratar.</p>
         <div class="field">
-          <label><b>Beneficio neto que quieres</b> al mes (después de impuestos y de tu sueldo)</label>
-          <div class="inp"><input type="number" id="objetivo" min="0" step="100"><span class="unit">€ / mes</span></div>
+          <label><b>Cuánto quieres ganar limpio al mes</b> (además de tu sueldo)</label>
+          <div class="inp big"><input type="number" id="objetivo" min="0" step="100"><span class="unit">€ / mes</span></div>
         </div>
-        <div class="field">
-          <label><b>Tope de sueldos</b> — % máximo de la facturación que quieres destinar a nóminas</label>
+        <div class="field adv">
+          <label><b>Tope de sueldos</b> — % máximo de la facturación en nóminas</label>
           <div class="inp"><input type="number" id="topeSueldos" min="0" max="100" step="1"><span class="unit">%</span></div>
-          <span class="tip">Referencia sana en servicios: 30–45 %. Por encima del 50 % el negocio se ahoga.</span>
+          <span class="tip">Sano en servicios: 30–45 %. Por encima del 50 % el negocio se ahoga.</span>
         </div>
-        <div class="field">
-          <label><b>Ratio LTV/CAC mínimo</b> que aceptas</label>
+        <div class="field adv">
+          <label><b>Retorno mínimo</b> que aceptas por cada € invertido en captar</label>
           <div class="inp"><input type="number" id="ratioMin" min="1" step="0.5"><span class="unit">x</span></div>
-          <span class="tip">3x es el estándar del sector: por cada euro invertido en captar, recuperas tres de margen.</span>
+          <span class="tip">3x es el estándar del sector.</span>
         </div>
         <div class="field">
-          <label><b>Clientes que puede llevar cada coach</b></label>
+          <label><b>Clientes que puede llevar bien una persona</b></label>
           <div class="inp"><input type="number" id="capacidad" min="1" step="1"><span class="unit">clientes</span></div>
         </div>
         <div class="field">
-          <label><b>Coste mensual de un coach</b> (bruto + SS o factura de autónomo)</label>
+          <label><b>Lo que te costaría un coach nuevo</b> al mes</label>
           <div class="inp"><input type="number" id="costeCoach" min="0" step="50"><span class="unit">€ / mes</span></div>
         </div>
       </div>
 
       <div>
         <div class="card">
-          <h2>Presupuestos máximos de este mes</h2>
-          <p class="hint">Con tus clientes actuales y tu objetivo de beneficio, esto es lo que te puedes permitir.</p>
+          <h2>Lo que te puedes permitir este mes</h2>
+          <p class="hint">Con tus clientes de hoy y tu objetivo de beneficio.</p>
           <div class="pl" id="presupuestos"></div>
           <div class="note" id="notaPresu"></div>
         </div>
@@ -451,139 +668,218 @@
     <div class="grid g3" style="margin-top:16px">
       <div class="kpi"><div class="lab">Clientes para cubrir gastos</div><div class="val" id="d_be">—</div><div class="foot">punto de equilibrio</div></div>
       <div class="kpi hi"><div class="lab">Clientes para tu objetivo</div><div class="val" id="d_obj">—</div><div class="foot" id="d_objfoot">—</div></div>
-      <div class="kpi"><div class="lab">Te faltan</div><div class="val" id="d_faltan">—</div><div class="foot">clientes desde donde estás</div></div>
+      <div class="kpi"><div class="lab">Te faltan</div><div class="val" id="d_faltan">—</div><div class="foot" id="d_faltanfoot">—</div></div>
     </div>
 
-    <div class="card" style="margin-top:16px">
-      <h2>¿Cuándo contrato a la siguiente persona?</h2>
-      <p class="hint">Una contratación se paga con margen bruto, no con facturación. Estos son los umbrales.</p>
-      <div class="tscroll">
-        <table id="tablaContrata">
-          <thead><tr><th>Coach nº</th><th>Cubre hasta</th><th>Clientes necesarios para pagarlo</th><th>Umbral real de contratación</th><th>Estado</th></tr></thead>
-          <tbody></tbody>
-        </table>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h2>¿Cuándo contrato a la siguiente persona?</h2>
+        <p class="hint">Una nómina se paga con margen, no con facturación. Estos son tus umbrales.</p>
+        <div class="tscroll">
+          <table id="tablaContrata">
+            <thead><tr><th>Persona</th><th>Cubre hasta</th><th>Clientes que la pagan</th><th>Contrata a partir de</th><th>Estado</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="note" id="notaContrata"></div>
       </div>
-      <div class="note" id="notaContrata"></div>
+
+      <div class="card">
+        <h2>¿Qué precio debería cobrar?</h2>
+        <p class="hint">Dime cuántos clientes puedes atender de verdad y te digo el precio que necesitas para llegar a tu objetivo.</p>
+        <div class="field">
+          <label><b>Clientes que puedes atender bien</b></label>
+          <div class="inp"><input type="number" id="calcClientes" min="1" step="1"><span class="unit">clientes</span></div>
+        </div>
+        <div class="pl" id="calcPrecio"></div>
+        <div class="note" id="notaPrecio"></div>
+      </div>
     </div>
 
-    <div class="card" style="margin-top:16px">
-      <h2>Reparto recomendado de cada 100 € facturados</h2>
-      <p class="hint">Una guía de referencia para un negocio de servicios de coaching. Compárala con tu reparto real.</p>
+    <div class="card adv" style="margin-top:16px">
+      <h2>Reparto recomendado de cada 100 € facturados <span class="pill">experto</span></h2>
+      <p class="hint">Referencia para un negocio de servicios. Compárala con tu reparto real.</p>
       <div class="tscroll">
         <table id="tablaReparto">
-          <thead><tr><th>Partida</th><th>Recomendado</th><th>Tu situación</th><th>Diferencia</th><th>Lectura</th></tr></thead>
+          <thead><tr><th>Partida</th><th>Recomendado</th><th>Tú</th><th>Diferencia</th><th class="wrap">Lectura</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- ============ 6. PROYECCIÓN ============ -->
+  <!-- ================= PROYECCIÓN ================= -->
   <section id="tab-proyeccion" class="tab hidden">
     <div class="card">
-      <h2>Proyección a 12 meses</h2>
-      <p class="hint">Parte de tus clientes actuales. Cada mes entran los que capta tu publicidad y se van los que terminan su permanencia.</p>
-      <div class="grid g3" style="margin-bottom:16px">
+      <h2>Cómo irá el próximo año</h2>
+      <p class="hint">Parte de tus clientes de hoy. Cada mes entran los que captas y se van los que terminan. <b>La columna que importa es la última: el dinero en el banco.</b></p>
+      <div class="grid g3" style="margin-bottom:18px">
         <div class="field" style="margin:0">
-          <label><b>Crecimiento mensual de la inversión</b> en publicidad</label>
+          <label><b>Cuánto subes la publicidad</b> cada mes</label>
           <div class="inp"><input type="number" id="crecAds" step="1"><span class="unit">% / mes</span></div>
+          <span class="tip">Subidas del 10–20 % son manejables. Más, y se te descontrola el coste.</span>
         </div>
-        <div class="field" style="margin:0">
-          <label><b>Subida esperada del CPL</b> al escalar</label>
+        <div class="field adv" style="margin:0">
+          <label><b>Cuánto se encarece captar</b> al escalar</label>
           <div class="inp"><input type="number" id="crecCpl" step="1"><span class="unit">% / mes</span></div>
-          <span class="tip">Al invertir más, el coste por lead suele subir. Sé prudente: 2–5 %.</span>
+          <span class="tip">Al invertir más, captar sale más caro. Sé prudente: 2–5 %.</span>
         </div>
         <div class="field" style="margin:0">
-          <label><b>Caja inicial</b> — dinero que tienes hoy en el banco</label>
+          <label><b>Dinero que tienes hoy en el banco</b></label>
           <div class="inp"><input type="number" id="caja" step="100"><span class="unit">€</span></div>
         </div>
       </div>
-      <div class="tscroll">
+      <div id="chartProy"></div>
+      <div class="tscroll" style="margin-top:16px">
         <table id="tablaProy">
           <thead><tr>
-            <th>Mes</th><th>Inversión ads</th><th>Altas</th><th>Bajas</th><th>Clientes</th>
-            <th>Facturación</th><th>Gastos</th><th>Beneficio neto</th><th>Caja acumulada</th>
+            <th>Mes</th><th>Publicidad</th><th>Entran</th><th>Se van</th><th>Clientes</th>
+            <th>Facturación</th><th class="adv">Gastos</th><th>Te queda</th><th>En el banco</th>
           </tr></thead>
-          <tbody></tbody>
-          <tfoot></tfoot>
+          <tbody></tbody><tfoot></tfoot>
         </table>
       </div>
       <div class="note" id="notaProy"></div>
     </div>
   </section>
 
-  <!-- ============ 7. GUÍA ============ -->
+  <!-- ================= MIS MESES ================= -->
+  <section id="tab-meses" class="tab hidden">
+    <div class="card">
+      <h2>Cierre de mes: apunta lo que pasó de verdad</h2>
+      <p class="hint">Todo lo anterior son estimaciones. <b>Esto son tus números reales.</b> Dedica 10 minutos el día 1 de cada mes y en un año tendrás el control total de tu negocio.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="btn-accent" id="addMes">+ Cerrar un mes</button>
+        <button class="btn-sm" id="prefillMes">Rellenar con lo previsto</button>
+      </div>
+      <div class="tscroll">
+        <table id="tablaMeses">
+          <thead><tr>
+            <th>Mes</th><th>Clientes</th><th>Altas</th><th>Bajas</th><th>Facturación</th>
+            <th>Gastos</th><th>Publicidad</th><th>En el banco</th><th>Te quedó</th><th>% margen</th><th></th>
+          </tr></thead>
+          <tbody></tbody><tfoot></tfoot>
+        </table>
+      </div>
+      <div class="note info" id="notaMeses"></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h2>Tu evolución</h2>
+        <p class="hint">Facturación y beneficio de los meses que has cerrado.</p>
+        <div id="chartMeses"></div>
+      </div>
+      <div class="card">
+        <h2>Realidad vs. previsión</h2>
+        <p class="hint">Compara el último mes cerrado con lo que decía el panel. Así ajustas tus estimaciones.</p>
+        <div class="pl" id="realVsPrev"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Rutina de cierre de mes</h2>
+      <p class="hint">Hazlo siempre en este orden y no se te escapa nada.</p>
+      <div class="grid g2">
+        <div class="pl">
+          <div class="line"><span><b>1.</b> Mira el banco y apunta el saldo</span><span>1 min</span></div>
+          <div class="line"><span><b>2.</b> Cuenta clientes activos, altas y bajas</span><span>3 min</span></div>
+          <div class="line"><span><b>3.</b> Suma lo facturado (sin IVA)</span><span>2 min</span></div>
+          <div class="line"><span><b>4.</b> Suma todos los gastos pagados</span><span>3 min</span></div>
+        </div>
+        <div class="pl">
+          <div class="line"><span><b>5.</b> Apunta lo gastado en publicidad</span><span>1 min</span></div>
+          <div class="line"><span><b>6.</b> Guarda el mes aquí arriba</span><span>1 min</span></div>
+          <div class="line"><span><b>7.</b> Actualiza precios y gastos si han cambiado</span><span>3 min</span></div>
+          <div class="line"><span><b>8.</b> Lee «Qué hacer ahora» en Inicio</span><span>2 min</span></div>
+        </div>
+      </div>
+      <div class="note"><b>Separa el IVA el mismo día que entra.</b> Abre una segunda cuenta y mueve allí el IVA y la parte de impuestos de cada cobro. Es el error que más sustos da en el primer año.</div>
+    </div>
+  </section>
+
+  <!-- ================= GUÍA ================= -->
   <section id="tab-guia" class="tab hidden">
     <div class="grid g2">
       <div>
         <div class="card" style="margin-bottom:16px">
-          <h2>Cómo usar esto en 10 minutos</h2>
-          <p class="hint">Si nunca has llevado la contabilidad de un negocio, este es el orden.</p>
+          <h2>Las 6 ideas que necesitas entender</h2>
+          <p class="hint">Con esto ya sabes más de contabilidad de gestión que la mayoría de autónomos.</p>
           <div class="pl">
-            <div class="line"><span><b>1.</b> Rellena «Mi servicio»</span><span>5 min</span></div>
-            <div class="line"><span><b>2.</b> Vuelca TODOS tus gastos fijos y sueldos</span><span>15 min</span></div>
-            <div class="line"><span><b>3.</b> Mete tus números reales de publicidad</span><span>5 min</span></div>
-            <div class="line"><span><b>4.</b> Mira «Resultados» y lee el diagnóstico</span><span>2 min</span></div>
-            <div class="line"><span><b>5.</b> Fija tu objetivo en «Qué me puedo permitir»</span><span>3 min</span></div>
-            <div class="line tot"><span>Repítelo el día 1 de cada mes</span><span>30 min</span></div>
+            <div class="line"><span><b>1.</b> Facturar no es ganar</span><span class="pill">clave</span></div>
+            <div class="line"><span><b>2.</b> Lo que te queda por cliente manda</span><span class="pill">clave</span></div>
+            <div class="line"><span><b>3.</b> Gasto fijo ≠ gasto variable</span><span class="pill">clave</span></div>
+            <div class="line"><span><b>4.</b> Un cliente vale su LTV, no su primer pago</span><span class="pill">clave</span></div>
+            <div class="line"><span><b>5.</b> Beneficio no es dinero en el banco</span><span class="pill">clave</span></div>
+            <div class="line tot"><span><b>6.</b> Todo gasto nuevo se mide en clientes</span><span class="pill good">clave</span></div>
           </div>
-          <div class="note"><b>La regla de oro:</b> nunca decidas un gasto nuevo mirando la facturación. Míralo siempre contra el <b>margen bruto</b>, que es el dinero que de verdad queda para pagarlo.</div>
+          <div class="note"><b>La regla de oro:</b> antes de contratar, alquilar o subir la publicidad, pregúntate «¿cuántos clientes necesito para pagar esto?». Si la respuesta te asusta, aún no toca.</div>
+        </div>
+
+        <div class="card">
+          <h2>Errores que se pagan caros</h2>
+          <div class="alerts">
+            <div class="alert bad"><b>Gastarte el IVA</b>No es tuyo. Sepáralo el día que entra o el trimestre te pasará por encima.</div>
+            <div class="alert bad"><b>No cobrarte un sueldo</b>Si no te lo cuentas, crees que ganas dinero cuando en realidad te lo estás pagando con tu propio trabajo gratis.</div>
+            <div class="alert warn"><b>Contratar con un mes bueno</b>Una nómina es para siempre; un mes bueno, no. Espera dos meses seguidos por encima del umbral.</div>
+            <div class="alert warn"><b>Subir la publicidad sin mirar el retorno</b>Si captar te cuesta más de lo que deja el cliente, cuanto más inviertas, más pierdes.</div>
+            <div class="alert warn"><b>Competir bajando el precio</b>Bajar un 10 % el precio puede llevarse la mitad de tu beneficio. Antes de tocarlo, mira la tabla de sensibilidad.</div>
+          </div>
         </div>
       </div>
 
       <div>
-        <details class="faq" open><summary>Margen bruto</summary><div class="body">
-          <p>Lo que queda de un cliente después de pagar lo que cuesta atenderle: <code>precio sin IVA − costes variables</code>.</p>
-          <p>Si cobras 150 € y atender a ese cliente te cuesta 20 € (pasarela + app + nutricionista), tu margen bruto es 130 €. Ese es el dinero real con el que pagas alquiler, sueldos, publicidad y con el que ganas.</p>
+        <details class="faq" open><summary>Margen bruto: lo que te queda por cliente</summary><div class="body">
+          <p><code>precio sin IVA − lo que cuesta atenderle</code></p>
+          <p>Cobras 150 €, te cuesta 20 € atenderle (pasarela + app + nutricionista): tu margen es 130 €. Ese es el dinero real con el que pagas alquiler, sueldos y publicidad, y con el que ganas.</p>
         </div></details>
 
-        <details class="faq"><summary>Coste fijo vs. coste variable</summary><div class="body">
-          <p><b>Variable:</b> sube cuando entra un cliente más (comisión de pago, licencia por usuario).</p>
-          <p><b>Fijo:</b> lo pagas igual con 5 que con 50 clientes (gestoría, alquiler, CRM, sueldos).</p>
-          <p>Es la distinción más importante de toda la contabilidad de gestión. Los fijos son los que te hunden en un mes malo.</p>
+        <details class="faq"><summary>Fijo vs. variable: la distinción que lo cambia todo</summary><div class="body">
+          <p><b>Variable:</b> sube cuando entra un cliente más (comisión de la pasarela, licencia por usuario).</p>
+          <p><b>Fijo:</b> lo pagas igual con 5 clientes que con 50 (gestoría, cuota de autónomos, sueldos, CRM).</p>
+          <p>Los fijos son los que te hunden en un mes malo. Cuantos menos tengas, más aguantas.</p>
         </div></details>
 
-        <details class="faq"><summary>Punto de equilibrio (break-even)</summary><div class="body">
-          <p>Cuántos clientes necesitas para no perder dinero: <code>gastos fijos totales ÷ margen bruto por cliente</code>.</p>
-          <p>Por debajo de ese número pierdes dinero cada mes. Por encima, cada cliente extra es casi todo beneficio.</p>
+        <details class="faq"><summary>Punto de equilibrio</summary><div class="body">
+          <p><code>gastos fijos ÷ lo que te queda por cliente</code></p>
+          <p>Si tienes 6.000 € de gastos fijos y te quedan 100 € por cliente, necesitas 60 clientes para no perder dinero. El cliente 61 ya es casi todo beneficio: por eso crecer duele al principio y luego compensa mucho.</p>
         </div></details>
 
-        <details class="faq"><summary>LTV (valor del cliente)</summary><div class="body">
-          <p><code>margen bruto mensual × meses que se queda</code>. No uses la facturación para esto: infla el número y te lleva a gastar de más en publicidad.</p>
-          <p>Subir la permanencia un mes suele ser más rentable que bajar el coste por lead.</p>
+        <details class="faq"><summary>LTV: cuánto vale un cliente</summary><div class="body">
+          <p><code>lo que te queda al mes × meses que se queda</code></p>
+          <p>Nunca uses la facturación para esto: infla el número y te lleva a gastar de más en publicidad.</p>
+          <p>Subir la permanencia un solo mes suele ser más barato y más rentable que bajar el coste de la publicidad.</p>
         </div></details>
 
-        <details class="faq"><summary>CAC (coste de adquisición)</summary><div class="body">
-          <p>Lo que te cuesta conseguir un cliente: <code>todo lo invertido en captar ÷ clientes conseguidos</code>. Incluye anuncios, agencia, editor y comisiones de venta.</p>
-        </div></details>
-
-        <details class="faq"><summary>Ratio LTV/CAC — el número que decide todo</summary><div class="body">
-          <p><b>Menos de 1x:</b> pierdes dinero por cada cliente. Para los anuncios hoy.</p>
-          <p><b>1–3x:</b> vendes, pero apenas queda para gastos fijos. Sube precio, permanencia o cierre.</p>
-          <p><b>3x o más:</b> sano. Puedes escalar inversión con tranquilidad.</p>
-          <p><b>Más de 6x:</b> estás invirtiendo poco. Estás dejando crecimiento sobre la mesa.</p>
+        <details class="faq"><summary>CAC y el ratio LTV/CAC</summary><div class="body">
+          <p><b>CAC</b> = todo lo invertido en captar ÷ clientes conseguidos.</p>
+          <p><b>Menos de 1x:</b> pierdes dinero por cliente. Para los anuncios hoy.<br>
+             <b>1–3x:</b> vendes, pero no queda para gastos fijos.<br>
+             <b>3x o más:</b> sano, puedes escalar.<br>
+             <b>Más de 6x:</b> estás invirtiendo poco y dejando crecimiento sobre la mesa.</p>
         </div></details>
 
         <details class="faq"><summary>Payback: por qué puedes quedarte sin caja ganando dinero</summary><div class="body">
-          <p>El payback son los meses que tardas en recuperar lo que pagaste por el cliente. Si cobras mes a mes y tardas 4 meses en recuperar el CAC, cada cliente nuevo te <b>vacía la caja</b> antes de llenarla.</p>
-          <p>Por eso el pago por adelantado del programa completo mejora tu negocio aunque no cambie el margen: cobras hoy lo que ibas a cobrar en 6 meses.</p>
+          <p>Son los meses que tardas en recuperar lo que pagaste por el cliente. Si cobras mes a mes y tardas 4 meses, cada cliente nuevo te <b>vacía la caja</b> antes de llenarla.</p>
+          <p>Por eso cobrar el programa por adelantado mejora tu negocio aunque el margen sea el mismo: cobras hoy lo que ibas a cobrar en seis meses.</p>
         </div></details>
 
-        <details class="faq"><summary>IVA: no es tuyo</summary><div class="body">
-          <p>El IVA que cobras lo recaudas para Hacienda y lo liquidas cada trimestre. Tenerlo en la cuenta no significa que sea beneficio. Sepáralo mentalmente (o en otra cuenta) el mismo día que entra.</p>
+        <details class="faq"><summary>Churn: los clientes que se van</summary><div class="body">
+          <p>Si se quedan 6 meses de media, cada mes se te va <code>1 ÷ 6 = 17 %</code> de tu cartera. Con 60 clientes son 10 bajas al mes que tienes que reponer solo para no bajar.</p>
+          <p>Por eso la retención es crecimiento: cada mes extra de permanencia reduce cuántos clientes tienes que captar.</p>
         </div></details>
 
-        <details class="faq"><summary>Beneficio ≠ caja</summary><div class="body">
-          <p>Puedes tener beneficio en el papel y no tener dinero en el banco (impagos, pagos anticipados de publicidad, IVA acumulado). Por eso la pestaña de proyección lleva una columna de caja: es la que te dice si sobrevives.</p>
+        <details class="faq"><summary>Beneficio ≠ dinero en el banco</summary><div class="body">
+          <p>Puedes tener beneficio sobre el papel y no tener dinero: impagos, publicidad pagada por adelantado, IVA acumulado que aún tienes que devolver. Por eso el panel lleva una columna de caja: es la que dice si sobrevives.</p>
         </div></details>
 
-        <details class="faq"><summary>Los 5 números que debes mirar cada mes</summary><div class="body">
-          <p><b>1.</b> Margen bruto por cliente · <b>2.</b> Clientes activos · <b>3.</b> Bajas del mes · <b>4.</b> CAC y ratio LTV/CAC · <b>5.</b> Caja disponible.</p>
+        <details class="faq"><summary>Qué mirar cada mes (5 números)</summary><div class="body">
+          <p><b>1.</b> Lo que te queda por cliente · <b>2.</b> Clientes activos · <b>3.</b> Bajas del mes · <b>4.</b> Lo que te cuesta captar y el retorno · <b>5.</b> Dinero en el banco.</p>
           <p>Con esos cinco tienes el 90 % del control. Lo demás es detalle.</p>
         </div></details>
 
-        <details class="faq"><summary>Aviso</summary><div class="body">
-          <p>Esta herramienta es de gestión, no sustituye a tu gestoría ni a la contabilidad oficial. Los tipos impositivos son estimaciones para que tomes decisiones; la liquidación real la hace tu asesor.</p>
+        <details class="faq"><summary>Aviso importante</summary><div class="body">
+          <p>Esta herramienta sirve para <b>decidir</b>, no sustituye a tu gestoría ni a la contabilidad oficial. Los tipos de impuestos son estimaciones. La liquidación real la hace tu asesor.</p>
         </div></details>
       </div>
     </div>
@@ -591,624 +887,1482 @@
 
 </div>
 
+<!-- ================= ASISTENTE ================= -->
+<div class="overlay hidden" id="overlay">
+  <div class="modal">
+    <div class="mhead">
+      <div class="steps" id="wSteps"></div>
+      <div class="stepno" id="wNo"></div>
+      <h3 id="wTitle"></h3>
+      <p class="lead" id="wLead"></p>
+    </div>
+    <div class="mbody" id="wBody"></div>
+    <div class="mfoot">
+      <button id="wBack" class="btn-ghost">← Atrás</button>
+      <div style="display:flex;gap:8px">
+        <button id="wSkip" class="btn-ghost">Salir</button>
+        <button id="wNext" class="btn-accent">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="savebar">
   <div class="mini">
-    <span>Margen/cliente <b id="s_margen">—</b></span>
-    <span>Beneficio neto <b id="s_ben">—</b></span>
+    <span>Por cliente <b id="s_margen">—</b></span>
+    <span>Limpio al mes <b id="s_ben">—</b></span>
     <span>Equilibrio <b id="s_be">—</b></span>
-    <span>LTV/CAC <b id="s_ratio">—</b></span>
+    <span>Retorno <b id="s_ratio">—</b></span>
   </div>
-  <span id="saveStatus">Los datos se guardan solos en este navegador</span>
+  <span id="saveStatus">Tus datos se guardan solos en este navegador</span>
 </div>
 
 <script>
 (function(){
   "use strict";
 
-  var KEY = "fitcondamian_contabilidad_v1";
+  var KEY = "fitcondamian_contabilidad_v2";
+  var KEY_OLD = "fitcondamian_contabilidad_v1";
 
   var DEFAULTS = {
-    precio: 150, meses: 6, clientes: 70,
+    v: 2,
+    modo: "simple",
+    perfil: "autonomo",
+    wizardHecho: false,
+    servicios: [ {n:"Plan online mensual", precio:150, clientes:40, meses:6, entrega:8} ],
     ivaModo: "incluido", iva: 21,
-    pasarela: 2, costeEntrega: 8, comisionVenta: 10, otrosVar: 0,
+    pasarela: 2, comisionVenta: 0, otrosVar: 0,
+    horasCliente: 2, horasMes: 120,
     fijos: [
-      {n:"Gestoría / asesoría", v:120},
       {n:"Cuota de autónomos", v:320},
-      {n:"Software (CRM, email, web)", v:90},
+      {n:"Gestoría", v:120},
+      {n:"Software y web", v:90},
       {n:"Plataforma de entrenos", v:60},
-      {n:"Teléfono e internet", v:50},
-      {n:"Formación y otros", v:80}
+      {n:"Teléfono e internet", v:50}
     ],
-    sueldos: [
-      {n:"Yo (fundador, autónomo)", v:1800, ss:0},
-      {n:"Coach júnior", v:1200, ss:32}
-    ],
+    sueldos: [ {n:"Yo (mi sueldo)", v:1800, ss:0} ],
     impuesto: 25, colchonMeses: 3,
-    ads: 1500, cpl: 6, tasaAgenda: 25, tasaShow: 65, tasaCierre: 25, otrosMkt: 300,
-    objetivo: 2000, topeSueldos: 40, ratioMin: 3, capacidad: 30, costeCoach: 1600,
-    crecAds: 10, crecCpl: 3, caja: 5000
+    mktModo: "simple",
+    ads: 800, otrosMkt: 150, nuevosMes: 7,
+    cpl: 6, tasaAgenda: 25, tasaShow: 65, tasaCierre: 25,
+    objetivo: 1000, topeSueldos: 40, ratioMin: 3, capacidad: 40, costeCoach: 1400,
+    calcClientes: 60,
+    crecAds: 10, crecCpl: 3, caja: 5000,
+    historico: []
   };
+
+  var CATALOGO = [
+    {n:"Cuota de autónomos", v:320}, {n:"Gestoría", v:120}, {n:"Alquiler o coworking", v:250},
+    {n:"Software y web", v:90}, {n:"Plataforma de entrenos", v:60}, {n:"CRM / email marketing", v:40},
+    {n:"Teléfono e internet", v:50}, {n:"Seguro de responsabilidad civil", v:25},
+    {n:"Formación y mentorías", v:100}, {n:"Gimnasio / material", v:80},
+    {n:"Diseño y edición de vídeo", v:200}, {n:"Asesoría legal / protección de datos", v:30},
+    {n:"Banco y comisiones", v:15}, {n:"Suscripciones varias", v:40}, {n:"Imprevistos", v:100}
+  ];
 
   var S = load();
 
-  /* ---------- utilidades ---------- */
-  var fmtE = new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+  /* ---------------- utilidades ---------------- */
+  var fmtN1 = new Intl.NumberFormat("es-ES",{maximumFractionDigits:1});
+  var fmtE0 = new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0});
   var fmtE2 = new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:2});
-  var fmtN = new Intl.NumberFormat("es-ES",{maximumFractionDigits:1});
 
-  function eur(v){ return isFinite(v) ? fmtE.format(v) : "—"; }
+  function eur(v){ return isFinite(v) ? fmtE0.format(v) : "—"; }
   function eur2(v){ return isFinite(v) ? fmtE2.format(v) : "—"; }
   function num(v,d){ return isFinite(v) ? new Intl.NumberFormat("es-ES",{maximumFractionDigits:(d===undefined?1:d)}).format(v) : "—"; }
-  function pct(v){ return isFinite(v) ? fmtN.format(v*100)+" %" : "—"; }
+  function pct(v){ return isFinite(v) ? fmtN1.format(v*100)+" %" : "—"; }
   function n(v){ v = parseFloat(v); return isFinite(v) ? v : 0; }
-  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   function $(id){ return document.getElementById(id); }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function mesEtiqueta(d){ return d.toLocaleDateString("es-ES",{month:"short",year:"2-digit"}); }
 
   function load(){
+    var d = clone(DEFAULTS);
     try{
       var raw = localStorage.getItem(KEY);
-      if(!raw) return JSON.parse(JSON.stringify(DEFAULTS));
-      var o = JSON.parse(raw), d = JSON.parse(JSON.stringify(DEFAULTS));
-      for(var k in o){ if(Object.prototype.hasOwnProperty.call(d,k)) d[k]=o[k]; }
-      if(!Array.isArray(d.fijos)) d.fijos = DEFAULTS.fijos.slice();
-      if(!Array.isArray(d.sueldos)) d.sueldos = DEFAULTS.sueldos.slice();
-      return d;
-    }catch(e){ return JSON.parse(JSON.stringify(DEFAULTS)); }
+      if(raw){
+        var o = JSON.parse(raw);
+        for(var k in o){ if(Object.prototype.hasOwnProperty.call(d,k)) d[k] = o[k]; }
+      } else {
+        var old = localStorage.getItem(KEY_OLD);
+        if(old) d = migrarV1(JSON.parse(old), d);
+      }
+    }catch(e){}
+    if(!Array.isArray(d.servicios) || !d.servicios.length) d.servicios = clone(DEFAULTS.servicios);
+    if(!Array.isArray(d.fijos)) d.fijos = clone(DEFAULTS.fijos);
+    if(!Array.isArray(d.sueldos)) d.sueldos = clone(DEFAULTS.sueldos);
+    if(!Array.isArray(d.historico)) d.historico = [];
+    return d;
+  }
+  function migrarV1(o, d){
+    d.servicios = [{n:"Mi servicio", precio:n(o.precio)||150, clientes:n(o.clientes)||0,
+                    meses:n(o.meses)||6, entrega:n(o.costeEntrega)||0}];
+    ["ivaModo","iva","pasarela","comisionVenta","otrosVar","fijos","sueldos","impuesto","colchonMeses",
+     "ads","otrosMkt","cpl","tasaAgenda","tasaShow","tasaCierre","objetivo","topeSueldos","ratioMin",
+     "capacidad","costeCoach","crecAds","crecCpl","caja"].forEach(function(k){
+      if(o[k] !== undefined) d[k] = o[k];
+    });
+    d.mktModo = "embudo"; d.wizardHecho = true;
+    return d;
   }
   function save(){
-    try{ localStorage.setItem(KEY, JSON.stringify(S));
+    try{
+      localStorage.setItem(KEY, JSON.stringify(S));
       $("saveStatus").textContent = "Guardado ✓ " + new Date().toLocaleTimeString("es-ES");
-    }catch(e){ $("saveStatus").textContent = "No se ha podido guardar en este navegador"; }
+    }catch(e){ $("saveStatus").textContent = "Este navegador no permite guardar datos"; }
   }
 
-  /* ---------- MOTOR DE CÁLCULO ---------- */
+  /* ---------------- MOTOR DE CÁLCULO ---------------- */
   function calc(){
-    var c = {};
+    var c = {}, i;
+    var iva = n(S.iva)/100;
 
-    // Ingreso neto por cliente (sin IVA)
-    var precio = n(S.precio), iva = n(S.iva)/100;
-    if(S.ivaModo === "incluido") c.neto = iva > -1 ? precio/(1+iva) : precio;
-    else c.neto = precio;                       // "excluido" y "exento" -> el neto es el precio
-    c.precioCobrado = (S.ivaModo === "excluido") ? precio*(1+iva) : precio; // lo que carga la pasarela
+    // --- por servicio ---
+    c.servicios = (S.servicios||[]).map(function(s){
+      var o = {};
+      o.n = s.n || "Servicio";
+      o.precio = n(s.precio);
+      o.clientes = n(s.clientes);
+      o.meses = Math.max(0.1, n(s.meses));
+      o.entrega = n(s.entrega);
+      o.neto = (S.ivaModo === "incluido") ? o.precio/(1+iva) : o.precio;
+      o.cobrado = (S.ivaModo === "excluido") ? o.precio*(1+iva) : o.precio;
+      o.cvar = o.cobrado*n(S.pasarela)/100 + o.neto*n(S.comisionVenta)/100 + o.entrega + n(S.otrosVar);
+      o.margen = o.neto - o.cvar;
+      o.margenPct = o.neto > 0 ? o.margen/o.neto : 0;
+      o.ltv = o.margen * o.meses;
+      o.ingresos = o.clientes * o.neto;
+      o.margenTotal = o.clientes * o.margen;
+      o.bajas = o.clientes / o.meses;
+      return o;
+    });
 
-    // Costes variables por cliente y mes
-    c.cPasarela  = c.precioCobrado * n(S.pasarela)/100;
-    c.cComision  = c.neto * n(S.comisionVenta)/100;
-    c.cEntrega   = n(S.costeEntrega);
-    c.cOtrosVar  = n(S.otrosVar);
-    c.cvar = c.cPasarela + c.cComision + c.cEntrega + c.cOtrosVar;
+    c.clientes   = c.servicios.reduce(function(a,s){ return a+s.clientes; },0);
+    c.ingresos   = c.servicios.reduce(function(a,s){ return a+s.ingresos; },0);
+    c.margenTotal= c.servicios.reduce(function(a,s){ return a+s.margenTotal; },0);
+    c.cvarTotal  = c.ingresos - c.margenTotal;
+    c.bajas      = c.servicios.reduce(function(a,s){ return a+s.bajas; },0);
 
-    c.margen    = c.neto - c.cvar;                       // margen bruto por cliente/mes
-    c.margenPct = c.neto > 0 ? c.margen/c.neto : 0;
-    c.mesesVida = Math.max(0.1, n(S.meses));
-    c.ltv       = c.margen * c.mesesVida;
+    // medias ponderadas por nº de clientes (si no hay clientes, media simple)
+    function pond(f){
+      if(c.clientes > 0) return c.servicios.reduce(function(a,s){ return a+s.clientes*f(s); },0)/c.clientes;
+      var v = c.servicios.reduce(function(a,s){ return a+f(s); },0);
+      return c.servicios.length ? v/c.servicios.length : 0;
+    }
+    c.neto      = pond(function(s){ return s.neto; });
+    c.cvar      = pond(function(s){ return s.cvar; });
+    c.margen    = pond(function(s){ return s.margen; });
+    c.mesesVida = pond(function(s){ return s.meses; });
+    c.ltv       = pond(function(s){ return s.ltv; });
     c.ltvIngreso= c.neto * c.mesesVida;
+    c.margenPct = c.neto > 0 ? c.margen/c.neto : 0;
 
-    // Gastos fijos y sueldos
-    c.fijos = (S.fijos||[]).reduce(function(a,f){ return a + n(f.v); },0);
-    c.sueldos = (S.sueldos||[]).reduce(function(a,s){ return a + n(s.v)*(1+n(s.ss)/100); },0);
-    c.ads = n(S.ads);
+    // --- estructura de costes ---
+    c.fijos    = (S.fijos||[]).reduce(function(a,f){ return a + n(f.v); },0);
+    c.sueldos  = (S.sueldos||[]).reduce(function(a,s){ return a + n(s.v)*(1+n(s.ss)/100); },0);
+    c.ads      = n(S.ads);
     c.otrosMkt = n(S.otrosMkt);
     c.marketing = c.ads + c.otrosMkt;
-    c.estructura = c.fijos + c.sueldos + c.marketing;     // todo lo que no depende del nº de clientes
     c.estructuraSinAds = c.fijos + c.sueldos;
+    c.estructura = c.estructuraSinAds + c.marketing;
 
-    // Embudo
-    c.cpl = Math.max(0.01, n(S.cpl));
-    c.leads = c.ads / c.cpl;
-    c.agendadas = c.leads * n(S.tasaAgenda)/100;
-    c.asistidas = c.agendadas * n(S.tasaShow)/100;
-    c.ventas = c.asistidas * n(S.tasaCierre)/100;
-    c.convGlobal = c.leads > 0 ? c.ventas/c.leads : 0;
+    // --- captación ---
+    if(S.mktModo === "embudo"){
+      c.cpl = Math.max(0.01, n(S.cpl));
+      c.leads = c.ads / c.cpl;
+      c.agendadas = c.leads * n(S.tasaAgenda)/100;
+      c.asistidas = c.agendadas * n(S.tasaShow)/100;
+      c.ventas = c.asistidas * n(S.tasaCierre)/100;
+    } else {
+      c.ventas = n(S.nuevosMes);
+      c.leads = NaN; c.agendadas = NaN; c.asistidas = NaN;
+      c.cpl = c.ventas > 0 ? c.ads/c.ventas : NaN;
+    }
+    c.convGlobal = (isFinite(c.leads) && c.leads > 0) ? c.ventas/c.leads : NaN;
+    c.cac = c.ventas > 0 ? c.marketing / c.ventas : Infinity;   // la comisión de venta ya está en el margen
+    c.ratio = (isFinite(c.cac) && c.cac > 0) ? c.ltv/c.cac : (c.ventas > 0 ? Infinity : 0);
+    c.payback = c.margen > 0 && isFinite(c.cac) ? c.cac/c.margen : Infinity;
+    c.beneficioPorCliente = c.ltv - (isFinite(c.cac) ? c.cac : 0);
 
-    c.cac = c.ventas > 0 ? c.ads / c.ventas : Infinity;
-    c.cacTotal = c.ventas > 0 ? c.marketing / c.ventas : Infinity; // la comisión de venta ya está restada en el margen
-    c.ratio = isFinite(c.cacTotal) && c.cacTotal > 0 ? c.ltv / c.cacTotal : (c.ventas>0?Infinity:0);
-    c.payback = c.margen > 0 && isFinite(c.cacTotal) ? c.cacTotal / c.margen : Infinity;
-
-    // CAC máximos
-    c.ratioMin = Math.max(1, n(S.ratioMin));
-    c.cacMaxRatio = c.ltv / c.ratioMin;
-    c.cacMaxBreak = c.ltv;                                // punto en que no ganas ni pierdes por cliente
-    c.cacMaxPayback1 = c.margen;                          // recuperar en el primer mes
-    c.cplMax = function(cacMax){ return c.convGlobal > 0 ? cacMax * c.convGlobal : NaN; };
-
-    // Resultados con los clientes actuales
-    c.clientes = n(S.clientes);
-    c.ingresos = c.clientes * c.neto;
-    c.cvarTotal = c.clientes * c.cvar;
-    c.margenTotal = c.ingresos - c.cvarTotal;
-    c.bai = c.margenTotal - c.estructura;                 // beneficio antes de impuestos
-    c.tax = c.bai > 0 ? c.bai * n(S.impuesto)/100 : 0;
+    // --- resultado del mes ---
+    c.bai = c.margenTotal - c.estructura;
+    c.tasaImp = n(S.impuesto)/100;
+    c.tax = c.bai > 0 ? c.bai*c.tasaImp : 0;
     c.beneficio = c.bai - c.tax;
+    c.gastosTotales = c.cvarTotal + c.estructura;
     c.margenNetoPct = c.ingresos > 0 ? c.beneficio/c.ingresos : 0;
 
-    // Punto de equilibrio y objetivo
-    c.breakeven = c.margen > 0 ? c.estructura / c.margen : Infinity;
-    c.tasaImp = n(S.impuesto)/100;
+    // --- equilibrio y objetivo ---
+    c.breakeven = c.margen > 0 ? c.estructura/c.margen : Infinity;
     c.objetivo = n(S.objetivo);
     c.objetivoBai = c.tasaImp < 1 ? c.objetivo/(1-c.tasaImp) : c.objetivo;
     c.clientesObjetivo = c.margen > 0 ? (c.estructura + c.objetivoBai)/c.margen : Infinity;
     c.faltan = Math.max(0, c.clientesObjetivo - c.clientes);
 
-    // Rotación
-    c.bajas = c.clientes / c.mesesVida;
+    // --- rotación ---
     c.altas = c.ventas;
     c.neta = c.altas - c.bajas;
     c.churnPct = c.clientes > 0 ? c.bajas/c.clientes : 0;
-    c.adsMantener = c.cac !== Infinity ? c.bajas * c.cac : NaN;
+    c.adsMantener = isFinite(c.cac) ? c.bajas*c.cac : NaN;
+    c.techo = c.altas * c.mesesVida;
+    c.mesesAlObjetivo = c.neta > 0 ? c.faltan/c.neta : Infinity;
 
-    // Presupuestos máximos
-    c.presuMktMax = c.margenTotal - c.estructuraSinAds - c.objetivoBai; // manteniendo el objetivo
-    c.presuMktBreak = c.margenTotal - c.estructuraSinAds;               // sin perder dinero
+    // --- presupuestos ---
+    c.presuMktMax   = c.margenTotal - c.estructuraSinAds - c.objetivoBai;
+    c.presuMktBreak = c.margenTotal - c.estructuraSinAds;
     c.presuSueldosRegla = c.ingresos * n(S.topeSueldos)/100;
     c.presuSueldosMax = c.margenTotal - c.fijos - c.marketing - c.objetivoBai;
     c.presuFijosMax = c.margenTotal - c.sueldos - c.marketing - c.objetivoBai;
     c.colchon = c.estructura * n(S.colchonMeses);
+    c.margenMkt = c.presuMktMax - c.marketing;
 
-    // Capacidad / contrataciones
+    // --- CAC máximos ---
+    c.ratioMin = Math.max(1, n(S.ratioMin));
+    c.cacMaxRatio = c.ltv/c.ratioMin;
+
+    // --- capacidad ---
     c.capacidad = Math.max(1, n(S.capacidad));
     c.costeCoach = n(S.costeCoach);
-    c.clientesPorCoach = c.margen > 0 ? c.costeCoach / c.margen : Infinity;
+    c.clientesPorCoach = c.margen > 0 ? c.costeCoach/c.margen : Infinity;
+    c.horasTotales = c.clientes * n(S.horasCliente);
+    c.personasNecesarias = n(S.horasMes) > 0 ? c.horasTotales/n(S.horasMes) : NaN;
+    c.margenHora = n(S.horasCliente) > 0 ? c.margen/n(S.horasCliente) : NaN;
 
+    // --- precio necesario para el objetivo ---
+    var kPct = n(S.pasarela)/100 * (S.ivaModo === "excluido" ? (1+iva) : 1) + n(S.comisionVenta)/100;
+    var entregaMedia = c.servicios.length
+      ? c.servicios.reduce(function(a,s){ return a+s.entrega; },0)/c.servicios.length : 0;
+    var cli = Math.max(1, n(S.calcClientes));
+    c.calcCli = cli;
+    var margenNecesario = (c.estructura + c.objetivoBai)/cli;
+    c.precioNecesarioNeto = (1-kPct) > 0
+      ? (margenNecesario + entregaMedia + n(S.otrosVar))/(1-kPct) : NaN;
+    c.precioNecesario = (S.ivaModo === "incluido") ? c.precioNecesarioNeto*(1+iva) : c.precioNecesarioNeto;
+    c.margenNecesario = margenNecesario;
+
+    // --- histórico ---
+    // se ordena el propio array guardado para que los índices de las filas
+    // que se pintan coincidan con los del estado (si no, editar una fila cambiaba otro mes)
+    (S.historico||[]).sort(function(a,b){ return (a.mes||"") < (b.mes||"") ? -1 : 1; });
+    c.hist = (S.historico||[]).map(function(h){
+      var o = clone(h);
+      o.beneficio = n(h.facturacion) - n(h.gastos);
+      o.margenPct = n(h.facturacion) > 0 ? o.beneficio/n(h.facturacion) : 0;
+      o.cacReal = n(h.altas) > 0 ? n(h.ads)/n(h.altas) : NaN;
+      o.churnReal = n(h.clientes) > 0 ? n(h.bajas)/n(h.clientes) : NaN;
+      return o;
+    });
+
+    c.salud = salud(c);
     return c;
   }
 
-  /* ---------- RENDER ---------- */
-  function render(){
-    var c = calc();
-    renderServicio(c);
-    renderGastos(c);
-    renderMarketing(c);
-    renderResultados(c);
-    renderDecisiones(c);
-    renderProyeccion(c);
-    renderBar(c);
+  /* ---------------- SEMÁFORO DE SALUD ---------------- */
+  function salud(c){
+    var items = [];
+    function add(nombre, detalle, valor, txt, verde, ambar, invertido){
+      var est;
+      if(!isFinite(valor)) est = "n";
+      else if(invertido) est = valor <= verde ? "g" : (valor <= ambar ? "w" : "b");
+      else est = valor >= verde ? "g" : (valor >= ambar ? "w" : "b");
+      items.push({nombre:nombre, detalle:detalle, txt:txt, est:est});
+    }
+    add("Margen por cliente", "cuánto te queda de cada cliente", c.margenPct, pct(c.margenPct), .65, .5);
+    add("Beneficio del mes", "lo que ganas limpio sobre lo que facturas", c.margenNetoPct, pct(c.margenNetoPct), .15, .05);
+    add("Retorno de la publicidad", "por cada € invertido en captar", c.ratio, isFinite(c.ratio)?num(c.ratio,1)+"x":"—", 3, 2);
+    add("Recuperación de la inversión", "meses hasta recuperar lo que cuesta captar", c.payback, isFinite(c.payback)?num(c.payback,1)+" meses":"—", 1.5, 3, true);
+    add("Crecimiento de clientes", "entran menos bajas, cada mes", c.neta, (c.neta>=0?"+":"")+num(c.neta,1), 0.01, -0.01);
+    add("Peso de los sueldos", "cuánto se llevan de tu facturación", c.ingresos>0?c.sueldos/c.ingresos:NaN,
+        c.ingresos>0?pct(c.sueldos/c.ingresos):"—", .40, .50, true);
+    add("Colchón de seguridad", "meses de gastos que tienes guardados",
+        c.estructura>0?n(S.caja)/c.estructura:NaN,
+        c.estructura>0?num(n(S.caja)/c.estructura,1)+" meses":"—", n(S.colchonMeses), Math.max(1,n(S.colchonMeses)/2));
+
+    var val = items.filter(function(i){ return i.est !== "n"; });
+    var score = val.length ? Math.round(val.reduce(function(a,i){
+      return a + (i.est === "g" ? 100 : i.est === "w" ? 55 : 10); },0)/val.length) : 0;
+    var estado = score >= 75 ? "Buena salud" : score >= 50 ? "Mejorable" : score >= 30 ? "Delicada" : "Crítica";
+    return {items:items, score:score, estado:estado};
+  }
+
+  /* ---------------- ACCIONES PRIORITARIAS ---------------- */
+  function acciones(c){
+    var A = [];
+    function add(prio, t, d){ A.push({p:prio, t:t, d:d}); }
+
+    if(c.clientes <= 0)
+      add(1,"Empieza por poner tus clientes","Ve a <b>Mis servicios</b> y escribe cuántos clientes activos tienes. Sin ese dato el panel no puede calcular nada.");
+
+    if(c.margen <= 0 && c.clientes > 0)
+      add(1,"Tu servicio pierde dinero en cada cliente",
+        "Atender a un cliente te cuesta más de lo que te paga. Sube el precio o baja el coste de entrega antes de captar a nadie más.");
+
+    if(c.beneficio < 0 && c.margen > 0){
+      var faltanBE = Math.max(0, Math.ceil(c.breakeven - c.clientes));
+      add(1,"Estás perdiendo "+eur(Math.abs(c.beneficio))+" al mes",
+        "Necesitas <b>"+num(Math.ceil(c.breakeven),0)+" clientes</b> para cubrir gastos y tienes "+num(c.clientes,0)+
+        ". Te faltan <b>"+faltanBE+"</b>. La otra vía es recortar "+eur(Math.abs(c.beneficio))+" de gastos fijos.");
+    }
+
+    if(isFinite(c.ratio) && c.ratio > 0 && c.ratio < 1 && c.ads > 0)
+      add(1,"La publicidad te está costando dinero",
+        "Cada cliente te deja "+eur(c.ltv)+" y captarlo te cuesta "+eur(c.cac)+". <b>Baja la inversión</b> hasta arreglar el precio, el cierre o la permanencia.");
+
+    if(c.estructura > 0 && n(S.caja)/c.estructura < 1 && c.beneficio < 0)
+      add(1,"Te queda menos de un mes de colchón",
+        "Con "+eur(n(S.caja))+" en el banco y "+eur(c.estructura)+" de gastos fijos, tienes margen para "+
+        num(n(S.caja)/c.estructura,1)+" meses. Recorta gastos ya o entra caja rápido.");
+
+    if(c.neta < 0 && c.clientes > 0)
+      add(2,"Se te van más clientes de los que entran",
+        "Bajas "+num(c.bajas,1)+"/mes frente a "+num(c.altas,1)+" altas. Necesitarías "+
+        (isFinite(c.adsMantener)?eur(c.adsMantener):"más inversión")+" al mes solo para no bajar. Retener es más barato que captar.");
+
+    if(c.mesesVida < 4 && c.clientes > 0)
+      add(2,"Tus clientes duran poco ("+num(c.mesesVida,1)+" meses)",
+        "Cada mes extra de permanencia te suma <b>"+eur(c.margen)+"</b> por cliente sin gastar un euro en publicidad. Trabaja el seguimiento y la renovación antes de subir el presupuesto de anuncios.");
+
+    if(c.ingresos > 0 && c.sueldos/c.ingresos > .5)
+      add(2,"Los sueldos se llevan "+pct(c.sueldos/c.ingresos)+" de lo que facturas",
+        "Por encima del 50 % no queda margen para crecer. Sube precio, sube clientes por persona o frena contrataciones.");
+
+    if(c.payback > 3 && isFinite(c.payback) && c.ads > 0)
+      add(2,"Tardas "+num(c.payback,1)+" meses en recuperar lo que inviertes",
+        "Cada cliente nuevo te consume caja mientras tanto. <b>Cobrar por adelantado o pedir una entrada</b> lo arregla sin tocar el margen.");
+
+    if(c.margenPct < .5 && c.clientes > 0)
+      add(2,"Tu margen por cliente es bajo ("+pct(c.margenPct)+")",
+        "En un servicio de coaching deberías estar por encima del 65 %. Revisa el coste de entrega: qué pagas por cliente que no sea imprescindible.");
+
+    if(c.beneficio > 0 && c.margenMkt > 100 && isFinite(c.ratio) && c.ratio >= c.ratioMin)
+      add(3,"Puedes invertir "+eur(c.margenMkt)+" más en publicidad",
+        "Tu retorno es de "+num(c.ratio,1)+"x y sigues cumpliendo tu objetivo de "+eur(c.objetivo)+
+        ". Serían unos <b>"+(isFinite(c.cac)&&c.cac>0?num(c.margenMkt/c.cac,1):"—")+" clientes extra al mes</b>. Sube por tramos del 20–30 %.");
+
+    if(c.beneficio > 0 && c.faltan > 0 && isFinite(c.mesesAlObjetivo))
+      add(3,"Estás a "+num(Math.ceil(c.faltan),0)+" clientes de tu objetivo",
+        "Al ritmo actual (+"+num(c.neta,1)+" clientes netos al mes) llegarías en <b>"+num(c.mesesAlObjetivo,1)+" meses</b>.");
+
+    if(!S.historico.length)
+      add(3,"Empieza a apuntar tus meses reales",
+        "En <b>Mis meses</b> guarda cada cierre. En 3 meses tendrás datos reales en vez de estimaciones y el panel afinará mucho más.");
+
+    if(n(S.caja) < c.colchon && c.beneficio > 0)
+      add(3,"Construye tu colchón hasta "+eur(c.colchon),
+        "Tienes "+eur(n(S.caja))+". Aparta cada mes una parte del beneficio hasta llegar a "+num(n(S.colchonMeses),0)+" meses de gastos.");
+
+    if(!A.length)
+      add(3,"Vas bien: toca consolidar",
+        "Ningún indicador está en rojo. Mantén el ritmo, apunta cada mes tus números reales y revisa precios cada trimestre.");
+
+    A.sort(function(a,b){ return a.p - b.p; });
+    return A.slice(0,3);
+  }
+
+  /* ---------------- GRÁFICOS (SVG sin librerías) ---------------- */
+  function grafico(opts){
+    var W = 620, H = opts.h || 190, pl = 46, pr = 12, pt = 12, pb = 26;
+    var labels = opts.labels || [], series = opts.series || [];
+    if(!labels.length) return '<p class="tip">Aún no hay datos para dibujar.</p>';
+    var all = [];
+    series.forEach(function(s){ s.data.forEach(function(v){ if(isFinite(v)) all.push(v); }); });
+    if(!all.length) return '<p class="tip">Aún no hay datos para dibujar.</p>';
+    var max = Math.max.apply(null, all), min = Math.min.apply(null, all.concat([0]));
+    if(max === min) max = min + 1;
+    var iw = W - pl - pr, ih = H - pt - pb;
+    function x(i){ return pl + (labels.length === 1 ? iw/2 : i*iw/(labels.length-1)); }
+    function y(v){ return pt + ih - (v-min)/(max-min)*ih; }
+    var g = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img">';
+    for(var t=0;t<=3;t++){
+      var vv = min + (max-min)*t/3, yy = y(vv);
+      g += '<line class="gl" x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'"></line>';
+      g += '<text class="ax" x="'+(pl-6)+'" y="'+(yy+3)+'" text-anchor="end">'+
+           (Math.abs(vv)>=1000?Math.round(vv/1000)+"k":Math.round(vv))+'</text>';
+    }
+    if(min < 0) g += '<line x1="'+pl+'" y1="'+y(0)+'" x2="'+(W-pr)+'" y2="'+y(0)+'" stroke="#3a4a60" stroke-width="1"></line>';
+    series.forEach(function(s){
+      if(s.tipo === "barras"){
+        var bw = Math.max(4, iw/labels.length*0.5);
+        s.data.forEach(function(v,i){
+          if(!isFinite(v)) return;
+          var y0 = y(Math.max(0,v)), y1 = y(Math.min(0,v));
+          g += '<rect x="'+(x(i)-bw/2)+'" y="'+y0+'" width="'+bw+'" height="'+Math.max(1,y1-y0)+
+               '" rx="2" fill="'+(v>=0?s.color:"#ff5c5c")+'" opacity=".85"></rect>';
+        });
+      } else {
+        var pts = s.data.map(function(v,i){ return isFinite(v) ? x(i)+","+y(v) : null; })
+                        .filter(Boolean).join(" ");
+        g += '<polyline points="'+pts+'" fill="none" stroke="'+s.color+'" stroke-width="2.5" stroke-linejoin="round"></polyline>';
+        s.data.forEach(function(v,i){ if(isFinite(v))
+          g += '<circle cx="'+x(i)+'" cy="'+y(v)+'" r="3" fill="'+s.color+'"></circle>'; });
+      }
+    });
+    var paso = Math.ceil(labels.length/8);
+    labels.forEach(function(l,i){
+      if(i % paso) return;
+      g += '<text class="ax" x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(l)+'</text>';
+    });
+    g += '</svg>';
+    var leg = '<div class="legend">' + series.map(function(s){
+      return '<span><i style="background:'+s.color+'"></i>'+esc(s.nombre)+'</span>'; }).join("") + '</div>';
+    return g + leg;
+  }
+
+  /* ---------------- RENDER: INICIO ---------------- */
+  function renderInicio(c){
+    var col = {g:"#3ddc97", w:"#ffb020", b:"#ff5c5c", n:"#3a4a60"};
+    $("healthList").innerHTML = c.salud.items.map(function(i){
+      return '<div class="hrow"><i style="background:'+col[i.est]+'"></i>'+
+        '<div class="nm"><span>'+i.nombre+'</span><small>'+i.detalle+'</small></div>'+
+        '<b>'+i.txt+'</b></div>';
+    }).join("");
+
+    var pctScore = c.salud.score/100, circ = 2*Math.PI*54;
+    var arc = $("ringArc");
+    arc.setAttribute("stroke-dasharray", circ);
+    arc.setAttribute("stroke-dashoffset", circ*(1-pctScore));
+    arc.setAttribute("stroke", c.salud.score >= 75 ? col.g : c.salud.score >= 50 ? col.w : col.b);
+    $("scoreVal").textContent = c.salud.score;
+    $("scoreTxt").textContent = c.salud.estado;
+
+    $("acciones").innerHTML = acciones(c).map(function(a,i){
+      return '<div class="act b'+a.p+'"><div class="num">'+(i+1)+'</div>'+
+        '<div><div class="t">'+a.t+'</div><div class="d">'+a.d+'</div></div></div>';
+    }).join("");
+
+    $("i_ben").textContent = eur(c.beneficio);
+    $("i_ben").parentElement.className = "kpi " + (c.beneficio > 0 ? "good" : "bad");
+    $("i_benfoot").textContent = "de "+eur(c.ingresos)+" facturados";
+    $("i_margen").textContent = eur2(c.margen);
+    $("i_margenfoot").textContent = pct(c.margenPct)+" del precio · LTV "+eur(c.ltv);
+    $("i_be").textContent = isFinite(c.breakeven) ? num(Math.ceil(c.breakeven),0) : "—";
+    $("i_befoot").textContent = isFinite(c.breakeven)
+      ? (c.clientes >= c.breakeven ? "Ya lo has pasado (tienes "+num(c.clientes,0)+")"
+         : "Te faltan "+num(Math.ceil(c.breakeven-c.clientes),0)) : "Falta margen positivo";
+    $("i_ads").textContent = eur(Math.max(0, c.presuMktMax));
+    $("i_ads").parentElement.className = "kpi " + (c.presuMktMax >= c.marketing ? "good" : "bad");
+    $("i_adsfoot").textContent = c.presuMktMax >= c.marketing
+      ? "ahora gastas "+eur(c.marketing)+" · te sobran "+eur(c.margenMkt)
+      : "ahora gastas "+eur(c.marketing)+" · te pasas "+eur(Math.abs(c.margenMkt));
+
+    // estructura y barra
+    var ing = c.ingresos;
+    function pp(v){ return ing > 0 ? pct(v/ing) : "—"; }
+    $("estructura").innerHTML =
+      linea("Facturación (sin IVA)", eur(ing), "sub") +
+      linea("Coste de atender clientes", eur(c.cvarTotal)+" · "+pp(c.cvarTotal), "ind") +
+      linea("Sueldos", eur(c.sueldos)+" · "+pp(c.sueldos), "ind") +
+      linea("Gastos fijos", eur(c.fijos)+" · "+pp(c.fijos), "ind") +
+      linea("Marketing", eur(c.marketing)+" · "+pp(c.marketing), "ind") +
+      linea("Impuestos", eur(c.tax)+" · "+pp(c.tax), "ind") +
+      linea("<b>Te queda</b>", '<span class="'+(c.beneficio>=0?"pos":"neg")+'">'+eur(c.beneficio)+" · "+pp(c.beneficio)+"</span>", "tot");
+
+    var parts = [
+      {v:c.cvarTotal, col:"#4f7fb0", n:"Atender clientes"},
+      {v:c.sueldos, col:"#8a6ad6", n:"Sueldos"},
+      {v:c.fijos, col:"#d67f4a", n:"Gastos fijos"},
+      {v:c.marketing, col:"#3ddc97", n:"Marketing"},
+      {v:c.tax, col:"#5a6b7f", n:"Impuestos"},
+      {v:Math.max(0,c.beneficio), col:"#c8f31d", n:"Tu beneficio"}
+    ];
+    var tot = parts.reduce(function(a,p){ return a+Math.max(0,p.v); },0) || 1;
+    $("barCostes").innerHTML = parts.map(function(p){
+      return '<i style="width:'+(Math.max(0,p.v)/tot*100)+'%;background:'+p.col+'"></i>'; }).join("");
+    $("legendCostes").innerHTML = parts.map(function(p){
+      return '<span><i style="background:'+p.col+'"></i>'+p.n+" "+(ing>0?pct(p.v/ing):"—")+"</span>"; }).join("");
+
+    // frase resumen
+    var f;
+    if(c.clientes <= 0){
+      f = "Aún no has puesto clientes. En cuanto lo hagas, aquí verás tu situación explicada en dos líneas.";
+    } else {
+      f = "Tienes <b>"+num(c.clientes,0)+" clientes</b> que te dejan <b>"+eur2(c.margen)+"</b> cada uno al mes. "+
+          "Eso son <b>"+eur(c.margenTotal)+"</b> para pagar <b>"+eur(c.estructura)+"</b> de gastos fijos, sueldos y marketing. "+
+          (c.beneficio >= 0
+            ? "Después de impuestos te quedan <b>"+eur(c.beneficio)+"</b> limpios al mes."
+            : "Te faltan <b>"+eur(Math.abs(c.beneficio))+"</b> al mes para cubrirlo todo.")+
+          " Cada cliente se queda de media <b>"+num(c.mesesVida,1)+" meses</b>, así que vale <b>"+eur(c.ltv)+"</b> en total"+
+          (isFinite(c.cac) ? " y captarlo te cuesta <b>"+eur(c.cac)+"</b>." : ".");
+    }
+    $("resumenFrase").innerHTML = f;
+
+    var sig;
+    if(c.clientes <= 0) sig = "<b>Siguiente paso:</b> pulsa «Asistente» arriba y responde las 9 preguntas.";
+    else if(c.beneficio < 0) sig = "<b>Siguiente paso:</b> ve a «Qué me puedo permitir» y mira cuántos clientes te faltan o cuánto gasto sobra.";
+    else if(!S.historico.length) sig = "<b>Siguiente paso:</b> ve a «Mis meses» y cierra tu primer mes con datos reales.";
+    else sig = "<b>Siguiente paso:</b> revisa «Futuro» para ver si tu caja aguanta el crecimiento que planeas.";
+    $("notaSiguiente").innerHTML = sig;
+  }
+
+  function linea(label, value, cls){
+    return '<div class="line '+(cls||"")+'"><span>'+label+'</span><span>'+value+'</span></div>';
+  }
+
+  /* ---------------- RENDER: SERVICIOS ---------------- */
+  function renderServRows(){
+    var w = $("servRows"); w.innerHTML = "";
+    (S.servicios||[]).forEach(function(s,i){
+      var d = document.createElement("div"); d.className = "row serv";
+      d.innerHTML =
+        '<div class="inp"><input type="text" data-l="serv" data-i="'+i+'" data-f="n" value="'+esc(s.n)+'" placeholder="Nombre del plan"></div>'+
+        '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="precio" value="'+n(s.precio)+'" step="5"><span class="unit">€</span></div>'+
+        '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="clientes" value="'+n(s.clientes)+'" step="1"><span class="unit">cli</span></div>'+
+        '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="meses" value="'+n(s.meses)+'" step="0.5"><span class="unit">mes</span></div>'+
+        '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="entrega" value="'+n(s.entrega)+'" step="1"><span class="unit">€</span></div>'+
+        (S.servicios.length > 1 ? '<button class="btn-del" data-del="serv" data-i="'+i+'" title="Eliminar">✕</button>' : '<span></span>');
+      w.appendChild(d);
+    });
   }
 
   function renderServicio(c){
     $("k_neto").textContent = eur2(c.neto);
     $("k_cvar").textContent = eur2(c.cvar);
-    $("k_cvarpct").textContent = (c.neto>0? pct(c.cvar/c.neto) : "—") + " del precio";
+    $("k_cvarpct").textContent = (c.neto > 0 ? pct(c.cvar/c.neto) : "—")+" del precio";
     $("k_margen").textContent = eur2(c.margen);
-    $("k_margenpct").textContent = pct(c.margenPct) + " de margen bruto";
+    $("k_margenpct").textContent = pct(c.margenPct)+" de lo que cobras";
+    $("k_margen").parentElement.className = "kpi hi " + (c.margenPct >= .65 ? "good" : c.margenPct >= .5 ? "warn" : "bad");
     $("k_ltv").textContent = eur(c.ltv);
-    $("k_ltvfoot").textContent = num(c.mesesVida,1) + " meses × " + eur2(c.margen) + " · facturación por cliente " + eur(c.ltvIngreso);
-    var km = $("k_margen").parentElement;
-    km.className = "kpi hi " + (c.margenPct >= .7 ? "good" : c.margenPct >= .5 ? "" : "warn");
+    $("k_ltvfoot").textContent = num(c.mesesVida,1)+" meses × "+eur2(c.margen);
+
+    var tb = $("tablaServ").querySelector("tbody");
+    tb.innerHTML = c.servicios.map(function(s){
+      return "<tr><td>"+esc(s.n)+"</td><td>"+num(s.clientes,0)+"</td><td>"+eur(s.ingresos)+
+        "</td><td>"+eur2(s.margen)+'</td><td><span class="pill '+(s.margenPct>=.65?"good":s.margenPct>=.5?"warn":"bad")+'">'+
+        pct(s.margenPct)+"</span></td><td>"+eur(s.ltv)+"</td><td>"+
+        (c.ingresos > 0 ? pct(s.ingresos/c.ingresos) : "—")+"</td></tr>";
+    }).join("");
+    $("tablaServ").querySelector("tfoot").innerHTML =
+      "<tr><td>Total</td><td>"+num(c.clientes,0)+"</td><td>"+eur(c.ingresos)+"</td><td>"+eur2(c.margen)+
+      "</td><td>"+pct(c.margenPct)+"</td><td>"+eur(c.ltv)+"</td><td>100 %</td></tr>";
+
+    $("horasBox").innerHTML =
+      linea("Horas que dedicas al mes en total", num(c.horasTotales,0)+" h", "sub") +
+      linea("Personas necesarias a jornada útil", isFinite(c.personasNecesarias)?num(c.personasNecesarias,1):"—", "sub") +
+      linea("Lo que ganas por hora trabajada", isFinite(c.margenHora)?eur2(c.margenHora):"—", "tot");
   }
 
-  function renderRowsFijos(){
-    var wrap = $("fijosRows"); wrap.innerHTML = "";
+  /* ---------------- RENDER: GASTOS ---------------- */
+  function renderFijosRows(){
+    var w = $("fijosRows"); w.innerHTML = "";
     (S.fijos||[]).forEach(function(f,i){
-      var d = document.createElement("div"); d.className = "row";
+      var d = document.createElement("div"); d.className = "row gasto";
       d.innerHTML =
         '<div class="inp"><input type="text" data-l="fijo" data-i="'+i+'" data-f="n" value="'+esc(f.n)+'" placeholder="Concepto"></div>'+
-        '<div class="inp"><input type="number" data-l="fijo" data-i="'+i+'" data-f="v" value="'+n(f.v)+'" step="1"><span class="unit">€</span></div>'+
+        '<div class="inp"><input type="number" data-l="fijo" data-i="'+i+'" data-f="v" value="'+n(f.v)+'" step="5"><span class="unit">€</span></div>'+
         '<button class="btn-del" data-del="fijo" data-i="'+i+'" title="Eliminar">✕</button>';
-      wrap.appendChild(d);
+      w.appendChild(d);
     });
   }
-  function renderRowsSueldos(){
-    var wrap = $("sueldosRows"); wrap.innerHTML = "";
+  function renderSueldosRows(){
+    var w = $("sueldosRows"); w.innerHTML = "";
     (S.sueldos||[]).forEach(function(s,i){
       var d = document.createElement("div"); d.className = "row sal";
       d.innerHTML =
-        '<div class="inp"><input type="text" data-l="sueldo" data-i="'+i+'" data-f="n" value="'+esc(s.n)+'" placeholder="Rol"></div>'+
-        '<div class="inp"><input type="number" data-l="sueldo" data-i="'+i+'" data-f="v" value="'+n(s.v)+'" step="10"><span class="unit">€</span></div>'+
+        '<div class="inp"><input type="text" data-l="sueldo" data-i="'+i+'" data-f="n" value="'+esc(s.n)+'" placeholder="Quién"></div>'+
+        '<div class="inp"><input type="number" data-l="sueldo" data-i="'+i+'" data-f="v" value="'+n(s.v)+'" step="50"><span class="unit">€</span></div>'+
         '<div class="inp"><input type="number" data-l="sueldo" data-i="'+i+'" data-f="ss" value="'+n(s.ss)+'" step="1"><span class="unit">%</span></div>'+
         '<button class="btn-del" data-del="sueldo" data-i="'+i+'" title="Eliminar">✕</button>';
-      wrap.appendChild(d);
+      w.appendChild(d);
     });
   }
-
-  function line(label, value, cls){
-    return '<div class="line '+(cls||"")+'"><span>'+label+'</span><span>'+value+'</span></div>';
+  function renderChips(){
+    var puestos = (S.fijos||[]).map(function(f){ return (f.n||"").toLowerCase(); });
+    $("chipsGastos").innerHTML = CATALOGO.map(function(g,i){
+      var on = puestos.indexOf(g.n.toLowerCase()) >= 0;
+      return '<button class="chip'+(on?" on":"")+'" data-chip="'+i+'"'+(on?" disabled":"")+'>'+
+        esc(g.n)+" · "+eur(g.v)+"</button>";
+    }).join("");
   }
 
   function renderGastos(c){
     $("totFijos").textContent = eur(c.fijos);
     $("totSueldos").textContent = eur(c.sueldos);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-perfil]"), function(el){
+      el.classList.toggle("on", el.getAttribute("data-perfil") === S.perfil); });
 
-    var ing = c.ingresos;
-    function p(v){ return ing>0 ? pct(v/ing) : "—"; }
-    $("estructura").innerHTML =
-      line("Facturación mensual (sin IVA)", eur(ing), "sub") +
-      line("Costes variables (entrega, pasarela)", eur(c.cvarTotal)+" · "+p(c.cvarTotal), "ind") +
-      line("Sueldos (coste empresa)", eur(c.sueldos)+" · "+p(c.sueldos), "ind") +
-      line("Gastos fijos de estructura", eur(c.fijos)+" · "+p(c.fijos), "ind") +
-      line("Marketing y publicidad", eur(c.marketing)+" · "+p(c.marketing), "ind") +
-      line("Impuestos estimados", eur(c.tax)+" · "+p(c.tax), "ind") +
-      line("Te queda", eur(c.beneficio)+" · "+p(c.beneficio), "tot");
+    var lista = [];
+    (S.fijos||[]).forEach(function(f){ lista.push({n:f.n||"(sin nombre)", t:"Fijo", v:n(f.v)}); });
+    (S.sueldos||[]).forEach(function(s){ lista.push({n:s.n||"(sin nombre)", t:"Sueldo", v:n(s.v)*(1+n(s.ss)/100)}); });
+    if(c.ads > 0) lista.push({n:"Publicidad", t:"Marketing", v:c.ads});
+    if(c.otrosMkt > 0) lista.push({n:"Otros de captación", t:"Marketing", v:c.otrosMkt});
+    if(c.cvarTotal > 0) lista.push({n:"Coste de atender a los clientes", t:"Variable", v:c.cvarTotal});
+    var totG = lista.reduce(function(a,x){ return a+x.v; },0) || 1;
+    lista.sort(function(a,b){ return b.v - a.v; });
 
-    var msg;
-    if(c.ingresos <= 0) msg = "<b>Añade tus clientes activos</b> en la pestaña 1 para ver el reparto real de tu dinero.";
-    else if(c.beneficio <= 0) msg = "<b>Estás en pérdidas.</b> De cada 100 € que facturas se van "+num(100-(c.beneficio/ing*100),0)+" € y aún faltan. Mira el diagnóstico en «Resultados».";
-    else if(c.sueldos/ing > 0.5) msg = "<b>Los sueldos se llevan "+p(c.sueldos)+" de tu facturación.</b> Por encima del 50 % el negocio no respira: o subes precio, o subes clientes por coach, o frenas contrataciones.";
-    else msg = "<b>Tu colchón de seguridad objetivo son "+eur(c.colchon)+"</b> ("+num(n(S.colchonMeses),0)+" meses de estructura). Es el dinero que deberías tener parado en el banco sin tocar.";
-    $("notaEstructura").innerHTML = msg;
+    $("tablaGastos").querySelector("tbody").innerHTML = lista.map(function(x){
+      var cli = c.margen > 0 ? x.v/c.margen : NaN;
+      return "<tr><td>"+esc(x.n)+'</td><td><span class="pill">'+x.t+"</span></td><td>"+eur(x.v)+
+        "</td><td>"+eur(x.v*12)+"</td><td>"+pct(x.v/totG)+"</td><td>"+
+        (isFinite(cli) ? num(cli,1)+" clientes" : "—")+"</td></tr>";
+    }).join("");
+    $("tablaGastos").querySelector("tfoot").innerHTML =
+      "<tr><td>Total de gastos</td><td></td><td>"+eur(totG)+"</td><td>"+eur(totG*12)+"</td><td>100 %</td><td>"+
+      (c.margen > 0 ? num(totG/c.margen,1)+" clientes" : "—")+"</td></tr>";
   }
 
-  function renderBar(c){
-    var ing = c.ingresos; var bar = $("barCostes");
-    if(ing <= 0){ bar.innerHTML = ""; return; }
-    var parts = [
-      {v:c.cvarTotal, col:"#4f7fb0"}, {v:c.sueldos, col:"#8a6ad6"},
-      {v:c.fijos, col:"#d67f4a"}, {v:c.marketing, col:"#3ddc97"},
-      {v:c.tax, col:"#5a6b7f"}, {v:Math.max(0,c.beneficio), col:"#c8f31d"}
-    ];
-    var tot = parts.reduce(function(a,p){ return a+Math.max(0,p.v); },0) || 1;
-    bar.innerHTML = parts.map(function(p){
-      return '<i style="width:'+(Math.max(0,p.v)/tot*100)+'%;background:'+p.col+'"></i>'; }).join("");
-  }
-
+  /* ---------------- RENDER: MARKETING ---------------- */
   function renderMarketing(c){
-    $("embudo").innerHTML =
-      line("Inversión en publicidad", eur(c.ads), "sub") +
-      line("Leads / contactos", num(c.leads,0)) +
-      line("Llamadas agendadas", num(c.agendadas,0)) +
-      line("Llamadas realizadas", num(c.asistidas,0)) +
-      line("Clientes nuevos al mes", "<b>"+num(c.ventas,1)+"</b>") +
-      line("Conversión lead → cliente", pct(c.convGlobal), "sub") +
-      line("Facturación que generan (en toda su vida)", eur(c.ventas*c.ltvIngreso), "tot");
+    Array.prototype.forEach.call(document.querySelectorAll("[data-mkt]"), function(el){
+      el.classList.toggle("on", el.getAttribute("data-mkt") === S.mktModo); });
+    $("boxSimple").classList.toggle("hidden", S.mktModo !== "simple");
+    $("boxEmbudo").classList.toggle("hidden", S.mktModo !== "embudo");
 
-    $("k_cac").textContent = isFinite(c.cac) ? eur2(c.cac) : "—";
-    $("k_cactot").textContent = isFinite(c.cacTotal) ? eur2(c.cacTotal) : "—";
-    $("k_ratio").textContent = isFinite(c.ratio) ? num(c.ratio,2)+"x" : "—";
-    $("k_payback").textContent = isFinite(c.payback) ? num(c.payback,1)+" meses" : "—";
+    var html = "";
+    if(S.mktModo === "embudo"){
+      html = linea("Inviertes", eur(c.marketing), "sub") +
+        linea("Contactos interesados (leads)", num(c.leads,0)) +
+        linea("Llamadas agendadas", num(c.agendadas,0)) +
+        linea("Llamadas realizadas", num(c.asistidas,0)) +
+        linea("<b>Clientes nuevos al mes</b>", "<b>"+num(c.ventas,1)+"</b>") +
+        linea("De cada 100 leads, compran", isFinite(c.convGlobal)?num(c.convGlobal*100,1):"—", "sub") +
+        linea("Facturación que generarán", eur(c.ventas*c.ltvIngreso), "tot");
+    } else {
+      html = linea("Inviertes en captar", eur(c.marketing), "sub") +
+        linea("<b>Clientes nuevos al mes</b>", "<b>"+num(c.ventas,1)+"</b>") +
+        linea("Te cuesta cada uno", isFinite(c.cac)?eur2(c.cac):"—") +
+        linea("Cada uno te dejará", eur(c.ltv), "sub") +
+        linea("Facturación que generarán", eur(c.ventas*c.ltvIngreso), "tot");
+    }
+    $("embudo").innerHTML = html;
+
+    $("k_cactot").textContent = isFinite(c.cac) ? eur2(c.cac) : "—";
+    $("k_ratio").textContent = isFinite(c.ratio) && c.ratio > 0 ? eur2(c.ratio) : "—";
+    $("k_payback").textContent = isFinite(c.payback) ? num(c.payback,1) : "—";
+    $("k_benCli").textContent = isFinite(c.beneficioPorCliente) ? eur(c.beneficioPorCliente) : "—";
+    $("k_benCli").parentElement.className = "kpi " + (c.beneficioPorCliente > 0 ? "good" : "bad");
 
     var kr = $("kpiRatio"), rf = $("k_ratiofoot");
-    if(!isFinite(c.ratio) || c.ratio === 0){ kr.className="kpi"; rf.textContent = "Faltan datos del embudo"; }
-    else if(c.ratio < 1){ kr.className="kpi bad"; rf.textContent = "Pierdes dinero por cada cliente que captas"; }
-    else if(c.ratio < 2){ kr.className="kpi bad"; rf.textContent = "Muy justo: no queda para gastos fijos"; }
-    else if(c.ratio < 3){ kr.className="kpi warn"; rf.textContent = "Aceptable, pero por debajo del estándar (3x)"; }
-    else if(c.ratio <= 6){ kr.className="kpi good"; rf.textContent = "Sano. Puedes escalar la inversión"; }
-    else { kr.className="kpi good"; rf.textContent = "Excelente: estás invirtiendo menos de lo que podrías"; }
+    if(!isFinite(c.ratio) || c.ratio === 0){ kr.className = "kpi"; rf.textContent = "Faltan datos de captación"; }
+    else if(c.ratio < 1){ kr.className = "kpi bad"; rf.textContent = "Pierdes dinero con cada cliente que captas"; }
+    else if(c.ratio < 2){ kr.className = "kpi bad"; rf.textContent = "Muy justo: no queda para gastos fijos"; }
+    else if(c.ratio < 3){ kr.className = "kpi warn"; rf.textContent = "Aceptable, por debajo del estándar (3 €)"; }
+    else if(c.ratio <= 6){ kr.className = "kpi good"; rf.textContent = "Sano: puedes invertir más"; }
+    else { kr.className = "kpi good"; rf.textContent = "Estás invirtiendo menos de lo que podrías"; }
+    $("kpiPayback").className = "kpi " + (!isFinite(c.payback) ? "" : c.payback <= 1.5 ? "good" : c.payback <= 3 ? "warn" : "bad");
 
-    var kp = $("kpiPayback");
-    kp.className = "kpi " + (!isFinite(c.payback) ? "" : c.payback <= 1 ? "good" : c.payback <= 3 ? "" : "warn");
-
-    var rows = [
-      ["Sin perder dinero (LTV/CAC = 1x)", c.cacMaxBreak, "Techo absoluto. Aquí no ganas nada con el cliente."],
-      ["Tu ratio mínimo ("+num(c.ratioMin,1)+"x)", c.cacMaxRatio, "El límite que te has puesto para escalar con cabeza."],
-      ["Recuperar en el primer mes", c.cacMaxPayback1, "El más conservador: no adelantas caja."],
+    var filas = [
+      ["Sin ganar ni perder", c.ltv, "El techo absoluto. Aquí el cliente no te deja nada."],
+      ["Tu mínimo ("+num(c.ratioMin,1)+"x)", c.cacMaxRatio, "El límite que te has puesto para escalar con cabeza."],
+      ["Recuperar el primer mes", c.margen, "El más prudente: no adelantas caja."],
       ["Recomendado (3x)", c.ltv/3, "El estándar del sector en servicios."]
     ];
-    var tb = $("tablaCac").querySelector("tbody");
-    tb.innerHTML = rows.map(function(r){
-      var cplMax = c.cplMax(r[1]);
-      return "<tr><td>"+r[0]+"</td><td>"+eur2(r[1])+"</td><td>"+(isFinite(cplMax)?eur2(cplMax):"—")+
-        "</td><td style='text-align:left;white-space:normal;color:var(--muted)'>"+r[2]+"</td></tr>";
+    $("tablaCac").querySelector("tbody").innerHTML = filas.map(function(r){
+      var cplMax = isFinite(c.convGlobal) ? r[1]*c.convGlobal : NaN;
+      return "<tr><td>"+r[0]+"</td><td>"+eur2(r[1])+'</td><td class="adv">'+(isFinite(cplMax)?eur2(cplMax):"—")+
+        '</td><td class="wrap" style="color:var(--muted)">'+r[2]+"</td></tr>";
     }).join("");
+    $("notaCac").innerHTML = isFinite(c.cac)
+      ? "<b>Ahora te cuesta "+eur2(c.cac)+" conseguir un cliente</b> y cada uno te deja "+eur(c.ltv)+". "+
+        (c.cac <= c.cacMaxRatio
+          ? "Estás dentro de tu límite: si el retorno se mantiene, puedes invertir más."
+          : "Estás por encima de tu límite de "+eur2(c.cacMaxRatio)+". Antes de subir presupuesto, mejora el cierre, el precio o la permanencia.")
+      : "Pon cuántos clientes nuevos entran al mes para calcular tu coste de captación.";
+
+    // palancas
+    var tb = $("tablaPalancas").querySelector("tbody");
+    if(S.mktModo === "embudo"){
+      var base = {cpl:c.cpl, ag:n(S.tasaAgenda), sh:n(S.tasaShow), ci:n(S.tasaCierre), pr:1, me:1};
+      function escenario(mod){
+        var cpl = c.cpl*(mod.cpl||1);
+        var ventas = (c.ads/cpl) * (n(S.tasaAgenda)*(mod.ag||1))/100 * (n(S.tasaShow)*(mod.sh||1))/100 * (n(S.tasaCierre)*(mod.ci||1))/100;
+        var margen = c.margen*(mod.pr||1), meses = c.mesesVida*(mod.me||1);
+        var clientes = ventas*meses;                       // cartera en equilibrio
+        var bai = clientes*margen - c.estructura;
+        return {ventas:ventas, ben: bai - (bai>0?bai*c.tasaImp:0)};
+      }
+      var actual = escenario({});
+      var ops = [
+        ["El coste por lead un 20 % más barato", {cpl:.8}, eur2(c.cpl), eur2(c.cpl*.8)],
+        ["Que agende un 20 % más de gente", {ag:1.2}, num(n(S.tasaAgenda),0)+" %", num(n(S.tasaAgenda)*1.2,0)+" %"],
+        ["Que asista un 20 % más", {sh:1.2}, num(n(S.tasaShow),0)+" %", num(n(S.tasaShow)*1.2,0)+" %"],
+        ["Cerrar un 20 % más de llamadas", {ci:1.2}, num(n(S.tasaCierre),0)+" %", num(n(S.tasaCierre)*1.2,0)+" %"],
+        ["Subir el precio un 20 %", {pr:1.2}, eur2(c.neto), eur2(c.neto*1.2)],
+        ["Que se queden un 20 % más de tiempo", {me:1.2}, num(c.mesesVida,1)+" meses", num(c.mesesVida*1.2,1)+" meses"]
+      ];
+      tb.innerHTML = ops.map(function(o){
+        var e = escenario(o[1]), dif = e.ben - actual.ben;
+        return "<tr><td>"+o[0]+"</td><td>"+o[2]+"</td><td>"+o[3]+"</td><td>"+num(e.ventas,1)+
+          "</td><td>"+eur(e.ben)+'</td><td class="'+(dif>=0?"pos":"neg")+'">'+(dif>=0?"+":"")+eur(dif)+"</td></tr>";
+      }).join("");
+    } else {
+      tb.innerHTML = '<tr><td class="wrap" colspan="6" style="color:var(--muted)">Cambia a <b>modo embudo</b> arriba para ver dónde pierdes gente y qué palanca te daría más clientes.</td></tr>';
+    }
   }
 
+  /* ---------------- RENDER: RESULTADOS ---------------- */
   function renderResultados(c){
     $("r_ingresos").textContent = eur(c.ingresos);
     $("r_ingfoot").textContent = num(c.clientes,0)+" clientes × "+eur2(c.neto);
-    $("r_gastos").textContent = eur(c.cvarTotal + c.estructura);
+    $("r_gastos").textContent = eur(c.gastosTotales);
     $("r_beneficio").textContent = eur(c.beneficio);
-    $("r_benfoot").textContent = "Margen neto "+pct(c.margenNetoPct);
-    $("r_breakeven").textContent = isFinite(c.breakeven) ? num(Math.ceil(c.breakeven),0)+" clientes" : "—";
+    $("r_benfoot").textContent = "de cada 100 € te quedan "+num(c.margenNetoPct*100,1)+" €";
     $("kpiBeneficio").className = "kpi hi " + (c.beneficio > 0 ? "good" : "bad");
+    $("r_breakeven").textContent = isFinite(c.breakeven) ? num(Math.ceil(c.breakeven),0) : "—";
+    $("r_befoot").textContent = isFinite(c.breakeven)
+      ? (c.clientes >= c.breakeven ? "lo superas por "+num(Math.floor(c.clientes-c.breakeven),0)
+         : "te faltan "+num(Math.ceil(c.breakeven-c.clientes),0)) : "—";
 
     $("pyg").innerHTML =
-      line("<b>Facturación (sin IVA)</b>", eur(c.ingresos)) +
-      line("− Costes variables", "−"+eur(c.cvarTotal), "ind") +
-      line("<b>= Margen bruto</b>", eur(c.margenTotal)+" · "+(c.ingresos>0?pct(c.margenTotal/c.ingresos):"—")) +
-      line("− Sueldos", "−"+eur(c.sueldos), "ind") +
-      line("− Gastos fijos", "−"+eur(c.fijos), "ind") +
-      line("− Publicidad", "−"+eur(c.ads), "ind") +
-      line("− Otros de marketing", "−"+eur(c.otrosMkt), "ind") +
-      line("<b>= Beneficio antes de impuestos</b>", eur(c.bai)) +
-      line("− Impuestos ("+num(n(S.impuesto),0)+" %)", "−"+eur(c.tax), "ind") +
-      line("<b>= Beneficio neto</b>", '<span class="'+(c.beneficio>=0?"pos":"neg")+'">'+eur(c.beneficio)+"</span>", "tot");
+      linea("<b>Facturación (sin IVA)</b>", eur(c.ingresos)) +
+      linea("− Coste de atender a los clientes", "−"+eur(c.cvarTotal), "ind") +
+      linea("<b>= Margen bruto</b>", eur(c.margenTotal)+" · "+(c.ingresos>0?pct(c.margenTotal/c.ingresos):"—")) +
+      linea("− Sueldos", "−"+eur(c.sueldos), "ind") +
+      linea("− Gastos fijos", "−"+eur(c.fijos), "ind") +
+      linea("− Publicidad", "−"+eur(c.ads), "ind") +
+      linea("− Otros de captación", "−"+eur(c.otrosMkt), "ind") +
+      linea("<b>= Beneficio antes de impuestos</b>", eur(c.bai)) +
+      linea("− Impuestos ("+num(n(S.impuesto),0)+" %)", "−"+eur(c.tax), "ind") +
+      linea("<b>= Te queda limpio</b>", '<span class="'+(c.beneficio>=0?"pos":"neg")+'">'+eur(c.beneficio)+"</span>", "tot");
 
     $("churnBox").innerHTML =
-      line("Clientes activos", num(c.clientes,0)) +
-      line("Bajas estimadas al mes", num(c.bajas,1)+" ("+pct(c.churnPct)+")") +
-      line("Altas que consigues al mes", num(c.altas,1)) +
-      line("Crecimiento neto", '<span class="'+(c.neta>=0?"pos":"neg")+'">'+(c.neta>=0?"+":"")+num(c.neta,1)+" clientes</span>") +
-      line("Inversión solo para no bajar", isFinite(c.adsMantener)?eur(c.adsMantener):"—", "sub") +
-      line("Techo natural con esta inversión", isFinite(c.altas)?num(c.altas*c.mesesVida,0)+" clientes":"—", "tot");
+      linea("Clientes activos", num(c.clientes,0)) +
+      linea("Se van cada mes", num(c.bajas,1)+" ("+pct(c.churnPct)+")") +
+      linea("Entran cada mes", num(c.altas,1)) +
+      linea("Crecimiento neto", '<span class="'+(c.neta>=0?"pos":"neg")+'">'+(c.neta>=0?"+":"")+num(c.neta,1)+"</span>") +
+      linea("Inversión solo para no bajar", isFinite(c.adsMantener)?eur(c.adsMantener):"—", "sub") +
+      linea("Techo con esta captación", isFinite(c.techo)?num(c.techo,0)+" clientes":"—", "tot");
 
-    // Alertas
     var A = [];
-    function add(t,b,cls){ A.push('<div class="alert '+cls+'"><b>'+t+'</b>'+b+'</div>'); }
-    if(c.margen <= 0)
-      add("Tu margen por cliente es negativo","Atender a un cliente te cuesta más de lo que te paga. Revisa precio y costes variables antes que nada.","bad");
-    if(c.beneficio < 0)
-      add("Estás perdiendo "+eur(Math.abs(c.beneficio))+" al mes","Necesitas "+ (isFinite(c.breakeven)?num(Math.ceil(c.breakeven),0):"—") +" clientes para cubrir gastos y tienes "+num(c.clientes,0)+". Te faltan "+(isFinite(c.breakeven)?num(Math.max(0,Math.ceil(c.breakeven-c.clientes)),0):"—")+".","bad");
+    function add(t,b,cls){ A.push('<div class="alert '+cls+'"><b>'+t+'</b>'+b+"</div>"); }
+    if(c.clientes <= 0) add("Faltan datos","Pon tus clientes en «Mis servicios» para ver el diagnóstico.","warn");
+    else if(c.margen <= 0) add("Pierdes dinero con cada cliente","Atenderle cuesta más de lo que paga. Es lo primero que hay que arreglar.","bad");
+    else if(c.beneficio < 0)
+      add("Pierdes "+eur(Math.abs(c.beneficio))+" al mes",
+        "Necesitas "+num(Math.ceil(c.breakeven),0)+" clientes y tienes "+num(c.clientes,0)+".","bad");
     else if(c.margenNetoPct < .1)
-      add("Margen neto muy fino ("+pct(c.margenNetoPct)+")","Cualquier imprevisto te mete en pérdidas. En servicios deberías estar por encima del 15–20 %.","warn");
-    else
-      add("Ganas "+eur(c.beneficio)+" netos al mes","Margen neto del "+pct(c.margenNetoPct)+". Estás por encima del punto de equilibrio.","good");
+      add("Margen muy fino ("+pct(c.margenNetoPct)+")","Cualquier imprevisto te mete en pérdidas. En servicios deberías estar por encima del 15 %.","warn");
+    else add("Ganas "+eur(c.beneficio)+" limpios al mes","Margen neto del "+pct(c.margenNetoPct)+". Estás por encima del punto de equilibrio.","good");
 
-    if(isFinite(c.ratio) && c.ratio > 0 && c.ratio < c.ratioMin)
-      add("Tu ratio LTV/CAC es "+num(c.ratio,2)+"x","Está por debajo de tu mínimo ("+num(c.ratioMin,1)+"x). Antes de subir el presupuesto de anuncios, mejora cierre, precio o permanencia.","warn");
-    if(c.payback > 3 && isFinite(c.payback))
-      add("Tardas "+num(c.payback,1)+" meses en recuperar el CAC","Cada cliente nuevo te consume caja durante ese tiempo. Cobrar por adelantado o pedir una entrada lo arregla sin tocar el margen.","warn");
-    if(c.neta < 0)
-      add("Estás decreciendo","Se van "+num(c.bajas,1)+" clientes al mes y entran "+num(c.altas,1)+". Necesitarías unos "+ (isFinite(c.adsMantener)?eur(c.adsMantener):"—") +" en anuncios solo para mantenerte.","bad");
+    if(isFinite(c.ratio) && c.ratio > 0 && c.ratio < c.ratioMin && c.ads > 0)
+      add("Recuperas "+eur2(c.ratio)+" por cada euro invertido","Tu mínimo era "+num(c.ratioMin,1)+"x. Mejora cierre, precio o permanencia antes de subir el presupuesto.","warn");
+    if(isFinite(c.payback) && c.payback > 3 && c.ads > 0)
+      add("Tardas "+num(c.payback,1)+" meses en recuperar lo invertido","Cada cliente te consume caja mientras tanto. Cobrar por adelantado lo arregla.","warn");
+    if(c.neta < 0 && c.clientes > 0)
+      add("Estás decreciendo","Se van "+num(c.bajas,1)+" y entran "+num(c.altas,1)+" al mes.","bad");
     if(c.ingresos > 0 && c.sueldos/c.ingresos > .5)
-      add("Los sueldos se comen "+pct(c.sueldos/c.ingresos)+" de la facturación","Por encima del 50 % no queda margen para crecer. Sube clientes por coach o el precio.","warn");
+      add("Los sueldos se llevan "+pct(c.sueldos/c.ingresos),"Por encima del 50 % el negocio no respira.","warn");
     if(c.ingresos > 0 && c.marketing/c.ingresos < .05 && c.beneficio > 0)
-      add("Inviertes muy poco en captación ("+pct(c.marketing/c.ingresos)+")","Con tu ratio actual podrías invertir más y crecer. Mira «Qué me puedo permitir».","good");
-    if(c.mesesVida < 3)
-      add("Permanencia media baja ("+num(c.mesesVida,1)+" meses)","Subirla un solo mes aumenta tu LTV en "+eur(c.margen)+" por cliente. Suele salir más barato que bajar el CPL.","warn");
-    $("alertas").innerHTML = A.join("") || '<div class="alert">Rellena tus datos para ver el diagnóstico.</div>';
+      add("Inviertes poco en captación ("+pct(c.marketing/c.ingresos)+")","Con tu retorno actual podrías crecer más rápido.","good");
+    if(c.mesesVida < 4 && c.clientes > 0)
+      add("Permanencia baja ("+num(c.mesesVida,1)+" meses)","Un mes más de media te suma "+eur(c.margen)+" por cliente.","warn");
+    $("alertas").innerHTML = A.join("");
 
-    // Sensibilidad
     var base = Math.max(1, Math.round(c.clientes || 10));
-    var step = Math.max(1, Math.round(base*0.25));
-    var vals = [], i;
-    for(i=-3;i<=4;i++){ var v = base + i*step; if(v>0) vals.push(v); }
-    if(isFinite(c.breakeven)) vals.push(Math.ceil(c.breakeven));
-    if(isFinite(c.clientesObjetivo)) vals.push(Math.ceil(c.clientesObjetivo));
-    vals = vals.filter(function(v,ix,arr){ return v>0 && arr.indexOf(v)===ix; }).sort(function(a,b){ return a-b; });
+    var paso = Math.max(1, Math.round(base*0.25));
+    var vals = [];
+    for(var i=-3;i<=4;i++){ var v = base + i*paso; if(v > 0) vals.push(v); }
+    if(isFinite(c.breakeven)) vals.push(Math.max(1,Math.ceil(c.breakeven)));
+    if(isFinite(c.clientesObjetivo)) vals.push(Math.max(1,Math.ceil(c.clientesObjetivo)));
+    vals = vals.filter(function(v,ix,arr){ return v > 0 && arr.indexOf(v) === ix; }).sort(function(a,b){ return a-b; });
 
     $("tablaSens").querySelector("tbody").innerHTML = vals.map(function(v){
       var ing = v*c.neto, mb = v*c.margen, bai = mb - c.estructura;
-      var ben = bai - (bai>0 ? bai*c.tasaImp : 0);
-      var mark = "";
-      if(isFinite(c.breakeven) && v === Math.ceil(c.breakeven)) mark = ' <span class="pill warn">equilibrio</span>';
-      if(isFinite(c.clientesObjetivo) && v === Math.ceil(c.clientesObjetivo)) mark = ' <span class="pill good">objetivo</span>';
-      if(v === base) mark += ' <span class="pill">hoy</span>';
-      return "<tr><td>"+num(v,0)+mark+"</td><td>"+eur(ing)+"</td><td>"+eur(mb)+"</td><td>"+eur(bai)+
+      var ben = bai - (bai > 0 ? bai*c.tasaImp : 0), etiq = "";
+      if(isFinite(c.breakeven) && v === Math.ceil(c.breakeven)) etiq += ' <span class="pill warn">equilibrio</span>';
+      if(isFinite(c.clientesObjetivo) && v === Math.ceil(c.clientesObjetivo)) etiq += ' <span class="pill good">tu objetivo</span>';
+      if(v === base) etiq += ' <span class="pill">hoy</span>';
+      return "<tr><td>"+num(v,0)+etiq+"</td><td>"+eur(ing)+"</td><td>"+eur(mb)+'</td><td class="adv">'+eur(bai)+
         '</td><td class="'+(ben>=0?"pos":"neg")+'">'+eur(ben)+"</td><td>"+(ing>0?pct(ben/ing):"—")+"</td></tr>";
     }).join("");
   }
 
+  /* ---------------- RENDER: DECISIONES ---------------- */
   function renderDecisiones(c){
     $("d_be").textContent = isFinite(c.breakeven) ? num(Math.ceil(c.breakeven),0) : "—";
     $("d_obj").textContent = isFinite(c.clientesObjetivo) ? num(Math.ceil(c.clientesObjetivo),0) : "—";
-    $("d_objfoot").textContent = "para ganar "+eur(c.objetivo)+" netos";
+    $("d_objfoot").textContent = "para ganar "+eur(c.objetivo)+" limpios";
     $("d_faltan").textContent = isFinite(c.faltan) ? num(Math.ceil(c.faltan),0) : "—";
+    $("d_faltanfoot").textContent = isFinite(c.mesesAlObjetivo)
+      ? "a tu ritmo, "+num(c.mesesAlObjetivo,1)+" meses" : "con el ritmo actual no llegas";
 
-    var mesesFalta = c.neta > 0 ? c.faltan / c.neta : Infinity;
     $("presupuestos").innerHTML =
-      line("Margen bruto disponible este mes", eur(c.margenTotal), "sub") +
-      line("− Gastos fijos + sueldos", "−"+eur(c.estructuraSinAds), "ind") +
-      line("− Beneficio que quieres (antes de impuestos)", "−"+eur(c.objetivoBai), "ind") +
-      line("<b>Presupuesto de marketing disponible</b>", '<span class="'+(c.presuMktMax>=c.marketing?"pos":"neg")+'">'+eur(c.presuMktMax)+"</span>") +
-      line("Estás gastando ahora en marketing", eur(c.marketing), "sub") +
-      line("Máximo sin perder dinero (sin objetivo)", eur(c.presuMktBreak), "sub") +
-      line("Tope de sueldos por tu regla ("+num(n(S.topeSueldos),0)+" % facturación)", eur(c.presuSueldosRegla), "sub") +
-      line("Sueldos que aguanta tu cuenta con el objetivo", eur(c.presuSueldosMax), "sub") +
-      line("Gastos fijos máximos con el objetivo", eur(c.presuFijosMax), "sub") +
-      line("Colchón de seguridad a acumular", eur(c.colchon), "tot");
+      linea("Margen bruto disponible", eur(c.margenTotal), "sub") +
+      linea("− Gastos fijos y sueldos", "−"+eur(c.estructuraSinAds), "ind") +
+      linea("− Lo que quieres ganar (con impuestos)", "−"+eur(c.objetivoBai), "ind") +
+      linea("<b>Puedes gastar en marketing</b>", '<span class="'+(c.presuMktMax>=c.marketing?"pos":"neg")+'">'+eur(c.presuMktMax)+"</span>") +
+      linea("Ahora gastas", eur(c.marketing), "sub") +
+      linea("Máximo sin perder dinero", eur(c.presuMktBreak), "sub") +
+      linea("Tope de sueldos por tu regla", eur(c.presuSueldosRegla), "sub") +
+      linea("Sueldos que aguanta tu cuenta", eur(c.presuSueldosMax), "sub") +
+      linea("Gastos fijos máximos", eur(c.presuFijosMax), "sub") +
+      linea("Colchón que deberías tener", eur(c.colchon), "tot");
 
-    var margenMkt = c.presuMktMax - c.marketing;
     var np;
-    if(c.margen <= 0) np = "<b>Arregla primero el margen por cliente.</b> Con margen negativo ningún presupuesto tiene sentido.";
-    else if(margenMkt > 50)
-      np = "<b>Puedes subir la publicidad en "+eur(margenMkt)+" al mes</b> y seguir ganando tus "+eur(c.objetivo)+" netos. Con tu CAC actual ("+ (isFinite(c.cacTotal)?eur2(c.cacTotal):"—") +") eso son "+ (isFinite(c.cacTotal)&&c.cacTotal>0?num(margenMkt/c.cacTotal,1):"—") +" clientes extra al mes. Súbelo por tramos del 20–30 % y vigila que el CPL no se dispare.";
-    else if(margenMkt < -50)
-      np = "<b>Te estás pasando en "+eur(Math.abs(margenMkt))+" al mes.</b> Con este gasto no llegas a tu objetivo de "+eur(c.objetivo)+". Opciones: recorta ahí, sube precio, o consigue "+(isFinite(c.faltan)?num(Math.ceil(c.faltan),0):"—")+" clientes más.";
+    if(c.margen <= 0) np = "<b>Arregla primero el margen por cliente.</b> Sin margen positivo, ningún presupuesto se sostiene.";
+    else if(c.margenMkt > 50)
+      np = "<b>Puedes subir la publicidad "+eur(c.margenMkt)+" al mes</b> y seguir ganando tus "+eur(c.objetivo)+" limpios. "+
+        (isFinite(c.cac) && c.cac > 0 ? "Con lo que te cuesta captar hoy serían unos <b>"+num(c.margenMkt/c.cac,1)+" clientes más al mes</b>. " : "")+
+        "Súbelo por tramos del 20–30 % y comprueba que el coste por cliente no se dispara.";
+    else if(c.margenMkt < -50)
+      np = "<b>Te estás pasando "+eur(Math.abs(c.margenMkt))+" al mes.</b> Con este gasto no llegas a tu objetivo de "+eur(c.objetivo)+
+        ". Tienes tres salidas: recortar ahí, subir el precio, o conseguir "+(isFinite(c.faltan)?num(Math.ceil(c.faltan),0):"más")+" clientes.";
     else np = "<b>Estás justo en tu presupuesto.</b> Para invertir más, primero sube margen, permanencia o clientes.";
-    if(isFinite(mesesFalta) && mesesFalta > 0)
-      np += " Al ritmo actual de captación neta ("+num(c.neta,1)+" clientes/mes) llegarías a tu objetivo en <b>"+num(mesesFalta,1)+" meses</b>.";
     $("notaPresu").innerHTML = np;
 
-    // Contrataciones
-    var tb = $("tablaContrata").querySelector("tbody"); var rows = "";
-    var nCoaches = Math.max(1, Math.ceil(c.clientes / c.capacidad) || 1);
-    var maxRow = Math.max(4, nCoaches+2);
-    for(var i=1;i<=maxRow;i++){
+    var tb = $("tablaContrata").querySelector("tbody"), filas = "";
+    var nMax = Math.max(4, Math.ceil((c.clientes||0)/c.capacidad)+2);
+    for(var i=1;i<=nMax;i++){
       var cubre = i*c.capacidad;
-      var necesarios = isFinite(c.clientesPorCoach) ? c.clientesPorCoach : NaN;
-      var umbral = (i-1)*c.capacidad + Math.min(c.capacidad, isFinite(necesarios)?Math.ceil(necesarios):c.capacidad);
-      var estado, pill;
-      if(c.clientes >= cubre){ estado="Saturado — necesitas al siguiente"; pill="bad"; }
-      else if(c.clientes >= umbral){ estado="Listo para contratar"; pill="good"; }
-      else if(c.clientes >= (i-1)*c.capacidad){ estado="En curso ("+num(c.clientes-(i-1)*c.capacidad,0)+"/"+num(c.capacidad,0)+")"; pill="warn"; }
-      else { estado="Aún no"; pill=""; }
-      rows += "<tr><td>Coach "+i+"</td><td>"+num(cubre,0)+" clientes</td><td>"+
-        (isFinite(necesarios)?num(Math.ceil(necesarios),0)+" clientes":"—")+"</td><td>"+num(umbral,0)+
-        ' clientes</td><td><span class="pill '+pill+'">'+estado+"</span></td></tr>";
+      var pagan = isFinite(c.clientesPorCoach) ? Math.ceil(c.clientesPorCoach) : NaN;
+      var umbral = (i-1)*c.capacidad + Math.min(c.capacidad, isFinite(pagan) ? pagan : c.capacidad);
+      var est, pil;
+      if(c.clientes >= cubre){ est = "Saturado: necesitas al siguiente"; pil = "bad"; }
+      else if(c.clientes >= umbral){ est = "Ya puedes contratar"; pil = "good"; }
+      else if(c.clientes >= (i-1)*c.capacidad){ est = "Faltan "+num(umbral-c.clientes,0)+" clientes"; pil = "warn"; }
+      else { est = "Aún no"; pil = ""; }
+      filas += "<tr><td>Persona "+i+"</td><td>"+num(cubre,0)+" clientes</td><td>"+
+        (isFinite(pagan)?num(pagan,0)+" clientes":"—")+"</td><td>"+num(umbral,0)+
+        ' clientes</td><td><span class="pill '+pil+'">'+est+"</span></td></tr>";
     }
-    tb.innerHTML = rows;
+    tb.innerHTML = filas;
     $("notaContrata").innerHTML = isFinite(c.clientesPorCoach)
-      ? "<b>Un coach de "+eur(c.costeCoach)+"/mes se paga con "+num(Math.ceil(c.clientesPorCoach),0)+" clientes</b> (margen bruto de "+eur2(c.margen)+" cada uno). Contrata cuando lleves <b>2 meses seguidos</b> por encima del umbral y tengas el colchón de "+eur(c.colchon)+", no antes: una nómina es un gasto fijo y las altas no lo son."
-      : "Necesitas margen positivo por cliente antes de plantearte una contratación.";
+      ? "<b>Una persona de "+eur(c.costeCoach)+"/mes se paga con "+num(Math.ceil(c.clientesPorCoach),0)+" clientes</b>, porque cada uno te deja "+eur2(c.margen)+
+        ". Contrata cuando lleves <b>dos meses seguidos</b> por encima del umbral y tengas el colchón de "+eur(c.colchon)+
+        ": la nómina es fija todos los meses, las altas no."
+      : "Necesitas margen positivo por cliente antes de plantearte contratar.";
 
-    // Reparto recomendado
+    // calculadora de precio
+    var precioActual = c.neto, sube = c.precioNecesarioNeto - precioActual;
+    $("calcPrecio").innerHTML =
+      linea("Gastos fijos + sueldos + marketing", eur(c.estructura), "sub") +
+      linea("+ lo que quieres ganar (con impuestos)", eur(c.objetivoBai), "sub") +
+      linea("Necesitas que cada cliente te deje", eur2(c.margenNecesario)) +
+      linea("Precio necesario (sin IVA)", eur2(c.precioNecesarioNeto)) +
+      linea("<b>Precio a cobrar al cliente</b>", "<b>"+eur2(c.precioNecesario)+"</b>", "tot");
+    $("notaPrecio").innerHTML = !isFinite(c.precioNecesario)
+      ? "Revisa los porcentajes de comisiones: suman más del 100 %."
+      : (sube > 1
+        ? "Con <b>"+num(c.calcCli,0)+" clientes</b> necesitas cobrar <b>"+eur2(c.precioNecesario)+"</b>, es decir "+eur2(sube)+
+          " más que ahora ("+pct(precioActual>0?sube/precioActual:NaN)+" de subida). Si te parece mucho, la alternativa es atender a más clientes o bajar gastos."
+        : "Con <b>"+num(c.calcCli,0)+" clientes</b> a tu precio actual ya llegas a tu objetivo: te sobran "+eur2(Math.abs(sube))+" de margen por cliente.");
+
     var ing = c.ingresos;
     var recs = [
-      ["Costes de entrega del servicio", .15, c.cvarTotal, "Cuanto más bajo, más escalable es tu servicio."],
-      ["Sueldos (equipo + tú)", .35, c.sueldos, "Referencia sana en servicios: 30–45 %."],
-      ["Marketing y publicidad", .20, c.marketing, "Motor de crecimiento. Con LTV/CAC ≥ 3x, súbelo."],
-      ["Gastos fijos de estructura", .10, c.fijos, "Software, gestoría, cuotas. Vigílalo cada trimestre."],
+      ["Atender a los clientes", .15, c.cvarTotal, "Cuanto más bajo, más escalable es tu servicio."],
+      ["Sueldos (equipo y tú)", .35, c.sueldos, "Sano en servicios: 30–45 %."],
+      ["Marketing", .20, c.marketing, "Tu motor de crecimiento. Con buen retorno, súbelo."],
+      ["Gastos fijos", .10, c.fijos, "Revísalos cada trimestre: se acumulan solos."],
       ["Impuestos", .05, c.tax, "Apártalos cada mes en otra cuenta."],
-      ["Beneficio neto", .15, c.beneficio, "Menos del 10 % es señal de alerta."]
+      ["Tu beneficio", .15, c.beneficio, "Por debajo del 10 % es señal de alerta."]
     ];
     $("tablaReparto").querySelector("tbody").innerHTML = recs.map(function(r){
-      var real = ing>0 ? r[2]/ing : NaN;
-      var dif = real - r[1];
-      var esBueno = (r[0]==="Beneficio neto") ? dif >= 0 : dif <= 0;
-      var pill = !isFinite(dif) ? "" : Math.abs(dif) < .03 ? "good" : esBueno ? "good" : "warn";
+      var real = ing > 0 ? r[2]/ing : NaN, dif = real - r[1];
+      var bueno = (r[0] === "Tu beneficio") ? dif >= 0 : dif <= 0;
+      var pil = !isFinite(dif) ? "" : Math.abs(dif) < .03 ? "good" : bueno ? "good" : "warn";
       return "<tr><td>"+r[0]+"</td><td>"+pct(r[1])+"</td><td>"+(isFinite(real)?pct(real):"—")+
-        '</td><td><span class="pill '+pill+'">'+(isFinite(dif)?((dif>=0?"+":"")+fmtN.format(dif*100)+" pts"):"—")+
-        "</span></td><td style='text-align:left;white-space:normal;color:var(--muted)'>"+r[3]+"</td></tr>";
+        '</td><td><span class="pill '+pil+'">'+(isFinite(dif)?((dif>=0?"+":"")+fmtN1.format(dif*100)+" pts"):"—")+
+        '</span></td><td class="wrap" style="color:var(--muted)">'+r[3]+"</td></tr>";
     }).join("");
   }
 
+  /* ---------------- RENDER: PROYECCIÓN ---------------- */
   function renderProyeccion(c){
-    var tb = $("tablaProy").querySelector("tbody");
-    var tf = $("tablaProy").querySelector("tfoot");
     var clientes = c.clientes, caja = n(S.caja), ads = c.ads, cpl = c.cpl;
     var gAds = n(S.crecAds)/100, gCpl = n(S.crecCpl)/100;
-    var convGlobal = c.convGlobal;
-    var rows = "", tIng=0, tGas=0, tBen=0, tAltas=0, tBajas=0, tAds=0, mesRojo=0;
-    var hoy = new Date();
+    var filas = "", tIng = 0, tGas = 0, tBen = 0, tAltas = 0, tBajas = 0, tAds = 0, mesRojo = 0;
+    var hoy = new Date(), labels = [], serBen = [], serCaja = [], serCli = [];
+    var ventasPorEuro = c.ads > 0 ? c.ventas/c.ads : 0;   // eficiencia actual de la inversión
 
     for(var m=1;m<=12;m++){
-      var leads = cpl>0 ? ads/cpl : 0;
-      var altas = leads * convGlobal;
+      var altas;
+      if(S.mktModo === "embudo" && isFinite(c.convGlobal)){
+        altas = (cpl > 0 ? ads/cpl : 0) * c.convGlobal;
+      } else {
+        altas = ads * ventasPorEuro / (1 + gCpl*m);       // al escalar, cada euro rinde algo menos
+      }
       var bajas = clientes / c.mesesVida;
-      var medios = clientes + (altas - bajas)/2;              // clientes medios del mes
-      var ing = medios * c.neto;
-      var cvarT = medios * c.cvar;
-      var gastos = cvarT + c.fijos + c.sueldos + ads + c.otrosMkt;
+      var medios = Math.max(0, clientes + (altas - bajas)/2);
+      var ing = medios*c.neto;
+      var gastos = medios*c.cvar + c.fijos + c.sueldos + ads + c.otrosMkt;
       var bai = ing - gastos;
-      var ben = bai - (bai>0 ? bai*c.tasaImp : 0);
+      var ben = bai - (bai > 0 ? bai*c.tasaImp : 0);
       caja += ben;
       clientes = Math.max(0, clientes + altas - bajas);
 
-      var fecha = new Date(hoy.getFullYear(), hoy.getMonth()+m, 1)
-        .toLocaleDateString("es-ES",{month:"short",year:"2-digit"});
+      var etiqueta = mesEtiqueta(new Date(hoy.getFullYear(), hoy.getMonth()+m, 1));
       if(caja < 0 && !mesRojo) mesRojo = m;
+      labels.push(etiqueta); serBen.push(ben); serCaja.push(caja); serCli.push(clientes);
 
-      rows += "<tr><td>"+fecha+"</td><td>"+eur(ads)+"</td><td>+"+num(altas,1)+"</td><td>−"+num(bajas,1)+
-        "</td><td><b>"+num(clientes,0)+"</b></td><td>"+eur(ing)+"</td><td>"+eur(gastos)+
+      filas += "<tr><td>"+etiqueta+"</td><td>"+eur(ads)+"</td><td>+"+num(altas,1)+"</td><td>−"+num(bajas,1)+
+        "</td><td><b>"+num(clientes,0)+"</b></td><td>"+eur(ing)+'</td><td class="adv">'+eur(gastos)+
         '</td><td class="'+(ben>=0?"pos":"neg")+'">'+eur(ben)+
         '</td><td class="'+(caja>=0?"":"neg")+'">'+eur(caja)+"</td></tr>";
 
-      tIng+=ing; tGas+=gastos; tBen+=ben; tAltas+=altas; tBajas+=bajas; tAds+=ads;
+      tIng += ing; tGas += gastos; tBen += ben; tAltas += altas; tBajas += bajas; tAds += ads;
       ads = ads*(1+gAds); cpl = cpl*(1+gCpl);
     }
-    tb.innerHTML = rows;
-    tf.innerHTML = "<tr><td>Total 12 meses</td><td>"+eur(tAds)+"</td><td>+"+num(tAltas,0)+"</td><td>−"+num(tBajas,0)+
-      "</td><td>"+num(clientes,0)+"</td><td>"+eur(tIng)+"</td><td>"+eur(tGas)+
+    $("tablaProy").querySelector("tbody").innerHTML = filas;
+    $("tablaProy").querySelector("tfoot").innerHTML =
+      "<tr><td>Total 12 meses</td><td>"+eur(tAds)+"</td><td>+"+num(tAltas,0)+"</td><td>−"+num(tBajas,0)+
+      "</td><td>"+num(clientes,0)+"</td><td>"+eur(tIng)+'</td><td class="adv">'+eur(tGas)+
       '</td><td class="'+(tBen>=0?"pos":"neg")+'">'+eur(tBen)+'</td><td class="'+(caja>=0?"":"neg")+'">'+eur(caja)+"</td></tr>";
 
-    var np;
-    if(mesRojo) np = "<b>Aviso de caja:</b> en el mes "+mesRojo+" te quedas sin dinero en el banco. Aunque el beneficio sea positivo, el ritmo de gasto en publicidad va por delante de los cobros. Baja el crecimiento de inversión o cobra más por adelantado.";
-    else if(tBen > 0) np = "<b>Escenario viable:</b> acabarías el año con "+num(clientes,0)+" clientes, "+eur(tBen)+" de beneficio acumulado y "+eur(caja)+" en caja. Recuerda que esto asume que mantienes tus tasas de cierre y permanencia al escalar — lo normal es que empeoren un poco.";
-    else np = "<b>Este escenario no funciona:</b> acumulas "+eur(tBen)+" en 12 meses. Prueba a subir el precio, la permanencia o el % de cierre antes que a invertir más.";
-    $("notaProy").innerHTML = np;
+    $("chartProy").innerHTML =
+      grafico({labels:labels, h:200, series:[
+        {nombre:"Dinero en el banco (€)", color:"#c8f31d", data:serCaja},
+        {nombre:"Beneficio del mes (€)", color:"#3ddc97", tipo:"barras", data:serBen}
+      ]}) +
+      grafico({labels:labels, h:120, series:[
+        {nombre:"Clientes activos", color:"#5aa9ff", data:serCli}
+      ]});
 
-    // savebar
+    var np;
+    if(c.clientes <= 0) np = "Pon tus clientes actuales en «Mis servicios» para proyectar el año.";
+    else if(mesRojo) np = "<b>Aviso serio de caja:</b> en el mes "+mesRojo+" te quedas sin dinero en el banco. Aunque el beneficio salga positivo, estás gastando en publicidad más rápido de lo que cobras. Baja el crecimiento de la inversión o cobra más por adelantado.";
+    else if(tBen > 0) np = "<b>Escenario viable:</b> acabarías el año con "+num(clientes,0)+" clientes, "+eur(tBen)+
+      " de beneficio acumulado y "+eur(caja)+" en el banco. Ojo: esto asume que mantienes tus tasas de cierre y de permanencia al crecer, y lo normal es que empeoren un poco.";
+    else np = "<b>Este escenario no sale:</b> acumularías "+eur(tBen)+" en 12 meses. Antes de invertir más, sube el precio, la permanencia o el cierre.";
+    $("notaProy").innerHTML = np;
+  }
+
+  /* ---------------- RENDER: MIS MESES ---------------- */
+  function renderMeses(c){
+    var tb = $("tablaMeses").querySelector("tbody");
+    if(!c.hist.length){
+      tb.innerHTML = '<tr><td class="wrap" colspan="11" style="color:var(--muted)">Aún no has cerrado ningún mes. Pulsa <b>«+ Cerrar un mes»</b> y apunta lo que pasó de verdad.</td></tr>';
+      $("tablaMeses").querySelector("tfoot").innerHTML = "";
+    } else {
+      tb.innerHTML = c.hist.map(function(h,i){
+        return "<tr>"+
+          '<td><div class="inp"><input type="month" data-l="hist" data-i="'+i+'" data-f="mes" value="'+esc(h.mes)+'"></div></td>'+
+          celdaHist(i,"clientes",h.clientes)+celdaHist(i,"altas",h.altas)+celdaHist(i,"bajas",h.bajas)+
+          celdaHist(i,"facturacion",h.facturacion)+celdaHist(i,"gastos",h.gastos)+
+          celdaHist(i,"ads",h.ads)+celdaHist(i,"caja",h.caja)+
+          '<td class="'+(h.beneficio>=0?"pos":"neg")+'">'+eur(h.beneficio)+"</td>"+
+          "<td>"+pct(h.margenPct)+"</td>"+
+          '<td><button class="btn-del" data-del="hist" data-i="'+i+'">✕</button></td></tr>';
+      }).join("");
+      var tF = c.hist.reduce(function(a,h){ return a+n(h.facturacion); },0);
+      var tG = c.hist.reduce(function(a,h){ return a+n(h.gastos); },0);
+      var tA = c.hist.reduce(function(a,h){ return a+n(h.altas); },0);
+      var tB = c.hist.reduce(function(a,h){ return a+n(h.bajas); },0);
+      var tAd = c.hist.reduce(function(a,h){ return a+n(h.ads); },0);
+      $("tablaMeses").querySelector("tfoot").innerHTML =
+        "<tr><td>"+c.hist.length+" meses</td><td></td><td>+"+num(tA,0)+"</td><td>−"+num(tB,0)+"</td><td>"+eur(tF)+
+        "</td><td>"+eur(tG)+"</td><td>"+eur(tAd)+'</td><td></td><td class="'+((tF-tG)>=0?"pos":"neg")+'">'+eur(tF-tG)+
+        "</td><td>"+(tF>0?pct((tF-tG)/tF):"—")+"</td><td></td></tr>";
+    }
+
+    var nm;
+    if(!c.hist.length){
+      nm = "<b>Por qué importa:</b> las estimaciones sirven para decidir, pero solo los datos reales te dicen si acertaste. Con 3 meses cerrados ya verás tu tendencia; con 12, sabrás exactamente cómo se comporta tu negocio.";
+    } else {
+      var ult = c.hist[c.hist.length-1];
+      var cacR = isFinite(ult.cacReal) ? eur2(ult.cacReal) : "—";
+      var churnR = isFinite(ult.churnReal) ? pct(ult.churnReal) : "—";
+      nm = "<b>Tu último mes real:</b> captar un cliente te costó <b>"+cacR+"</b> (el panel estima "+
+        (isFinite(c.cac)?eur2(c.cac):"—")+") y se te fue el <b>"+churnR+"</b> de la cartera"+
+        (isFinite(ult.churnReal) && ult.churnReal > 0 ? ", lo que equivale a una permanencia real de <b>"+num(1/ult.churnReal,1)+" meses</b>" : "")+
+        ". Si esos números difieren mucho de los que tienes puestos arriba, actualízalos: el panel será mucho más fiable.";
+    }
+    $("notaMeses").innerHTML = nm;
+
+    $("chartMeses").innerHTML = c.hist.length
+      ? grafico({labels:c.hist.map(function(h){ return h.mes ? h.mes.slice(5)+"/"+h.mes.slice(2,4) : "—"; }), h:200, series:[
+          {nombre:"Facturación (€)", color:"#5aa9ff", data:c.hist.map(function(h){ return n(h.facturacion); })},
+          {nombre:"Beneficio (€)", color:"#c8f31d", tipo:"barras", data:c.hist.map(function(h){ return h.beneficio; })}
+        ]}) + grafico({labels:c.hist.map(function(h){ return h.mes ? h.mes.slice(5)+"/"+h.mes.slice(2,4) : "—"; }), h:120,
+          series:[{nombre:"Clientes activos", color:"#8a6ad6", data:c.hist.map(function(h){ return n(h.clientes); })}]})
+      : '<p class="tip">Cierra tu primer mes y aquí verás tu evolución.</p>';
+
+    if(!c.hist.length){
+      $("realVsPrev").innerHTML = '<p class="tip">Cuando cierres un mes, aquí lo compararás con lo que preveía el panel.</p>';
+    } else {
+      var u = c.hist[c.hist.length-1];
+      function comp(nombre, real, prev){
+        var dif = real - prev;
+        return linea(nombre, eur(real)+' <span class="pill '+(Math.abs(dif) < Math.abs(prev)*.1 ? "good" : "warn")+'">'+
+          (dif>=0?"+":"")+eur(dif)+"</span>");
+      }
+      $("realVsPrev").innerHTML =
+        linea("Mes comparado", esc(u.mes||"—"), "sub") +
+        comp("Facturación", n(u.facturacion), c.ingresos) +
+        comp("Gastos", n(u.gastos), c.gastosTotales + c.tax) +
+        comp("Beneficio", u.beneficio, c.beneficio) +
+        linea("Clientes", num(n(u.clientes),0)+" vs "+num(c.clientes,0)+" previstos", "sub") +
+        linea("Altas", num(n(u.altas),1)+" vs "+num(c.altas,1)+" previstas", "sub") +
+        linea("Bajas", num(n(u.bajas),1)+" vs "+num(c.bajas,1)+" previstas", "tot");
+    }
+  }
+  function celdaHist(i,f,v){
+    return '<td><div class="inp"><input type="number" data-l="hist" data-i="'+i+'" data-f="'+f+'" value="'+n(v)+'" step="1"></div></td>';
+  }
+
+  /* ---------------- RENDER GENERAL ---------------- */
+  function render(){
+    var c = calc();
+    renderInicio(c); renderServicio(c); renderGastos(c); renderMarketing(c);
+    renderResultados(c); renderDecisiones(c); renderProyeccion(c); renderMeses(c);
     $("s_margen").textContent = eur2(c.margen);
     $("s_ben").textContent = eur(c.beneficio);
     $("s_be").textContent = isFinite(c.breakeven) ? num(Math.ceil(c.breakeven),0)+" cli." : "—";
-    $("s_ratio").textContent = isFinite(c.ratio) ? num(c.ratio,2)+"x" : "—";
+    $("s_ratio").textContent = isFinite(c.ratio) && c.ratio > 0 ? eur2(c.ratio)+"/€" : "—";
+    $("onboarding").classList.toggle("hidden", !!S.wizardHecho);
   }
 
-  /* ---------- BINDINGS ---------- */
-  var SIMPLE = ["precio","meses","clientes","iva","pasarela","costeEntrega","comisionVenta","otrosVar",
-    "impuesto","colchonMeses","ads","cpl","tasaAgenda","tasaShow","tasaCierre","otrosMkt",
-    "objetivo","topeSueldos","ratioMin","capacidad","costeCoach","crecAds","crecCpl","caja"];
+  /* ---------------- ASISTENTE ---------------- */
+  var wPaso = 0, wTmp = {};
+
+  var WSTEPS = [
+    {
+      t:"Vamos a montar tu panel",
+      lead:"Nueve preguntas sencillas. No necesitas saber contabilidad: te explico cada una con ejemplos.",
+      html:function(){
+        return '<div class="pl">'+
+          '<div class="line"><span>Sabrás <b>cuánto ganas de verdad</b> por cada cliente</span><span>✓</span></div>'+
+          '<div class="line"><span>Sabrás <b>cuántos clientes</b> necesitas para no perder dinero</span><span>✓</span></div>'+
+          '<div class="line"><span>Sabrás <b>cuánto puedes invertir</b> en publicidad y sueldos</span><span>✓</span></div>'+
+          '<div class="line"><span>Sabrás <b>cuándo contratar</b> a la siguiente persona</span><span>✓</span></div>'+
+          '<div class="line tot"><span>Tiempo estimado</span><span>5 minutos</span></div></div>'+
+          '<div class="note">Puedes salir cuando quieras y seguir a mano. Todo se guarda solo en tu navegador: nada sale de tu ordenador.</div>';
+      },
+      read:function(){}
+    },
+    {
+      t:"¿Qué vendes y por cuánto?",
+      lead:"Empieza por tu servicio principal. Luego podrás añadir más planes.",
+      html:function(){
+        var s = S.servicios[0] || {};
+        return '<div class="field"><label><b>Nombre del servicio</b></label>'+
+          '<div class="inp"><input type="text" id="w_nombre" value="'+esc(s.n||"Plan online")+'"></div></div>'+
+          '<div class="field"><label><b>¿Cómo cobras?</b></label><div class="opts">'+
+          '<div class="opt on" data-cobro="mensual"><div class="mark"></div><div><div class="t">Cuota mensual</div><div class="d">El cliente paga todos los meses mientras siga contigo.</div></div></div>'+
+          '<div class="opt" data-cobro="programa"><div class="mark"></div><div><div class="t">Programa cerrado</div><div class="d">Un pago (o varios) por un plan de X meses. Ej.: 900 € por 3 meses.</div></div></div>'+
+          "</div></div>"+
+          '<div class="field"><label><b id="w_lprecio">Precio al mes</b></label>'+
+          '<div class="inp big"><input type="number" id="w_precio" value="'+(n(s.precio)||150)+'" step="5"><span class="unit">€</span></div></div>'+
+          '<div class="field"><label><b id="w_lmeses">¿Cuántos meses se queda de media un cliente?</b></label>'+
+          '<div class="inp big"><input type="number" id="w_meses" value="'+(n(s.meses)||6)+'" step="0.5"><span class="unit">meses</span></div>'+
+          '<span class="tip">Si aún no lo sabes, pon la duración de tu programa. Lo ajustarás con datos reales.</span></div>';
+      },
+      read:function(){
+        var prog = wTmp.cobro === "programa";
+        var precio = n($("w_precio").value), meses = Math.max(0.5, n($("w_meses").value));
+        S.servicios[0] = S.servicios[0] || {};
+        S.servicios[0].n = $("w_nombre").value || "Mi servicio";
+        S.servicios[0].precio = prog ? precio/meses : precio;
+        S.servicios[0].meses = meses;
+      }
+    },
+    {
+      t:"¿Cuántos clientes tienes ahora?",
+      lead:"Los que te están pagando este mes. Si acabas de empezar, pon los que tengas, aunque sean 0.",
+      html:function(){
+        return '<div class="field"><div class="inp big"><input type="number" id="w_clientes" value="'+
+          n(S.servicios[0] && S.servicios[0].clientes)+'" step="1"><span class="unit">clientes activos</span></div></div>'+
+          '<div class="note info">Este número es la base de todo. Si tienes varios planes, pon aquí los del principal y añade el resto después en «Mis servicios».</div>';
+      },
+      read:function(){ S.servicios[0].clientes = n($("w_clientes").value); }
+    },
+    {
+      t:"¿Qué te cuesta atender a un cliente?",
+      lead:"Solo lo que pagas POR cada cliente cada mes. Si tuvieras uno más, ¿cuánto gastarías de más?",
+      html:function(){
+        return '<div class="field"><div class="inp big"><input type="number" id="w_entrega" value="'+
+          n(S.servicios[0] && S.servicios[0].entrega)+'" step="1"><span class="unit">€ por cliente y mes</span></div></div>'+
+          '<p class="tip">Ejemplos típicos, tócalos para sumarlos:</p><div class="exline">'+
+          '<button class="chip" data-suma="5">App de entrenos · 5 €</button>'+
+          '<button class="chip" data-suma="15">Nutricionista externo · 15 €</button>'+
+          '<button class="chip" data-suma="3">Licencia de software · 3 €</button>'+
+          '<button class="chip" data-suma="10">Material o envíos · 10 €</button></div>'+
+          '<div class="note">Si no gastas nada extra por cliente, deja un 0. Tu sueldo y tus herramientas generales NO van aquí: eso son gastos fijos y los pondremos luego.</div>';
+      },
+      read:function(){ S.servicios[0].entrega = n($("w_entrega").value); }
+    },
+    {
+      t:"¿Cómo tributas?",
+      lead:"Para estimar los impuestos sobre lo que ganas. Es una estimación para decidir, no la liquidación real.",
+      html:function(){
+        return '<div class="opts">'+
+          '<div class="opt'+(S.perfil==="autonomo"?" on":"")+'" data-wperfil="autonomo"><div class="mark"></div><div><div class="t">Autónomo</div><div class="d">Pagas IRPF por tus beneficios. Estimaremos un 25 % y añadiremos tu cuota de autónomos a los gastos fijos.</div></div></div>'+
+          '<div class="opt'+(S.perfil==="sociedad"?" on":"")+'" data-wperfil="sociedad"><div class="mark"></div><div><div class="t">Sociedad (S.L.)</div><div class="d">Impuesto de Sociedades: 25 % (15 % los dos primeros años con beneficio).</div></div></div>'+
+          "</div>"+
+          '<div class="note info"><b>Recuerda:</b> los impuestos se pagan sobre el beneficio, no sobre lo que facturas. Y el IVA que cobras nunca es tuyo: lo devuelves cada trimestre.</div>';
+      },
+      read:function(){
+        if(wTmp.perfil) S.perfil = wTmp.perfil;
+        S.impuesto = 25;
+        if(S.perfil === "autonomo" && !(S.fijos||[]).some(function(f){ return /aut[oó]nomo/i.test(f.n||""); }))
+          S.fijos.unshift({n:"Cuota de autónomos", v:320});
+      }
+    },
+    {
+      t:"¿Qué pagas todos los meses?",
+      lead:"Gastos que tienes tengas 5 clientes o 50. Toca los que tengas; luego podrás cambiar los importes.",
+      html:function(){
+        var puestos = (S.fijos||[]).map(function(f){ return (f.n||"").toLowerCase(); });
+        return '<div class="chips" id="w_chips">'+CATALOGO.map(function(g,i){
+          var on = puestos.indexOf(g.n.toLowerCase()) >= 0;
+          return '<button class="chip'+(on?" on":"")+'" data-wchip="'+i+'">'+esc(g.n)+" · "+eur(g.v)+"</button>";
+        }).join("")+"</div>"+
+        '<div class="note">Los importes son orientativos: en «Mis gastos» pones los tuyos exactos. <b>Es mejor pasarse que quedarse corto</b>: el error más común es olvidar gastos pequeños que suman.</div>';
+      },
+      read:function(){}
+    },
+    {
+      t:"¿Cuánto cobras tú y tu equipo?",
+      lead:"Muy importante: si no te pones un sueldo, el panel te dirá que ganas dinero cuando en realidad trabajas gratis.",
+      html:function(){
+        var mio = (S.sueldos && S.sueldos[0]) ? n(S.sueldos[0].v) : 1500;
+        var resto = (S.sueldos||[]).slice(1);
+        return '<div class="field"><label><b>Tu sueldo bruto al mes</b> (lo que quieres cobrar por tu trabajo)</label>'+
+          '<div class="inp big"><input type="number" id="w_misueldo" value="'+mio+'" step="50"><span class="unit">€</span></div>'+
+          '<span class="tip">Ponte lo que cobrarías por hacer este trabajo para otra persona. Si aún no puedes pagártelo entero, pon lo que aspiras a cobrar: así verás cuánto te falta.</span></div>'+
+          '<div class="field"><label><b>¿Cuánta gente más tienes?</b></label>'+
+          '<div class="inp"><input type="number" id="w_npersonas" value="'+resto.length+'" min="0" step="1"><span class="unit">personas</span></div></div>'+
+          '<div class="field"><label><b>Coste medio de cada una</b> al mes (bruto o factura)</label>'+
+          '<div class="inp"><input type="number" id="w_costepersona" value="'+(resto.length?n(resto[0].v):1200)+'" step="50"><span class="unit">€</span></div></div>';
+      },
+      read:function(){
+        var mio = n($("w_misueldo").value), np = Math.max(0, Math.round(n($("w_npersonas").value)));
+        var cp = n($("w_costepersona").value);
+        S.sueldos = [{n:"Yo (mi sueldo)", v:mio, ss:(S.perfil === "sociedad" ? 32 : 0)}];
+        for(var i=1;i<=np;i++) S.sueldos.push({n:"Persona "+i, v:cp, ss:32});
+      }
+    },
+    {
+      t:"¿Cómo consigues clientes?",
+      lead:"Lo más sencillo: cuánto inviertes al mes y cuántos clientes nuevos entran gracias a eso.",
+      html:function(){
+        return '<div class="field"><label><b>Inversión en publicidad al mes</b></label>'+
+          '<div class="inp big"><input type="number" id="w_ads" value="'+n(S.ads)+'" step="50"><span class="unit">€</span></div>'+
+          '<span class="tip">Pon 0 si aún no inviertes: el panel te dirá cuánto podrías permitirte.</span></div>'+
+          '<div class="field"><label><b>Otros gastos de captación</b> (agencia, editor, CRM…)</label>'+
+          '<div class="inp"><input type="number" id="w_otrosmkt" value="'+n(S.otrosMkt)+'" step="25"><span class="unit">€</span></div></div>'+
+          '<div class="field"><label><b>Clientes nuevos que entran al mes</b></label>'+
+          '<div class="inp big"><input type="number" id="w_nuevos" value="'+n(S.nuevosMes)+'" step="1"><span class="unit">clientes</span></div>'+
+          '<span class="tip">Haz la media de los tres últimos meses. Cuenta todos, vengan de donde vengan.</span></div>';
+      },
+      read:function(){
+        S.ads = n($("w_ads").value); S.otrosMkt = n($("w_otrosmkt").value);
+        S.nuevosMes = n($("w_nuevos").value); S.mktModo = "simple";
+      }
+    },
+    {
+      t:"¿Cuánto quieres ganar y qué tienes en el banco?",
+      lead:"Última pregunta. Con esto calculo cuánto puedes gastar y cuántos clientes necesitas.",
+      html:function(){
+        return '<div class="field"><label><b>Beneficio limpio que quieres al mes</b>, además de tu sueldo</label>'+
+          '<div class="inp big"><input type="number" id="w_objetivo" value="'+n(S.objetivo)+'" step="100"><span class="unit">€</span></div>'+
+          '<span class="tip">Es el dinero que se queda en la empresa para crecer, para imprevistos o para repartir.</span></div>'+
+          '<div class="field"><label><b>Dinero disponible hoy en el banco</b></label>'+
+          '<div class="inp big"><input type="number" id="w_caja" value="'+n(S.caja)+'" step="100"><span class="unit">€</span></div>'+
+          '<span class="tip">Sin contar el IVA que tendrás que devolver. Sirve para avisarte si te vas a quedar sin caja.</span></div>';
+      },
+      read:function(){ S.objetivo = n($("w_objetivo").value); S.caja = n($("w_caja").value); }
+    },
+    {
+      t:"¡Listo! Este es tu punto de partida",
+      lead:"Ya puedes usar el panel. Estos son tus números con lo que me has contado.",
+      html:function(){
+        var c = calc();
+        return '<div class="pl">'+
+          linea("Te queda por cliente y mes", "<b>"+eur2(c.margen)+"</b>") +
+          linea("Cada cliente vale en total (LTV)", eur(c.ltv)) +
+          linea("Clientes para no perder dinero", isFinite(c.breakeven)?num(Math.ceil(c.breakeven),0):"—") +
+          linea("Clientes que tienes hoy", num(c.clientes,0)) +
+          linea("Te queda limpio cada mes", '<span class="'+(c.beneficio>=0?"pos":"neg")+'">'+eur(c.beneficio)+"</span>", "tot") +
+          "</div>"+
+          '<div class="note"><b>Siguiente paso:</b> ve a «Mis gastos» y ajusta los importes reales, que es donde más se falla. Luego lee «Qué hacer ahora» en la pantalla de Inicio.</div>';
+      },
+      read:function(){ S.wizardHecho = true; }
+    }
+  ];
+
+  function wizardAbrir(){
+    wPaso = 0; wTmp = {cobro:"mensual", perfil:S.perfil};
+    $("overlay").classList.remove("hidden");
+    wizardPintar();
+  }
+  function wizardCerrar(){ $("overlay").classList.add("hidden"); save(); refrescarTodo(); }
+  function wizardPintar(){
+    var p = WSTEPS[wPaso];
+    $("wSteps").innerHTML = WSTEPS.map(function(_,i){ return '<i class="'+(i<=wPaso?"on":"")+'"></i>'; }).join("");
+    $("wNo").textContent = "Paso "+(wPaso+1)+" de "+WSTEPS.length;
+    $("wTitle").textContent = p.t;
+    $("wLead").textContent = p.lead;
+    $("wBody").innerHTML = p.html();
+    $("wBack").style.visibility = wPaso === 0 ? "hidden" : "visible";
+    $("wNext").textContent = wPaso === WSTEPS.length-1 ? "Ver mi panel" : "Siguiente →";
+    $("wSkip").textContent = wPaso === WSTEPS.length-1 ? "" : "Salir";
+    $("wSkip").style.visibility = wPaso === WSTEPS.length-1 ? "hidden" : "visible";
+    var body = $("wBody");
+    var primero = body.querySelector("input[type=number],input[type=text]");
+    if(primero) setTimeout(function(){ primero.focus(); primero.select && primero.select(); }, 60);
+  }
+  function wizardSiguiente(){
+    try{ WSTEPS[wPaso].read(); }catch(e){}
+    save();
+    if(wPaso === WSTEPS.length-1){ wizardCerrar(); irTab("inicio"); return; }
+    wPaso++; wizardPintar();
+  }
+  function wizardAtras(){ if(wPaso > 0){ wPaso--; wizardPintar(); } }
+
+  $("overlay").addEventListener("click", function(e){
+    var t = e.target;
+    var cobro = t.closest && t.closest("[data-cobro]");
+    if(cobro){
+      wTmp.cobro = cobro.getAttribute("data-cobro");
+      Array.prototype.forEach.call($("wBody").querySelectorAll("[data-cobro]"), function(x){
+        x.classList.toggle("on", x === cobro); });
+      var prog = wTmp.cobro === "programa";
+      $("w_lprecio").textContent = prog ? "Precio total del programa" : "Precio al mes";
+      $("w_lmeses").textContent = prog ? "¿Cuántos meses dura el programa?" : "¿Cuántos meses se queda de media un cliente?";
+      return;
+    }
+    var per = t.closest && t.closest("[data-wperfil]");
+    if(per){
+      wTmp.perfil = per.getAttribute("data-wperfil");
+      Array.prototype.forEach.call($("wBody").querySelectorAll("[data-wperfil]"), function(x){
+        x.classList.toggle("on", x === per); });
+      return;
+    }
+    if(t.hasAttribute && t.hasAttribute("data-suma")){
+      var inp = $("w_entrega");
+      inp.value = n(inp.value) + n(t.getAttribute("data-suma"));
+      t.classList.add("on"); t.disabled = true;
+      return;
+    }
+    if(t.hasAttribute && t.hasAttribute("data-wchip")){
+      var g = CATALOGO[parseInt(t.getAttribute("data-wchip"),10)];
+      var ix = (S.fijos||[]).findIndex(function(f){ return (f.n||"").toLowerCase() === g.n.toLowerCase(); });
+      if(ix >= 0){ S.fijos.splice(ix,1); t.classList.remove("on"); }
+      else { S.fijos.push({n:g.n, v:g.v}); t.classList.add("on"); }
+      save();
+    }
+  });
+  $("wNext").addEventListener("click", wizardSiguiente);
+  $("wBack").addEventListener("click", wizardAtras);
+  $("wSkip").addEventListener("click", function(){ S.wizardHecho = true; wizardCerrar(); });
+
+  /* ---------------- BINDINGS ---------------- */
+  var SIMPLE = ["iva","pasarela","comisionVenta","otrosVar","horasCliente","horasMes",
+    "impuesto","colchonMeses","ads","otrosMkt","nuevosMes","cpl","tasaAgenda","tasaShow","tasaCierre",
+    "objetivo","topeSueldos","ratioMin","capacidad","costeCoach","calcClientes","crecAds","crecCpl","caja"];
 
   function bindSimple(){
     SIMPLE.forEach(function(id){
       var el = $(id); if(!el) return;
       el.value = S[id];
-      el.addEventListener("input", function(){ S[id] = el.value === "" ? 0 : parseFloat(el.value); save(); render(); });
+      el.oninput = function(){ S[id] = el.value === "" ? 0 : parseFloat(el.value); save(); render(); };
     });
-    var sel = $("ivaModo"); sel.value = S.ivaModo;
-    sel.addEventListener("change", function(){ S.ivaModo = sel.value; save(); render(); });
+    var sel = $("ivaModo");
+    sel.value = S.ivaModo;
+    sel.onchange = function(){ S.ivaModo = sel.value; save(); render(); };
   }
 
+  // edición de filas dinámicas
   document.addEventListener("input", function(e){
-    var t = e.target, l = t.getAttribute("data-l");
+    var t = e.target, l = t.getAttribute && t.getAttribute("data-l");
     if(!l) return;
     var i = parseInt(t.getAttribute("data-i"),10), f = t.getAttribute("data-f");
-    var arr = l === "fijo" ? S.fijos : S.sueldos;
-    if(!arr[i]) return;
-    arr[i][f] = (f === "n") ? t.value : (t.value === "" ? 0 : parseFloat(t.value));
-    save(); render();
+    var arr = l === "fijo" ? S.fijos : l === "sueldo" ? S.sueldos : l === "serv" ? S.servicios : S.historico;
+    if(!arr || !arr[i]) return;
+    var esTexto = (f === "n" || f === "mes");
+    arr[i][f] = esTexto ? t.value : (t.value === "" ? 0 : parseFloat(t.value));
+    save();
+    if(l === "hist"){ renderInicioLite(); } else { render(); }
   });
+  // el histórico se repinta solo al salir del campo, para no perder el foco al escribir
+  document.addEventListener("change", function(e){
+    var t = e.target;
+    if(t.getAttribute && t.getAttribute("data-l") === "hist"){ render(); }
+  });
+  function renderInicioLite(){ var c = calc(); renderInicio(c); }
 
   document.addEventListener("click", function(e){
-    var b = e.target.closest ? e.target.closest("[data-del]") : null;
-    if(!b) return;
-    var l = b.getAttribute("data-del"), i = parseInt(b.getAttribute("data-i"),10);
-    (l === "fijo" ? S.fijos : S.sueldos).splice(i,1);
-    save(); renderRowsFijos(); renderRowsSueldos(); render();
+    var t = e.target;
+    var del = t.closest && t.closest("[data-del]");
+    if(del){
+      var l = del.getAttribute("data-del"), i = parseInt(del.getAttribute("data-i"),10);
+      if(l === "fijo"){ S.fijos.splice(i,1); renderFijosRows(); renderChips(); }
+      else if(l === "sueldo"){ S.sueldos.splice(i,1); renderSueldosRows(); }
+      else if(l === "serv"){ if(S.servicios.length > 1){ S.servicios.splice(i,1); renderServRows(); } }
+      else if(l === "hist"){ S.historico.splice(i,1); }
+      save(); render(); return;
+    }
+    var chip = t.closest && t.closest("[data-chip]");
+    if(chip && !chip.disabled){
+      var g = CATALOGO[parseInt(chip.getAttribute("data-chip"),10)];
+      S.fijos.push({n:g.n, v:g.v});
+      save(); renderFijosRows(); renderChips(); render(); return;
+    }
+    var q = t.closest && t.closest("[data-q]");
+    if(q){ var box = $("q-"+q.getAttribute("data-q")); if(box) box.classList.toggle("open"); return; }
+    var per = t.closest && t.closest("[data-perfil]");
+    if(per){
+      S.perfil = per.getAttribute("data-perfil");
+      S.impuesto = 25; $("impuesto").value = 25;
+      save(); render(); return;
+    }
+    var mk = t.closest && t.closest("[data-mkt]");
+    if(mk){ S.mktModo = mk.getAttribute("data-mkt"); save(); render(); return; }
   });
 
-  $("addFijo").addEventListener("click", function(){
-    S.fijos.push({n:"", v:0}); save(); renderRowsFijos(); render();
+  $("addServ").onclick = function(){
+    var u = S.servicios[S.servicios.length-1] || {};
+    S.servicios.push({n:"", precio:n(u.precio)||150, clientes:0, meses:n(u.meses)||6, entrega:n(u.entrega)||0});
+    save(); renderServRows(); render();
+    var ins = $("servRows").querySelectorAll('input[data-f="n"]'); if(ins.length) ins[ins.length-1].focus();
+  };
+  $("addFijo").onclick = function(){
+    S.fijos.push({n:"", v:0}); save(); renderFijosRows(); render();
     var ins = $("fijosRows").querySelectorAll('input[data-f="n"]'); if(ins.length) ins[ins.length-1].focus();
-  });
-  $("addSueldo").addEventListener("click", function(){
-    S.sueldos.push({n:"", v:0, ss:32}); save(); renderRowsSueldos(); render();
+  };
+  $("addSueldo").onclick = function(){
+    S.sueldos.push({n:"", v:0, ss:(S.perfil === "sociedad" ? 32 : 0)}); save(); renderSueldosRows(); render();
     var ins = $("sueldosRows").querySelectorAll('input[data-f="n"]'); if(ins.length) ins[ins.length-1].focus();
-  });
+  };
 
-  // Tabs
+  function mesActualISO(delta){
+    var d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + (delta||0));
+    return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2);
+  }
+  $("addMes").onclick = function(){
+    var usados = S.historico.map(function(h){ return h.mes; });
+    var m = mesActualISO(-1), k = 1;
+    while(usados.indexOf(m) >= 0 && k < 60){ m = mesActualISO(-1-k); k++; }
+    S.historico.push({mes:m, clientes:0, altas:0, bajas:0, facturacion:0, gastos:0, ads:0, caja:0});
+    save(); render(); irTab("meses");
+  };
+  $("prefillMes").onclick = function(){
+    var c = calc();
+    if(!S.historico.length){ $("addMes").onclick(); }
+    var h = S.historico[S.historico.length-1];
+    h.clientes = Math.round(c.clientes); h.altas = Math.round(c.altas); h.bajas = Math.round(c.bajas);
+    h.facturacion = Math.round(c.ingresos); h.gastos = Math.round(c.gastosTotales + c.tax);
+    h.ads = Math.round(c.marketing); h.caja = Math.round(n(S.caja));
+    save(); render();
+  };
+
+  // pestañas
   $("tabs").addEventListener("click", function(e){
-    var b = e.target.closest ? e.target.closest("button[data-tab]") : null;
-    if(!b) return;
-    goTab(b.getAttribute("data-tab"));
+    var b = e.target.closest && e.target.closest("button[data-tab]");
+    if(b) irTab(b.getAttribute("data-tab"));
   });
-  function goTab(name){
+  function irTab(name){
     Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"), function(x){
       x.classList.toggle("active", x.getAttribute("data-tab") === name); });
     Array.prototype.forEach.call(document.querySelectorAll("section.tab"), function(s){
       s.classList.toggle("hidden", s.id !== "tab-"+name); });
     window.scrollTo({top:0, behavior:"smooth"});
   }
-  $("btnGuia").addEventListener("click", function(){ goTab("guia"); });
 
-  // Export / import / csv / print / reset
-  $("btnExport").addEventListener("click", function(){
+  // modo simple / experto
+  $("switchModo").addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("button[data-modo]");
+    if(!b) return;
+    S.modo = b.getAttribute("data-modo");
+    aplicarModo(); save();
+  });
+  function aplicarModo(){
+    document.body.classList.toggle("simple", S.modo !== "experto");
+    Array.prototype.forEach.call($("switchModo").querySelectorAll("button"), function(x){
+      x.classList.toggle("on", x.getAttribute("data-modo") === S.modo); });
+    $("subTitulo").textContent = S.modo === "experto"
+      ? "Modo experto: todos los ajustes y análisis a la vista"
+      : "Gastos, márgenes y decisiones, explicado paso a paso";
+  }
+
+  // asistente
+  $("btnWizard").onclick = wizardAbrir;
+  $("btnWizard2").onclick = wizardAbrir;
+  $("btnSkipWizard").onclick = function(){ S.wizardHecho = true; save(); render(); irTab("servicio"); };
+
+  // exportar / importar / csv / imprimir / reiniciar
+  $("btnExport").onclick = function(){
     var blob = new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "contabilidad-"+new Date().toISOString().slice(0,10)+".json";
+    a.download = "mi-contabilidad-"+new Date().toISOString().slice(0,10)+".json";
     a.click(); URL.revokeObjectURL(a.href);
-  });
-  $("btnImport").addEventListener("click", function(){ $("fileIn").click(); });
-  $("fileIn").addEventListener("change", function(e){
+  };
+  $("btnImport").onclick = function(){ $("fileIn").click(); };
+  $("fileIn").onchange = function(e){
     var f = e.target.files[0]; if(!f) return;
     var r = new FileReader();
     r.onload = function(){
       try{
         var o = JSON.parse(r.result);
-        for(var k in DEFAULTS){ if(o[k] !== undefined) S[k] = o[k]; }
-        save(); renderRowsFijos(); renderRowsSueldos(); bindSimple(); render();
+        var d = clone(DEFAULTS);
+        for(var k in o){ if(Object.prototype.hasOwnProperty.call(d,k)) d[k] = o[k]; }
+        if(!Array.isArray(d.servicios) || !d.servicios.length){
+          if(o.precio !== undefined) d = migrarV1(o, d); else d.servicios = clone(DEFAULTS.servicios);
+        }
+        S = d; save(); refrescarTodo();
         $("saveStatus").textContent = "Datos importados ✓";
-      }catch(err){ alert("El archivo no es válido."); }
+      }catch(err){ alert("Ese archivo no es válido."); }
     };
     r.readAsText(f); e.target.value = "";
-  });
-  $("btnCsv").addEventListener("click", function(){
-    var c = calc(); var L = [];
+  };
+  $("btnCsv").onclick = function(){
+    var c = calc(), L = [];
     function add(k,v){ L.push('"'+k+'";"'+String(v).replace(/"/g,'""')+'"'); }
     add("Concepto","Valor");
-    add("Precio por cliente/mes", n(S.precio));
-    add("Ingreso neto por cliente/mes", c.neto.toFixed(2));
-    add("Coste variable por cliente/mes", c.cvar.toFixed(2));
-    add("Margen bruto por cliente/mes", c.margen.toFixed(2));
-    add("Margen bruto %", (c.margenPct*100).toFixed(1));
-    add("Permanencia media (meses)", c.mesesVida);
-    add("LTV (margen)", c.ltv.toFixed(2));
     add("Clientes activos", c.clientes);
+    add("Ingreso neto por cliente/mes", c.neto.toFixed(2));
+    add("Coste por cliente/mes", c.cvar.toFixed(2));
+    add("Margen por cliente/mes", c.margen.toFixed(2));
+    add("Margen %", (c.margenPct*100).toFixed(1));
+    add("Permanencia media (meses)", c.mesesVida.toFixed(1));
+    add("LTV", c.ltv.toFixed(2));
     add("Facturacion mensual", c.ingresos.toFixed(2));
+    add("Coste variable total", c.cvarTotal.toFixed(2));
     add("Gastos fijos", c.fijos.toFixed(2));
-    add("Sueldos (coste empresa)", c.sueldos.toFixed(2));
-    add("Marketing total", c.marketing.toFixed(2));
+    add("Sueldos", c.sueldos.toFixed(2));
+    add("Marketing", c.marketing.toFixed(2));
     add("Beneficio antes de impuestos", c.bai.toFixed(2));
     add("Impuestos", c.tax.toFixed(2));
     add("Beneficio neto", c.beneficio.toFixed(2));
     add("Punto de equilibrio (clientes)", isFinite(c.breakeven)?Math.ceil(c.breakeven):"");
-    add("Clientes nuevos/mes", c.ventas.toFixed(1));
-    add("CAC total", isFinite(c.cacTotal)?c.cacTotal.toFixed(2):"");
+    add("Clientes nuevos por mes", c.ventas.toFixed(1));
+    add("Bajas por mes", c.bajas.toFixed(1));
+    add("CAC", isFinite(c.cac)?c.cac.toFixed(2):"");
     add("LTV/CAC", isFinite(c.ratio)?c.ratio.toFixed(2):"");
     add("Payback (meses)", isFinite(c.payback)?c.payback.toFixed(1):"");
-    add("Clientes para objetivo", isFinite(c.clientesObjetivo)?Math.ceil(c.clientesObjetivo):"");
-    add("Presupuesto marketing disponible", c.presuMktMax.toFixed(2));
+    add("Clientes para el objetivo", isFinite(c.clientesObjetivo)?Math.ceil(c.clientesObjetivo):"");
+    add("Presupuesto de marketing disponible", c.presuMktMax.toFixed(2));
+    add("Puntuacion de salud", c.salud.score+" ("+c.salud.estado+")");
+    L.push("");
+    L.push('"SERVICIOS"');
+    add("Servicio;Clientes;Precio neto;Margen;LTV","");
+    c.servicios.forEach(function(s){
+      L.push('"'+String(s.n).replace(/"/g,'""')+'";"'+s.clientes+'";"'+s.neto.toFixed(2)+'";"'+
+        s.margen.toFixed(2)+'";"'+s.ltv.toFixed(2)+'"');
+    });
+    if(c.hist.length){
+      L.push(""); L.push('"MESES CERRADOS"');
+      L.push('"Mes";"Clientes";"Altas";"Bajas";"Facturacion";"Gastos";"Publicidad";"Caja";"Beneficio"');
+      c.hist.forEach(function(h){
+        L.push('"'+h.mes+'";"'+n(h.clientes)+'";"'+n(h.altas)+'";"'+n(h.bajas)+'";"'+n(h.facturacion)+
+          '";"'+n(h.gastos)+'";"'+n(h.ads)+'";"'+n(h.caja)+'";"'+h.beneficio.toFixed(2)+'"');
+      });
+    }
     var blob = new Blob(["﻿"+L.join("\n")],{type:"text/csv;charset=utf-8"});
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "resumen-contabilidad-"+new Date().toISOString().slice(0,10)+".csv";
     a.click(); URL.revokeObjectURL(a.href);
-  });
-  $("btnPrint").addEventListener("click", function(){ window.print(); });
-  $("btnReset").addEventListener("click", function(){
-    if(!confirm("¿Seguro? Se borrarán tus datos y volverán los valores de ejemplo.")) return;
-    S = JSON.parse(JSON.stringify(DEFAULTS));
-    save(); renderRowsFijos(); renderRowsSueldos(); bindSimple(); render();
-  });
+  };
+  $("btnPrint").onclick = function(){ window.print(); };
+  $("btnReset").onclick = function(){
+    if(!confirm("¿Seguro? Se borrarán todos tus datos y volverás a empezar.")) return;
+    S = clone(DEFAULTS); S.wizardHecho = false;
+    save(); refrescarTodo(); wizardAbrir();
+  };
 
-  // init
-  bindSimple();
-  renderRowsFijos();
-  renderRowsSueldos();
-  render();
-  $("saveStatus").textContent = "Los datos se guardan solos en este navegador";
+  function refrescarTodo(){
+    aplicarModo(); bindSimple();
+    renderServRows(); renderFijosRows(); renderSueldosRows(); renderChips();
+    render();
+  }
+
+  /* ---------------- INICIO ---------------- */
+  refrescarTodo();
+  if(!S.wizardHecho) wizardAbrir();
+  $("saveStatus").textContent = "Tus datos se guardan solos en este navegador";
 })();
 </script>
 </body>
