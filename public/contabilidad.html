@@ -49,6 +49,8 @@
   nav.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px}
   nav.tabs button{background:transparent;border-color:transparent;color:var(--muted);padding:9px 13px;font-size:14px}
   nav.tabs button.active{background:var(--panel);border-color:var(--line);color:var(--txt);font-weight:600}
+  nav.tabs.subtabs{margin:0 0 18px}
+  nav.tabs.subtabs button{font-size:13.5px}
   nav.tabs button .dot{display:inline-block;width:7px;height:7px;border-radius:99px;background:var(--warn);margin-left:6px;vertical-align:middle}
 
   .grid{display:grid;gap:16px}
@@ -113,17 +115,15 @@
   .row{display:grid;gap:8px;align-items:center}
   .row.gasto{grid-template-columns:1fr 116px 34px}
   .row.sal{grid-template-columns:1fr 106px 78px 34px}
-  .row.serv{grid-template-columns:1.4fr 96px 84px 92px 96px 34px}
+  .row.serv{grid-template-columns:1.3fr 92px 76px 84px 92px 132px 92px 34px;min-width:860px}
   .rowhead{display:grid;gap:8px;font-size:11px;color:var(--muted);text-transform:uppercase;
     letter-spacing:.5px;margin-bottom:3px}
   .rowhead.gasto{grid-template-columns:1fr 116px 34px}
   .rowhead.sal{grid-template-columns:1fr 106px 78px 34px}
-  .rowhead.serv{grid-template-columns:1.4fr 96px 84px 92px 96px 34px}
+  .rowhead.serv{grid-template-columns:1.3fr 92px 76px 84px 92px 132px 92px 34px;min-width:860px}
   .rowhead span:not(:first-child){text-align:right}
-  @media(max-width:820px){
-    .row.serv,.rowhead.serv{grid-template-columns:1fr 1fr 1fr}
-    .rowhead.serv{display:none}
-  }
+  .servwrap{overflow-x:auto}
+  .row.serv select{padding:8px 9px;font-size:13px}
   .subtot{display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;
     border-top:2px solid var(--line);font-weight:700}
 
@@ -154,7 +154,7 @@
   #tablaMeses td:first-child .inp{width:132px}
   #tablaMeses td .inp{min-width:0}
   #tablaMeses td:not(:first-child) .inp{width:82px;margin-left:auto}
-  td.wrap,th.wrap{white-space:normal;text-align:left}
+  td.celtxt,th.celtxt{white-space:normal;text-align:left;max-width:420px}
   .neg{color:var(--bad)} .pos{color:var(--good)}
 
   .pl{font-size:14px}
@@ -294,10 +294,11 @@
     <button data-tab="gastos">2 · Mis gastos</button>
     <button data-tab="marketing">3 · Captar clientes</button>
     <button data-tab="resultados">4 · Resultados</button>
-    <button data-tab="decisiones">5 · Qué me puedo permitir</button>
-    <button data-tab="proyeccion">6 · Futuro</button>
-    <button data-tab="meses">7 · Mis meses</button>
-    <button data-tab="guia">8 · Aprender</button>
+    <button data-tab="caja">5 · Caja e impuestos</button>
+    <button data-tab="decisiones">6 · Qué me puedo permitir</button>
+    <button data-tab="proyeccion">7 · Futuro</button>
+    <button data-tab="meses">8 · Mis meses</button>
+    <button data-tab="guia">9 · Aprender</button>
   </nav>
 
   <!-- ================= INICIO ================= -->
@@ -312,7 +313,7 @@
     <div class="grid g2">
       <div class="card">
         <h2>La salud de tu negocio</h2>
-        <p class="hint">Siete señales. Verde va bien, ámbar vigílalo, rojo arréglalo ya.</p>
+        <p class="hint">Ocho señales. Verde va bien, ámbar vigílalo, rojo arréglalo ya.</p>
         <div class="health">
           <div class="ring">
             <svg width="126" height="126" viewBox="0 0 126 126">
@@ -362,12 +363,15 @@
     <div class="card">
       <h2>¿Qué vendes y a qué precio?</h2>
       <p class="hint">Una línea por cada servicio o plan que ofrezcas. Si solo tienes uno, deja una sola línea. <b>Permanencia</b> = cuántos meses se queda de media un cliente contigo.</p>
-      <div class="rowhead serv"><span>Servicio o plan</span><span>Precio/mes</span><span>Clientes</span><span>Permanencia</span><span>Coste entrega</span><span></span></div>
-      <div class="rows" id="servRows"></div>
+      <div class="servwrap">
+        <div class="rowhead serv"><span>Servicio o plan</span><span>Precio/mes</span><span>Clientes</span><span>Permanencia</span><span>Coste entrega</span><span>Cómo cobras</span><span>Pago inicial</span><span></span></div>
+        <div class="rows" id="servRows"></div>
+      </div>
       <button class="btn-sm" id="addServ">+ Añadir otro servicio</button>
       <div class="note info">
         <b>¿Vendes programas cerrados?</b> Si cobras 900 € por un plan de 3 meses, pon <b>300</b> de precio y <b>3</b> de permanencia. El panel ya lo trata bien.<br>
-        <b>Coste entrega</b> = lo que te cuesta atender a ESE cliente cada mes: app de entrenos, nutricionista externo, material. Si no gastas nada extra, pon 0.
+        <b>Coste entrega</b> = lo que te cuesta atender a ESE cliente cada mes: app de entrenos, nutricionista externo, material. Si no gastas nada extra, pon 0.<br>
+        <b>Cómo cobras</b> cambia cuándo entra el dinero en tu banco, no cuánto ganas. Es lo que decide si te quedas sin caja mientras creces.
       </div>
     </div>
 
@@ -563,7 +567,7 @@
       <p class="hint">Tu techo según lo exigente que quieras ser. Por encima de esa cifra, captar te cuesta dinero.</p>
       <div class="tscroll">
         <table id="tablaCac">
-          <thead><tr><th>Objetivo</th><th>CAC máximo</th><th class="adv">Coste por lead máximo</th><th class="wrap">Qué significa</th></tr></thead>
+          <thead><tr><th>Objetivo</th><th>CAC máximo</th><th class="adv">Coste por lead máximo</th><th class="celtxt">Qué significa</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -622,6 +626,82 @@
           <tbody></tbody>
         </table>
       </div>
+    </div>
+  </section>
+
+  <!-- ================= CAJA E IMPUESTOS ================= -->
+  <section id="tab-caja" class="tab hidden">
+    <div class="grid g4">
+      <div class="kpi"><div class="lab">Cobras al mes (cash collected)<span class="q" data-q="cc">?</span></div><div class="val" id="cj_cobrado">—</div><div class="foot" id="cj_cobradofoot">—</div></div>
+      <div class="kpi"><div class="lab">Tienes en el banco</div><div class="val" id="cj_banco">—</div><div class="foot">saldo que ves en tu cuenta</div></div>
+      <div class="kpi hi" id="kpiLibre"><div class="lab">De verdad es tuyo<span class="q" data-q="libre">?</span></div><div class="val" id="cj_libre">—</div><div class="foot" id="cj_librefoot">—</div></div>
+      <div class="kpi" id="kpiRunway"><div class="lab">Te dura<span class="q" data-q="runway">?</span></div><div class="val" id="cj_runway">—</div><div class="foot" id="cj_runwayfoot">—</div></div>
+    </div>
+    <div class="qbox" id="q-cc"><b>Cash collected</b> es el dinero que entra de verdad en tu banco este mes. No es lo mismo que la facturación: si cobras un programa de 6 meses por adelantado, cobras 900 € hoy pero solo «has ganado» 150 € este mes; los otros 750 € son un servicio que aún debes dar. Por eso hay que mirar los dos números.</div>
+    <div class="qbox" id="q-libre"><b>Tu dinero real</b> = lo que hay en el banco menos el IVA y los impuestos que ya has generado y aún no has pagado. Ese dinero está en tu cuenta pero no es tuyo. Gastártelo es el error que más empresas pequeñas se lleva por delante.</div>
+    <div class="qbox" id="q-runway"><b>Runway</b> = cuántos meses aguantas si todo sigue igual y pierdes dinero. Si ganas dinero cada mes, no aplica: no te estás quedando sin caja.</div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h2>Lo que ganas vs. lo que cobras</h2>
+        <p class="hint">Dos números distintos que la gente confunde. Aquí los ves juntos.</p>
+        <div class="pl" id="cajaCompara"></div>
+        <div class="note" id="notaCaja"></div>
+      </div>
+
+      <div class="card">
+        <h2>Hacienda: lo que ya debes</h2>
+        <p class="hint">Estimación de lo que has generado y todavía no has pagado. Apártalo en otra cuenta.</p>
+        <div class="pl" id="cajaImpuestos"></div>
+        <div class="grid g2" style="margin-top:14px">
+          <div class="field" style="margin:0">
+            <label><b>IVA pendiente de pagar</b></label>
+            <div class="inp"><input type="number" id="ivaPendiente" min="0" step="50"><span class="unit">€</span></div>
+          </div>
+          <div class="field" style="margin:0">
+            <label><b>Impuestos pendientes</b></label>
+            <div class="inp"><input type="number" id="impPendiente" min="0" step="50"><span class="unit">€</span></div>
+          </div>
+        </div>
+        <button class="btn-sm" id="btnEstimarHacienda" style="margin-top:10px">Estimar por mí estas dos cifras</button>
+        <span class="tip">Si tienes los datos de tu gestoría, mejor ponlos a mano: serán exactos.</span>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h2>Dinero cobrado que aún no has ganado</h2>
+        <p class="hint">Si cobras por adelantado, parte de tu saldo es servicio que todavía debes dar. Contablemente es una deuda con tus clientes.</p>
+        <div class="pl" id="cajaDiferido"></div>
+        <div class="note info" id="notaDiferido"></div>
+      </div>
+
+      <div class="card adv">
+        <h2>Ajustes de tesorería <span class="pill">experto</span></h2>
+        <div class="field">
+          <label><b>Impagos y devoluciones</b> — % de cobros que fallan</label>
+          <div class="inp"><input type="number" id="tasaImpago" min="0" max="50" step="0.5"><span class="unit">%</span></div>
+          <span class="tip">Tarjetas caducadas, devoluciones, gente que deja de pagar. En cobros recurrentes es normal un 2–5 %.</span>
+        </div>
+        <div class="field">
+          <label><b>% de tus gastos que llevan IVA</b></label>
+          <div class="inp"><input type="number" id="ivaGastos" min="0" max="100" step="5"><span class="unit">%</span></div>
+          <span class="tip">Los sueldos y la cuota de autónomos no llevan IVA; el software y la publicidad sí. Un 60 % es una estimación razonable.</span>
+        </div>
+        <div class="pl" id="cajaIvaDetalle"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Salud de empresa escalable</h2>
+      <p class="hint">Las señales de que el negocio puede crecer sin romperse. Un negocio escalable gana más margen cuanto más grande es; uno que no lo es, solo gana más trabajo.</p>
+      <div class="tscroll">
+        <table id="tablaEscala">
+          <thead><tr><th>Indicador</th><th>Tu número</th><th>Referencia</th><th>Estado</th><th class="celtxt">Qué significa</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="note" id="notaEscala"></div>
     </div>
   </section>
 
@@ -701,7 +781,7 @@
       <p class="hint">Referencia para un negocio de servicios. Compárala con tu reparto real.</p>
       <div class="tscroll">
         <table id="tablaReparto">
-          <thead><tr><th>Partida</th><th>Recomendado</th><th>Tú</th><th>Diferencia</th><th class="wrap">Lectura</th></tr></thead>
+          <thead><tr><th>Partida</th><th>Recomendado</th><th>Tú</th><th>Diferencia</th><th class="celtxt">Lectura</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -712,7 +792,7 @@
   <section id="tab-proyeccion" class="tab hidden">
     <div class="card">
       <h2>Cómo irá el próximo año</h2>
-      <p class="hint">Parte de tus clientes de hoy. Cada mes entran los que captas y se van los que terminan. <b>La columna que importa es la última: el dinero en el banco.</b></p>
+      <p class="hint">Parte de tus clientes de hoy. Cada mes entran los que captas y se van los que terminan. Incluye lo que <b>cobras</b> de verdad y los pagos de IVA e impuestos cada trimestre. <b>La columna que importa es la última: el dinero en el banco.</b></p>
       <div class="grid g3" style="margin-bottom:18px">
         <div class="field" style="margin:0">
           <label><b>Cuánto subes la publicidad</b> cada mes</label>
@@ -734,7 +814,7 @@
         <table id="tablaProy">
           <thead><tr>
             <th>Mes</th><th>Publicidad</th><th>Entran</th><th>Se van</th><th>Clientes</th>
-            <th>Facturación</th><th class="adv">Gastos</th><th>Te queda</th><th>En el banco</th>
+            <th>Facturación</th><th>Cobrado</th><th class="adv">Gastos</th><th>Hacienda</th><th>Te queda</th><th>En el banco</th>
           </tr></thead>
           <tbody></tbody><tfoot></tfoot>
         </table>
@@ -756,7 +836,7 @@
         <table id="tablaMeses">
           <thead><tr>
             <th>Mes</th><th>Clientes</th><th>Altas</th><th>Bajas</th><th>Facturación</th>
-            <th>Gastos</th><th>Publicidad</th><th>En el banco</th><th>Te quedó</th><th>% margen</th><th></th>
+            <th>Cobrado</th><th>Gastos</th><th>Publicidad</th><th>En el banco</th><th>Te quedó</th><th>% margen</th><th></th>
           </tr></thead>
           <tbody></tbody><tfoot></tfoot>
         </table>
@@ -800,87 +880,422 @@
 
   <!-- ================= GUÍA ================= -->
   <section id="tab-guia" class="tab hidden">
-    <div class="grid g2">
-      <div>
-        <div class="card" style="margin-bottom:16px">
-          <h2>Las 6 ideas que necesitas entender</h2>
-          <p class="hint">Con esto ya sabes más de contabilidad de gestión que la mayoría de autónomos.</p>
+    <nav class="tabs subtabs" id="subtabs">
+      <button data-sub="pasos" class="active">📋 Paso a paso: cómo rellenarlo</button>
+      <button data-sub="conceptos">📘 Qué significa cada cosa</button>
+      <button data-sub="rutina">🗓 Tu rutina de control</button>
+      <button data-sub="errores">⚠️ Errores que se pagan caros</button>
+      <button data-sub="crecer">🚀 Cómo crecer sin romperlo</button>
+    </nav>
+
+    <!-- ---------- PASO A PASO ---------- -->
+    <div id="sub-pasos" class="sub">
+      <div class="card">
+        <h2>Antes de empezar: ten esto a mano</h2>
+        <p class="hint">Con estas cinco cosas rellenas el panel entero en media hora y queda bien de verdad.</p>
+        <div class="pl">
+          <div class="line"><span><b>1.</b> El extracto del banco de los <b>últimos 3 meses</b></span><span class="pill">imprescindible</span></div>
+          <div class="line"><span><b>2.</b> Tu panel de cobros (Stripe, PayPal, banco…)</span><span class="pill">imprescindible</span></div>
+          <div class="line"><span><b>3.</b> El panel de tus anuncios (Meta, Google, TikTok)</span><span class="pill">si inviertes</span></div>
+          <div class="line"><span><b>4.</b> El último <b>modelo 303</b> (IVA) que presentó tu gestoría</span><span class="pill">recomendable</span></div>
+          <div class="line tot"><span><b>5.</b> La lista de tus clientes activos</span><span class="pill">imprescindible</span></div>
+        </div>
+        <div class="note"><b>Regla general para todo el panel:</b> cuando dudes entre un número optimista y uno prudente, <b>pon siempre el prudente</b>. Un panel que te dice que vas peor de lo que vas te hace tomar buenas decisiones. Al revés, te arruina.</div>
+      </div>
+
+      <h3 class="sec">Paso 1 · Mis servicios</h3>
+      <div class="grid g2">
+        <div class="card">
+          <h2>Precio por cliente al mes</h2>
+          <p class="hint"><b>De dónde sacarlo:</b> abre tu panel de cobros y mira los últimos 10 cobros de clientes distintos. Haz la media.</p>
           <div class="pl">
-            <div class="line"><span><b>1.</b> Facturar no es ganar</span><span class="pill">clave</span></div>
-            <div class="line"><span><b>2.</b> Lo que te queda por cliente manda</span><span class="pill">clave</span></div>
-            <div class="line"><span><b>3.</b> Gasto fijo ≠ gasto variable</span><span class="pill">clave</span></div>
-            <div class="line"><span><b>4.</b> Un cliente vale su LTV, no su primer pago</span><span class="pill">clave</span></div>
-            <div class="line"><span><b>5.</b> Beneficio no es dinero en el banco</span><span class="pill">clave</span></div>
-            <div class="line tot"><span><b>6.</b> Todo gasto nuevo se mide en clientes</span><span class="pill good">clave</span></div>
+            <div class="line"><span>Si cobras cuota mensual</span><span>pon esa cuota</span></div>
+            <div class="line"><span>Si vendes un programa de 900 € / 3 meses</span><span>pon 300</span></div>
+            <div class="line"><span>Si haces descuentos a menudo</span><span>pon el precio medio real</span></div>
+            <div class="line tot"><span>¿IVA incluido?</span><span>déjalo marcado</span></div>
           </div>
-          <div class="note"><b>La regla de oro:</b> antes de contratar, alquilar o subir la publicidad, pregúntate «¿cuántos clientes necesito para pagar esto?». Si la respuesta te asusta, aún no toca.</div>
+          <div class="note"><b>Error típico:</b> poner el precio de tarifa en vez del precio medio que cobras de verdad. Si haces descuentos, tu precio real es menor.</div>
         </div>
 
         <div class="card">
-          <h2>Errores que se pagan caros</h2>
-          <div class="alerts">
-            <div class="alert bad"><b>Gastarte el IVA</b>No es tuyo. Sepáralo el día que entra o el trimestre te pasará por encima.</div>
-            <div class="alert bad"><b>No cobrarte un sueldo</b>Si no te lo cuentas, crees que ganas dinero cuando en realidad te lo estás pagando con tu propio trabajo gratis.</div>
-            <div class="alert warn"><b>Contratar con un mes bueno</b>Una nómina es para siempre; un mes bueno, no. Espera dos meses seguidos por encima del umbral.</div>
-            <div class="alert warn"><b>Subir la publicidad sin mirar el retorno</b>Si captar te cuesta más de lo que deja el cliente, cuanto más inviertas, más pierdes.</div>
-            <div class="alert warn"><b>Competir bajando el precio</b>Bajar un 10 % el precio puede llevarse la mitad de tu beneficio. Antes de tocarlo, mira la tabla de sensibilidad.</div>
+          <h2>Permanencia media</h2>
+          <p class="hint"><b>De dónde sacarlo:</b> coge los clientes que se han dado de baja en los últimos 6 meses y calcula cuántos meses estuvo cada uno. Haz la media.</p>
+          <div class="pl">
+            <div class="line"><span>Ejemplo: 3, 6, 4, 8, 5 y 4 meses</span><span>media = 5</span></div>
+            <div class="line"><span>Si acabas de empezar</span><span>pon la duración de tu programa</span></div>
+            <div class="line tot"><span>Si dudas</span><span>pon el número más bajo</span></div>
           </div>
+          <div class="note"><b>Por qué importa tanto:</b> este número multiplica el valor de cada cliente. Si te pasas de optimista, creerás que puedes gastar el doble en publicidad de lo que puedes.</div>
+        </div>
+
+        <div class="card">
+          <h2>Clientes activos</h2>
+          <p class="hint"><b>De dónde sacarlo:</b> suscripciones activas hoy en tu pasarela de pago. No cuentes a los que están en pausa ni a los que deben.</p>
+          <div class="note">Si tienes varios planes con precios distintos, añade una línea por plan. El panel calcula la media ponderada y te dice cuál te renta más.</div>
+        </div>
+
+        <div class="card">
+          <h2>Coste de entrega</h2>
+          <p class="hint"><b>De dónde sacarlo:</b> suma solo lo que pagas <b>por cliente</b> y divide entre tus clientes.</p>
+          <div class="pl">
+            <div class="line"><span>✅ App de entrenos que cobra por usuario</span><span>sí va aquí</span></div>
+            <div class="line"><span>✅ Nutricionista externo por cliente</span><span>sí va aquí</span></div>
+            <div class="line"><span>❌ Tu sueldo</span><span>va en Sueldos</span></div>
+            <div class="line"><span>❌ El CRM con precio fijo</span><span>va en Gastos fijos</span></div>
+            <div class="line tot"><span>La pregunta clave</span><span>«si entra 1 cliente más, ¿qué pago de más?»</span></div>
+          </div>
+        </div>
+
+        <div class="card span2">
+          <h2>Cómo cobras (esto decide tu caja)</h2>
+          <p class="hint">No cambia lo que ganas, cambia <b>cuándo tienes el dinero</b>. Es la diferencia entre poder invertir y vivir ahogado.</p>
+          <div class="tscroll">
+            <table>
+              <thead><tr><th>Opción</th><th>Cuándo elegirla</th><th class="celtxt">Efecto en tu caja</th></tr></thead>
+              <tbody>
+                <tr><td><b>Cuota mensual</b></td><td>Cobras cada mes mientras siga</td><td class="celtxt">Entrada suave y predecible. El crecimiento lo financias tú: cada cliente nuevo tarda meses en devolverte lo que costó captarlo.</td></tr>
+                <tr><td><b>Todo por adelantado</b></td><td>Cobras el programa completo al empezar</td><td class="celtxt">La mejor caja con diferencia: cobras hoy lo que ibas a cobrar en 6 meses. Ojo: buena parte de ese dinero es servicio que aún debes dar.</td></tr>
+                <tr><td><b>Entrada + cuotas</b></td><td>Un pago inicial y luego mensualidades</td><td class="celtxt">El equilibrio más habitual. La entrada te cubre el coste de captación desde el primer día y la cuota mantiene el compromiso.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note"><b>Si te quedas corto de caja</b> y no puedes subir precios, cambiar de cuota mensual a «entrada + cuotas» suele arreglar el problema sin tocar el margen.</div>
         </div>
       </div>
 
-      <div>
-        <details class="faq" open><summary>Margen bruto: lo que te queda por cliente</summary><div class="body">
-          <p><code>precio sin IVA − lo que cuesta atenderle</code></p>
-          <p>Cobras 150 €, te cuesta 20 € atenderle (pasarela + app + nutricionista): tu margen es 130 €. Ese es el dinero real con el que pagas alquiler, sueldos y publicidad, y con el que ganas.</p>
-        </div></details>
+      <h3 class="sec">Paso 2 · Mis gastos (aquí es donde más se falla)</h3>
+      <div class="grid g2">
+        <div class="card">
+          <h2>Cómo hacerlo bien en 20 minutos</h2>
+          <div class="pl">
+            <div class="line"><span><b>1.</b> Abre el extracto de los <b>3 últimos meses</b></span><span>5 min</span></div>
+            <div class="line"><span><b>2.</b> Marca todo cargo que no sea personal</span><span>5 min</span></div>
+            <div class="line"><span><b>3.</b> Agrupa por concepto y calcula la media mensual</span><span>5 min</span></div>
+            <div class="line"><span><b>4.</b> Los pagos anuales, divídelos entre 12</span><span>2 min</span></div>
+            <div class="line tot"><span><b>5.</b> Súmale un 5–10 % de «imprevistos»</span><span>3 min</span></div>
+          </div>
+          <div class="note"><b>Por qué 3 meses y no 1:</b> hay gastos que no aparecen todos los meses (seguros, dominios, asesorías). Con un solo mes te dejas la mitad.</div>
+        </div>
 
-        <details class="faq"><summary>Fijo vs. variable: la distinción que lo cambia todo</summary><div class="body">
-          <p><b>Variable:</b> sube cuando entra un cliente más (comisión de la pasarela, licencia por usuario).</p>
-          <p><b>Fijo:</b> lo pagas igual con 5 clientes que con 50 (gestoría, cuota de autónomos, sueldos, CRM).</p>
-          <p>Los fijos son los que te hunden en un mes malo. Cuantos menos tengas, más aguantas.</p>
-        </div></details>
+        <div class="card">
+          <h2>Los que todo el mundo olvida</h2>
+          <div class="pl">
+            <div class="line"><span>Dominios y hosting anuales</span><span>÷ 12</span></div>
+            <div class="line"><span>Seguro de responsabilidad civil</span><span>÷ 12</span></div>
+            <div class="line"><span>Formación y mentorías</span><span>media anual</span></div>
+            <div class="line"><span>Comisiones del banco</span><span>media 3 meses</span></div>
+            <div class="line"><span>Suscripciones pequeñas (5–15 €)</span><span>suman mucho</span></div>
+            <div class="line tot"><span>Imprevistos</span><span>5–10 % del total</span></div>
+          </div>
+        </div>
 
-        <details class="faq"><summary>Punto de equilibrio</summary><div class="body">
-          <p><code>gastos fijos ÷ lo que te queda por cliente</code></p>
-          <p>Si tienes 6.000 € de gastos fijos y te quedan 100 € por cliente, necesitas 60 clientes para no perder dinero. El cliente 61 ya es casi todo beneficio: por eso crecer duele al principio y luego compensa mucho.</p>
-        </div></details>
+        <div class="card span2">
+          <h2>Tu sueldo: la casilla más importante del panel</h2>
+          <p class="hint">Si la dejas vacía, todo lo demás miente.</p>
+          <p style="color:#c3cfdd">Si no te pones sueldo, el panel dirá que ganas 2.000 € cuando en realidad estás cobrando 2.000 € <b>por tu trabajo</b> y la empresa gana 0 €. Son cosas muy distintas: la primera es un negocio, la segunda es un autoempleo que no puedes vender, ni delegar, ni escalar.</p>
+          <div class="pl">
+            <div class="line"><span><b>¿Cuánto poner?</b> Lo que costaría contratar a alguien para hacer tu trabajo</span><span>lo correcto</span></div>
+            <div class="line"><span>Si ahora no puedes pagártelo entero</span><span>ponlo igual</span></div>
+            <div class="line tot"><span>Verás exactamente cuánto te falta para poder pagártelo</span><span>que es el objetivo</span></div>
+          </div>
+          <div class="note"><b>El «+ SS %»:</b> si estás en régimen general, la empresa paga cerca de un 32 % encima del bruto. Si eres autónomo y te pagas por tu cuenta, pon <b>0</b> y asegúrate de tener la cuota de autónomos en los gastos fijos.</div>
+        </div>
+      </div>
 
-        <details class="faq"><summary>LTV: cuánto vale un cliente</summary><div class="body">
-          <p><code>lo que te queda al mes × meses que se queda</code></p>
-          <p>Nunca uses la facturación para esto: infla el número y te lleva a gastar de más en publicidad.</p>
-          <p>Subir la permanencia un solo mes suele ser más barato y más rentable que bajar el coste de la publicidad.</p>
-        </div></details>
+      <h3 class="sec">Paso 3 · Captar clientes</h3>
+      <div class="grid g2">
+        <div class="card">
+          <h2>Modo sencillo (empieza aquí)</h2>
+          <div class="pl">
+            <div class="line"><span><b>Inversión al mes</b></span><span>panel de Meta / Google</span></div>
+            <div class="line"><span><b>Otros gastos de captación</b></span><span>agencia, editor, CRM</span></div>
+            <div class="line tot"><span><b>Clientes nuevos al mes</b></span><span>media de los 3 últimos meses</span></div>
+          </div>
+          <div class="note">Cuenta <b>todos</b> los clientes nuevos, vengan de anuncios, de recomendaciones o de tu Instagram. Si separas por canal más adelante, mejor; para empezar, el total sirve.</div>
+        </div>
+        <div class="card">
+          <h2>Modo embudo (cuando ya tengas datos)</h2>
+          <div class="pl">
+            <div class="line"><span><b>Coste por lead</b></span><span>gasto ÷ contactos conseguidos</span></div>
+            <div class="line"><span><b>% que agenda llamada</b></span><span>agendas ÷ leads</span></div>
+            <div class="line"><span><b>% que asiste</b></span><span>llamadas hechas ÷ agendadas</span></div>
+            <div class="line tot"><span><b>% de cierre</b></span><span>ventas ÷ llamadas hechas</span></div>
+          </div>
+          <div class="note">Con esto el panel te dice <b>qué palanca del embudo te daría más clientes</b> si la mejoras un 20 %. Casi siempre no es la que crees.</div>
+        </div>
+      </div>
 
-        <details class="faq"><summary>CAC y el ratio LTV/CAC</summary><div class="body">
-          <p><b>CAC</b> = todo lo invertido en captar ÷ clientes conseguidos.</p>
-          <p><b>Menos de 1x:</b> pierdes dinero por cliente. Para los anuncios hoy.<br>
-             <b>1–3x:</b> vendes, pero no queda para gastos fijos.<br>
-             <b>3x o más:</b> sano, puedes escalar.<br>
-             <b>Más de 6x:</b> estás invirtiendo poco y dejando crecimiento sobre la mesa.</p>
-        </div></details>
+      <h3 class="sec">Paso 4 · Caja e impuestos (lo que casi nadie mide)</h3>
+      <div class="grid g2">
+        <div class="card">
+          <h2>Dinero en el banco</h2>
+          <p class="hint">El saldo real de tu cuenta de empresa hoy, sin trampas.</p>
+          <div class="note">No incluyas dinero personal ni líneas de crédito que no hayas usado. Si tienes varias cuentas, súmalas.</div>
+        </div>
+        <div class="card">
+          <h2>IVA e impuestos pendientes</h2>
+          <p class="hint"><b>De dónde sacarlo:</b> el IVA lo tienes en tu último modelo 303, o pregúntale a tu gestoría «¿cuánto llevo acumulado este trimestre?».</p>
+          <div class="note">Si no lo sabes, pulsa <b>«Estimar por mí estas dos cifras»</b> en la pestaña de Caja. Es aproximado, pero mucho mejor que poner cero y creerte rico.</div>
+        </div>
+        <div class="card span2">
+          <h2>La cuenta separada: el hábito que te salva el año</h2>
+          <p style="color:#c3cfdd">Abre una segunda cuenta bancaria. Cada vez que entre un cobro, mueve ahí <b>el IVA + un 25 % del beneficio estimado</b>. Ese dinero nunca ha sido tuyo: solo estaba de paso por tu cuenta. Cuando llegue el trimestre, pagas sin sustos y sin tener que frenar la publicidad para poder pagar a Hacienda.</p>
+          <div class="note"><b>Es el error nº 1 del primer año:</b> ver 12.000 € en el banco, sentirse bien, gastar, y descubrir en abril que 4.000 € eran de Hacienda.</div>
+        </div>
+      </div>
 
-        <details class="faq"><summary>Payback: por qué puedes quedarte sin caja ganando dinero</summary><div class="body">
-          <p>Son los meses que tardas en recuperar lo que pagaste por el cliente. Si cobras mes a mes y tardas 4 meses, cada cliente nuevo te <b>vacía la caja</b> antes de llenarla.</p>
-          <p>Por eso cobrar el programa por adelantado mejora tu negocio aunque el margen sea el mismo: cobras hoy lo que ibas a cobrar en seis meses.</p>
-        </div></details>
+      <h3 class="sec">Comprobación final</h3>
+      <div class="card">
+        <h2>Está bien puesto si…</h2>
+        <p class="hint">Repasa esta lista. Si algo no cuadra, hay un dato mal.</p>
+        <div class="grid g2">
+          <div class="pl">
+            <div class="line"><span>Tu facturación del panel se parece a la del banco</span><span>±10 %</span></div>
+            <div class="line"><span>Te has puesto un sueldo</span><span>obligatorio</span></div>
+            <div class="line"><span>Tus gastos fijos incluyen la cuota de autónomos</span><span>si aplica</span></div>
+            <div class="line"><span>El margen por cliente está entre el 60 % y el 90 %</span><span>normal en servicios</span></div>
+          </div>
+          <div class="pl">
+            <div class="line"><span>La permanencia no es un número redondo optimista</span><span>sé prudente</span></div>
+            <div class="line"><span>El punto de equilibrio te parece creíble</span><span>si no, revisa gastos</span></div>
+            <div class="line"><span>Has puesto el IVA pendiente</span><span>o lo has estimado</span></div>
+            <div class="line"><span>El «Cobrado» se parece a lo que entró en el banco</span><span>±10 %</span></div>
+          </div>
+        </div>
+        <div class="note"><b>Última comprobación, la más útil de todas:</b> mira el beneficio que dice el panel y compáralo con cuánto ha subido tu banco este mes (descontando el IVA). Si se parecen, tienes el panel bien puesto. Si no, hay un gasto que no has apuntado.</div>
+      </div>
+    </div>
 
-        <details class="faq"><summary>Churn: los clientes que se van</summary><div class="body">
-          <p>Si se quedan 6 meses de media, cada mes se te va <code>1 ÷ 6 = 17 %</code> de tu cartera. Con 60 clientes son 10 bajas al mes que tienes que reponer solo para no bajar.</p>
-          <p>Por eso la retención es crecimiento: cada mes extra de permanencia reduce cuántos clientes tienes que captar.</p>
-        </div></details>
+    <!-- ---------- CONCEPTOS ---------- -->
+    <div id="sub-conceptos" class="sub hidden">
+      <div class="grid g2">
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <h2>Las 8 ideas que lo explican todo</h2>
+            <p class="hint">Si entiendes esto, entiendes la contabilidad de tu negocio.</p>
+            <div class="pl">
+              <div class="line"><span><b>1.</b> Facturar no es ganar</span><span class="pill">clave</span></div>
+              <div class="line"><span><b>2.</b> Ganar no es tener el dinero</span><span class="pill">clave</span></div>
+              <div class="line"><span><b>3.</b> Lo que te queda por cliente manda</span><span class="pill">clave</span></div>
+              <div class="line"><span><b>4.</b> Gasto fijo ≠ gasto variable</span><span class="pill">clave</span></div>
+              <div class="line"><span><b>5.</b> Un cliente vale su LTV, no su primer pago</span><span class="pill">clave</span></div>
+              <div class="line"><span><b>6.</b> El IVA nunca es tuyo</span><span class="pill">clave</span></div>
+              <div class="line"><span><b>7.</b> Retener es más barato que captar</span><span class="pill">clave</span></div>
+              <div class="line tot"><span><b>8.</b> Todo gasto nuevo se mide en clientes</span><span class="pill good">clave</span></div>
+            </div>
+            <div class="note"><b>La regla de oro:</b> antes de contratar, alquilar o subir la publicidad, pregúntate «¿cuántos clientes necesito para pagar esto?». Si la respuesta te asusta, aún no toca.</div>
+          </div>
 
-        <details class="faq"><summary>Beneficio ≠ dinero en el banco</summary><div class="body">
-          <p>Puedes tener beneficio sobre el papel y no tener dinero: impagos, publicidad pagada por adelantado, IVA acumulado que aún tienes que devolver. Por eso el panel lleva una columna de caja: es la que dice si sobrevives.</p>
-        </div></details>
+          <div class="card">
+            <h2>Facturado, cobrado y ganado: los tres números</h2>
+            <p class="hint">Confundirlos es el origen de casi todos los sustos.</p>
+            <div class="tscroll">
+              <table>
+                <thead><tr><th>Número</th><th class="celtxt">Qué es</th><th class="celtxt">Ejemplo con un programa de 900 € / 6 meses cobrado hoy</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Cobrado</b><br><span class="pill info">caja</span></td><td class="celtxt">El dinero que entra en tu banco este mes.</td><td class="celtxt">900 € este mes, 0 € los cinco siguientes.</td></tr>
+                  <tr><td><b>Facturado</b><br><span class="pill">resultado</span></td><td class="celtxt">El servicio que has dado este mes, lo hayas cobrado o no.</td><td class="celtxt">150 € cada mes durante 6 meses.</td></tr>
+                  <tr><td><b>Ganado</b><br><span class="pill good">beneficio</span></td><td class="celtxt">Lo facturado menos todos los gastos e impuestos.</td><td class="celtxt">Lo que quede de esos 150 € tras costes, sueldos y Hacienda.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note"><b>Los tres son verdad a la vez.</b> Por eso puedes tener 10.000 € en el banco y estar perdiendo dinero, o ganar mucho y no tener para pagar las nóminas.</div>
+          </div>
+        </div>
 
-        <details class="faq"><summary>Qué mirar cada mes (5 números)</summary><div class="body">
-          <p><b>1.</b> Lo que te queda por cliente · <b>2.</b> Clientes activos · <b>3.</b> Bajas del mes · <b>4.</b> Lo que te cuesta captar y el retorno · <b>5.</b> Dinero en el banco.</p>
-          <p>Con esos cinco tienes el 90 % del control. Lo demás es detalle.</p>
-        </div></details>
+        <div>
+          <details class="faq" open><summary>Margen bruto: lo que te queda por cliente</summary><div class="body">
+            <p><code>precio sin IVA − lo que cuesta atenderle</code></p>
+            <p>Cobras 150 €, te cuesta 20 € atenderle: te quedan 130 € para pagar alquiler, sueldos y publicidad, y para ganar. Es el número que más manda de todo el panel.</p>
+          </div></details>
 
-        <details class="faq"><summary>Aviso importante</summary><div class="body">
-          <p>Esta herramienta sirve para <b>decidir</b>, no sustituye a tu gestoría ni a la contabilidad oficial. Los tipos de impuestos son estimaciones. La liquidación real la hace tu asesor.</p>
-        </div></details>
+          <details class="faq"><summary>Cash collected: el dinero de verdad</summary><div class="body">
+            <p>Es lo que <b>entra en tu banco</b> este mes, venga de clientes nuevos o de cuotas. No es tu facturación.</p>
+            <p>Si cobras por adelantado y estás creciendo, cobras más de lo que facturas: tu caja va por delante. Si dejas de captar, ese colchón desaparece de golpe. Por eso hay que mirar siempre los dos números juntos, y por eso el panel tiene una pestaña entera para esto.</p>
+          </div></details>
+
+          <details class="faq"><summary>Dinero cobrado que aún no has ganado</summary><div class="body">
+            <p>Si cobras 900 € por seis meses de servicio, el primer día ese dinero está en tu banco pero <b>aún no lo has ganado</b>: debes cinco meses de trabajo. En contabilidad se llama «ingreso diferido» y es una deuda con tu cliente.</p>
+            <p>Práctico: no lo uses para gastos fijos ni te lo repartas. Si un cliente pide la devolución, tienes que devolverlo.</p>
+          </div></details>
+
+          <details class="faq"><summary>Fijo vs. variable</summary><div class="body">
+            <p><b>Variable:</b> sube cuando entra un cliente más (pasarela, licencia por usuario).<br>
+               <b>Fijo:</b> lo pagas igual con 5 que con 50 (gestoría, cuota, sueldos, CRM).</p>
+            <p>Los fijos son los que te hunden en un mes malo. Cuantos menos tengas, más aguantas y más rápido puedes moverte.</p>
+          </div></details>
+
+          <details class="faq"><summary>Punto de equilibrio</summary><div class="body">
+            <p><code>gastos fijos ÷ lo que te queda por cliente</code></p>
+            <p>6.000 € de fijos y 100 € por cliente = 60 clientes para no perder dinero. El cliente 61 es casi todo beneficio: por eso crecer duele al principio y luego compensa mucho.</p>
+          </div></details>
+
+          <details class="faq"><summary>LTV: cuánto vale un cliente</summary><div class="body">
+            <p><code>lo que te queda al mes × meses que se queda</code></p>
+            <p>Nunca uses la facturación para esto: infla el número y te lleva a gastar de más en publicidad. Subir la permanencia un mes suele ser más barato y más rentable que bajar el coste de los anuncios.</p>
+          </div></details>
+
+          <details class="faq"><summary>CAC y el retorno de la captación</summary><div class="body">
+            <p><b>CAC</b> = todo lo invertido en captar ÷ clientes conseguidos.</p>
+            <p><b>Menos de 1x:</b> pierdes dinero por cliente, para los anuncios.<br>
+               <b>1–3x:</b> vendes pero no queda para gastos fijos.<br>
+               <b>3x o más:</b> sano, puedes escalar.<br>
+               <b>Más de 6x:</b> inviertes poco y dejas crecimiento sobre la mesa.</p>
+          </div></details>
+
+          <details class="faq"><summary>Payback y runway</summary><div class="body">
+            <p><b>Payback:</b> meses hasta recuperar lo que te costó captar al cliente. Si es alto, cada cliente nuevo te vacía la caja antes de llenarla.</p>
+            <p><b>Runway:</b> meses que aguantas con el dinero que tienes si sigues perdiendo al ritmo actual. Por debajo de 3 meses, prioridad absoluta.</p>
+          </div></details>
+
+          <details class="faq"><summary>Churn: los clientes que se van</summary><div class="body">
+            <p>Si se quedan 6 meses de media, cada mes se te va <code>1 ÷ 6 = 17 %</code> de tu cartera. Con 60 clientes son 10 bajas al mes que tienes que reponer solo para no bajar.</p>
+          </div></details>
+
+          <details class="faq"><summary>MRR, ARR y la regla del 40</summary><div class="body">
+            <p><b>MRR</b> = facturación recurrente del mes. <b>ARR</b> = MRR × 12: el tamaño de tu negocio a ojos de cualquiera.</p>
+            <p><b>Regla del 40:</b> crecimiento anual en % + margen neto en % debería sumar 40 o más. Si creces poco, tienes que ganar mucho; si ganas poco, más te vale crecer rápido. Sirve para saber si el sacrificio de margen que estás haciendo para crecer merece la pena.</p>
+          </div></details>
+
+          <details class="faq"><summary>Aviso importante</summary><div class="body">
+            <p>Esta herramienta sirve para <b>decidir</b>, no sustituye a tu gestoría ni a la contabilidad oficial. Los tipos de impuestos son estimaciones y la liquidación real la hace tu asesor.</p>
+          </div></details>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- RUTINA ---------- -->
+    <div id="sub-rutina" class="sub hidden">
+      <div class="grid g2">
+        <div class="card">
+          <h2>Cada semana · 5 minutos</h2>
+          <p class="hint">Lunes por la mañana, antes de nada.</p>
+          <div class="pl">
+            <div class="line"><span>Mira el saldo del banco</span><span>1 min</span></div>
+            <div class="line"><span>Cuenta altas y bajas de la semana</span><span>2 min</span></div>
+            <div class="line"><span>Revisa cobros fallidos y reclámalos</span><span>2 min</span></div>
+            <div class="line tot"><span>Si algo se ha torcido, lo ves a tiempo</span><span>✓</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Cada mes · 30 minutos</h2>
+          <p class="hint">El día 1, sin excusas. Es la rutina que lo cambia todo.</p>
+          <div class="pl">
+            <div class="line"><span><b>1.</b> Cierra el mes en «Mis meses»</span><span>10 min</span></div>
+            <div class="line"><span><b>2.</b> Compara realidad vs. previsión</span><span>5 min</span></div>
+            <div class="line"><span><b>3.</b> Actualiza precio, permanencia y gastos si han cambiado</span><span>5 min</span></div>
+            <div class="line"><span><b>4.</b> Aparta el IVA y los impuestos a la otra cuenta</span><span>5 min</span></div>
+            <div class="line tot"><span><b>5.</b> Lee «Qué hacer ahora» y elige UNA acción</span><span>5 min</span></div>
+          </div>
+          <div class="note">Una sola acción al mes, bien hecha, vale más que diez a medias.</div>
+        </div>
+
+        <div class="card">
+          <h2>Cada trimestre · 1 hora</h2>
+          <div class="pl">
+            <div class="line"><span>Paga el IVA (modelo 303) sin sorpresas</span><span>ya lo tienes apartado</span></div>
+            <div class="line"><span>Revisa precios: ¿puedes subir un 10 %?</span><span>mira sensibilidad</span></div>
+            <div class="line"><span>Repasa todos los gastos fijos uno a uno</span><span>se acumulan solos</span></div>
+            <div class="line"><span>Recalcula tu permanencia real</span><span>con las bajas del trimestre</span></div>
+            <div class="line tot"><span>Decide si toca contratar o invertir más</span><span>con datos, no con ganas</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Cada año · medio día</h2>
+          <div class="pl">
+            <div class="line"><span>Mira la evolución de 12 meses cerrados</span><span>en «Mis meses»</span></div>
+            <div class="line"><span>Compara tu reparto real con el recomendado</span><span>en «Qué me puedo permitir»</span></div>
+            <div class="line"><span>Renegocia proveedores y suscripciones</span><span>suele salir un 10 %</span></div>
+            <div class="line"><span>Ponte el objetivo del año siguiente</span><span>en clientes, no en facturación</span></div>
+            <div class="line tot"><span>Guarda una copia con «Exportar datos»</span><span>1 min</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- ERRORES ---------- -->
+    <div id="sub-errores" class="sub hidden">
+      <div class="grid g2">
+        <div class="card">
+          <h2>Los que cuestan dinero de verdad</h2>
+          <div class="alerts">
+            <div class="alert bad"><b>Gastarte el IVA</b>No es tuyo. Sepáralo el día que entra o el trimestre te pasará por encima. Es la causa nº 1 de sustos de caja.</div>
+            <div class="alert bad"><b>No cobrarte un sueldo</b>Crees que ganas dinero cuando en realidad te lo estás pagando con tu propio trabajo gratis.</div>
+            <div class="alert bad"><b>Confundir cobrado con ganado</b>Cobrar 900 € por adelantado no es ganar 900 €: es deber seis meses de servicio.</div>
+            <div class="alert bad"><b>Contratar con un mes bueno</b>Una nómina es para siempre; un mes bueno, no. Dos meses seguidos por encima del umbral, y con colchón.</div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Los que frenan el crecimiento</h2>
+          <div class="alerts">
+            <div class="alert warn"><b>Subir la publicidad sin mirar el retorno</b>Si captar cuesta más de lo que deja el cliente, cuanto más inviertes, más pierdes. Multiplicas el problema.</div>
+            <div class="alert warn"><b>Competir bajando el precio</b>Bajar un 10 % el precio puede llevarse la mitad de tu beneficio. Mira antes la tabla de sensibilidad.</div>
+            <div class="alert warn"><b>Obsesionarse con el coste por lead</b>Casi siempre da más dinero mejorar el cierre o la permanencia que perseguir leads baratos.</div>
+            <div class="alert warn"><b>Medir el éxito por la facturación</b>Facturar 20.000 € perdiendo dinero es peor que facturar 8.000 € ganando 2.000 €.</div>
+            <div class="alert warn"><b>No apuntar los meses reales</b>Sin histórico solo tienes opiniones. Con seis meses apuntados, tienes un negocio que entiendes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- CRECER ---------- -->
+    <div id="sub-crecer" class="sub hidden">
+      <div class="card">
+        <h2>El orden correcto para crecer</h2>
+        <p class="hint">Casi todo el mundo empieza por el paso 5. Por eso se atasca.</p>
+        <div class="pl">
+          <div class="line"><span><b>1. Sube el precio</b> — el euro que más rápido llega a tu bolsillo</span><span class="pill good">impacto máximo</span></div>
+          <div class="line"><span><b>2. Alarga la permanencia</b> — cada mes extra es margen puro y gratis</span><span class="pill good">impacto alto</span></div>
+          <div class="line"><span><b>3. Mejora el cierre</b> — mismos leads, más clientes</span><span class="pill warn">impacto alto</span></div>
+          <div class="line"><span><b>4. Baja el coste de entrega</b> — sin tocar la calidad</span><span class="pill warn">impacto medio</span></div>
+          <div class="line"><span><b>5. Invierte más en publicidad</b> — solo con los cuatro anteriores en verde</span><span class="pill">el último</span></div>
+          <div class="line tot"><span>Invertir más con márgenes malos = perder más rápido</span><span class="pill bad">nunca</span></div>
+        </div>
+      </div>
+
+      <div class="grid g2" style="margin-top:16px">
+        <div class="card">
+          <h2>Cuándo puedes subir la inversión</h2>
+          <p class="hint">Las cuatro condiciones. Si falla una, todavía no.</p>
+          <div class="pl">
+            <div class="line"><span>Recuperas 3 € o más por cada € invertido</span><span>LTV/CAC ≥ 3</span></div>
+            <div class="line"><span>Recuperas la inversión en menos de 3 meses</span><span>payback</span></div>
+            <div class="line"><span>Tienes colchón para 3 meses de gastos</span><span>caja</span></div>
+            <div class="line tot"><span>Puedes atender a los clientes nuevos</span><span>capacidad</span></div>
+          </div>
+          <div class="note">Y cuando las cumplas: sube <b>por tramos del 20–30 %</b> y espera dos semanas. Si el coste por cliente no se dispara, repite.</div>
+        </div>
+
+        <div class="card">
+          <h2>Cuándo contratar</h2>
+          <div class="pl">
+            <div class="line"><span>Dos meses seguidos por encima del umbral</span><span>no uno</span></div>
+            <div class="line"><span>Colchón de 3 meses de gastos guardado</span><span>obligatorio</span></div>
+            <div class="line"><span>La persona libera tiempo que usarás para vender</span><span>o no compensa</span></div>
+            <div class="line tot"><span>Primero prueba con freelance o por horas</span><span>reversible</span></div>
+          </div>
+          <div class="note">Un gasto fijo nuevo es una decisión que no se deshace fácil. Antes de una nómina, siempre: automatizar, subir precio o freelance.</div>
+        </div>
+
+        <div class="card span2">
+          <h2>Qué hace que un negocio sea escalable de verdad</h2>
+          <p class="hint">La diferencia entre una empresa que puedes hacer crecer y un trabajo que te compraste.</p>
+          <div class="tscroll">
+            <table>
+              <thead><tr><th>Señal</th><th class="celtxt">Negocio escalable</th><th class="celtxt">Autoempleo disfrazado</th></tr></thead>
+              <tbody>
+                <tr><td>Margen al crecer</td><td class="celtxt">Mejora: los gastos fijos se reparten entre más clientes</td><td class="celtxt">Igual o peor: cada cliente necesita más de ti</td></tr>
+                <tr><td>Dependencia de ti</td><td class="celtxt">El servicio funciona con procesos y equipo</td><td class="celtxt">Si te vas una semana, se para todo</td></tr>
+                <tr><td>Captación</td><td class="celtxt">Predecible: inviertes X y entran Y clientes</td><td class="celtxt">A rachas, por recomendaciones y suerte</td></tr>
+                <tr><td>Caja</td><td class="celtxt">Genera dinero que se puede reinvertir</td><td class="celtxt">Justo para llegar a fin de mes</td></tr>
+                <tr><td>Facturación por persona</td><td class="celtxt">Sube año a año</td><td class="celtxt">Se estanca: más gente, mismo resultado</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note"><b>Mide esto en la pestaña «Caja e impuestos»</b>, en la tabla de salud de empresa escalable. Si todo está en verde, tienes una empresa. Si hay rojos, arréglalos antes de crecer: escalar un negocio roto solo lo rompe más rápido.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -929,7 +1344,7 @@
     modo: "simple",
     perfil: "autonomo",
     wizardHecho: false,
-    servicios: [ {n:"Plan online mensual", precio:150, clientes:40, meses:6, entrega:8} ],
+    servicios: [ {n:"Plan online mensual", precio:150, clientes:40, meses:6, entrega:8, pago:"mensual", entrada:0} ],
     ivaModo: "incluido", iva: 21,
     pasarela: 2, comisionVenta: 0, otrosVar: 0,
     horasCliente: 2, horasMes: 120,
@@ -942,6 +1357,7 @@
     ],
     sueldos: [ {n:"Yo (mi sueldo)", v:1800, ss:0} ],
     impuesto: 25, colchonMeses: 3,
+    tasaImpago: 2, ivaGastos: 60, ivaPendiente: 0, impPendiente: 0,
     mktModo: "simple",
     ads: 800, otrosMkt: 150, nuevosMes: 7,
     cpl: 6, tasaAgenda: 25, tasaShow: 65, tasaCierre: 25,
@@ -991,6 +1407,10 @@
       }
     }catch(e){}
     if(!Array.isArray(d.servicios) || !d.servicios.length) d.servicios = clone(DEFAULTS.servicios);
+    d.servicios.forEach(function(x){
+      if(!x.pago) x.pago = "mensual";
+      if(x.entrada === undefined) x.entrada = 0;
+    });
     if(!Array.isArray(d.fijos)) d.fijos = clone(DEFAULTS.fijos);
     if(!Array.isArray(d.sueldos)) d.sueldos = clone(DEFAULTS.sueldos);
     if(!Array.isArray(d.historico)) d.historico = [];
@@ -1036,6 +1456,24 @@
       o.ingresos = o.clientes * o.neto;
       o.margenTotal = o.clientes * o.margen;
       o.bajas = o.clientes / o.meses;
+
+      // --- cómo entra el dinero (cash collected) ---
+      o.pago = s.pago || "mensual";
+      var totalNeto = o.neto * o.meses;               // ingreso neto de todo el compromiso
+      if(o.pago === "adelantado"){
+        o.entradaNeta = totalNeto;                    // lo cobra todo al empezar
+        o.cuotaNeta = 0;
+        o.diferidoPorCliente = totalNeto/2;           // saldo medio pendiente de entregar
+      } else if(o.pago === "entrada"){
+        o.entradaNeta = Math.min(totalNeto, (S.ivaModo === "incluido") ? n(s.entrada)/(1+iva) : n(s.entrada));
+        o.cuotaNeta = o.meses > 0 ? (totalNeto - o.entradaNeta)/o.meses : 0;
+        o.diferidoPorCliente = o.entradaNeta/2;
+      } else {
+        o.entradaNeta = 0;
+        o.cuotaNeta = o.neto;
+        o.diferidoPorCliente = 0;
+      }
+      o.entradaBruta = (S.ivaModo === "incluido") ? o.entradaNeta*(1+iva) : o.entradaNeta;
       return o;
     });
 
@@ -1058,6 +1496,11 @@
     c.ltv       = pond(function(s){ return s.ltv; });
     c.ltvIngreso= c.neto * c.mesesVida;
     c.margenPct = c.neto > 0 ? c.margen/c.neto : 0;
+
+    // reparto de las altas entre servicios: proporcional a la cartera actual
+    c.entradaMedia = pond(function(s){ return s.entradaNeta; });
+    c.cuotaMediaActivo = pond(function(s){ return s.cuotaNeta; });
+    c.diferidoTotal = c.servicios.reduce(function(a,s){ return a + s.clientes*s.diferidoPorCliente; },0);
 
     // --- estructura de costes ---
     c.fijos    = (S.fijos||[]).reduce(function(a,f){ return a + n(f.v); },0);
@@ -1087,12 +1530,52 @@
     c.beneficioPorCliente = c.ltv - (isFinite(c.cac) ? c.cac : 0);
 
     // --- resultado del mes ---
-    c.bai = c.margenTotal - c.estructura;
+    c.baiSinImpago = c.margenTotal - c.estructura;
+    c.bai = c.baiSinImpago - c.ingresos*n(S.tasaImpago)/100;
     c.tasaImp = n(S.impuesto)/100;
     c.tax = c.bai > 0 ? c.bai*c.tasaImp : 0;
     c.beneficio = c.bai - c.tax;
-    c.gastosTotales = c.cvarTotal + c.estructura;
+    c.gastosTotales = c.cvarTotal + c.estructura + c.ingresos*n(S.tasaImpago)/100;
     c.margenNetoPct = c.ingresos > 0 ? c.beneficio/c.ingresos : 0;
+
+    // --- IMPAGOS ---
+    c.tasaImpago = n(S.tasaImpago)/100;
+    c.perdidaImpago = c.ingresos * c.tasaImpago;
+
+    // --- CASH COLLECTED: el dinero que de verdad entra en el banco ---
+    c.cobradoBruto = c.ventas*c.entradaMedia + c.clientes*c.cuotaMediaActivo;
+    c.cobrado = c.cobradoBruto * (1 - c.tasaImpago);
+    c.difCobradoFacturado = c.cobrado - c.ingresos*(1-c.tasaImpago);
+
+    // --- IVA (recaudas y devuelves; nunca es tuyo) ---
+    c.ivaTipo = (S.ivaModo === "exento") ? 0 : n(S.iva)/100;
+    c.ivaRepercutido = c.cobrado * c.ivaTipo;                       // sobre lo que cobras
+    c.baseConIva = (c.cvarTotal + c.fijos + c.marketing) * n(S.ivaGastos)/100;
+    c.ivaSoportado = c.baseConIva * c.ivaTipo;
+    c.ivaMes = Math.max(0, c.ivaRepercutido - c.ivaSoportado);      // lo que le debes a Hacienda cada mes
+    c.ivaTrimestre = c.ivaMes * 3;
+
+    // --- lo que ya debes a Hacienda ---
+    c.ivaPendiente = n(S.ivaPendiente);
+    c.impPendiente = n(S.impPendiente);
+    c.ivaPendienteEst = c.ivaMes * 1.5;                             // media del trimestre en curso
+    c.impPendienteEst = (c.bai > 0 ? c.bai*c.tasaImp : 0) * 1.5;
+    c.deudaHacienda = c.ivaPendiente + c.impPendiente;
+
+    // --- caja ---
+    c.cajaBanco = n(S.caja);
+    c.cajaLibre = c.cajaBanco - c.deudaHacienda;
+    c.flujoCaja = c.cobrado - (c.cvarTotal + c.estructura) - c.ivaMes - (c.bai > 0 ? c.bai*c.tasaImp : 0);
+    c.runway = c.flujoCaja < 0 ? c.cajaLibre/Math.abs(c.flujoCaja) : Infinity;
+    c.mesesColchon = c.estructura > 0 ? c.cajaLibre/c.estructura : NaN;
+
+    // --- métricas de empresa escalable ---
+    c.mrr = c.ingresos;
+    c.arr = c.ingresos*12;
+    c.personas = (S.sueldos||[]).length;
+    c.ingresoPorPersona = c.personas > 0 ? c.ingresos/c.personas : NaN;
+    c.crecMensual = c.clientes > 0 ? (c.ventas-c.bajas)/c.clientes : 0;  // crecimiento neto de cartera
+    c.regla40 = c.crecMensual*12*100 + c.margenNetoPct*100;
 
     // --- equilibrio y objetivo ---
     c.breakeven = c.margen > 0 ? c.estructura/c.margen : Infinity;
@@ -1176,6 +1659,9 @@
     add("Crecimiento de clientes", "entran menos bajas, cada mes", c.neta, (c.neta>=0?"+":"")+num(c.neta,1), 0.01, -0.01);
     add("Peso de los sueldos", "cuánto se llevan de tu facturación", c.ingresos>0?c.sueldos/c.ingresos:NaN,
         c.ingresos>0?pct(c.sueldos/c.ingresos):"—", .40, .50, true);
+    add("Dinero que es tuyo de verdad", "banco menos lo que debes a Hacienda",
+        c.estructura > 0 ? (n(S.caja)-n(S.ivaPendiente)-n(S.impPendiente))/c.estructura : NaN,
+        c.estructura > 0 ? num((n(S.caja)-n(S.ivaPendiente)-n(S.impPendiente))/c.estructura,1)+" meses" : "—", 2, 1);
     add("Colchón de seguridad", "meses de gastos que tienes guardados",
         c.estructura>0?n(S.caja)/c.estructura:NaN,
         c.estructura>0?num(n(S.caja)/c.estructura,1)+" meses":"—", n(S.colchonMeses), Math.max(1,n(S.colchonMeses)/2));
@@ -1405,12 +1891,21 @@
     var w = $("servRows"); w.innerHTML = "";
     (S.servicios||[]).forEach(function(s,i){
       var d = document.createElement("div"); d.className = "row serv";
+      var pago = s.pago || "mensual";
       d.innerHTML =
         '<div class="inp"><input type="text" data-l="serv" data-i="'+i+'" data-f="n" value="'+esc(s.n)+'" placeholder="Nombre del plan"></div>'+
         '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="precio" value="'+n(s.precio)+'" step="5"><span class="unit">€</span></div>'+
         '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="clientes" value="'+n(s.clientes)+'" step="1"><span class="unit">cli</span></div>'+
         '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="meses" value="'+n(s.meses)+'" step="0.5"><span class="unit">mes</span></div>'+
         '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="entrega" value="'+n(s.entrega)+'" step="1"><span class="unit">€</span></div>'+
+        '<select data-l="serv" data-i="'+i+'" data-f="pago">'+
+          '<option value="mensual"'+(pago==="mensual"?" selected":"")+'>Cuota mensual</option>'+
+          '<option value="adelantado"'+(pago==="adelantado"?" selected":"")+'>Todo por adelantado</option>'+
+          '<option value="entrada"'+(pago==="entrada"?" selected":"")+'>Entrada + cuotas</option>'+
+        "</select>"+
+        '<div class="inp"><input type="number" data-l="serv" data-i="'+i+'" data-f="entrada" value="'+
+          (pago==="adelantado" ? Math.round(n(s.precio)*n(s.meses)) : n(s.entrada))+'" step="10"'+
+          (pago==="mensual"||pago==="adelantado" ? " disabled" : "")+'><span class="unit">€</span></div>'+
         (S.servicios.length > 1 ? '<button class="btn-del" data-del="serv" data-i="'+i+'" title="Eliminar">✕</button>' : '<span></span>');
       w.appendChild(d);
     });
@@ -1551,7 +2046,7 @@
     $("tablaCac").querySelector("tbody").innerHTML = filas.map(function(r){
       var cplMax = isFinite(c.convGlobal) ? r[1]*c.convGlobal : NaN;
       return "<tr><td>"+r[0]+"</td><td>"+eur2(r[1])+'</td><td class="adv">'+(isFinite(cplMax)?eur2(cplMax):"—")+
-        '</td><td class="wrap" style="color:var(--muted)">'+r[2]+"</td></tr>";
+        '</td><td class="celtxt" style="color:var(--muted)">'+r[2]+"</td></tr>";
     }).join("");
     $("notaCac").innerHTML = isFinite(c.cac)
       ? "<b>Ahora te cuesta "+eur2(c.cac)+" conseguir un cliente</b> y cada uno te deja "+eur(c.ltv)+". "+
@@ -1587,7 +2082,7 @@
           "</td><td>"+eur(e.ben)+'</td><td class="'+(dif>=0?"pos":"neg")+'">'+(dif>=0?"+":"")+eur(dif)+"</td></tr>";
       }).join("");
     } else {
-      tb.innerHTML = '<tr><td class="wrap" colspan="6" style="color:var(--muted)">Cambia a <b>modo embudo</b> arriba para ver dónde pierdes gente y qué palanca te daría más clientes.</td></tr>';
+      tb.innerHTML = '<tr><td class="celtxt" colspan="6" style="color:var(--muted)">Cambia a <b>modo embudo</b> arriba para ver dónde pierdes gente y qué palanca te daría más clientes.</td></tr>';
     }
   }
 
@@ -1753,7 +2248,7 @@
       var pil = !isFinite(dif) ? "" : Math.abs(dif) < .03 ? "good" : bueno ? "good" : "warn";
       return "<tr><td>"+r[0]+"</td><td>"+pct(r[1])+"</td><td>"+(isFinite(real)?pct(real):"—")+
         '</td><td><span class="pill '+pil+'">'+(isFinite(dif)?((dif>=0?"+":"")+fmtN1.format(dif*100)+" pts"):"—")+
-        '</span></td><td class="wrap" style="color:var(--muted)">'+r[3]+"</td></tr>";
+        '</span></td><td class="celtxt" style="color:var(--muted)">'+r[3]+"</td></tr>";
     }).join("");
   }
 
@@ -1762,6 +2257,7 @@
     var clientes = c.clientes, caja = n(S.caja), ads = c.ads, cpl = c.cpl;
     var gAds = n(S.crecAds)/100, gCpl = n(S.crecCpl)/100;
     var filas = "", tIng = 0, tGas = 0, tBen = 0, tAltas = 0, tBajas = 0, tAds = 0, mesRojo = 0;
+    var tCob = 0, tHac = 0, accIva = 0, accImp = 0;
     var hoy = new Date(), labels = [], serBen = [], serCaja = [], serCli = [];
     var ventasPorEuro = c.ads > 0 ? c.ventas/c.ads : 0;   // eficiencia actual de la inversión
 
@@ -1776,9 +2272,18 @@
       var medios = Math.max(0, clientes + (altas - bajas)/2);
       var ing = medios*c.neto;
       var gastos = medios*c.cvar + c.fijos + c.sueldos + ads + c.otrosMkt;
-      var bai = ing - gastos;
-      var ben = bai - (bai > 0 ? bai*c.tasaImp : 0);
-      caja += ben;
+      var impago = ing*c.tasaImpago;
+      var bai = ing - gastos - impago;
+      var impMes = bai > 0 ? bai*c.tasaImp : 0;
+      var ben = bai - impMes;
+
+      // dinero que entra de verdad en el banco
+      var cobrado = (altas*c.entradaMedia + medios*c.cuotaMediaActivo) * (1 - c.tasaImpago);
+      var ivaMes = Math.max(0, cobrado*c.ivaTipo - (medios*c.cvar + c.fijos + ads + c.otrosMkt)*n(S.ivaGastos)/100*c.ivaTipo);
+      accIva += ivaMes; accImp += impMes;
+      var pagoHacienda = 0;
+      if(m % 3 === 0){ pagoHacienda = accIva + accImp; accIva = 0; accImp = 0; }   // liquidación trimestral
+      caja += cobrado - gastos - pagoHacienda;
       clientes = Math.max(0, clientes + altas - bajas);
 
       var etiqueta = mesEtiqueta(new Date(hoy.getFullYear(), hoy.getMonth()+m, 1));
@@ -1786,18 +2291,21 @@
       labels.push(etiqueta); serBen.push(ben); serCaja.push(caja); serCli.push(clientes);
 
       filas += "<tr><td>"+etiqueta+"</td><td>"+eur(ads)+"</td><td>+"+num(altas,1)+"</td><td>−"+num(bajas,1)+
-        "</td><td><b>"+num(clientes,0)+"</b></td><td>"+eur(ing)+'</td><td class="adv">'+eur(gastos)+
+        "</td><td><b>"+num(clientes,0)+"</b></td><td>"+eur(ing)+"</td><td>"+eur(cobrado)+
+        '</td><td class="adv">'+eur(gastos)+"</td><td>"+(pagoHacienda>0?"−"+eur(pagoHacienda):"—")+
         '</td><td class="'+(ben>=0?"pos":"neg")+'">'+eur(ben)+
         '</td><td class="'+(caja>=0?"":"neg")+'">'+eur(caja)+"</td></tr>";
 
       tIng += ing; tGas += gastos; tBen += ben; tAltas += altas; tBajas += bajas; tAds += ads;
+      tCob += cobrado; tHac += pagoHacienda;
       ads = ads*(1+gAds); cpl = cpl*(1+gCpl);
     }
     $("tablaProy").querySelector("tbody").innerHTML = filas;
     $("tablaProy").querySelector("tfoot").innerHTML =
       "<tr><td>Total 12 meses</td><td>"+eur(tAds)+"</td><td>+"+num(tAltas,0)+"</td><td>−"+num(tBajas,0)+
-      "</td><td>"+num(clientes,0)+"</td><td>"+eur(tIng)+'</td><td class="adv">'+eur(tGas)+
-      '</td><td class="'+(tBen>=0?"pos":"neg")+'">'+eur(tBen)+'</td><td class="'+(caja>=0?"":"neg")+'">'+eur(caja)+"</td></tr>";
+      "</td><td>"+num(clientes,0)+"</td><td>"+eur(tIng)+"</td><td>"+eur(tCob)+'</td><td class="adv">'+eur(tGas)+
+      "</td><td>−"+eur(tHac)+'</td><td class="'+(tBen>=0?"pos":"neg")+'">'+eur(tBen)+
+      '</td><td class="'+(caja>=0?"":"neg")+'">'+eur(caja)+"</td></tr>";
 
     $("chartProy").innerHTML =
       grafico({labels:labels, h:200, series:[
@@ -1810,7 +2318,7 @@
 
     var np;
     if(c.clientes <= 0) np = "Pon tus clientes actuales en «Mis servicios» para proyectar el año.";
-    else if(mesRojo) np = "<b>Aviso serio de caja:</b> en el mes "+mesRojo+" te quedas sin dinero en el banco. Aunque el beneficio salga positivo, estás gastando en publicidad más rápido de lo que cobras. Baja el crecimiento de la inversión o cobra más por adelantado.";
+    else if(mesRojo) np = "<b>Aviso serio de caja:</b> en el mes "+mesRojo+" te quedas sin dinero en el banco. Aunque el beneficio salga positivo, entre la publicidad y las liquidaciones trimestrales de Hacienda sale más dinero del que entra. Baja el crecimiento de la inversión, cobra más por adelantado o guarda el IVA aparte desde ya.";
     else if(tBen > 0) np = "<b>Escenario viable:</b> acabarías el año con "+num(clientes,0)+" clientes, "+eur(tBen)+
       " de beneficio acumulado y "+eur(caja)+" en el banco. Ojo: esto asume que mantienes tus tasas de cierre y de permanencia al crecer, y lo normal es que empeoren un poco.";
     else np = "<b>Este escenario no sale:</b> acumularías "+eur(tBen)+" en 12 meses. Antes de invertir más, sube el precio, la permanencia o el cierre.";
@@ -1821,14 +2329,14 @@
   function renderMeses(c){
     var tb = $("tablaMeses").querySelector("tbody");
     if(!c.hist.length){
-      tb.innerHTML = '<tr><td class="wrap" colspan="11" style="color:var(--muted)">Aún no has cerrado ningún mes. Pulsa <b>«+ Cerrar un mes»</b> y apunta lo que pasó de verdad.</td></tr>';
+      tb.innerHTML = '<tr><td class="celtxt" colspan="12" style="color:var(--muted)">Aún no has cerrado ningún mes. Pulsa <b>«+ Cerrar un mes»</b> y apunta lo que pasó de verdad.</td></tr>';
       $("tablaMeses").querySelector("tfoot").innerHTML = "";
     } else {
       tb.innerHTML = c.hist.map(function(h,i){
         return "<tr>"+
           '<td><div class="inp"><input type="month" data-l="hist" data-i="'+i+'" data-f="mes" value="'+esc(h.mes)+'"></div></td>'+
           celdaHist(i,"clientes",h.clientes)+celdaHist(i,"altas",h.altas)+celdaHist(i,"bajas",h.bajas)+
-          celdaHist(i,"facturacion",h.facturacion)+celdaHist(i,"gastos",h.gastos)+
+          celdaHist(i,"facturacion",h.facturacion)+celdaHist(i,"cobrado",h.cobrado)+celdaHist(i,"gastos",h.gastos)+
           celdaHist(i,"ads",h.ads)+celdaHist(i,"caja",h.caja)+
           '<td class="'+(h.beneficio>=0?"pos":"neg")+'">'+eur(h.beneficio)+"</td>"+
           "<td>"+pct(h.margenPct)+"</td>"+
@@ -1839,9 +2347,10 @@
       var tA = c.hist.reduce(function(a,h){ return a+n(h.altas); },0);
       var tB = c.hist.reduce(function(a,h){ return a+n(h.bajas); },0);
       var tAd = c.hist.reduce(function(a,h){ return a+n(h.ads); },0);
+      var tC = c.hist.reduce(function(a,h){ return a+n(h.cobrado); },0);
       $("tablaMeses").querySelector("tfoot").innerHTML =
         "<tr><td>"+c.hist.length+" meses</td><td></td><td>+"+num(tA,0)+"</td><td>−"+num(tB,0)+"</td><td>"+eur(tF)+
-        "</td><td>"+eur(tG)+"</td><td>"+eur(tAd)+'</td><td></td><td class="'+((tF-tG)>=0?"pos":"neg")+'">'+eur(tF-tG)+
+        "</td><td>"+eur(tC)+"</td><td>"+eur(tG)+"</td><td>"+eur(tAd)+'</td><td></td><td class="'+((tF-tG)>=0?"pos":"neg")+'">'+eur(tF-tG)+
         "</td><td>"+(tF>0?pct((tF-tG)/tF):"—")+"</td><td></td></tr>";
     }
 
@@ -1855,7 +2364,10 @@
       nm = "<b>Tu último mes real:</b> captar un cliente te costó <b>"+cacR+"</b> (el panel estima "+
         (isFinite(c.cac)?eur2(c.cac):"—")+") y se te fue el <b>"+churnR+"</b> de la cartera"+
         (isFinite(ult.churnReal) && ult.churnReal > 0 ? ", lo que equivale a una permanencia real de <b>"+num(1/ult.churnReal,1)+" meses</b>" : "")+
-        ". Si esos números difieren mucho de los que tienes puestos arriba, actualízalos: el panel será mucho más fiable.";
+        ". Cobraste <b>"+eur(n(ult.cobrado))+"</b> frente a "+eur(n(ult.facturacion))+" facturados"+
+        (n(ult.facturacion) > 0 && n(ult.cobrado) > 0
+          ? (n(ult.cobrado) >= n(ult.facturacion) ? " (cobras por delante: bien para la caja)" : " (cobras por detrás: vigila los impagos)") : "")+
+        ". Si estos números difieren mucho de los que tienes puestos arriba, actualízalos: el panel será mucho más fiable.";
     }
     $("notaMeses").innerHTML = nm;
 
@@ -1879,6 +2391,7 @@
       $("realVsPrev").innerHTML =
         linea("Mes comparado", esc(u.mes||"—"), "sub") +
         comp("Facturación", n(u.facturacion), c.ingresos) +
+        comp("Cobrado (cash collected)", n(u.cobrado), c.cobrado) +
         comp("Gastos", n(u.gastos), c.gastosTotales + c.tax) +
         comp("Beneficio", u.beneficio, c.beneficio) +
         linea("Clientes", num(n(u.clientes),0)+" vs "+num(c.clientes,0)+" previstos", "sub") +
@@ -1890,11 +2403,114 @@
     return '<td><div class="inp"><input type="number" data-l="hist" data-i="'+i+'" data-f="'+f+'" value="'+n(v)+'" step="1"></div></td>';
   }
 
+
+  /* ---------------- RENDER: CAJA E IMPUESTOS ---------------- */
+  function renderCaja(c){
+    $("cj_cobrado").textContent = eur(c.cobrado);
+    $("cj_cobradofoot").textContent = "facturado: "+eur(c.ingresos)+
+      (Math.abs(c.difCobradoFacturado) > 20 ? (c.difCobradoFacturado > 0 ? " · cobras por delante" : " · cobras por detrás") : " · van a la par");
+    $("cj_banco").textContent = eur(c.cajaBanco);
+    $("cj_libre").textContent = eur(c.cajaLibre);
+    $("kpiLibre").className = "kpi hi " + (c.cajaLibre < 0 ? "bad" : c.cajaLibre < c.estructura ? "warn" : "good");
+    $("cj_librefoot").textContent = isFinite(c.mesesColchon)
+      ? num(c.mesesColchon,1)+" meses de gastos fijos" : "—";
+    $("cj_runway").textContent = isFinite(c.runway) ? num(c.runway,1)+" meses" : "Sin riesgo";
+    $("kpiRunway").className = "kpi " + (!isFinite(c.runway) ? "good" : c.runway < 3 ? "bad" : c.runway < 6 ? "warn" : "good");
+    $("cj_runwayfoot").textContent = isFinite(c.runway)
+      ? "pierdes "+eur(Math.abs(c.flujoCaja))+" de caja al mes"
+      : "generas "+eur(c.flujoCaja)+" de caja al mes";
+
+    $("cajaCompara").innerHTML =
+      linea("Facturación del mes (lo que has ganado)", eur(c.ingresos), "sub") +
+      linea("Pagos iniciales de clientes nuevos", eur(c.ventas*c.entradaMedia), "ind") +
+      linea("Cuotas de clientes activos", eur(c.clientes*c.cuotaMediaActivo), "ind") +
+      linea("− Impagos y devoluciones ("+num(c.tasaImpago*100,1)+" %)", "−"+eur(c.cobradoBruto*c.tasaImpago), "ind") +
+      linea("<b>= Cobras este mes (cash collected)</b>", "<b>"+eur(c.cobrado)+"</b>") +
+      linea("− Todos tus gastos", "−"+eur(c.cvarTotal + c.estructura), "ind") +
+      linea("− IVA que liquidas", "−"+eur(c.ivaMes), "ind") +
+      linea("− Impuestos sobre beneficio", "−"+eur(c.bai > 0 ? c.bai*c.tasaImp : 0), "ind") +
+      linea("<b>= Tu caja cambia en</b>", '<span class="'+(c.flujoCaja>=0?"pos":"neg")+'">'+
+        (c.flujoCaja>=0?"+":"")+eur(c.flujoCaja)+"</span>", "tot");
+
+    var nc;
+    if(c.clientes <= 0) nc = "Pon tus clientes para ver el flujo de caja.";
+    else if(c.difCobradoFacturado > 100)
+      nc = "<b>Cobras "+eur(c.difCobradoFacturado)+" más de lo que has ganado este mes.</b> Eso pasa porque cobras por adelantado y estás creciendo: es bueno para la caja, pero cuidado — parte de ese dinero es servicio que aún debes dar. Si dejas de captar, la caja cae de golpe.";
+    else if(c.difCobradoFacturado < -100)
+      nc = "<b>Cobras "+eur(Math.abs(c.difCobradoFacturado))+" menos de lo que has facturado.</b> Estás perdiendo clientes que ya pagaron por adelantado, o los impagos te están comiendo. Revisa cobros fallidos.";
+    else nc = "<b>Cobras casi lo mismo que facturas</b>, que es lo normal si cobras cuota mensual. Tu caja se mueve al ritmo de tu cuenta de resultados: más fácil de gestionar, pero financias tú el crecimiento.";
+    $("notaCaja").innerHTML = nc;
+
+    $("cajaImpuestos").innerHTML =
+      linea("IVA que cobras a tus clientes", eur(c.ivaRepercutido), "sub") +
+      linea("− IVA que tú pagas en tus gastos", "−"+eur(c.ivaSoportado), "ind") +
+      linea("<b>IVA que debes cada mes</b>", eur(c.ivaMes)) +
+      linea("Lo que sale cada trimestre", eur(c.ivaTrimestre), "sub") +
+      linea("Impuesto sobre beneficio del mes", eur(c.bai > 0 ? c.bai*c.tasaImp : 0), "sub") +
+      linea("<b>Deuda con Hacienda ahora mismo</b>", '<span class="'+(c.deudaHacienda>c.cajaBanco?"neg":"")+'">'+eur(c.deudaHacienda)+"</span>", "tot");
+
+    var cobertura = c.diferidoTotal > 0 ? c.cajaLibre/c.diferidoTotal : Infinity;
+    $("cajaDiferido").innerHTML =
+      linea("Servicio ya cobrado que todavía debes dar", eur(c.diferidoTotal)) +
+      linea("Por cliente", c.clientes > 0 ? eur(c.diferidoTotal/c.clientes) : "—", "sub") +
+      linea("Tu saldo libre (banco menos Hacienda)", eur(c.cajaLibre), "sub") +
+      linea("<b>Cobertura de ese compromiso</b>",
+        '<span class="'+(cobertura>=1?"pos":cobertura>=0.4?"":"neg")+'">'+
+        (isFinite(cobertura) ? pct(cobertura) : "no aplica")+"</span>", "tot");
+    $("notaDiferido").innerHTML = c.diferidoTotal > 0
+      ? "<b>Qué significa:</b> has cobrado "+eur(c.diferidoTotal)+" de servicios que aún tienes que prestar. No es una deuda que vayas a pagar en dinero (la pagas trabajando), pero sí lo sería si un cliente pide la devolución o si cerraras. "+
+        (cobertura >= 1
+          ? "Tu saldo libre lo cubre entero: vas muy sobrado."
+          : "Cubres el "+pct(cobertura)+" con tu saldo libre. Es <b>normal</b> estar por debajo del 100 % cuando entregas el servicio a lo largo de meses; el riesgo solo aparece si muchos clientes se van a la vez. Lo importante: no cuentes este dinero como beneficio ni lo ates a gastos fijos nuevos.")
+      : "Cobras a mes vencido o por cuotas, así que no tienes servicio pendiente cobrado por adelantado. Tu caja es más fácil de leer, pero financias tú el crecimiento: cada cliente nuevo tarda meses en devolverte lo que costó captarlo.";
+
+    $("cajaIvaDetalle").innerHTML =
+      linea("Base de gastos con IVA", eur(c.baseConIva), "sub") +
+      linea("Tipo de IVA aplicado", num(c.ivaTipo*100,0)+" %", "sub") +
+      linea("Pérdida anual por impagos", eur(c.perdidaImpago*12), "tot");
+
+    // tabla de escalabilidad
+    var filas = [
+      ["Margen por cliente", pct(c.margenPct), "más del 65 %", c.margenPct >= .65 ? "g" : c.margenPct >= .5 ? "w" : "b",
+       "Si es bajo, crecer solo te trae más trabajo, no más beneficio."],
+      ["Margen neto", pct(c.margenNetoPct), "más del 15 %", c.margenNetoPct >= .15 ? "g" : c.margenNetoPct >= .05 ? "w" : "b",
+       "Lo que de verdad se queda la empresa después de todo."],
+      ["Retorno de la captación", isFinite(c.ratio)?num(c.ratio,1)+"x":"—", "3x o más", c.ratio >= 3 ? "g" : c.ratio >= 2 ? "w" : "b",
+       "Si es alto y tienes caja, invertir más multiplica el negocio."],
+      ["Recuperas la inversión en", isFinite(c.payback)?num(c.payback,1)+" meses":"—", "menos de 3 meses", c.payback <= 1.5 ? "g" : c.payback <= 3 ? "w" : "b",
+       "Cuanto antes recuperas, más rápido puedes reinvertir sin pedir dinero."],
+      ["Permanencia media", num(c.mesesVida,1)+" meses", "más de 6 meses", c.mesesVida >= 6 ? "g" : c.mesesVida >= 4 ? "w" : "b",
+       "Retener es la palanca más barata: no cuesta publicidad."],
+      ["Clientes por persona", c.personas > 0 ? num(c.clientes/c.personas,0) : "—", "más de "+num(c.capacidad,0),
+       (c.personas > 0 && c.clientes/c.personas >= c.capacidad*0.8) ? "g" : "w",
+       "Mide si tu equipo está bien aprovechado antes de contratar."],
+      ["Facturación por persona", isFinite(c.ingresoPorPersona)?eur(c.ingresoPorPersona):"—", "más de 3.000 €",
+       c.ingresoPorPersona >= 3000 ? "g" : c.ingresoPorPersona >= 2000 ? "w" : "b",
+       "La señal más clara de si el negocio escala o solo suma gente."],
+      ["Colchón de caja", isFinite(c.mesesColchon)?num(c.mesesColchon,1)+" meses":"—", num(n(S.colchonMeses),0)+" meses",
+       c.mesesColchon >= n(S.colchonMeses) ? "g" : c.mesesColchon >= 1 ? "w" : "b",
+       "Sin colchón no puedes arriesgar, y sin arriesgar no se crece."],
+      ["Regla del 40", num(c.regla40,0), "40 o más", c.regla40 >= 40 ? "g" : c.regla40 >= 20 ? "w" : "b",
+       "Crecimiento anual % + margen neto %. Mide si creces y ganas a la vez."]
+    ];
+    var pil = {g:"good", w:"warn", b:"bad"};
+    var txt = {g:"Bien", w:"Vigílalo", b:"Arréglalo"};
+    $("tablaEscala").querySelector("tbody").innerHTML = filas.map(function(f){
+      return "<tr><td>"+f[0]+"</td><td><b>"+f[1]+"</b></td><td>"+f[2]+
+        '</td><td><span class="pill '+pil[f[3]]+'">'+txt[f[3]]+
+        '</span></td><td class="celtxt" style="color:var(--muted)">'+f[4]+"</td></tr>";
+    }).join("");
+    var malos = filas.filter(function(f){ return f[3] === "b"; }).length;
+    $("notaEscala").innerHTML = malos === 0
+      ? "<b>Tu negocio tiene forma de empresa escalable.</b> Todos los indicadores clave están en verde o en ámbar. Ahora la prioridad es no romper lo que funciona: crece por tramos, mide cada mes y mantén el colchón."
+      : "<b>Tienes "+malos+" indicador"+(malos>1?"es":"")+" en rojo.</b> Arréglalos antes de crecer: escalar un negocio con estos números en rojo solo multiplica el problema. Empieza por el margen por cliente, que es el que arrastra a todos los demás.";
+  }
+
   /* ---------------- RENDER GENERAL ---------------- */
   function render(){
     var c = calc();
     renderInicio(c); renderServicio(c); renderGastos(c); renderMarketing(c);
-    renderResultados(c); renderDecisiones(c); renderProyeccion(c); renderMeses(c);
+    renderResultados(c); renderCaja(c); renderDecisiones(c); renderProyeccion(c); renderMeses(c);
     $("s_margen").textContent = eur2(c.margen);
     $("s_ben").textContent = eur(c.beneficio);
     $("s_be").textContent = isFinite(c.breakeven) ? num(Math.ceil(c.breakeven),0)+" cli." : "—";
@@ -1929,7 +2545,7 @@
           '<div class="inp"><input type="text" id="w_nombre" value="'+esc(s.n||"Plan online")+'"></div></div>'+
           '<div class="field"><label><b>¿Cómo cobras?</b></label><div class="opts">'+
           '<div class="opt on" data-cobro="mensual"><div class="mark"></div><div><div class="t">Cuota mensual</div><div class="d">El cliente paga todos los meses mientras siga contigo.</div></div></div>'+
-          '<div class="opt" data-cobro="programa"><div class="mark"></div><div><div class="t">Programa cerrado</div><div class="d">Un pago (o varios) por un plan de X meses. Ej.: 900 € por 3 meses.</div></div></div>'+
+          '<div class="opt" data-cobro="programa"><div class="mark"></div><div><div class="t">Programa cerrado</div><div class="d">Un pago por un plan de X meses. Ej.: 900 € por 3 meses. Lo trataremos como cobro por adelantado.</div></div></div>'+
           "</div></div>"+
           '<div class="field"><label><b id="w_lprecio">Precio al mes</b></label>'+
           '<div class="inp big"><input type="number" id="w_precio" value="'+(n(s.precio)||150)+'" step="5"><span class="unit">€</span></div></div>'+
@@ -1944,6 +2560,7 @@
         S.servicios[0].n = $("w_nombre").value || "Mi servicio";
         S.servicios[0].precio = prog ? precio/meses : precio;
         S.servicios[0].meses = meses;
+        S.servicios[0].pago = prog ? "adelantado" : "mensual";   // se puede afinar luego en Mis servicios
       }
     },
     {
@@ -2049,9 +2666,15 @@
           '<span class="tip">Es el dinero que se queda en la empresa para crecer, para imprevistos o para repartir.</span></div>'+
           '<div class="field"><label><b>Dinero disponible hoy en el banco</b></label>'+
           '<div class="inp big"><input type="number" id="w_caja" value="'+n(S.caja)+'" step="100"><span class="unit">€</span></div>'+
-          '<span class="tip">Sin contar el IVA que tendrás que devolver. Sirve para avisarte si te vas a quedar sin caja.</span></div>';
+          '<span class="tip">El saldo tal cual lo ves en tu cuenta de empresa.</span></div>'+
+          '<div class="field"><label><b>IVA e impuestos que ya debes</b>, si lo sabes</label>'+
+          '<div class="inp"><input type="number" id="w_ivapend" value="'+n(S.ivaPendiente)+'" step="100"><span class="unit">€</span></div>'+
+          '<span class="tip">Ese dinero está en tu banco pero no es tuyo. Si no lo sabes, déjalo en 0 y luego pulsa «Estimar» en la pestaña de Caja.</span></div>';
       },
-      read:function(){ S.objetivo = n($("w_objetivo").value); S.caja = n($("w_caja").value); }
+      read:function(){
+        S.objetivo = n($("w_objetivo").value); S.caja = n($("w_caja").value);
+        S.ivaPendiente = n($("w_ivapend").value);
+      }
     },
     {
       t:"¡Listo! Este es tu punto de partida",
@@ -2063,6 +2686,7 @@
           linea("Cada cliente vale en total (LTV)", eur(c.ltv)) +
           linea("Clientes para no perder dinero", isFinite(c.breakeven)?num(Math.ceil(c.breakeven),0):"—") +
           linea("Clientes que tienes hoy", num(c.clientes,0)) +
+          linea("Cobras al mes (entra en el banco)", eur(c.cobrado)) +
           linea("Te queda limpio cada mes", '<span class="'+(c.beneficio>=0?"pos":"neg")+'">'+eur(c.beneficio)+"</span>", "tot") +
           "</div>"+
           '<div class="note"><b>Siguiente paso:</b> ve a «Mis gastos» y ajusta los importes reales, que es donde más se falla. Luego lee «Qué hacer ahora» en la pantalla de Inicio.</div>';
@@ -2139,7 +2763,8 @@
 
   /* ---------------- BINDINGS ---------------- */
   var SIMPLE = ["iva","pasarela","comisionVenta","otrosVar","horasCliente","horasMes",
-    "impuesto","colchonMeses","ads","otrosMkt","nuevosMes","cpl","tasaAgenda","tasaShow","tasaCierre",
+    "impuesto","colchonMeses","tasaImpago","ivaGastos","ivaPendiente","impPendiente",
+    "ads","otrosMkt","nuevosMes","cpl","tasaAgenda","tasaShow","tasaCierre",
     "objetivo","topeSueldos","ratioMin","capacidad","costeCoach","calcClientes","crecAds","crecCpl","caja"];
 
   function bindSimple(){
@@ -2160,10 +2785,17 @@
     var i = parseInt(t.getAttribute("data-i"),10), f = t.getAttribute("data-f");
     var arr = l === "fijo" ? S.fijos : l === "sueldo" ? S.sueldos : l === "serv" ? S.servicios : S.historico;
     if(!arr || !arr[i]) return;
-    var esTexto = (f === "n" || f === "mes");
+    var esTexto = (f === "n" || f === "mes" || f === "pago");
     arr[i][f] = esTexto ? t.value : (t.value === "" ? 0 : parseFloat(t.value));
     save();
     if(l === "hist"){ renderInicioLite(); } else { render(); }
+  });
+  document.addEventListener("change", function(e){
+    var t = e.target;
+    if(t.getAttribute && t.getAttribute("data-f") === "pago" && t.getAttribute("data-l") === "serv"){
+      S.servicios[parseInt(t.getAttribute("data-i"),10)].pago = t.value;
+      save(); renderServRows(); render();
+    }
   });
   // el histórico se repinta solo al salir del campo, para no perder el foco al escribir
   document.addEventListener("change", function(e){
@@ -2224,7 +2856,7 @@
     var usados = S.historico.map(function(h){ return h.mes; });
     var m = mesActualISO(-1), k = 1;
     while(usados.indexOf(m) >= 0 && k < 60){ m = mesActualISO(-1-k); k++; }
-    S.historico.push({mes:m, clientes:0, altas:0, bajas:0, facturacion:0, gastos:0, ads:0, caja:0});
+    S.historico.push({mes:m, clientes:0, altas:0, bajas:0, facturacion:0, cobrado:0, gastos:0, ads:0, caja:0});
     save(); render(); irTab("meses");
   };
   $("prefillMes").onclick = function(){
@@ -2232,7 +2864,8 @@
     if(!S.historico.length){ $("addMes").onclick(); }
     var h = S.historico[S.historico.length-1];
     h.clientes = Math.round(c.clientes); h.altas = Math.round(c.altas); h.bajas = Math.round(c.bajas);
-    h.facturacion = Math.round(c.ingresos); h.gastos = Math.round(c.gastosTotales + c.tax);
+    h.facturacion = Math.round(c.ingresos); h.cobrado = Math.round(c.cobrado);
+    h.gastos = Math.round(c.gastosTotales + c.tax);
     h.ads = Math.round(c.marketing); h.caja = Math.round(n(S.caja));
     save(); render();
   };
@@ -2241,6 +2874,16 @@
   $("tabs").addEventListener("click", function(e){
     var b = e.target.closest && e.target.closest("button[data-tab]");
     if(b) irTab(b.getAttribute("data-tab"));
+  });
+  $("subtabs").addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("button[data-sub]");
+    if(!b) return;
+    var name = b.getAttribute("data-sub");
+    Array.prototype.forEach.call($("subtabs").querySelectorAll("button"), function(x){
+      x.classList.toggle("active", x === b); });
+    Array.prototype.forEach.call(document.querySelectorAll("#tab-guia .sub"), function(d){
+      d.classList.toggle("hidden", d.id !== "sub-"+name); });
+    window.scrollTo({top:0, behavior:"smooth"});
   });
   function irTab(name){
     Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"), function(x){
@@ -2345,6 +2988,13 @@
     a.href = URL.createObjectURL(blob);
     a.download = "resumen-contabilidad-"+new Date().toISOString().slice(0,10)+".csv";
     a.click(); URL.revokeObjectURL(a.href);
+  };
+  $("btnEstimarHacienda").onclick = function(){
+    var c = calc();
+    S.ivaPendiente = Math.round(c.ivaPendienteEst);
+    S.impPendiente = Math.round(c.impPendienteEst);
+    $("ivaPendiente").value = S.ivaPendiente; $("impPendiente").value = S.impPendiente;
+    save(); render();
   };
   $("btnPrint").onclick = function(){ window.print(); };
   $("btnReset").onclick = function(){
