@@ -20,6 +20,13 @@ const VSL: { tipo: "vimeo" | "youtube"; id: string } = {
 // Enlace del calendario (botón "Agenda tu llamada").
 const CALENDARIO = "https://links.fitcondamian.com/widget/bookings/reserva-de-la-llamada";
 
+// Casos de éxito en vídeo (YouTube). Para añadir más, añade su ID aquí.
+const casosExito = [
+  "wnaKW0mFnHw",
+  "hrVa6H6ankg",
+  "E8AU7yjUHGA",
+];
+
 function vslSrc(): string | null {
   if (!VSL.id) return null;
   if (VSL.tipo === "vimeo") {
@@ -43,10 +50,10 @@ export default function VslPage() {
       </header>
 
       {/* BANNER — filtro de público objetivo */}
-      <div style={{ background: "linear-gradient(90deg, #0077CC, #00AAFF)", padding: "14px 24px", textAlign: "center" }}>
-        <p style={{ margin: 0, color: "#fff", fontSize: "clamp(13px, 3.4vw, 15px)", fontWeight: 900, lineHeight: 1.45, letterSpacing: "-0.3px" }}>
-          Para mujeres con perimenopausia o menopausia que están cansadas todo el día,<br />
-          se odian al mirarse al espejo y han perdido su autoestima
+      <div style={{ background: "linear-gradient(90deg, #0077CC, #00AAFF)", padding: "16px 24px", textAlign: "center" }}>
+        <p style={{ margin: 0, color: "#fff", fontSize: "clamp(15px, 4.4vw, 19px)", fontWeight: 900, lineHeight: 1.4, letterSpacing: "-0.3px" }}>
+          Exclusivo para mujeres con <span style={{ color: "#0D0D0D" }}>PERIMENOPAUSIA</span> O <span style={{ color: "#0D0D0D" }}>MENOPAUSIA</span><br />
+          que estén <span style={{ color: "#0D0D0D" }}>cansadas</span> todo el día y se <span style={{ color: "#0D0D0D" }}>odian</span> al mirarse al <span style={{ color: "#0D0D0D" }}>espejo</span>
         </p>
       </div>
 
@@ -58,11 +65,13 @@ export default function VslPage() {
             VÍDEO IMPORTANTE · MÍRALO ENTERO
           </p>
           <h1 style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 6vw, 2.7rem)", margin: "0 0 12px 0", lineHeight: 1.12, letterSpacing: "-1px" }}>
-            Cómo recuperar tu energía, tu cuerpo y tu autoestima{" "}
-            <em style={{ fontStyle: "italic", color: "#00AAFF" }}>durante la menopausia</em>
+            Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la{" "}
+            <span style={{ color: "#00AAFF" }}>MENOPAUSIA</span> multiplicando tu{" "}
+            <span style={{ color: "#00AAFF" }}>energía</span> y eliminando la{" "}
+            <span style={{ color: "#00AAFF" }}>flacidez</span>, sin renunciar a tu rutina diaria
           </h1>
           <p style={{ color: "#AAAAAA", fontSize: "15px", margin: 0, lineHeight: 1.6 }}>
-            Dale al play y míralo con calma hasta el final. Al terminar sabrás exactamente cuál es tu siguiente paso.
+            Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
           </p>
         </div>
 
@@ -112,6 +121,34 @@ export default function VslPage() {
           <p style={{ color: "#777", fontSize: "13px", margin: "16px 0 0 0" }}>
             30 minutos · 100% gratuito · sin compromiso
           </p>
+        </div>
+
+        {/* CASOS DE ÉXITO EN VÍDEO */}
+        <div style={{ borderTop: "1px solid #1f1f1f", marginTop: "56px", marginBottom: "32px" }} />
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+            RESULTADOS REALES
+          </p>
+          <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: 0, letterSpacing: "-0.5px" }}>
+            Mujeres que ya lo han conseguido
+          </h3>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {casosExito.map((id, i) => (
+            <div key={id} style={{
+              position: "relative", aspectRatio: "16/9",
+              borderRadius: "16px", overflow: "hidden",
+              border: "1px solid #1f1f1f", background: "#000",
+            }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
+                title={`Caso de éxito ${i + 1}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+              />
+            </div>
+          ))}
         </div>
 
       </div>
