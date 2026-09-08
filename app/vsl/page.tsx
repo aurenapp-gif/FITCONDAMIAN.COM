@@ -50,10 +50,9 @@ export default function VslPage() {
       </header>
 
       {/* BANNER — filtro de público objetivo */}
-      <div style={{ background: "linear-gradient(90deg, #0077CC, #00AAFF)", padding: "16px 24px", textAlign: "center" }}>
-        <p style={{ margin: 0, color: "#fff", fontSize: "clamp(15px, 4.4vw, 19px)", fontWeight: 900, lineHeight: 1.4, letterSpacing: "-0.3px" }}>
-          Exclusivo para mujeres con <span style={{ color: "#0D0D0D" }}>PERIMENOPAUSIA</span> O <span style={{ color: "#0D0D0D" }}>MENOPAUSIA</span><br />
-          que estén <span style={{ color: "#0D0D0D" }}>cansadas</span> todo el día y se <span style={{ color: "#0D0D0D" }}>odian</span> al mirarse al <span style={{ color: "#0D0D0D" }}>espejo</span>
+      <div style={{ background: "linear-gradient(90deg, #0077CC, #00AAFF)", padding: "14px 24px", textAlign: "center" }}>
+        <p style={{ maxWidth: "560px", margin: "0 auto", color: "rgba(255,255,255,0.72)", fontSize: "clamp(14px, 3.9vw, 17px)", fontWeight: 800, lineHeight: 1.35, letterSpacing: "-0.2px" }}>
+          Exclusivo para mujeres con <span style={{ color: "#fff", fontWeight: 900 }}>PERIMENOPAUSIA</span> O <span style={{ color: "#fff", fontWeight: 900 }}>MENOPAUSIA</span> que estén <span style={{ color: "#fff", fontWeight: 900 }}>cansadas</span> todo el día y se <span style={{ color: "#fff", fontWeight: 900 }}>odian</span> al mirarse al <span style={{ color: "#fff", fontWeight: 900 }}>espejo</span>
         </p>
       </div>
 
@@ -64,7 +63,7 @@ export default function VslPage() {
           <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 12px 0" }}>
             VÍDEO IMPORTANTE · MÍRALO ENTERO
           </p>
-          <h1 style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 6vw, 2.7rem)", margin: "0 0 12px 0", lineHeight: 1.12, letterSpacing: "-1px" }}>
+          <h1 style={{ fontWeight: 900, fontSize: "clamp(1.2rem, 4.6vw, 2.2rem)", margin: "0 0 12px 0", lineHeight: 1.18, letterSpacing: "-0.5px" }}>
             Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la{" "}
             <span style={{ color: "#00AAFF" }}>MENOPAUSIA</span> multiplicando tu{" "}
             <span style={{ color: "#00AAFF" }}>energía</span> y eliminando la{" "}
