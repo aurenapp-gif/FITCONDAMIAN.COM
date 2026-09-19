@@ -29,7 +29,11 @@
   #fcd-vsl .fcd-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
   #fcd-vsl .fcd-cta-wrap { text-align: center; margin-top: 36px; }
   #fcd-vsl .fcd-cta { display: inline-block; background: linear-gradient(90deg, #0077CC, #00AAFF); color: #fff; font-weight: 900; font-size: clamp(1.05rem, 3.6vw, 1.35rem); letter-spacing: -0.3px; padding: 20px 44px; border-radius: 99px; box-shadow: 0 12px 34px rgba(0,170,255,0.35); }
-  #fcd-vsl .fcd-cta-note { color: #777; font-size: 13px; margin: 16px 0 0 0; }
+  #fcd-vsl .fcd-cta-note { color: #777; font-size: 13px; margin: 10px 0 0 0; }
+  #fcd-vsl .fcd-scarcity { display: inline-flex; align-items: center; gap: 8px; color: #ff6b6b; font-size: 14px; font-weight: 800; letter-spacing: -0.1px; margin: 16px 0 0 0; }
+  #fcd-vsl .fcd-scarcity .dot { width: 9px; height: 9px; border-radius: 50%; background: #ff4d4d; animation: fcd-pulse 1.6s infinite; }
+  @keyframes fcd-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,77,77,0.5); } 70% { box-shadow: 0 0 0 8px rgba(255,77,77,0); } 100% { box-shadow: 0 0 0 0 rgba(255,77,77,0); } }
+  @media (prefers-reduced-motion: reduce) { #fcd-vsl .fcd-scarcity .dot { animation: none; } }
   #fcd-vsl .fcd-cases-sep { border-top: 1px solid #1f1f1f; margin: 56px 0 32px; }
   #fcd-vsl .fcd-cases-head { text-align: center; margin-bottom: 28px; }
   #fcd-vsl .fcd-cases-head .eb { color: #AAAAAA; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
@@ -99,6 +103,7 @@
 
     <div class="fcd-cta-wrap">
       <a class="fcd-cta" href="https://links.fitcondamian.com/widget/bookings/reserva-de-la-llamada">📞 Agenda tu llamada</a>
+      <p class="fcd-scarcity"><span class="dot"></span> Solo queda <b>1 plaza</b> disponible</p>
       <p class="fcd-cta-note">30 minutos · 100% gratuito · sin compromiso</p>
     </div>
 

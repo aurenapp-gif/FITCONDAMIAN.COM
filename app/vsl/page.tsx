@@ -160,7 +160,10 @@ export default function VslPage() {
           >
             📞 Agenda tu llamada
           </a>
-          <p style={{ color: "#777", fontSize: "13px", margin: "16px 0 0 0" }}>
+          <p style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#ff6b6b", fontSize: "14px", fontWeight: 800, letterSpacing: "-0.1px", margin: "16px 0 0 0" }}>
+            <span className="fcd-pulse-dot" /> Solo queda <b style={{ fontWeight: 900 }}>1 plaza</b> disponible
+          </p>
+          <p style={{ color: "#777", fontSize: "13px", margin: "10px 0 0 0" }}>
             30 minutos · 100% gratuito · sin compromiso
           </p>
         </div>
