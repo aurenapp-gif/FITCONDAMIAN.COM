@@ -85,7 +85,7 @@ export default function VslPage() {
                 ))}
               </div>
               <span style={{ fontSize: "13.5px", fontWeight: 700, color: "#e8eef2", letterSpacing: "-0.1px" }}>
-                <span style={{ color: "#00AAFF", fontWeight: 900 }}>+1.300 mujeres</span> lo han conseguido con el método
+                <span style={{ color: "#00AAFF", fontWeight: 900 }}>+1.300 mujeres</span> lo han conseguido con mi método
               </span>
             </div>
           </div>
