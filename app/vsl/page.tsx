@@ -27,6 +27,15 @@ const casosExito = [
   "E8AU7yjUHGA",
 ];
 
+// Mensajes reales de clientas (estilo WhatsApp).
+const mensajes = [
+  { ini: "E", nombre: "Eva", hora: "13:33", texto: "Madre mía… de verdad, que te encanta tu trabajo. Estoy súper contenta y estoy en el día 0 🙌" },
+  { ini: "C", nombre: "Clienta", hora: "18:51", texto: "No sabes lo feliz que estoy. Esta semana tenía una boda y hacía muchísimo que no me ponía un vestido tan ajustado… y me sentí tan bien 😭❤️ Me ha cambiado la vida tener un plan." },
+  { ini: "C", nombre: "Clienta", hora: "19:12", texto: "Había pasado por tantos nutricionistas y entrenadores que ya no confiaba en conseguirlo. Pero lo haces tan fácil, con recetas guays, y en ningún momento me he sentido sola 😂💕" },
+  { ini: "C", nombre: "Clienta", hora: "09:14", texto: "Antes estaba toda la mañana con sueño, 0 enérgica… y ahora he notado un cambio brutal: me levanto descansada y con más energía. Esta semana fui 3 días al gimnasio y salí a andar 6 km 👌" },
+  { ini: "C", nombre: "Clienta", hora: "10:05", texto: "Solo para decirte que estoy feliz. No me he pesado aún, pero estoy mucho más ligera: ayer me puse unos pantalones que hace un mes no me cerraban 👖" },
+];
+
 function vslSrc(): string | null {
   if (!VSL.id) return null;
   if (VSL.tipo === "vimeo") {
@@ -179,6 +188,32 @@ export default function VslPage() {
                 allowFullScreen
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
               />
+            </div>
+          ))}
+        </div>
+
+        {/* MENSAJES DE CLIENTAS (estilo WhatsApp) — después de los vídeos */}
+        <div style={{ borderTop: "1px solid #1f1f1f", marginTop: "48px", marginBottom: "28px" }} />
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <p style={{ color: "#25D366", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+            💬 Mensajes reales
+          </p>
+          <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+            Lo que me dicen mis clientas
+          </h3>
+          <p style={{ color: "#777", fontSize: "13px", margin: 0 }}>Desliza para ver más →</p>
+        </div>
+        <div style={{ display: "flex", gap: "12px", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: "10px" }}>
+          {mensajes.map((m, i) => (
+            <div key={i} style={{ flex: "0 0 auto", width: "min(84%, 320px)", scrollSnapAlign: "center", background: "#0e1317", border: "1px solid #1f2a30", borderRadius: "16px", padding: "14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                <span style={{ width: "30px", height: "30px", borderRadius: "50%", background: "linear-gradient(135deg, #25D366, #128C7E)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "13px", fontWeight: 800 }}>{m.ini}</span>
+                <span style={{ fontSize: "12.5px", fontWeight: 800, color: "#e8eef2" }}>{m.nombre}<span style={{ color: "#53bdeb", marginLeft: "5px", letterSpacing: "-2px" }}>✓✓</span></span>
+              </div>
+              <div style={{ background: "#202c33", borderRadius: "4px 14px 14px 14px", padding: "11px 13px", color: "#e9edef", fontSize: "14px", lineHeight: 1.5 }}>
+                {m.texto}
+                <span style={{ display: "block", textAlign: "right", color: "#8696a0", fontSize: "10px", marginTop: "6px" }}>{m.hora}</span>
+              </div>
             </div>
           ))}
         </div>
