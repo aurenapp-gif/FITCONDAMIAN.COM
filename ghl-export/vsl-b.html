@@ -1,0 +1,160 @@
+<!-- ================================================================= -->
+<!-- FIT CON DAMIAN — Landing VSL · VARIANTE B (con mensajes clientas)  -->
+<!-- Pegar en el bloque "Codigo personalizado / HTML" de GoHighLevel.   -->
+<!-- Usar como Variante B del split test A/B (A = vsl.html).            -->
+<!-- ================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+  #fcd-vsl * { margin: 0; padding: 0; box-sizing: border-box; }
+  #fcd-vsl { background-color: #0D0D0D; background-image: radial-gradient(90% 45% at 50% -8%, rgba(0,170,255,0.13), rgba(0,170,255,0) 62%), radial-gradient(70% 40% at 50% 108%, rgba(0,119,204,0.10), rgba(0,119,204,0) 60%), repeating-linear-gradient(0deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 46px), repeating-linear-gradient(90deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 46px); color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; line-height: 1.5; }
+  #fcd-vsl a { text-decoration: none; }
+  #fcd-vsl .fcd-accent { color: #00AAFF; }
+  #fcd-vsl .fcd-header { border-bottom: 1px solid #1f1f1f; padding: 20px 24px; text-align: center; }
+  #fcd-vsl .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+  #fcd-vsl .fcd-banner { background: linear-gradient(90deg, #0077CC, #00AAFF); padding: 14px 24px; text-align: center; }
+  #fcd-vsl .fcd-banner p { max-width: 560px; margin: 0 auto; color: rgba(255,255,255,0.72); font-size: clamp(14px, 3.9vw, 17px); font-weight: 800; line-height: 1.35; letter-spacing: -0.2px; }
+  #fcd-vsl .fcd-banner .hl { color: #fff; font-weight: 900; }
+  #fcd-vsl .fcd-wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
+  #fcd-vsl .fcd-head { text-align: center; padding-top: 26px; margin-bottom: 28px; }
+  #fcd-vsl .fcd-eyebrow { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 12px 0; }
+  #fcd-vsl h1 { font-weight: 900; font-size: clamp(1.2rem, 4.6vw, 2.2rem); margin: 0 0 12px 0; line-height: 1.18; letter-spacing: -0.5px; }
+  #fcd-vsl h1 em { font-style: normal; color: #00AAFF; }
+  #fcd-vsl .fcd-sub { color: #AAAAAA; font-size: 15px; margin: 0; line-height: 1.6; }
+  #fcd-vsl .fcd-video { position: relative; aspect-ratio: 16/9; border-radius: 18px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  #fcd-vsl .fcd-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  #fcd-vsl .fcd-cta-wrap { text-align: center; margin-top: 36px; }
+  #fcd-vsl .fcd-cta { display: inline-block; background: linear-gradient(90deg, #0077CC, #00AAFF); color: #fff; font-weight: 900; font-size: clamp(1.05rem, 3.6vw, 1.35rem); letter-spacing: -0.3px; padding: 20px 44px; border-radius: 99px; box-shadow: 0 12px 34px rgba(0,170,255,0.35); }
+  #fcd-vsl .fcd-cta-note { color: #777; font-size: 13px; margin: 16px 0 0 0; }
+  #fcd-vsl .fcd-cases-sep { border-top: 1px solid #1f1f1f; margin: 56px 0 32px; }
+  #fcd-vsl .fcd-cases-head { text-align: center; margin-bottom: 28px; }
+  #fcd-vsl .fcd-cases-head .eb { color: #AAAAAA; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-vsl .fcd-cases-head h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0; letter-spacing: -0.5px; }
+  #fcd-vsl .fcd-cases { display: flex; flex-direction: column; gap: 16px; }
+  #fcd-vsl .fcd-case { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
+  #fcd-vsl .fcd-case iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  #fcd-vsl .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; }
+  #fcd-vsl .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
+  #fcd-vsl .fcd-footer a { color: #444; }
+  /* Prueba social — píldora con halo giratorio */
+  @keyframes fcd-halo-spin { to { transform: rotate(360deg); } }
+  #fcd-vsl .fcd-proof { display: flex; justify-content: center; padding-top: 34px; }
+  #fcd-vsl .fcd-halo { position: relative; border-radius: 999px; padding: 1.5px; overflow: hidden; isolation: isolate; box-shadow: 0 0 26px rgba(0,170,255,0.18); }
+  #fcd-vsl .fcd-halo::before { content: ""; position: absolute; left: 50%; top: 50%; width: 240%; aspect-ratio: 1; transform: translate(-50%,-50%); z-index: -1; background: conic-gradient(from 0deg, rgba(0,170,255,0) 0deg, rgba(0,170,255,0) 190deg, #00AAFF 285deg, #9ee0ff 320deg, rgba(0,170,255,0) 360deg); animation: fcd-halo-spin 4s linear infinite; }
+  #fcd-vsl .fcd-halo-inner { border-radius: 999px; background: #0d0d0d; display: inline-flex; align-items: center; gap: 12px; padding: 7px 20px 7px 12px; }
+  #fcd-vsl .fcd-avatars { display: flex; align-items: center; }
+  #fcd-vsl .fcd-av { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #0d0d0d; background: #16455f; overflow: hidden; flex-shrink: 0; }
+  #fcd-vsl .fcd-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #fcd-vsl .fcd-av + .fcd-av { margin-left: -12px; }
+  #fcd-vsl .fcd-proof-txt { font-size: 13.5px; font-weight: 700; color: #e8eef2; letter-spacing: -0.1px; }
+  #fcd-vsl .fcd-proof-txt b { color: #00AAFF; font-weight: 900; }
+  @media (prefers-reduced-motion: reduce) { #fcd-vsl .fcd-halo::before { animation: none; } }
+  /* Mensajes de clientas (estilo WhatsApp) — carrusel deslizable */
+  #fcd-vsl .fcd-msgs-head { text-align: center; margin-bottom: 20px; }
+  #fcd-vsl .fcd-msgs-head .eb { color: #25D366; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-vsl .fcd-msgs-head h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0 0 6px 0; letter-spacing: -0.5px; }
+  #fcd-vsl .fcd-msgs-head .sw { color: #777; font-size: 13px; margin: 0; }
+  #fcd-vsl .fcd-msgs { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
+  #fcd-vsl .fcd-msg { flex: 0 0 auto; width: min(84%, 320px); scroll-snap-align: center; background: #0e1317; border: 1px solid #1f2a30; border-radius: 16px; padding: 14px; }
+  #fcd-vsl .fcd-msg-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  #fcd-vsl .fcd-msg-ava { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 800; }
+  #fcd-vsl .fcd-msg-name { font-size: 12.5px; font-weight: 800; color: #e8eef2; }
+  #fcd-vsl .fcd-msg-name i { color: #53bdeb; font-style: normal; margin-left: 5px; letter-spacing: -2px; }
+  #fcd-vsl .fcd-msg-bubble { background: #202c33; border-radius: 4px 14px 14px 14px; padding: 11px 13px; color: #e9edef; font-size: 14px; line-height: 1.5; }
+  #fcd-vsl .fcd-msg-time { display: block; text-align: right; color: #8696a0; font-size: 10px; margin-top: 6px; }
+</style>
+
+<div id="fcd-vsl">
+
+  <header class="fcd-header"><p><span style="font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-1.2px;">fitcon<span class="fcd-accent">damián</span></span></p></header>
+
+  <div class="fcd-banner">
+    <p>Exclusivo para mujeres con <span class="hl">PERIMENOPAUSIA</span> O <span class="hl">MENOPAUSIA</span> que estén <span class="hl">cansadas</span> todo el día y se <span class="hl">odian</span> al mirarse al <span class="hl">espejo</span></p>
+  </div>
+
+  <div class="fcd-wrap">
+
+    <div class="fcd-proof">
+      <div class="fcd-halo">
+        <div class="fcd-halo-inner">
+          <div class="fcd-avatars">
+            <span class="fcd-av"><img src="https://fitcondamian.com/avatar-1.jpg?v=2" alt=""></span>
+            <span class="fcd-av"><img src="https://fitcondamian.com/avatar-2.jpg?v=2" alt=""></span>
+            <span class="fcd-av"><img src="https://fitcondamian.com/avatar-3.jpg?v=2" alt=""></span>
+          </div>
+          <span class="fcd-proof-txt"><b>+1.300 mujeres</b> lo han conseguido con mi método</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fcd-head">
+      <p class="fcd-eyebrow">VÍDEO IMPORTANTE · MÍRALO ENTERO</p>
+      <h1>Cómo recuperar tu <em>JUVENTUD</em> durante la <em>MENOPAUSIA</em> multiplicando tu <em>energía</em> y eliminando la <em>flacidez</em>, sin renunciar a tu rutina diaria</h1>
+      <p class="fcd-sub">Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.</p>
+    </div>
+
+    <div class="fcd-video" id="fcd-vsl-video">
+      <iframe src="https://player.vimeo.com/video/1228323445?title=0&byline=0&portrait=0&badge=0&dnt=1&color=00AAFF" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="fcd-cta-wrap">
+      <a class="fcd-cta" href="https://links.fitcondamian.com/widget/bookings/reserva-de-la-llamada">📞 Agenda tu llamada</a>
+      <p class="fcd-cta-note">30 minutos · 100% gratuito · sin compromiso</p>
+    </div>
+
+    <!-- MENSAJES DE CLIENTAS (estilo WhatsApp) -->
+    <div class="fcd-cases-sep"></div>
+    <div class="fcd-msgs-head">
+      <p class="eb">💬 Mensajes reales</p>
+      <h3>Lo que me dicen mis clientas</h3>
+      <p class="sw">Desliza para ver más →</p>
+    </div>
+    <div class="fcd-msgs">
+      <div class="fcd-msg">
+        <div class="fcd-msg-top"><span class="fcd-msg-ava">E</span><span class="fcd-msg-name">Eva<i>✓✓</i></span></div>
+        <div class="fcd-msg-bubble">Madre mía… de verdad, que te encanta tu trabajo. Estoy súper contenta y estoy en el día 0 🙌<span class="fcd-msg-time">13:33</span></div>
+      </div>
+      <div class="fcd-msg">
+        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
+        <div class="fcd-msg-bubble">No sabes lo feliz que estoy. Esta semana tenía una boda y hacía muchísimo que no me ponía un vestido tan ajustado… y me sentí tan bien 😭❤️ Me ha cambiado la vida tener un plan.<span class="fcd-msg-time">18:51</span></div>
+      </div>
+      <div class="fcd-msg">
+        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
+        <div class="fcd-msg-bubble">Había pasado por tantos nutricionistas y entrenadores que ya no confiaba en conseguirlo. Pero lo haces tan fácil, con recetas guays, y en ningún momento me he sentido sola 😂💕<span class="fcd-msg-time">19:12</span></div>
+      </div>
+      <div class="fcd-msg">
+        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
+        <div class="fcd-msg-bubble">Antes estaba toda la mañana con sueño, 0 enérgica… y ahora he notado un cambio brutal: me levanto descansada y con más energía. Esta semana fui 3 días al gimnasio y salí a andar 6 km 👌<span class="fcd-msg-time">09:14</span></div>
+      </div>
+      <div class="fcd-msg">
+        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
+        <div class="fcd-msg-bubble">Solo para decirte que estoy feliz. No me he pesado aún, pero estoy mucho más ligera: ayer me puse unos pantalones que hace un mes no me cerraban 👖<span class="fcd-msg-time">10:05</span></div>
+      </div>
+    </div>
+
+    <!-- CASOS DE ÉXITO EN VÍDEO -->
+    <div class="fcd-cases-sep"></div>
+    <div class="fcd-cases-head">
+      <p class="eb">RESULTADOS REALES</p>
+      <h3>Mujeres que ya lo han conseguido</h3>
+    </div>
+    <div class="fcd-cases">
+      <div class="fcd-case"><iframe src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0" title="Caso de éxito 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="fcd-case"><iframe src="https://www.youtube-nocookie.com/embed/hrVa6H6ankg?rel=0" title="Caso de éxito 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="fcd-case"><iframe src="https://www.youtube-nocookie.com/embed/E8AU7yjUHGA?rel=0" title="Caso de éxito 3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+  </div>
+
+  <footer class="fcd-footer">
+    <p>© <span id="fcd-year-vsl"></span> Fit con Damián · fitcondamian.com · <a href="/privacidad">Privacidad</a> · <a href="/politica-cookies">Cookies</a> · <a href="/aviso-legal">Aviso Legal</a></p>
+  </footer>
+</div>
+
+<script>
+  (function () { var y = document.getElementById('fcd-year-vsl'); if (y) y.textContent = new Date().getFullYear(); })();
+</script>
