@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -8,6 +8,14 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+// Tipografía del logotipo (wordmark "fitcondamián").
+const sora = Sora({
+  variable: "--font-sora",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["800"],
 });
 
 const description = "Recursos gratuitos de fitness y nutrición para transformar tu cuerpo.";
@@ -41,7 +49,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={inter.variable}>
+    <html lang="es" className={`${inter.variable} ${sora.variable}`}>
       <link rel="preconnect" href="https://links.fitcondamian.com" />
       <link rel="dns-prefetch" href="https://links.fitcondamian.com" />
       <body className="antialiased">

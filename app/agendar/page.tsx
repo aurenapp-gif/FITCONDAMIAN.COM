@@ -21,7 +21,7 @@ export default function AgendarPage() {
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          Fit con <span style={{ color: "#00AAFF" }}>Damián</span>
+          <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#00AAFF" }}>damián</span></span>
         </p>
       </header>
 
