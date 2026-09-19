@@ -66,10 +66,11 @@ export default function VslPage() {
         </p>
       </header>
 
-      {/* BANNER — filtro de público objetivo */}
-      <div style={{ background: "linear-gradient(90deg, #0077CC, #00AAFF)", padding: "14px 24px", textAlign: "center" }}>
-        <p style={{ maxWidth: "560px", margin: "0 auto", color: "rgba(255,255,255,0.72)", fontSize: "clamp(14px, 3.9vw, 17px)", fontWeight: 800, lineHeight: 1.35, letterSpacing: "-0.2px" }}>
-          Exclusivo para mujeres con <span style={{ color: "#fff", fontWeight: 900 }}>PERIMENOPAUSIA</span> O <span style={{ color: "#fff", fontWeight: 900 }}>MENOPAUSIA</span> que estén <span style={{ color: "#fff", fontWeight: 900 }}>cansadas</span> todo el día y se <span style={{ color: "#fff", fontWeight: 900 }}>odian</span> al mirarse al <span style={{ color: "#fff", fontWeight: 900 }}>espejo</span>
+      {/* BANNER — filtro de público objetivo (sobrio/premium) */}
+      <div style={{ background: "linear-gradient(180deg, rgba(0,80,150,0.22), rgba(0,40,80,0.12))", borderTop: "1px solid rgba(0,170,255,0.4)", borderBottom: "1px solid rgba(0,170,255,0.2)", padding: "16px 22px", textAlign: "center" }}>
+        <p style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 6px 0" }}>Solo para mujeres con</p>
+        <p style={{ maxWidth: "620px", margin: "0 auto", color: "#fff", fontSize: "clamp(14px, 4vw, 17px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px" }}>
+          <span style={{ color: "#00AAFF", fontWeight: 900 }}>Perimenopausia</span> o <span style={{ color: "#00AAFF", fontWeight: 900 }}>menopausia</span> que estén <span style={{ color: "#00AAFF", fontWeight: 900 }}>cansadas</span> todo el día y se <span style={{ color: "#00AAFF", fontWeight: 900 }}>odian</span> al mirarse al <span style={{ color: "#00AAFF", fontWeight: 900 }}>espejo</span>
         </p>
       </div>
 
