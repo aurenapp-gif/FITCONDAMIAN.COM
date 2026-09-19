@@ -71,7 +71,7 @@ export default function VslPage() {
           <div className="fcd-halo">
             <div className="fcd-halo-inner" style={{ display: "inline-flex", alignItems: "center", gap: "12px", padding: "7px 20px 7px 12px" }}>
               <div style={{ display: "flex", alignItems: "center" }}>
-                {["/avatar-1.jpg", "/avatar-2.jpg", "/avatar-3.jpg"].map((srcAv, i) => (
+                {["/avatar-1.jpg?v=2", "/avatar-2.jpg?v=2", "/avatar-3.jpg?v=2"].map((srcAv, i) => (
                   <span key={srcAv} style={{
                     width: "34px", height: "34px", borderRadius: "50%",
                     border: "2px solid #0d0d0d",
