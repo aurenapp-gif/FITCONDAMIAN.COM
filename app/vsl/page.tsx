@@ -49,15 +49,7 @@ export default function VslPage() {
   const src = vslSrc();
 
   return (
-    <main style={{
-      backgroundColor: "#0D0D0D",
-      backgroundImage:
-        "radial-gradient(90% 45% at 50% -8%, rgba(0,170,255,0.13), rgba(0,170,255,0) 62%)," +
-        "radial-gradient(70% 40% at 50% 108%, rgba(0,119,204,0.10), rgba(0,119,204,0) 60%)," +
-        "repeating-linear-gradient(0deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 46px)," +
-        "repeating-linear-gradient(90deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 46px)",
-      minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column",
-    }}>
+    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
 
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
