@@ -40,7 +40,15 @@ export default function VslPage() {
   const src = vslSrc();
 
   return (
-    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
+    <main style={{
+      backgroundColor: "#0D0D0D",
+      backgroundImage:
+        "radial-gradient(90% 45% at 50% -8%, rgba(0,170,255,0.13), rgba(0,170,255,0) 62%)," +
+        "radial-gradient(70% 40% at 50% 108%, rgba(0,119,204,0.10), rgba(0,119,204,0) 60%)," +
+        "repeating-linear-gradient(0deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 46px)," +
+        "repeating-linear-gradient(90deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 46px)",
+      minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column",
+    }}>
 
       {/* HEADER */}
       <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
@@ -58,8 +66,35 @@ export default function VslPage() {
 
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 20px 80px", width: "100%" }}>
 
+        {/* PRUEBA SOCIAL — píldora con halo giratorio */}
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: "34px" }}>
+          <div className="fcd-halo">
+            <div className="fcd-halo-inner" style={{ display: "inline-flex", alignItems: "center", gap: "12px", padding: "7px 20px 7px 12px" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {[0, 1, 2].map((i) => (
+                  <span key={i} style={{
+                    width: "34px", height: "34px", borderRadius: "50%",
+                    border: "2px solid #0d0d0d",
+                    marginLeft: i === 0 ? 0 : "-12px",
+                    background: "radial-gradient(circle at 50% 34%, #16455f, #0a1a24)",
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    color: "#5db9dd", position: "relative", zIndex: 3 - i,
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6z" />
+                    </svg>
+                  </span>
+                ))}
+              </div>
+              <span style={{ fontSize: "13.5px", fontWeight: 700, color: "#e8eef2", letterSpacing: "-0.1px" }}>
+                <span style={{ color: "#00AAFF", fontWeight: 900 }}>+1.300 mujeres</span> lo han conseguido con el método
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* TITULAR */}
-        <div style={{ textAlign: "center", paddingTop: "44px", marginBottom: "28px" }}>
+        <div style={{ textAlign: "center", paddingTop: "26px", marginBottom: "28px" }}>
           <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 12px 0" }}>
             VÍDEO IMPORTANTE · MÍRALO ENTERO
           </p>

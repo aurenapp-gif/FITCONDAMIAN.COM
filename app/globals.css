@@ -18,6 +18,42 @@
   50%       { transform: translateY(6px); }
 }
 
+/* ── Halo giratorio + toque premium (landing VSL) ── */
+@keyframes fcd-halo-spin { to { transform: rotate(360deg); } }
+
+.fcd-halo {
+  position: relative;
+  border-radius: 999px;
+  padding: 1.5px;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 0 26px rgba(0, 170, 255, 0.18);
+}
+.fcd-halo::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 240%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  z-index: -1;
+  background: conic-gradient(from 0deg,
+    rgba(0, 170, 255, 0) 0deg,
+    rgba(0, 170, 255, 0) 190deg,
+    #00AAFF 285deg,
+    #9ee0ff 320deg,
+    rgba(0, 170, 255, 0) 360deg);
+  animation: fcd-halo-spin 4s linear infinite;
+}
+.fcd-halo-inner {
+  border-radius: 999px;
+  background: #0d0d0d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fcd-halo::before { animation: none; }
+}
+
 @layer components {
   .btn-primary {
     @apply inline-block bg-brand hover:bg-brand-dark text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 text-center cursor-pointer;
