@@ -52,19 +52,14 @@
   #fcd-vsl .fcd-proof-txt { font-size: 13.5px; font-weight: 700; color: #e8eef2; letter-spacing: -0.1px; }
   #fcd-vsl .fcd-proof-txt b { color: #00AAFF; font-weight: 900; }
   @media (prefers-reduced-motion: reduce) { #fcd-vsl .fcd-halo::before { animation: none; } }
-  /* Mensajes de clientas (estilo WhatsApp) — carrusel deslizable */
+  /* Mensajes de clientas (capturas reales) — carrusel deslizable */
   #fcd-vsl .fcd-msgs-head { text-align: center; margin-bottom: 20px; }
   #fcd-vsl .fcd-msgs-head .eb { color: #25D366; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
   #fcd-vsl .fcd-msgs-head h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0 0 6px 0; letter-spacing: -0.5px; }
   #fcd-vsl .fcd-msgs-head .sw { color: #777; font-size: 13px; margin: 0; }
-  #fcd-vsl .fcd-msgs { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
-  #fcd-vsl .fcd-msg { flex: 0 0 auto; width: min(84%, 320px); scroll-snap-align: center; background: #0e1317; border: 1px solid #1f2a30; border-radius: 16px; padding: 14px; }
-  #fcd-vsl .fcd-msg-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-  #fcd-vsl .fcd-msg-ava { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 800; }
-  #fcd-vsl .fcd-msg-name { font-size: 12.5px; font-weight: 800; color: #e8eef2; }
-  #fcd-vsl .fcd-msg-name i { color: #53bdeb; font-style: normal; margin-left: 5px; letter-spacing: -2px; }
-  #fcd-vsl .fcd-msg-bubble { background: #202c33; border-radius: 4px 14px 14px 14px; padding: 11px 13px; color: #e9edef; font-size: 14px; line-height: 1.5; }
-  #fcd-vsl .fcd-msg-time { display: block; text-align: right; color: #8696a0; font-size: 10px; margin-top: 6px; }
+  #fcd-vsl .fcd-msgs { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 10px; align-items: flex-start; }
+  #fcd-vsl .fcd-msg { flex: 0 0 auto; width: min(80%, 300px); scroll-snap-align: center; border-radius: 16px; overflow: hidden; border: 1px solid #1f2a30; background: #0e1317; }
+  #fcd-vsl .fcd-msg img { width: 100%; height: auto; display: block; }
 </style>
 
 <div id="fcd-vsl">
@@ -125,26 +120,11 @@
       <p class="sw">Desliza para ver más →</p>
     </div>
     <div class="fcd-msgs">
-      <div class="fcd-msg">
-        <div class="fcd-msg-top"><span class="fcd-msg-ava">E</span><span class="fcd-msg-name">Eva<i>✓✓</i></span></div>
-        <div class="fcd-msg-bubble">Madre mía… de verdad, que te encanta tu trabajo. Estoy súper contenta y estoy en el día 0 🙌<span class="fcd-msg-time">13:33</span></div>
-      </div>
-      <div class="fcd-msg">
-        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
-        <div class="fcd-msg-bubble">No sabes lo feliz que estoy. Esta semana tenía una boda y hacía muchísimo que no me ponía un vestido tan ajustado… y me sentí tan bien 😭❤️ Me ha cambiado la vida tener un plan.<span class="fcd-msg-time">18:51</span></div>
-      </div>
-      <div class="fcd-msg">
-        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
-        <div class="fcd-msg-bubble">Había pasado por tantos nutricionistas y entrenadores que ya no confiaba en conseguirlo. Pero lo haces tan fácil, con recetas guays, y en ningún momento me he sentido sola 😂💕<span class="fcd-msg-time">19:12</span></div>
-      </div>
-      <div class="fcd-msg">
-        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
-        <div class="fcd-msg-bubble">Antes estaba toda la mañana con sueño, 0 enérgica… y ahora he notado un cambio brutal: me levanto descansada y con más energía. Esta semana fui 3 días al gimnasio y salí a andar 6 km 👌<span class="fcd-msg-time">09:14</span></div>
-      </div>
-      <div class="fcd-msg">
-        <div class="fcd-msg-top"><span class="fcd-msg-ava">C</span><span class="fcd-msg-name">Clienta<i>✓✓</i></span></div>
-        <div class="fcd-msg-bubble">Solo para decirte que estoy feliz. No me he pesado aún, pero estoy mucho más ligera: ayer me puse unos pantalones que hace un mes no me cerraban 👖<span class="fcd-msg-time">10:05</span></div>
-      </div>
+      <div class="fcd-msg"><img src="https://fitcondamian.com/mensaje-1.jpg" alt="Mensaje de una clienta"></div>
+      <div class="fcd-msg"><img src="https://fitcondamian.com/mensaje-2.jpg" alt="Mensaje de una clienta"></div>
+      <div class="fcd-msg"><img src="https://fitcondamian.com/mensaje-3.jpg" alt="Mensaje de una clienta"></div>
+      <div class="fcd-msg"><img src="https://fitcondamian.com/mensaje-4.jpg" alt="Mensaje de una clienta"></div>
+      <div class="fcd-msg"><img src="https://fitcondamian.com/mensaje-5.jpg" alt="Mensaje de una clienta"></div>
     </div>
 
   </div>
