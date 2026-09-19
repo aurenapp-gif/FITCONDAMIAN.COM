@@ -31,7 +31,7 @@ function vslSrc(): string | null {
   if (!VSL.id) return null;
   if (VSL.tipo === "vimeo") {
     // dnt=1 (no cookies) · sin título/autor · calidad alta por defecto
-    return `https://player.vimeo.com/video/${VSL.id}?title=0&byline=0&portrait=0&badge=0&dnt=1&quality=1080p`;
+    return `https://player.vimeo.com/video/${VSL.id}?title=0&byline=0&portrait=0&badge=0&dnt=1&color=00AAFF&quality=1080p`;
   }
   return `https://www.youtube-nocookie.com/embed/${VSL.id}?rel=0&modestbranding=1`;
 }
