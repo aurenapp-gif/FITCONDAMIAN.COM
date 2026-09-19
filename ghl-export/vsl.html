@@ -55,7 +55,8 @@
   #fcd-vsl .fcd-halo::before { content: ""; position: absolute; left: 50%; top: 50%; width: 240%; aspect-ratio: 1; transform: translate(-50%,-50%); z-index: -1; background: conic-gradient(from 0deg, rgba(0,170,255,0) 0deg, rgba(0,170,255,0) 190deg, #00AAFF 285deg, #9ee0ff 320deg, rgba(0,170,255,0) 360deg); animation: fcd-halo-spin 4s linear infinite; }
   #fcd-vsl .fcd-halo-inner { border-radius: 999px; background: #0d0d0d; display: inline-flex; align-items: center; gap: 12px; padding: 7px 20px 7px 12px; }
   #fcd-vsl .fcd-avatars { display: flex; align-items: center; }
-  #fcd-vsl .fcd-av { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #0d0d0d; background: radial-gradient(circle at 50% 34%, #16455f, #0a1a24); display: inline-flex; align-items: center; justify-content: center; color: #5db9dd; }
+  #fcd-vsl .fcd-av { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #0d0d0d; background: #16455f; overflow: hidden; flex-shrink: 0; }
+  #fcd-vsl .fcd-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
   #fcd-vsl .fcd-av + .fcd-av { margin-left: -12px; }
   #fcd-vsl .fcd-proof-txt { font-size: 13.5px; font-weight: 700; color: #e8eef2; letter-spacing: -0.1px; }
   #fcd-vsl .fcd-proof-txt b { color: #00AAFF; font-weight: 900; }
@@ -77,9 +78,9 @@
       <div class="fcd-halo">
         <div class="fcd-halo-inner">
           <div class="fcd-avatars">
-            <span class="fcd-av"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6z"/></svg></span>
-            <span class="fcd-av"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6z"/></svg></span>
-            <span class="fcd-av"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6z"/></svg></span>
+            <span class="fcd-av"><img src="https://fitcondamian.com/avatar-1.jpg" alt=""></span>
+            <span class="fcd-av"><img src="https://fitcondamian.com/avatar-2.jpg" alt=""></span>
+            <span class="fcd-av"><img src="https://fitcondamian.com/avatar-3.jpg" alt=""></span>
           </div>
           <span class="fcd-proof-txt"><b>+1.300 mujeres</b> lo han conseguido con el método</span>
         </div>

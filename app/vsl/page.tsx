@@ -71,18 +71,16 @@ export default function VslPage() {
           <div className="fcd-halo">
             <div className="fcd-halo-inner" style={{ display: "inline-flex", alignItems: "center", gap: "12px", padding: "7px 20px 7px 12px" }}>
               <div style={{ display: "flex", alignItems: "center" }}>
-                {[0, 1, 2].map((i) => (
-                  <span key={i} style={{
+                {["/avatar-1.jpg", "/avatar-2.jpg", "/avatar-3.jpg"].map((srcAv, i) => (
+                  <span key={srcAv} style={{
                     width: "34px", height: "34px", borderRadius: "50%",
                     border: "2px solid #0d0d0d",
                     marginLeft: i === 0 ? 0 : "-12px",
-                    background: "radial-gradient(circle at 50% 34%, #16455f, #0a1a24)",
-                    display: "inline-flex", alignItems: "center", justifyContent: "center",
-                    color: "#5db9dd", position: "relative", zIndex: 3 - i,
+                    overflow: "hidden", background: "#16455f",
+                    position: "relative", zIndex: 3 - i, flexShrink: 0,
                   }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6z" />
-                    </svg>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={srcAv} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   </span>
                 ))}
               </div>
