@@ -54,15 +54,6 @@
   .fcd-halo::before { animation: none; }
 }
 
-/* Punto de urgencia (plazas) */
-@keyframes fcd-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(255,77,77,0.5); }
-  70%  { box-shadow: 0 0 0 8px rgba(255,77,77,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,77,77,0); }
-}
-.fcd-pulse-dot { width: 9px; height: 9px; border-radius: 50%; background: #ff4d4d; display: inline-block; animation: fcd-pulse 1.6s infinite; }
-@media (prefers-reduced-motion: reduce) { .fcd-pulse-dot { animation: none; } }
-
 @layer components {
   .btn-primary {
     @apply inline-block bg-brand hover:bg-brand-dark text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 text-center cursor-pointer;
