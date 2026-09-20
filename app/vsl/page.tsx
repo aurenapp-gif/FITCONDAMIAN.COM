@@ -52,18 +52,20 @@ export default function VslPage() {
     <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
 
       {/* HEADER */}
-      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center" }}>
+      <header style={{ padding: "22px 24px 16px", textAlign: "center" }}>
         <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
           <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#00AAFF" }}>damián</span></span>
         </p>
       </header>
 
-      {/* BANNER — filtro de público objetivo (sobrio/premium) */}
-      <div style={{ background: "linear-gradient(180deg, rgba(0,80,150,0.22), rgba(0,40,80,0.12))", borderTop: "1px solid rgba(0,170,255,0.4)", borderBottom: "1px solid rgba(0,170,255,0.2)", padding: "16px 22px", textAlign: "center" }}>
-        <p style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 6px 0" }}>Solo para mujeres con</p>
-        <p style={{ maxWidth: "620px", margin: "0 auto", color: "#fff", fontSize: "clamp(14px, 4vw, 17px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px" }}>
-          <span style={{ color: "#00AAFF", fontWeight: 900 }}>Perimenopausia</span> o <span style={{ color: "#00AAFF", fontWeight: 900 }}>menopausia</span> que estén <span style={{ color: "#00AAFF", fontWeight: 900 }}>cansadas</span> todo el día y se <span style={{ color: "#00AAFF", fontWeight: 900 }}>odian</span> al mirarse al <span style={{ color: "#00AAFF", fontWeight: 900 }}>espejo</span>
-        </p>
+      {/* BANNER — filtro de público objetivo (píldora limpia) */}
+      <div style={{ padding: "8px 20px 4px", textAlign: "center" }}>
+        <div style={{ display: "inline-block", maxWidth: "600px", border: "1px solid rgba(255,255,255,0.10)", borderRadius: "18px", padding: "15px 22px", background: "rgba(255,255,255,0.02)" }}>
+          <p style={{ color: "#6f7d89", fontSize: "10px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 7px 0" }}>Solo para mujeres con</p>
+          <p style={{ margin: 0, color: "#fff", fontSize: "clamp(14px, 4vw, 17px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px" }}>
+            <span style={{ color: "#00AAFF", fontWeight: 900 }}>Perimenopausia</span> o <span style={{ color: "#00AAFF", fontWeight: 900 }}>menopausia</span> que estén cansadas todo el día y se odian al mirarse al espejo
+          </p>
+        </div>
       </div>
 
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 20px 80px", width: "100%" }}>
@@ -99,10 +101,7 @@ export default function VslPage() {
             VÍDEO IMPORTANTE · MÍRALO ENTERO
           </p>
           <h1 style={{ fontWeight: 900, fontSize: "clamp(1.2rem, 4.6vw, 2.2rem)", margin: "0 0 12px 0", lineHeight: 1.18, letterSpacing: "-0.5px" }}>
-            Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la{" "}
-            <span style={{ color: "#00AAFF" }}>MENOPAUSIA</span> multiplicando tu{" "}
-            <span style={{ color: "#00AAFF" }}>energía</span> y eliminando la{" "}
-            <span style={{ color: "#00AAFF" }}>flacidez</span>, sin renunciar a tu rutina diaria
+            Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la menopausia multiplicando tu energía y eliminando la <span style={{ color: "#00AAFF" }}>flacidez</span>, sin renunciar a tu rutina diaria
           </h1>
           <p style={{ color: "#AAAAAA", fontSize: "15px", margin: 0, lineHeight: 1.6 }}>
             Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
