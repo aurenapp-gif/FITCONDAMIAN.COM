@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Urgency from "./Urgency";
 
 export const metadata: Metadata = {
   title: "Vídeo | Fit con Damián",
@@ -106,6 +107,9 @@ export default function VslPage() {
           <p style={{ color: "#AAAAAA", fontSize: "15px", margin: 0, lineHeight: 1.6 }}>
             Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
           </p>
+          <p style={{ color: "#cfcfcf", fontSize: "13.5px", fontWeight: 700, lineHeight: 1.6, margin: "14px 0 0 0" }}>
+            <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> dietas estrictas · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> renunciar a tus cenas y planes · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> vivir en el gimnasio
+          </p>
         </div>
 
         {/* VSL — VÍDEO 16:9 */}
@@ -132,8 +136,13 @@ export default function VslPage() {
           )}
         </div>
 
+        {/* INDICACIÓN BAJO EL VÍDEO */}
+        <p style={{ textAlign: "center", color: "#8a8a8a", fontSize: "14px", fontWeight: 700, margin: "18px 0 0 0" }}>
+          ⬇️ <span style={{ color: "#00AAFF" }}>Mira el vídeo completo</span> y reserva tu llamada
+        </p>
+
         {/* CTA — Agenda tu llamada */}
-        <div style={{ textAlign: "center", marginTop: "36px" }}>
+        <div style={{ textAlign: "center", marginTop: "24px" }}>
           <a
             href={CALENDARIO}
             style={{
@@ -154,6 +163,7 @@ export default function VslPage() {
           <p style={{ color: "#777", fontSize: "13px", margin: "16px 0 0 0" }}>
             30 minutos · 100% gratuito · sin compromiso
           </p>
+          <Urgency minutos={10} plazas={5} />
         </div>
 
         {/* CASOS DE ÉXITO EN VÍDEO */}
@@ -206,8 +216,19 @@ export default function VslPage() {
 
       </div>
 
+      {/* CINTA DESLIZANTE */}
+      <div style={{ overflow: "hidden", borderTop: "1px solid #1f1f1f", borderBottom: "1px solid #1f1f1f", padding: "12px 0" }}>
+        <div className="fcd-marq-track">
+          {[0, 1].map((k) => (
+            <span key={k} style={{ color: "#00AAFF", fontSize: "12px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", paddingRight: "40px" }}>
+              +1.300 mujeres ✦ Sin dietas extremas ✦ Método Envejecimiento Revertido ✦ Energía y figura después de los 40 ✦
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "24px", textAlign: "center", marginTop: "auto" }}>
+      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "24px", textAlign: "center" }}>
         <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
           © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
           <a href="/privacidad" style={{ color: "#444", textDecoration: "none" }}>Privacidad</a>{" · "}

@@ -54,6 +54,11 @@
   .fcd-halo::before { animation: none; }
 }
 
+/* Cinta deslizante (marquee) */
+@keyframes fcd-marq { to { transform: translateX(-50%); } }
+.fcd-marq-track { display: inline-flex; white-space: nowrap; animation: fcd-marq 22s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .fcd-marq-track { animation: none; } }
+
 @layer components {
   .btn-primary {
     @apply inline-block bg-brand hover:bg-brand-dark text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 text-center cursor-pointer;
