@@ -104,9 +104,6 @@ export default function VslPage() {
           <p style={{ color: "#AAAAAA", fontSize: "15px", margin: 0, lineHeight: 1.6 }}>
             Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
           </p>
-          <p style={{ color: "#cfcfcf", fontSize: "13.5px", fontWeight: 700, lineHeight: 1.6, margin: "14px 0 0 0" }}>
-            <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> dietas estrictas · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> renunciar a tus cenas y planes · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> vivir en el gimnasio
-          </p>
         </div>
 
         {/* VSL — VÍDEO 16:9 */}
@@ -133,8 +130,13 @@ export default function VslPage() {
           )}
         </div>
 
+        {/* SIN·SIN·SIN — debajo del vídeo */}
+        <p style={{ textAlign: "center", color: "#cfcfcf", fontSize: "13.5px", fontWeight: 700, lineHeight: 1.6, margin: "20px 0 0 0" }}>
+          <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> dietas estrictas · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> renunciar a tus cenas y planes · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> vivir en el gimnasio
+        </p>
+
         {/* CTA — Agenda tu llamada */}
-        <div style={{ textAlign: "center", marginTop: "36px" }}>
+        <div style={{ textAlign: "center", marginTop: "28px" }}>
           <a
             href={CALENDARIO}
             style={{
