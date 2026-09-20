@@ -109,11 +109,6 @@ export default function VslPage() {
           </p>
         </div>
 
-        {/* INDICACIÓN — encima del vídeo */}
-        <p style={{ textAlign: "center", color: "#8a8a8a", fontSize: "14px", fontWeight: 700, margin: "0 0 12px 0" }}>
-          ⬇️ <span style={{ color: "#00AAFF" }}>Mira el vídeo completo</span> y reserva tu llamada
-        </p>
-
         {/* VSL — VÍDEO 16:9 */}
         <div style={{
           position: "relative", aspectRatio: "16/9",
