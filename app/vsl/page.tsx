@@ -98,9 +98,6 @@ export default function VslPage() {
 
         {/* TITULAR */}
         <div style={{ textAlign: "center", paddingTop: "26px", marginBottom: "28px" }}>
-          <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 12px 0" }}>
-            VÍDEO IMPORTANTE · MÍRALO ENTERO
-          </p>
           <h1 style={{ fontWeight: 900, fontSize: "clamp(1.2rem, 4.6vw, 2.2rem)", margin: "0 0 12px 0", lineHeight: 1.18, letterSpacing: "-0.5px" }}>
             Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la menopausia multiplicando tu energía y eliminando la <span style={{ color: "#00AAFF" }}>flacidez</span>, sin renunciar a tu rutina diaria
           </h1>
@@ -111,6 +108,11 @@ export default function VslPage() {
             <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> dietas estrictas · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> renunciar a tus cenas y planes · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> vivir en el gimnasio
           </p>
         </div>
+
+        {/* INDICACIÓN — encima del vídeo */}
+        <p style={{ textAlign: "center", color: "#8a8a8a", fontSize: "14px", fontWeight: 700, margin: "0 0 12px 0" }}>
+          ⬇️ <span style={{ color: "#00AAFF" }}>Mira el vídeo completo</span> y reserva tu llamada
+        </p>
 
         {/* VSL — VÍDEO 16:9 */}
         <div style={{
@@ -136,13 +138,8 @@ export default function VslPage() {
           )}
         </div>
 
-        {/* INDICACIÓN BAJO EL VÍDEO */}
-        <p style={{ textAlign: "center", color: "#8a8a8a", fontSize: "14px", fontWeight: 700, margin: "18px 0 0 0" }}>
-          ⬇️ <span style={{ color: "#00AAFF" }}>Mira el vídeo completo</span> y reserva tu llamada
-        </p>
-
         {/* CTA — Agenda tu llamada */}
-        <div style={{ textAlign: "center", marginTop: "24px" }}>
+        <div style={{ textAlign: "center", marginTop: "36px" }}>
           <a
             href={CALENDARIO}
             style={{
