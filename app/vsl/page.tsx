@@ -99,7 +99,7 @@ export default function VslPage() {
         {/* TITULAR */}
         <div style={{ textAlign: "center", paddingTop: "26px", marginBottom: "28px" }}>
           <h1 style={{ fontWeight: 900, fontSize: "clamp(1.2rem, 4.6vw, 2.2rem)", margin: "0 0 12px 0", lineHeight: 1.18, letterSpacing: "-0.5px" }}>
-            Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la menopausia multiplicando tu energía y eliminando la <span style={{ color: "#00AAFF" }}>flacidez</span>, sin renunciar a tu rutina diaria
+            Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la menopausia multiplicando tu energía y eliminando la flacidez, sin renunciar a tu rutina diaria
           </h1>
           <p style={{ color: "#AAAAAA", fontSize: "15px", margin: 0, lineHeight: 1.6 }}>
             Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
