@@ -69,14 +69,28 @@ export default function VslPage() {
           </span>
         </div>
 
-        {/* TITULAR — editorial serif */}
+        {/* TITULAR — una sola frase con jerarquía + subrayados (estructura F·5) */}
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.7rem, 6vw, 2.6rem)", margin: "0 0 16px 0", lineHeight: 1.16, letterSpacing: "-0.5px", color: "#fff" }}>
-            Cómo recuperar tu <span style={{ fontStyle: "italic", fontWeight: 500, color: "#35C2FF" }}>juventud</span> durante la menopausia
+          <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 400, fontSize: "clamp(16px, 4.6vw, 20px)", lineHeight: 1.5, letterSpacing: "-0.2px", color: "#9fb7c7", margin: "0 auto", maxWidth: "480px" }}>
+            <span style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(23px, 6.8vw, 30px)", lineHeight: 1.18 }}>
+              Cómo recuperar tu <span style={{ fontStyle: "italic", fontWeight: 600, color: "#35C2FF" }}>juventud</span> durante la menopausia
+            </span>{" "}
+            multiplicando tu{" "}
+            <span style={{ position: "relative", color: "#fff", fontWeight: 600, whiteSpace: "nowrap" }}>
+              energía
+              <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true" style={{ position: "absolute", left: "-3%", bottom: "-0.3em", width: "106%", height: "0.32em" }}>
+                <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
+              </svg>
+            </span>{" "}
+            y eliminando la{" "}
+            <span style={{ position: "relative", color: "#fff", fontWeight: 600, whiteSpace: "nowrap" }}>
+              flacidez
+              <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true" style={{ position: "absolute", left: "-3%", bottom: "-0.3em", width: "106%", height: "0.32em" }}>
+                <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
+              </svg>
+            </span>
+            , sin renunciar a tu rutina diaria
           </h1>
-          <p style={{ color: "#9fb7c7", fontSize: "15px", margin: "0 auto", maxWidth: "440px", lineHeight: 1.6 }}>
-            Multiplicando tu energía y eliminando la flacidez, sin renunciar a tu rutina diaria.
-          </p>
         </div>
 
         {/* VSL — VÍDEO 16:9 */}
