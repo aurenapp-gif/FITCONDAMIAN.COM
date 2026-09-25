@@ -71,31 +71,6 @@ export default function VslPage() {
 
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 20px 80px", width: "100%" }}>
 
-        {/* PRUEBA SOCIAL — píldora con halo giratorio */}
-        <div style={{ display: "flex", justifyContent: "center", paddingTop: "34px" }}>
-          <div className="fcd-halo">
-            <div className="fcd-halo-inner" style={{ display: "inline-flex", alignItems: "center", gap: "12px", padding: "7px 20px 7px 12px" }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {["/avatar-1.jpg?v=2", "/avatar-2.jpg?v=2", "/avatar-3.jpg?v=2"].map((srcAv, i) => (
-                  <span key={srcAv} style={{
-                    width: "34px", height: "34px", borderRadius: "50%",
-                    border: "2px solid #0d0d0d",
-                    marginLeft: i === 0 ? 0 : "-12px",
-                    overflow: "hidden", background: "#16455f",
-                    position: "relative", zIndex: 3 - i, flexShrink: 0,
-                  }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={srcAv} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  </span>
-                ))}
-              </div>
-              <span style={{ fontSize: "13.5px", fontWeight: 700, color: "#e8eef2", letterSpacing: "-0.1px" }}>
-                <span style={{ color: "#00AAFF", fontWeight: 900 }}>+1.300 mujeres</span> lo han conseguido con mi método
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* TITULAR */}
         <div style={{ textAlign: "center", paddingTop: "26px", marginBottom: "28px" }}>
           <h1 style={{ fontWeight: 900, fontSize: "clamp(1.2rem, 4.6vw, 2.2rem)", margin: "0 0 12px 0", lineHeight: 1.18, letterSpacing: "-0.5px" }}>
