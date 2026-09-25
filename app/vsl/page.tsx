@@ -103,9 +103,9 @@ export default function VslPage() {
           )}
         </div>
 
-        {/* SIN·SIN·SIN — debajo del vídeo */}
-        <p style={{ textAlign: "center", color: "#9fb7c7", fontSize: "13.5px", fontWeight: 700, lineHeight: 1.6, margin: "20px 0 0 0" }}>
-          <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> dietas estrictas · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> renunciar a tus cenas y planes · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> vivir en el gimnasio
+        {/* INDICACIÓN — debajo del vídeo */}
+        <p style={{ textAlign: "center", color: "#9fb7c7", fontSize: "14px", fontWeight: 600, lineHeight: 1.6, margin: "20px auto 0", maxWidth: "460px" }}>
+          Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
         </p>
 
         {/* CTA — Agenda tu llamada */}
