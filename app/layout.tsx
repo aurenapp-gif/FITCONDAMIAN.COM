@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Inter, Sora, Fraunces } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -16,6 +16,15 @@ const sora = Sora({
   subsets: ["latin"],
   display: "swap",
   weight: ["800"],
+});
+
+// Tipografía editorial (titulares serif de la landing VSL).
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
 });
 
 const description = "Recursos gratuitos de fitness y nutrición para transformar tu cuerpo.";
@@ -44,12 +53,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0D0D0D",
+  themeColor: "#081521",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} ${sora.variable}`}>
+    <html lang="es" className={`${inter.variable} ${sora.variable} ${fraunces.variable}`}>
       <link rel="preconnect" href="https://links.fitcondamian.com" />
       <link rel="dns-prefetch" href="https://links.fitcondamian.com" />
       <body className="antialiased">

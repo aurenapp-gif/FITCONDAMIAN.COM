@@ -7,72 +7,59 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
 
 <style>
   #fcd-vsl * { margin: 0; padding: 0; box-sizing: border-box; }
-  #fcd-vsl { background: #0D0D0D; color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; line-height: 1.5; }
+  #fcd-vsl { background: radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%); background-color: #081521; color: #eaf3fb; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; line-height: 1.5; }
   #fcd-vsl a { text-decoration: none; }
-  #fcd-vsl .fcd-accent { color: #00AAFF; }
-  #fcd-vsl .fcd-header { padding: 22px 24px 16px; text-align: center; }
-  #fcd-vsl .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
-  #fcd-vsl .fcd-banner { padding: 8px 20px 4px; text-align: center; }
-  #fcd-vsl .fcd-qual { display: inline-block; max-width: 600px; border: 1px solid rgba(255,255,255,0.10); border-radius: 18px; padding: 15px 22px; background: rgba(255,255,255,0.02); }
-  #fcd-vsl .fcd-qual .k { color: #6f7d89; font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 7px 0; }
-  #fcd-vsl .fcd-qual .q { color: #fff; font-size: clamp(14px, 4vw, 17px); font-weight: 800; line-height: 1.4; letter-spacing: -0.2px; }
-  #fcd-vsl .fcd-qual .hl { color: #00AAFF; font-weight: 900; }
+  #fcd-vsl .fcd-accent { color: #35C2FF; }
+  #fcd-vsl .fcd-header { padding: 26px 24px 4px; text-align: center; }
+  #fcd-vsl .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.8px; }
   #fcd-vsl .fcd-wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
-  #fcd-vsl .fcd-head { text-align: center; padding-top: 26px; margin-bottom: 28px; }
-  #fcd-vsl .fcd-eyebrow { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 12px 0; }
-  #fcd-vsl h1 { font-weight: 900; font-size: clamp(1.2rem, 4.6vw, 2.2rem); margin: 0 0 12px 0; line-height: 1.18; letter-spacing: -0.5px; }
-  #fcd-vsl h1 em { font-style: normal; color: #00AAFF; }
-  #fcd-vsl .fcd-sub { color: #AAAAAA; font-size: 15px; margin: 0; line-height: 1.6; }
-  #fcd-vsl .fcd-video { position: relative; aspect-ratio: 16/9; border-radius: 18px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  /* Banner — línea fina */
+  #fcd-vsl .fcd-banner { display: flex; align-items: center; justify-content: center; gap: 9px; text-align: center; margin: 22px 0 26px; line-height: 1.5; }
+  #fcd-vsl .fcd-banner .dot { width: 6px; height: 6px; border-radius: 50%; background: #35C2FF; flex: 0 0 auto; box-shadow: 0 0 12px #35C2FF; }
+  #fcd-vsl .fcd-banner .q { font-size: 12.5px; font-weight: 700; color: #9fb7c7; letter-spacing: 0.2px; }
+  #fcd-vsl .fcd-banner .hl { color: #35C2FF; font-weight: 800; }
+  #fcd-vsl .fcd-head { text-align: center; margin-bottom: 30px; }
+  #fcd-vsl h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: clamp(1.7rem, 6vw, 2.6rem); margin: 0 0 16px 0; line-height: 1.16; letter-spacing: -0.5px; color: #fff; }
+  #fcd-vsl h1 em { font-style: italic; font-weight: 500; color: #35C2FF; }
+  #fcd-vsl .fcd-sub { color: #9fb7c7; font-size: 15px; margin: 0 auto; max-width: 440px; line-height: 1.6; }
+  #fcd-vsl .fcd-video { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #06121c; box-shadow: 0 24px 70px rgba(0,0,0,0.55); }
   #fcd-vsl .fcd-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
   #fcd-vsl .fcd-cta-wrap { text-align: center; margin-top: 22px; }
-  #fcd-vsl .fcd-cta { display: inline-block; background: linear-gradient(90deg, #0077CC, #00AAFF); color: #fff; font-weight: 900; font-size: clamp(1.05rem, 3.6vw, 1.35rem); letter-spacing: -0.3px; padding: 20px 44px; border-radius: 99px; box-shadow: 0 12px 34px rgba(0,170,255,0.35); }
-  #fcd-vsl .fcd-cta-note { color: #777; font-size: 13px; margin: 16px 0 0 0; }
-  #fcd-vsl .fcd-cases-sep { border-top: 1px solid #1f1f1f; margin: 56px 0 32px; }
+  #fcd-vsl .fcd-cta { display: inline-block; background: linear-gradient(90deg, #0088d6, #35C2FF); color: #06202f; font-weight: 900; font-size: clamp(1.05rem, 3.6vw, 1.35rem); letter-spacing: -0.3px; padding: 20px 44px; border-radius: 99px; box-shadow: 0 14px 36px rgba(53,194,255,0.34); }
+  #fcd-vsl .fcd-cta-note { color: #7f97a8; font-size: 13px; margin: 16px 0 0 0; }
+  #fcd-vsl .fcd-cases-sep { border-top: 1px solid rgba(255,255,255,0.08); margin: 56px 0 32px; }
   #fcd-vsl .fcd-cases-head { text-align: center; margin-bottom: 28px; }
-  #fcd-vsl .fcd-cases-head .eb { color: #AAAAAA; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
-  #fcd-vsl .fcd-cases-head h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0; letter-spacing: -0.5px; }
+  #fcd-vsl .fcd-cases-head .eb { color: #35C2FF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
+  #fcd-vsl .fcd-cases-head h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: clamp(1.5rem, 4.5vw, 2rem); margin: 0; letter-spacing: -0.3px; color: #fff; }
   #fcd-vsl .fcd-cases { display: flex; flex-direction: column; gap: 16px; }
-  #fcd-vsl .fcd-case { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f; background: #000; }
+  #fcd-vsl .fcd-case { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #06121c; }
   #fcd-vsl .fcd-case iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-  #fcd-vsl .fcd-footer { border-top: 1px solid #1f1f1f; padding: 24px; text-align: center; }
-  #fcd-vsl .fcd-footer p { color: #444; font-size: 12px; margin: 0; }
-  #fcd-vsl .fcd-footer a { color: #444; }
-  /* Prueba social — píldora con halo giratorio */
-  @keyframes fcd-halo-spin { to { transform: rotate(360deg); } }
-  #fcd-vsl .fcd-proof { display: flex; justify-content: center; padding-top: 34px; }
-  #fcd-vsl .fcd-halo { position: relative; border-radius: 999px; padding: 1.5px; overflow: hidden; isolation: isolate; box-shadow: 0 0 26px rgba(0,170,255,0.18); }
-  #fcd-vsl .fcd-halo::before { content: ""; position: absolute; left: 50%; top: 50%; width: 240%; aspect-ratio: 1; transform: translate(-50%,-50%); z-index: -1; background: conic-gradient(from 0deg, rgba(0,170,255,0) 0deg, rgba(0,170,255,0) 190deg, #00AAFF 285deg, #9ee0ff 320deg, rgba(0,170,255,0) 360deg); animation: fcd-halo-spin 4s linear infinite; }
-  #fcd-vsl .fcd-halo-inner { border-radius: 999px; background: #0d0d0d; display: inline-flex; align-items: center; gap: 12px; padding: 7px 20px 7px 12px; }
-  #fcd-vsl .fcd-avatars { display: flex; align-items: center; }
-  #fcd-vsl .fcd-av { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #0d0d0d; background: #16455f; overflow: hidden; flex-shrink: 0; }
-  #fcd-vsl .fcd-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  #fcd-vsl .fcd-av + .fcd-av { margin-left: -12px; }
-  #fcd-vsl .fcd-proof-txt { font-size: 13.5px; font-weight: 700; color: #e8eef2; letter-spacing: -0.1px; }
-  #fcd-vsl .fcd-proof-txt b { color: #00AAFF; font-weight: 900; }
-  @media (prefers-reduced-motion: reduce) { #fcd-vsl .fcd-halo::before { animation: none; } }
+  #fcd-vsl .fcd-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 24px; text-align: center; }
+  #fcd-vsl .fcd-footer p { color: #5a7183; font-size: 12px; margin: 0; }
+  #fcd-vsl .fcd-footer a { color: #5a7183; }
   /* Mensajes de clientas (capturas reales) — carrusel deslizable */
   #fcd-vsl .fcd-msgs-head { text-align: center; margin-bottom: 20px; }
   #fcd-vsl .fcd-msgs-head .eb { color: #25D366; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
-  #fcd-vsl .fcd-msgs-head h3 { font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); margin: 0 0 6px 0; letter-spacing: -0.5px; }
-  #fcd-vsl .fcd-msgs-head .sw { color: #777; font-size: 13px; margin: 0; }
+  #fcd-vsl .fcd-msgs-head h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: clamp(1.5rem, 4.5vw, 2rem); margin: 0 0 6px 0; letter-spacing: -0.3px; color: #fff; }
+  #fcd-vsl .fcd-msgs-head .sw { color: #7f97a8; font-size: 13px; margin: 0; }
   #fcd-vsl .fcd-msgs { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 10px; align-items: flex-start; }
-  #fcd-vsl .fcd-msg { flex: 0 0 auto; width: min(80%, 300px); scroll-snap-align: center; border-radius: 16px; overflow: hidden; border: 1px solid #1f2a30; background: #0e1317; }
+  #fcd-vsl .fcd-msg { flex: 0 0 auto; width: min(80%, 300px); scroll-snap-align: center; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #0b1a26; }
   #fcd-vsl .fcd-msg img { width: 100%; height: auto; display: block; }
-  /* Sin·Sin·Sin, indicación, urgencia y cinta */
-  #fcd-vsl .fcd-nolist { text-align: center; color: #cfcfcf; font-size: 13.5px; font-weight: 700; line-height: 1.6; margin: 20px 0 0 0; letter-spacing: -0.1px; }
+  /* Sin·Sin·Sin, urgencia y cinta */
+  #fcd-vsl .fcd-nolist { text-align: center; color: #9fb7c7; font-size: 13.5px; font-weight: 700; line-height: 1.6; margin: 20px 0 0 0; letter-spacing: -0.1px; }
   #fcd-vsl .fcd-nolist b { color: #fff; font-weight: 900; }
-  #fcd-vsl .fcd-urgency { max-width: 420px; margin: 28px auto 0; border: 1px solid rgba(0,170,255,0.35); border-radius: 14px; padding: 18px; text-align: center; }
-  #fcd-vsl .fcd-timer { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; font-size: 30px; color: #00AAFF; letter-spacing: 1px; }
+  #fcd-vsl .fcd-urgency { max-width: 420px; margin: 28px auto 0; border: 1px solid rgba(53,194,255,0.30); border-radius: 14px; padding: 18px; text-align: center; background: rgba(53,194,255,0.05); }
+  #fcd-vsl .fcd-timer { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; font-size: 30px; color: #35C2FF; letter-spacing: 1px; }
   #fcd-vsl .fcd-timer .ic { font-size: 24px; }
-  #fcd-vsl .fcd-urgency-txt { color: #9a9a9a; font-size: 14px; margin: 6px 0 0 0; }
+  #fcd-vsl .fcd-urgency-txt { color: #9fb7c7; font-size: 14px; margin: 6px 0 0 0; }
   #fcd-vsl .fcd-urgency-txt b { color: #fff; font-weight: 900; }
-  #fcd-vsl .fcd-marquee { overflow: hidden; border-top: 1px solid #1f1f1f; border-bottom: 1px solid #1f1f1f; padding: 12px 0; }
+  #fcd-vsl .fcd-marquee { overflow: hidden; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 12px 0; }
   #fcd-vsl .fcd-marq-track { display: inline-flex; white-space: nowrap; animation: fcd-marq 22s linear infinite; }
-  #fcd-vsl .fcd-marq-track span { color: #00AAFF; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding-right: 40px; }
+  #fcd-vsl .fcd-marq-track span { color: #35C2FF; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding-right: 40px; }
   @keyframes fcd-marq { to { transform: translateX(-50%); } }
   @media (prefers-reduced-motion: reduce) { #fcd-vsl .fcd-marq-track { animation: none; } }
 </style>
@@ -81,18 +68,16 @@
 
   <header class="fcd-header"><p><span style="font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-1.2px;">fitcon<span class="fcd-accent">damián</span></span></p></header>
 
-  <div class="fcd-banner">
-    <div class="fcd-qual">
-      <p class="k">Solo para mujeres con</p>
-      <p class="q"><span class="hl">Perimenopausia</span> o <span class="hl">menopausia</span> que estén cansadas todo el día y se odian al mirarse al espejo</p>
-    </div>
-  </div>
-
   <div class="fcd-wrap">
 
+    <div class="fcd-banner">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="q">Solo para mujeres con <span class="hl">perimenopausia</span> o <span class="hl">menopausia</span></span>
+    </div>
+
     <div class="fcd-head">
-      <h1>Cómo recuperar tu <em>JUVENTUD</em> durante la menopausia multiplicando tu energía y eliminando la flacidez, sin renunciar a tu rutina diaria</h1>
-      <p class="fcd-sub">Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.</p>
+      <h1>Cómo recuperar tu <em>juventud</em> durante la menopausia</h1>
+      <p class="fcd-sub">Multiplicando tu energía y eliminando la flacidez, sin renunciar a tu rutina diaria.</p>
     </div>
 
     <div class="fcd-video" id="fcd-vsl-video">

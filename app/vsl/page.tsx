@@ -50,43 +50,41 @@ export default function VslPage() {
   const src = vslSrc();
 
   return (
-    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
+    <main style={{ background: "radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%)", backgroundColor: "#081521", minHeight: "100vh", color: "#eaf3fb", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
 
       {/* HEADER */}
-      <header style={{ padding: "22px 24px 16px", textAlign: "center" }}>
-        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#00AAFF" }}>damián</span></span>
+      <header style={{ padding: "26px 24px 4px", textAlign: "center" }}>
+        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.8px" }}>
+          <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#35C2FF" }}>damián</span></span>
         </p>
       </header>
 
-      {/* BANNER — filtro de público objetivo (píldora limpia) */}
-      <div style={{ padding: "8px 20px 4px", textAlign: "center" }}>
-        <div style={{ display: "inline-block", maxWidth: "600px", border: "1px solid rgba(255,255,255,0.10)", borderRadius: "18px", padding: "15px 22px", background: "rgba(255,255,255,0.02)" }}>
-          <p style={{ color: "#6f7d89", fontSize: "10px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 7px 0" }}>Solo para mujeres con</p>
-          <p style={{ margin: 0, color: "#fff", fontSize: "clamp(14px, 4vw, 17px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px" }}>
-            <span style={{ color: "#00AAFF", fontWeight: 900 }}>Perimenopausia</span> o <span style={{ color: "#00AAFF", fontWeight: 900 }}>menopausia</span> que estén cansadas todo el día y se odian al mirarse al espejo
-          </p>
-        </div>
-      </div>
-
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 20px 80px", width: "100%" }}>
 
-        {/* TITULAR */}
-        <div style={{ textAlign: "center", paddingTop: "26px", marginBottom: "28px" }}>
-          <h1 style={{ fontWeight: 900, fontSize: "clamp(1.2rem, 4.6vw, 2.2rem)", margin: "0 0 12px 0", lineHeight: 1.18, letterSpacing: "-0.5px" }}>
-            Cómo recuperar tu <span style={{ color: "#00AAFF" }}>JUVENTUD</span> durante la menopausia multiplicando tu energía y eliminando la flacidez, sin renunciar a tu rutina diaria
+        {/* BANNER — filtro de público objetivo (línea fina) */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "9px", textAlign: "center", margin: "22px 0 26px", lineHeight: 1.5 }}>
+          <span aria-hidden="true" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#35C2FF", flex: "0 0 auto", boxShadow: "0 0 12px #35C2FF" }} />
+          <span style={{ fontSize: "12.5px", fontWeight: 700, color: "#9fb7c7", letterSpacing: "0.2px" }}>
+            Solo para mujeres con <span style={{ color: "#35C2FF", fontWeight: 800 }}>perimenopausia</span> o <span style={{ color: "#35C2FF", fontWeight: 800 }}>menopausia</span>
+          </span>
+        </div>
+
+        {/* TITULAR — editorial serif */}
+        <div style={{ textAlign: "center", marginBottom: "30px" }}>
+          <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.7rem, 6vw, 2.6rem)", margin: "0 0 16px 0", lineHeight: 1.16, letterSpacing: "-0.5px", color: "#fff" }}>
+            Cómo recuperar tu <span style={{ fontStyle: "italic", fontWeight: 500, color: "#35C2FF" }}>juventud</span> durante la menopausia
           </h1>
-          <p style={{ color: "#AAAAAA", fontSize: "15px", margin: 0, lineHeight: 1.6 }}>
-            Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
+          <p style={{ color: "#9fb7c7", fontSize: "15px", margin: "0 auto", maxWidth: "440px", lineHeight: 1.6 }}>
+            Multiplicando tu energía y eliminando la flacidez, sin renunciar a tu rutina diaria.
           </p>
         </div>
 
         {/* VSL — VÍDEO 16:9 */}
         <div style={{
           position: "relative", aspectRatio: "16/9",
-          borderRadius: "18px", overflow: "hidden",
-          border: "1px solid #1f1f1f", background: "#000",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+          borderRadius: "16px", overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.10)", background: "#06121c",
+          boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
         }}>
           {src ? (
             <iframe
@@ -106,7 +104,7 @@ export default function VslPage() {
         </div>
 
         {/* SIN·SIN·SIN — debajo del vídeo */}
-        <p style={{ textAlign: "center", color: "#cfcfcf", fontSize: "13.5px", fontWeight: 700, lineHeight: 1.6, margin: "20px 0 0 0" }}>
+        <p style={{ textAlign: "center", color: "#9fb7c7", fontSize: "13.5px", fontWeight: 700, lineHeight: 1.6, margin: "20px 0 0 0" }}>
           <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> dietas estrictas · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> renunciar a tus cenas y planes · <b style={{ color: "#fff", fontWeight: 900 }}>Sin</b> vivir en el gimnasio
         </p>
 
@@ -116,32 +114,32 @@ export default function VslPage() {
             href={CALENDARIO}
             style={{
               display: "inline-block",
-              background: "linear-gradient(90deg, #0077CC, #00AAFF)",
-              color: "#fff",
+              background: "linear-gradient(90deg, #0088d6, #35C2FF)",
+              color: "#06202f",
               fontWeight: 900,
               fontSize: "clamp(1.05rem, 3.6vw, 1.35rem)",
               letterSpacing: "-0.3px",
               padding: "20px 44px",
               borderRadius: "99px",
               textDecoration: "none",
-              boxShadow: "0 12px 34px rgba(0,170,255,0.35)",
+              boxShadow: "0 14px 36px rgba(53,194,255,0.34)",
             }}
           >
             📞 Agenda tu llamada
           </a>
-          <p style={{ color: "#777", fontSize: "13px", margin: "16px 0 0 0" }}>
+          <p style={{ color: "#7f97a8", fontSize: "13px", margin: "16px 0 0 0" }}>
             30 minutos · 100% gratuito · sin compromiso
           </p>
           <Urgency minutos={10} plazas={5} />
         </div>
 
         {/* CASOS DE ÉXITO EN VÍDEO */}
-        <div style={{ borderTop: "1px solid #1f1f1f", marginTop: "56px", marginBottom: "32px" }} />
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginTop: "56px", marginBottom: "32px" }} />
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
-          <p style={{ color: "#AAAAAA", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+          <p style={{ color: "#35C2FF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
             RESULTADOS REALES
           </p>
-          <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: 0, letterSpacing: "-0.5px" }}>
+          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: 0, letterSpacing: "-0.3px", color: "#fff" }}>
             Mujeres que ya lo han conseguido
           </h3>
         </div>
@@ -150,7 +148,7 @@ export default function VslPage() {
             <div key={id} style={{
               position: "relative", aspectRatio: "16/9",
               borderRadius: "16px", overflow: "hidden",
-              border: "1px solid #1f1f1f", background: "#000",
+              border: "1px solid rgba(255,255,255,0.10)", background: "#06121c",
             }}>
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
@@ -164,19 +162,19 @@ export default function VslPage() {
         </div>
 
         {/* MENSAJES DE CLIENTAS (estilo WhatsApp) — después de los vídeos */}
-        <div style={{ borderTop: "1px solid #1f1f1f", marginTop: "48px", marginBottom: "28px" }} />
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginTop: "48px", marginBottom: "28px" }} />
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <p style={{ color: "#25D366", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
             💬 Mensajes reales
           </p>
-          <h3 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: "0 0 6px 0", letterSpacing: "-0.3px", color: "#fff" }}>
             Lo que me dicen mis clientas
           </h3>
-          <p style={{ color: "#777", fontSize: "13px", margin: 0 }}>Desliza para ver más →</p>
+          <p style={{ color: "#7f97a8", fontSize: "13px", margin: 0 }}>Desliza para ver más →</p>
         </div>
         <div style={{ display: "flex", gap: "12px", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: "10px", alignItems: "flex-start" }}>
           {mensajes.map((src, i) => (
-            <div key={i} style={{ flex: "0 0 auto", width: "min(80%, 300px)", scrollSnapAlign: "center", border: "1px solid #1f2a30", borderRadius: "16px", overflow: "hidden", background: "#0e1317" }}>
+            <div key={i} style={{ flex: "0 0 auto", width: "min(80%, 300px)", scrollSnapAlign: "center", border: "1px solid rgba(255,255,255,0.10)", borderRadius: "16px", overflow: "hidden", background: "#0b1a26" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={src} alt="Mensaje de una clienta" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
@@ -186,10 +184,10 @@ export default function VslPage() {
       </div>
 
       {/* CINTA DESLIZANTE */}
-      <div style={{ overflow: "hidden", borderTop: "1px solid #1f1f1f", borderBottom: "1px solid #1f1f1f", padding: "12px 0" }}>
+      <div style={{ overflow: "hidden", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "12px 0" }}>
         <div className="fcd-marq-track">
           {[0, 1].map((k) => (
-            <span key={k} style={{ color: "#00AAFF", fontSize: "12px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", paddingRight: "40px" }}>
+            <span key={k} style={{ color: "#35C2FF", fontSize: "12px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", paddingRight: "40px" }}>
               +1.300 mujeres ✦ Sin dietas extremas ✦ Método Envejecimiento Revertido ✦ Energía y figura después de los 40 ✦
             </span>
           ))}
@@ -197,12 +195,12 @@ export default function VslPage() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "24px", textAlign: "center" }}>
-        <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
+      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "24px", textAlign: "center" }}>
+        <p style={{ color: "#5a7183", fontSize: "12px", margin: 0 }}>
           © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
-          <a href="/privacidad" style={{ color: "#444", textDecoration: "none" }}>Privacidad</a>{" · "}
-          <a href="/politica-cookies" style={{ color: "#444", textDecoration: "none" }}>Cookies</a>{" · "}
-          <a href="/aviso-legal" style={{ color: "#444", textDecoration: "none" }}>Aviso Legal</a>
+          <a href="/privacidad" style={{ color: "#5a7183", textDecoration: "none" }}>Privacidad</a>{" · "}
+          <a href="/politica-cookies" style={{ color: "#5a7183", textDecoration: "none" }}>Cookies</a>{" · "}
+          <a href="/aviso-legal" style={{ color: "#5a7183", textDecoration: "none" }}>Aviso Legal</a>
         </p>
       </footer>
     </main>
