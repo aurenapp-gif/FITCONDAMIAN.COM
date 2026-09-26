@@ -53,33 +53,33 @@ export default function AccesoRecursosClient() {
         <div className="er-frame">
           <iframe src={VSL_SRC} title="Vídeo Envejecimiento Revertido" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowFullScreen />
         </div>
-        <p className="er-sub" style={{ fontSize: "14px" }}>
+        <p className="er-under">
           Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
         </p>
-        <div style={{ marginTop: "18px" }}>
+        <div className="er-cta-wrap">
           <a className="er-btn" href={CALENDARIO}>📞 Agenda tu llamada gratis</a>
           <p className="er-fine">30 minutos · 100% gratuito · sin compromiso</p>
         </div>
 
         {/* PASO 2 — RECURSOS */}
-        <div className="er-step" style={{ marginTop: "40px" }}><i>2</i>Tus 10 recursos</div>
+        <div className="er-step" style={{ marginTop: "52px" }}><i>2</i>Tus 10 recursos</div>
         <div className="er-list">
           {RECURSOS.map((r) => {
             const yt = youtubeId(r.linkVideo);
             return (
-              <article key={r.id} className="er-item">
+              <article key={r.id} className="er-item acc">
                 <Cover r={r} />
                 <div>
                   <h2 className="nm">{r.name}</h2>
                   <p className="hk">{r.hook}</p>
-                  <div className="er-acts">
-                    {yt && (
-                      <button type="button" className="er-act" onClick={() => setVideoAbierto(yt)}>▶ Ver vídeo</button>
-                    )}
-                    <a className={`er-act${yt ? " ghost" : ""}`} href={r.linkDoc} target="_blank" rel="noopener noreferrer">
-                      {r.docLabel ?? "Abrir documento"} ↗
-                    </a>
-                  </div>
+                </div>
+                <div className="er-acts">
+                  {yt && (
+                    <button type="button" className="er-act" onClick={() => setVideoAbierto(yt)}>▶ Ver vídeo</button>
+                  )}
+                  <a className={`er-act${yt ? " ghost" : ""}`} href={r.linkDoc} target="_blank" rel="noopener noreferrer">
+                    {r.docLabel ?? "Abrir documento"} ↗
+                  </a>
                 </div>
               </article>
             );
@@ -87,7 +87,7 @@ export default function AccesoRecursosClient() {
         </div>
 
         {/* LLAMADA */}
-        <div className="er-box" style={{ marginTop: "32px" }}>
+        <div className="er-box" style={{ marginTop: "40px" }}>
           <p className="er-eb" style={{ marginBottom: "8px" }}>¿Quieres ir más rápido?</p>
           <h2>Agenda una llamada gratuita conmigo</h2>
           <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso.</p>
