@@ -1,550 +1,106 @@
 "use client";
 
-import { useState, useRef, useEffect, type ReactNode } from "react";
-import VideoPlayer from "../_components/VideoPlayer";
-
-// Fondo de partículas animadas (igual que en /recursos).
-function ParticlesCanvas() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const c = ref.current; if (!c) return;
-    const ctx = c.getContext("2d"); if (!ctx) return;
-    const resize = () => { c.width = c.offsetWidth; c.height = c.offsetHeight; };
-    resize(); window.addEventListener("resize", resize);
-    const pts = Array.from({ length: 70 }, () => ({
-      x: Math.random() * c.width, y: Math.random() * c.height,
-      r: Math.random() * 1.8 + 0.3,
-      dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
-      a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65,
-    }));
-    let id = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, c.width, c.height);
-      for (const p of pts) {
-        p.x += p.dx; p.y += p.dy;
-        if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
-        if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.blue ? "#00AAFF" : "#fff";
-        ctx.globalAlpha = p.a; ctx.fill();
-      }
-      ctx.globalAlpha = 1; id = requestAnimationFrame(draw);
-    };
-    id = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
-  }, []);
-  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, transform: "translateZ(0)", willChange: "transform" }} />;
-}
-
-// Detecta cuándo el elemento entra en pantalla (una sola vez).
-function useReveal(threshold = 0.2) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
-    );
-    obs.observe(el); return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
-
-// Envuelve cada recurso: destello azul + entrada deslizante desde el lateral.
-function RevealCard({ index, children }: { index: number; children: ReactNode }) {
-  const { ref, visible } = useReveal(0.2);
-  const fromLeft = index % 2 === 0;
-  return (
-    <div ref={ref} style={{ position: "relative" }}>
-      {/* Tarjeta con entrada lateral + halo azul alrededor (box-shadow, sin filtros pesados) */}
-      <div style={{
-        position: "relative", zIndex: 1,
-        borderRadius: "16px",
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateX(0)" : `translateX(${fromLeft ? "-64px" : "64px"})`,
-        boxShadow: visible ? "0 0 40px rgba(0,170,255,0.4)" : "0 0 0 rgba(0,170,255,0)",
-        transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1), box-shadow 1.1s ease",
-      }}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-const recursos = [
-  {
-    vol: "01",
-    categoria: "DIAGNÓSTICO",
-    titulo: "Medidor de Edad-Muscular",
-    descripcion:
-      "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás.",
-    linkVideo: "https://youtu.be/0b7aIuPJaKo",
-    linkDoc: "https://docs.google.com/document/d/1V7yt1PqsGQ94hrfg0ZvKssG5anq9YQdWChuIUWF29uk/edit?usp=sharing",
-  },
-  {
-    vol: "02",
-    categoria: "NUTRICIÓN",
-    titulo: "Test Inteligente de Hábitos",
-    descripcion:
-      "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo.",
-    linkVideo: "https://youtu.be/WFn9kDt3FsA",
-    linkDoc: "https://docs.google.com/document/d/1VZ4_MZc70PqgGliHsGplkZ6xoK_r1FdxmZi_1YRyT8I/edit?usp=sharing",
-  },
-  {
-    vol: "03",
-    categoria: "ENTRENAMIENTO",
-    titulo: "IA Experta en Sistemas",
-    descripcion:
-      "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud.",
-    linkVideo: "https://youtu.be/qZArQavUepk",
-    linkDoc: "https://docs.google.com/document/d/1Y9gKtg2GO50LH30e8dKqpp99Y2afHN4GZlgDTZiMInU/edit?usp=sharing",
-  },
-  {
-    vol: "04",
-    categoria: "RECUPERACIÓN",
-    titulo: "Plan de Ruta Anti Envejecimiento y Flacidez",
-    descripcion:
-      "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido.",
-    linkVideo: "https://youtu.be/pUwfONeAbuk",
-    linkDoc: "https://docs.google.com/document/d/1SWwjWBsRMb1K4SEcLMGYE7ASWvjAkNXOhFFV_1u9qk8/edit?usp=sharing",
-  },
-  {
-    vol: "05",
-    categoria: "EXCLUSIVO",
-    titulo: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido",
-    descripcion:
-      "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido.",
-    linkVideo: "#",
-    imagen: "/lead-05-laboratorio.jpg",
-    linkDoc: "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing",
-  },
-  {
-    vol: "06",
-    categoria: "NUTRICIÓN",
-    titulo: "Guía de Alimentación en la Menopausia",
-    descripcion:
-      "La guía de alimentación para atravesar la menopausia con energía, sin flacidez y sintiéndote en tu mejor versión.",
-    linkVideo: "https://youtu.be/oQqtijKMbHw",
-    linkDoc: "https://guialaimentacionmenopausia.netlify.app",
-    docLabel: "Abrir guía",
-  },
-  {
-    vol: "07",
-    categoria: "PÉRDIDA DE GRASA",
-    titulo: "Pierde Grasa Más Rápido con Estos 3 Cambios",
-    descripcion:
-      "Los 3 cambios que aceleran la pérdida de grasa sin pasar hambre ni vivir en el gimnasio. Aplícalos desde hoy.",
-    linkVideo: "#",
-    linkDoc: "https://guiaperdidadegrasa.netlify.app",
-    docLabel: "Abrir guía",
-  },
-  {
-    vol: "08",
-    categoria: "ENERGÍA",
-    titulo: "Test Anti-Cansancio",
-    descripcion:
-      "Descubre qué te está robando la energía y cómo recuperarla para sentirte activa todo el día.",
-    linkVideo: "#",
-    linkDoc: "https://test-amticansancio.netlify.app",
-    docLabel: "Abrir test",
-  },
-  {
-    vol: "09",
-    categoria: "PÉRDIDA DE GRASA",
-    titulo: "Estrategia para Pérdida de Grasa",
-    descripcion:
-      "La estrategia paso a paso para perder grasa de forma sostenible y sin recuperarla.",
-    linkVideo: "#",
-    linkDoc: "https://estrategia-perdida-grasa.netlify.app",
-    docLabel: "Abrir recurso",
-  },
-  {
-    vol: "10",
-    categoria: "MÚSCULO",
-    titulo: "Protocolo de Masa Muscular",
-    descripcion:
-      "El protocolo para ganar masa muscular de forma eficiente y verte más firme y tonificada.",
-    linkVideo: "#",
-    linkDoc: "https://protocolomasamuscular.netlify.app",
-    docLabel: "Abrir protocolo",
-  },
-];
-
-const ctaBlock = (
-  <div style={{
-    background: "#00AAFF",
-    borderRadius: "20px",
-    padding: "36px 28px",
-    textAlign: "center",
-  }}>
-    <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 10px 0", opacity: 0.8 }}>
-      ¿QUIERES IR MÁS RÁPIDO?
-    </p>
-    <h2 style={{ fontSize: "clamp(1.3rem, 4vw, 1.8rem)", fontWeight: 900, margin: "0 0 10px 0", lineHeight: 1.15, letterSpacing: "-0.5px" }}>
-      Agenda una llamada gratuita conmigo
-    </h2>
-    <p style={{ fontSize: "15px", margin: "0 0 22px 0", opacity: 0.85, lineHeight: 1.5 }}>
-      30 minutos. Te digo exactamente qué tienes que hacer según tu caso. Sin rodeos.
-    </p>
-    <a
-      href="/agendar"
-      style={{
-        display: "inline-block",
-        background: "#0D0D0D",
-        color: "#fff",
-        fontWeight: 900,
-        fontSize: "15px",
-        padding: "14px 32px",
-        borderRadius: "99px",
-        textDecoration: "none",
-      }}
-    >
-      Agendar llamada gratuita →
-    </a>
-    <p style={{ fontSize: "12px", margin: "12px 0 0 0", opacity: 0.65 }}>Sin compromiso · 100% gratuito</p>
-  </div>
-);
-
-// Extrae el ID de un enlace de YouTube (youtu.be/ID o youtube.com/watch?v=ID) para la miniatura.
-function youtubeId(url: string): string | null {
-  if (!url || url === "#") return null;
-  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
-}
+import { useEffect, useState } from "react";
+import Cover from "../_components/Cover";
+import { RECURSOS, CALENDARIO, VSL_SRC, youtubeId } from "../_data/recursos";
+import "../_styles/er.css";
 
 export default function AccesoRecursosClient() {
   const [videoAbierto, setVideoAbierto] = useState<string | null>(null);
 
+  // Cerrar el reproductor con Escape.
+  useEffect(() => {
+    if (!videoAbierto) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setVideoAbierto(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [videoAbierto]);
+
   return (
-    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", position: "relative", overflowX: "hidden" }}>
+    <main className="er-page">
 
-      {/* FONDO DE PARTÍCULAS */}
-      <ParticlesCanvas />
-
-      {/* MODAL REPRODUCTOR DE VÍDEO */}
+      {/* REPRODUCTOR DE LOS VÍDEOS DE CADA RECURSO */}
       {videoAbierto && (
-        <div
-          onClick={(e) => { if (e.target === e.currentTarget) setVideoAbierto(null); }}
-          style={{
-            position: "fixed", inset: 0, zIndex: 1000,
-            background: "rgba(0,0,0,0.9)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "16px", backdropFilter: "blur(4px)",
-          }}
-        >
-          <div style={{ position: "relative", width: "100%", maxWidth: "900px" }}>
-            <button
-              onClick={() => setVideoAbierto(null)}
-              aria-label="Cerrar vídeo"
-              style={{
-                position: "absolute", top: "-44px", right: "0",
-                background: "#222", border: "none", color: "#fff",
-                width: "36px", height: "36px", borderRadius: "50%",
-                cursor: "pointer", fontSize: "18px", display: "flex",
-                alignItems: "center", justifyContent: "center",
-              }}
-            >
-              <span aria-hidden="true">✕</span>
-            </button>
-            <div style={{ position: "relative", aspectRatio: "16/9", background: "#000", borderRadius: "12px", overflow: "hidden" }}>
+        <div className="er-modal" role="dialog" aria-modal="true" aria-label="Vídeo del recurso"
+          onClick={(e) => { if (e.target === e.currentTarget) setVideoAbierto(null); }}>
+          <div className="box">
+            <button type="button" className="x" onClick={() => setVideoAbierto(null)} aria-label="Cerrar vídeo">✕</button>
+            <div className="er-frame">
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${videoAbierto}?autoplay=1&rel=0`}
-                title="Reproductor de vídeo"
+                title="Vídeo del recurso"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
               />
             </div>
           </div>
         </div>
       )}
 
-      {/* HEADER */}
-      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
-        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#00AAFF" }}>damián</span></span>
-        </p>
+      <header className="er-logo">
+        <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
       </header>
 
-      <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 1 }}>
+      <div className="er-wrap" style={{ paddingTop: "26px", paddingBottom: "64px" }}>
 
-        {/* HERO */}
-        <section style={{ paddingTop: "56px", paddingBottom: "48px" }}>
-          <p style={{ color: "#666", fontSize: "11px", fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>
-            RECURSOS GRATUITOS · ACCESO COMPLETO
-          </p>
+        <div className="er-ok-wrap"><span className="er-ok">✓ Acceso desbloqueado</span></div>
+        <h1 className="er-h" style={{ fontSize: "clamp(30px, 8vw, 42px)" }}>
+          Ya tienes tus 10 recursos. Antes de empezar, <span className="er-pill">mira esto</span>
+        </h1>
 
-          <h1 style={{ fontSize: "clamp(2.4rem, 8vw, 3.6rem)", fontWeight: 900, lineHeight: 1.05, margin: "0 0 20px 0", letterSpacing: "-1.5px" }}>
-            Bienvenido a los{" "}
-            <em style={{ fontStyle: "italic", color: "#00AAFF" }}>recursos.</em>
-          </h1>
+        {/* PASO 1 — VSL */}
+        <div className="er-step"><i>1</i>El vídeo más importante</div>
+        <div className="er-frame">
+          <iframe src={VSL_SRC} title="Vídeo Envejecimiento Revertido" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowFullScreen />
+        </div>
+        <p className="er-sub" style={{ fontSize: "14px" }}>
+          Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
+        </p>
+        <div style={{ marginTop: "18px" }}>
+          <a className="er-btn" href={CALENDARIO}>📞 Agenda tu llamada gratis</a>
+          <p className="er-fine">30 minutos · 100% gratuito · sin compromiso</p>
+        </div>
 
-          <p style={{ color: "#A0A0A0", fontSize: "17px", lineHeight: 1.6, margin: "0 0 36px 0" }}>
-            Todo el material que necesitas para transformar tu cuerpo.
-            Guárdalo antes de cerrar esta página.
-          </p>
-
-          {/* Vídeo de bienvenida */}
-          <div style={{
-            borderRadius: "16px",
-            overflow: "hidden",
-            background: "#000",
-            border: "1px solid #252525",
-            marginBottom: "8px",
-          }}>
-            <VideoPlayer src="/video-recursos.mp4" poster="/video-recursos-poster.jpg" />
-          </div>
-          <p style={{ color: "#444", fontSize: "12px", textAlign: "center", margin: "0 0 32px 0" }}>
-            🔊 Activa el sonido
-          </p>
-
-          {ctaBlock}
-        </section>
-
-        {/* SEPARADOR */}
-        <div style={{ borderTop: "1px solid #1f1f1f", marginBottom: "48px" }} />
-
-        {/* CATÁLOGO */}
-        <section style={{ paddingBottom: "80px" }}>
-
-          <div style={{ marginBottom: "36px" }}>
-            <span style={{
-              display: "inline-block",
-              border: "1px solid #252525",
-              color: "#666",
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "2px",
-              padding: "6px 14px",
-              borderRadius: "99px",
-              marginBottom: "16px",
-              textTransform: "uppercase",
-            }}>
-              EL CATÁLOGO
-            </span>
-            <h2 style={{ fontSize: "clamp(1.8rem, 5vw, 2.4rem)", fontWeight: 900, margin: 0, letterSpacing: "-1px", lineHeight: 1.1 }}>
-              Cada recurso,{" "}
-              <em style={{ fontStyle: "italic", color: "#00AAFF" }}>tu acceso</em>
-              <span style={{ color: "#00AAFF" }}>.</span>
-            </h2>
-          </div>
-
-          {/* CARDS */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-            {recursos.map((r, i) => (
-              <RevealCard key={r.vol} index={i}>
-              <article
-                style={{
-                  background: "#111",
-                  border: "1px solid #1f1f1f",
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Thumbnail: miniatura de YouTube si hay vídeo, si no placeholder */}
-                {(() => {
-                  const ytId = youtubeId(r.linkVideo);
-                  const customImg = (r as { imagen?: string }).imagen;
-                  const volBadge = (
-                    <span style={{
-                      position: "absolute",
-                      top: "12px",
-                      left: "12px",
-                      background: "#00AAFF",
-                      color: "#fff",
-                      fontSize: "11px",
-                      fontWeight: 900,
-                      padding: "4px 10px",
-                      borderRadius: "99px",
-                      letterSpacing: "1px",
-                      zIndex: 1,
-                    }}>
-                      VOL · {r.vol}
-                    </span>
-                  );
-                  const playBtn = (
-                    <div aria-hidden="true" style={{
-                      width: "56px",
-                      height: "56px",
-                      background: "#00AAFF",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                      paddingLeft: "4px",
-                      boxShadow: "0 0 0 10px rgba(0,170,255,0.12)",
-                      color: "#fff",
-                    }}>
-                      ▶
-                    </div>
-                  );
-                  const thumbInner = (
-                    <>
-                      {volBadge}
-                      {playBtn}
-                    </>
-                  );
-                  const baseStyle = {
-                    aspectRatio: "16/8",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative" as const,
-                    borderBottom: "1px solid #1f1f1f",
-                  };
-                  // Imagen fija (recurso sin vídeo): muestra la imagen sin botón de play.
-                  if (!ytId && customImg) {
-                    return (
-                      <div style={{ ...baseStyle, background: "#161616", overflow: "hidden" }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={customImg}
-                          alt={r.titulo}
-                          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                        {volBadge}
-                      </div>
-                    );
-                  }
-                  if (ytId) {
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => setVideoAbierto(ytId)}
-                        aria-label={`Ver el vídeo: ${r.titulo}`}
-                        style={{
-                          ...baseStyle,
-                          width: "100%",
-                          background: "#161616",
-                          textDecoration: "none",
-                          cursor: "pointer",
-                          overflow: "hidden",
-                          border: "none",
-                          padding: 0,
-                        }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`}
-                          alt={`Miniatura del vídeo: ${r.titulo}`}
-                          onError={(e) => {
-                            const img = e.currentTarget;
-                            if (img.dataset.step === undefined) {
-                              // 1er fallo: prueba con la miniatura de menor resolución.
-                              img.dataset.step = "1";
-                              img.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-                            } else {
-                              // 2º fallo (p. ej. vídeo privado): oculta la imagen y deja el placeholder oscuro.
-                              img.style.display = "none";
-                            }
-                          }}
-                          style={{
-                            position: "absolute", inset: 0,
-                            width: "100%", height: "100%",
-                            objectFit: "cover",
-                            filter: "brightness(0.8)",
-                          }}
-                        />
-                        {thumbInner}
-                      </button>
-                    );
-                  }
-                  // Recurso sin vídeo: portada de diseño con el nombre.
-                  return (
-                    <div style={{ ...baseStyle, background: "linear-gradient(135deg, #102a3a, #0D0D0D 65%)", overflow: "hidden" }}>
-                      {volBadge}
-                      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 28% 22%, rgba(0,170,255,0.20), transparent 60%)", pointerEvents: "none" }} />
-                      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "18px 24px", gap: "10px" }}>
-                        <span aria-hidden="true" style={{ width: "48px", height: "48px", borderRadius: "13px", background: "linear-gradient(135deg,#00AAFF,#0077CC)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", boxShadow: "0 8px 22px rgba(0,170,255,0.4)" }}>📄</span>
-                        <span style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase" }}>{r.categoria}</span>
-                        <p style={{ color: "#fff", fontWeight: 900, fontSize: "clamp(15px, 3.5vw, 19px)", lineHeight: 1.2, letterSpacing: "-0.4px", margin: 0, maxWidth: "320px" }}>{r.titulo}</p>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Contenido */}
-                <div style={{ padding: "24px" }}>
-                  <p style={{ color: "#555", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
-                    VOLUMEN {r.vol} · {r.categoria}
-                  </p>
-                  <h3 style={{ fontSize: "19px", fontWeight: 900, margin: "0 0 10px 0", lineHeight: 1.2, letterSpacing: "-0.5px" }}>
-                    {r.titulo}
-                  </h3>
-                  <p style={{ color: "#A0A0A0", fontSize: "14px", lineHeight: 1.6, margin: "0 0 20px 0" }}>
-                    {r.descripcion}
-                  </p>
-
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    {youtubeId(r.linkVideo) && (
-                      <button
-                        type="button"
-                        onClick={() => setVideoAbierto(youtubeId(r.linkVideo)!)}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "8px",
-                          background: "#00AAFF",
-                          color: "#fff",
-                          fontWeight: 700,
-                          fontSize: "14px",
-                          padding: "11px 20px",
-                          borderRadius: "99px",
-                          border: "none",
-                          fontFamily: "inherit",
-                          cursor: "pointer",
-                        }}
-                      >
-                        ▶ Ver el vídeo
-                      </button>
+        {/* PASO 2 — RECURSOS */}
+        <div className="er-step" style={{ marginTop: "40px" }}><i>2</i>Tus 10 recursos</div>
+        <div className="er-list">
+          {RECURSOS.map((r) => {
+            const yt = youtubeId(r.linkVideo);
+            return (
+              <article key={r.id} className="er-item">
+                <Cover r={r} />
+                <div>
+                  <h2 className="nm">{r.name}</h2>
+                  <p className="hk">{r.hook}</p>
+                  <div className="er-acts">
+                    {yt && (
+                      <button type="button" className="er-act" onClick={() => setVideoAbierto(yt)}>▶ Ver vídeo</button>
                     )}
-                    <a
-                      href={r.linkDoc !== "#" ? r.linkDoc : undefined}
-                      onClick={r.linkDoc === "#" ? (e) => e.preventDefault() : undefined}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-disabled={r.linkDoc === "#"}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        background: "transparent",
-                        color: "#fff",
-                        fontWeight: 700,
-                        fontSize: "14px",
-                        padding: "11px 20px",
-                        borderRadius: "99px",
-                        textDecoration: "none",
-                        border: r.linkDoc !== "#" ? "1px solid #555" : "1px solid #2a2a2a",
-                        opacity: r.linkDoc === "#" ? 0.4 : 1,
-                        cursor: r.linkDoc === "#" ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      {(r as { docLabel?: string }).docLabel ?? "Abrir documento"} ↗
+                    <a className={`er-act${yt ? " ghost" : ""}`} href={r.linkDoc} target="_blank" rel="noopener noreferrer">
+                      {r.docLabel ?? "Abrir documento"} ↗
                     </a>
                   </div>
                 </div>
               </article>
-              </RevealCard>
-            ))}
-          </div>
+            );
+          })}
+        </div>
 
-          <div style={{ marginTop: "32px" }}>{ctaBlock}</div>
-        </section>
-
+        {/* LLAMADA */}
+        <div className="er-box" style={{ marginTop: "32px" }}>
+          <p className="er-eb" style={{ marginBottom: "8px" }}>¿Quieres ir más rápido?</p>
+          <h2>Agenda una llamada gratuita conmigo</h2>
+          <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso.</p>
+          <a className="er-btn" href={CALENDARIO}>📞 Agenda tu llamada gratis</a>
+          <p className="er-fine">Sin compromiso · 100% gratuito</p>
+        </div>
       </div>
 
-      {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "28px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
-        <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
-          © {new Date().getFullYear()} Fit con Damián · fitcondamian.com
-          {" · "}
-          <a href="/privacidad" style={{ color: "#444", textDecoration: "none" }}>Privacidad</a>
-          {" · "}
-          <a href="/aviso-legal" style={{ color: "#444", textDecoration: "none" }}>Aviso Legal</a>
-        </p>
+      <footer className="er-footer">
+        © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
+        <a href="/privacidad">Privacidad</a>{" · "}
+        <a href="/politica-cookies">Cookies</a>{" · "}
+        <a href="/aviso-legal">Aviso Legal</a>
       </footer>
     </main>
   );

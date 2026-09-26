@@ -24,15 +24,15 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{
         position: "fixed", inset: 0, zIndex: 1000,
-        background: "rgba(0,0,0,0.85)",
+        background: "rgba(4,12,20,0.88)",
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "16px",
         backdropFilter: "blur(4px)",
       }}
     >
       <div style={{
-        background: "#111",
-        border: "1px solid #2a2a2a",
+        background: "#0d1a26",
+        border: "1px solid rgba(53,194,255,0.30)",
         borderRadius: "20px",
         width: "100%",
         maxWidth: "460px",
@@ -48,7 +48,7 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
           aria-label="Cerrar"
           style={{
             position: "absolute", top: "16px", right: "16px",
-            background: "#222", border: "none", color: "#fff",
+            background: "#1b2b38", border: "none", color: "#fff",
             width: "32px", height: "32px", borderRadius: "50%",
             cursor: "pointer", fontSize: "16px", display: "flex",
             alignItems: "center", justifyContent: "center",
@@ -59,7 +59,7 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
 
         {/* Badge */}
         <p style={{
-          color: "#00AAFF", fontSize: "11px", fontWeight: 700,
+          color: "#35C2FF", fontSize: "11px", fontWeight: 800,
           letterSpacing: "2px", textTransform: "uppercase",
           margin: "0 0 14px 0",
         }}>
@@ -68,14 +68,15 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
 
         {/* Headline */}
         <h2 style={{
-          fontSize: "clamp(1.6rem, 5vw, 2rem)", fontWeight: 900,
-          margin: "0 0 8px 0", lineHeight: 1.1, letterSpacing: "-0.5px", color: "#fff",
+          fontFamily: "var(--font-instrument), 'Instrument Serif', Georgia, serif",
+          fontSize: "clamp(1.8rem, 6vw, 2.2rem)", fontWeight: 400,
+          margin: "0 0 8px 0", lineHeight: 1.08, color: "#fff",
         }}>
-          Accede a los recursos{" "}
-          <em style={{ fontStyle: "italic", color: "#00AAFF" }}>gratis</em>
+          Recibe tu test y tus 10 recursos{" "}
+          <em style={{ fontStyle: "italic", color: "#35C2FF" }}>gratis</em>
         </h2>
-        <p style={{ color: "#888", fontSize: "14px", margin: "0 0 24px 0", lineHeight: 1.5 }}>
-          Déjanos tu correo y te los enviamos al instante.
+        <p style={{ color: "#9fb7c7", fontSize: "14px", margin: "0 0 24px 0", lineHeight: 1.5 }}>
+          Déjanos tus datos y accede al instante.
         </p>
 
         {/* GHL Form iframe — embed oficial completo con auto-resize (form_embed.js) */}
@@ -86,12 +87,12 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
               style={{
                 position: "absolute", inset: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                background: "#161616", borderRadius: "8px",
+                background: "#0b1722", borderRadius: "8px",
               }}
             >
               <div style={{
                 width: "32px", height: "32px", borderRadius: "50%",
-                border: "3px solid #2a2a2a", borderTopColor: "#00AAFF",
+                border: "3px solid #1b2b38", borderTopColor: "#35C2FF",
                 animation: "spin 0.8s linear infinite",
               }} />
             </div>
@@ -124,7 +125,7 @@ export default function ModalForm({ open, onClose }: { open: boolean; onClose: (
         {/* Script cargado correctamente fuera del ciclo de render de React */}
         <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="afterInteractive" />
 
-        <p style={{ color: "#444", fontSize: "11px", textAlign: "center", margin: "12px 0 0 0" }}>
+        <p style={{ color: "#5a7183", fontSize: "11px", textAlign: "center", margin: "12px 0 0 0" }}>
           Sin spam · Cancela cuando quieras
         </p>
       </div>

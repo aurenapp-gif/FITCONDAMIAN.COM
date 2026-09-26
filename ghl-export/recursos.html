@@ -1,175 +1,163 @@
 <!-- ================================================================= -->
-<!-- FIT CON DAMIAN — Pagina de recursos (captacion de lead)           -->
-<!-- Version HTML/CSS/JS plana para pegar en el bloque                 -->
-<!-- "JavaScript/HTML personalizado" de GoHighLevel.                   -->
-<!-- Replica de fitcondamian.com/recursos (diseno actual).             -->
-<!-- El formulario reutiliza el mismo GHL_FORM_ID.                     -->
+<!-- ENVEJECIMIENTO REVERTIDO — Landing de recursos (antes de acceder) -->
+<!-- Test de 5 preguntas + 10 recursos gratis.                         -->
+<!-- Pegar en el bloque "Código personalizado / HTML" de GoHighLevel.  -->
+<!-- El formulario es el mismo de siempre (vmfyZr4yJIrYZYPSkuko).      -->
 <!-- ================================================================= -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;800&family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
 <style>
-  /* Fondo negro en toda la pagina (elimina los bordes grises de GHL) */
-  html, body { background: #0D0D0D !important; margin: 0 !important; }
-  #fcd-recursos * { margin: 0; padding: 0; box-sizing: border-box; }
-  #fcd-recursos {
-    background: #0D0D0D;
-    color: #fff;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    overflow-x: hidden;
+  /* Ocupar todo el ancho aunque GoHighLevel meta el bloque en una sección más estrecha,
+     y pintar el fondo de la página del mismo azul para que no se vean bordes negros */
+  html, body { background: #081521 !important; }
+  html { overflow-x: clip; }
+  #fcd-er { --fcd-sb: 0px; width: calc(100vw - var(--fcd-sb)); max-width: calc(100vw - var(--fcd-sb)); margin-left: calc(50% - 50vw + var(--fcd-sb) / 2) !important; margin-right: calc(50% - 50vw + var(--fcd-sb) / 2) !important; }
+  .er-page {
+    background: radial-gradient(120% 40% at 50% 0%, #12314b, #081521 55%);
+    background-color: #081521;
+    color: #eaf3fb;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
     line-height: 1.5;
-    width: 100%;
+    -webkit-font-smoothing: antialiased;
   }
-  #fcd-recursos a { text-decoration: none; }
-  #fcd-recursos .fcd-accent { color: #00AAFF; }
-
-  #fcd-recursos .fcd-header {
-    border-bottom: 1px solid #1f1f1f;
-    padding: 20px 24px; text-align: center; position: relative; z-index: 10;
+  .er-page *, .er-page *::before, .er-page *::after { box-sizing: border-box; }
+  .er-page h1, .er-page h2, .er-page h3, .er-page p { margin: 0; }
+  .er-page button { font-family: inherit; cursor: pointer; }
+  .er-band {
+    text-align: center;
+    background: linear-gradient(90deg, #0088d6, #35C2FF);
+    color: #04202b;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+    font-size: clamp(9px, 2.78vw, 10px);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 12px 8px;
+    white-space: nowrap;
+    line-height: 1.3;
   }
-  #fcd-recursos .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
-
-  #fcd-recursos .fcd-wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-
-  /* Hero */
-  #fcd-recursos .fcd-hero { padding: 40px 0; text-align: center; position: relative; }
-  #fcd-recursos .fcd-hero-bg { position: absolute; inset: 0; overflow: hidden; border-radius: 24px; pointer-events: none; }
-  #fcd-recursos .fcd-hero-inner { position: relative; z-index: 1; }
-  #fcd-recursos .fcd-qualifier {
-    color: #00AAFF; font-size: clamp(13px, 3.4vw, 15px); font-weight: 800;
-    line-height: 1.4; letter-spacing: -0.2px; margin: 0 auto 20px; max-width: 560px;
+  @media (min-width: 640px) {
+    .er-band { font-size: 12.5px; letter-spacing: 1px; padding: 13px 16px; }
   }
-  #fcd-recursos .fcd-hero h1 {
-    font-size: clamp(1.9rem, 7vw, 3.2rem); font-weight: 900; line-height: 1.08;
-    margin: 0 0 28px 0; letter-spacing: -1.5px; text-transform: uppercase; overflow-wrap: break-word;
-  }
-  #fcd-recursos .fcd-cta {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; max-width: 520px; background: #00AAFF; color: #fff; font-weight: 900;
-    font-size: clamp(16px, 4.2vw, 19px); padding: 20px 32px; border-radius: 16px; border: none;
-    cursor: pointer; letter-spacing: -0.3px; font-family: inherit; text-transform: uppercase;
-    box-shadow: 0 10px 30px rgba(0,170,255,0.35);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  #fcd-recursos .fcd-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(0,170,255,0.45); }
-  #fcd-recursos .fcd-hero .fcd-cta { margin-bottom: 16px; }
-  #fcd-recursos .fcd-subcta {
-    color: #B8B8B8; font-size: 15px; font-weight: 500; line-height: 1.6;
-    margin: 0 auto 36px; max-width: 560px;
-  }
-  #fcd-recursos .fcd-subcta strong { color: #fff; }
-  #fcd-recursos .fcd-subcta .fcd-accent { font-weight: 700; }
-
-  #fcd-recursos .fcd-video {
-    border-radius: 16px; overflow: hidden; background: #000; border: 1px solid #252525;
-  }
-  #fcd-recursos .fcd-video video { width: 100%; height: auto; display: block; }
-  #fcd-recursos .fcd-play {
-    width: 72px; height: 72px; background: #00AAFF; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 24px;
-    padding-left: 6px; margin: 0 auto 12px; cursor: pointer;
-    box-shadow: 0 0 0 14px rgba(0,170,255,0.12); border: none; color: #fff;
-  }
-
-  /* Stats */
-  #fcd-recursos .fcd-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 56px; }
-  #fcd-recursos .fcd-stat { background: #111; border: 1px solid #1f1f1f; border-radius: 16px; padding: 20px; text-align: center; }
-  #fcd-recursos .fcd-stat .fcd-num { font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); color: #00AAFF; margin: 0 0 4px 0; letter-spacing: -1px; }
-  #fcd-recursos .fcd-stat .fcd-lab { color: #888; font-size: 12px; line-height: 1.4; }
-
-  /* Seccion recursos */
-  #fcd-recursos .fcd-recursos-sec { padding-bottom: 56px; }
-  #fcd-recursos .fcd-sec-head { text-align: center; margin-bottom: 24px; }
-  #fcd-recursos .fcd-eyebrow { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px 0; }
-  #fcd-recursos .fcd-sec-head h2 { font-weight: 900; font-size: clamp(1.4rem, 5vw, 2rem); margin: 0; letter-spacing: -0.8px; }
-
-  /* Cuadricula compacta */
-  #fcd-recursos .fcd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-  #fcd-recursos .fcd-gcard {
-    text-align: left; cursor: pointer; font: inherit; color: inherit;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 18px; padding: 18px 16px; display: flex; flex-direction: column; gap: 10px;
-    min-height: 170px; opacity: 0;
-    transition: opacity 0.5s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.3s ease;
-  }
-  #fcd-recursos .fcd-grid.fcd-visible .fcd-gcard { opacity: 1; }
-  #fcd-recursos .fcd-gcard:hover {
-    background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.55);
-    box-shadow: 0 14px 34px rgba(0,170,255,0.25); transform: translateY(-4px);
-  }
-  #fcd-recursos .fcd-gtop { display: flex; align-items: center; justify-content: space-between; }
-  #fcd-recursos .fcd-gemoji {
-    width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
-    background: linear-gradient(135deg, #00AAFF, #0077CC);
-    display: flex; align-items: center; justify-content: center; font-size: 22px;
-    box-shadow: 0 6px 18px rgba(0,170,255,0.35);
-  }
-  #fcd-recursos .fcd-gvol { color: #444; font-size: 12px; font-weight: 900; letter-spacing: -0.5px; }
-  #fcd-recursos .fcd-gcat { color: #00AAFF; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
-  #fcd-recursos .fcd-gcard h3 {
-    font-weight: 900; font-size: 15px; color: #fff; margin: 0; line-height: 1.2; letter-spacing: -0.3px;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  #fcd-recursos .fcd-glink { margin-top: auto; color: #8a8a8a; font-size: 13px; font-weight: 800; transition: color 0.25s ease; }
-  #fcd-recursos .fcd-gcard:hover .fcd-glink { color: #00AAFF; }
-
-  #fcd-recursos .fcd-final-cta { text-align: center; margin-top: 32px; }
-  #fcd-recursos .fcd-final-cta .fcd-fine { color: #666; font-size: 12px; margin: 12px 0 0 0; }
-
-  /* Footer */
-  #fcd-recursos .fcd-footer { border-top: 1px solid #1f1f1f; padding: 28px 24px; text-align: center; }
-  #fcd-recursos .fcd-footer p { color: #444; font-size: 12px; }
-  #fcd-recursos .fcd-footer a { color: #444; }
-
-  /* Modal */
-  #fcd-recursos .fcd-modal {
-    position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.85);
-    display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px);
-  }
-  #fcd-recursos .fcd-modal.fcd-open { display: flex; }
-  #fcd-recursos .fcd-modal-box {
-    background: #111; border: 1px solid #2a2a2a; border-radius: 20px;
-    width: 100%; max-width: 460px; padding: 32px 28px 28px; position: relative;
-    max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
-  }
-  #fcd-recursos .fcd-modal-close {
-    position: absolute; top: 16px; right: 16px; background: #222; border: none; color: #fff;
-    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  #fcd-recursos .fcd-modal-badge { color: #00AAFF; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 14px 0; }
-  #fcd-recursos .fcd-modal-box h2 { font-size: clamp(1.6rem, 5vw, 2rem); font-weight: 900; margin: 0 0 8px 0; line-height: 1.1; letter-spacing: -0.5px; color: #fff; }
-  #fcd-recursos .fcd-modal-box h2 em { font-style: italic; color: #00AAFF; }
-  #fcd-recursos .fcd-modal-sub { color: #888; font-size: 14px; margin: 0 0 24px 0; line-height: 1.5; }
-  #fcd-recursos .fcd-modal-iframe { width: 100%; min-height: 600px; border: none; border-radius: 8px; display: block; }
-  #fcd-recursos .fcd-modal-fine { color: #444; font-size: 11px; text-align: center; margin: 12px 0 0 0; }
-
-  /* Ajustes finos para móvil */
-  @media (max-width: 480px) {
-    #fcd-recursos .fcd-wrap { padding: 0 16px; }
-    #fcd-recursos .fcd-hero { padding: 28px 0 32px; }
-    #fcd-recursos .fcd-hero h1 { letter-spacing: -0.8px; }
-    #fcd-recursos .fcd-cta { padding: 17px 20px; font-size: 16px; }
-    #fcd-recursos .fcd-stats { gap: 10px; margin-bottom: 44px; }
-    #fcd-recursos .fcd-stat { padding: 16px; }
-    #fcd-recursos .fcd-grid { gap: 10px; }
-    #fcd-recursos .fcd-gcard { padding: 15px 13px; min-height: 156px; }
-  }
+  .er-logo { text-align: center; padding: 24px 20px 0; }
+  .er-logo p { display: inline-block; text-align: left; font-family: "Sora", sans-serif; font-size: 22px; line-height: 1; letter-spacing: -0.05em; color: #fff; }
+  .er-logo span { display: block; }
+  .er-logo .t { font-weight: 300; }
+  .er-logo .b { font-weight: 800; margin-top: 0.04em; }
+  .er-logo i { font-style: normal; color: #35C2FF; }
+  .er-wrap { max-width: 620px; margin: 0 auto; padding: 0 20px; }
+  .er-eb { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #35C2FF; margin-bottom: 12px; }
+  .er-h { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; text-align: center; color: #fff; line-height: 1.1; text-wrap: balance; }
+  .er-pill { display: inline-block; font-style: italic; color: #04202b; background: linear-gradient(90deg, #0088d6, #35C2FF); padding: 0 0.26em 0.03em; border-radius: 0.3em; line-height: 1.1; box-shadow: 0 4px 16px rgba(53,194,255,0.35); }
+  .er-c { color: #35C2FF; }
+  .er-sub { text-align: center; color: #9fb7c7; font-size: 15px; line-height: 1.55; margin-top: 14px; text-wrap: balance; }
+  .er-sub b { color: #fff; }
+  .er-btn { display: block; width: 100%; text-align: center; font-weight: 900; font-size: 16px; padding: 17px 14px; border-radius: 99px; border: 0; background: linear-gradient(90deg, #0088d6, #35C2FF); color: #04202b; box-shadow: 0 12px 30px rgba(53,194,255,0.32); letter-spacing: -0.2px; text-decoration: none; }
+  .er-btn:focus-visible, .er-opt:focus-visible, .er-link:focus-visible, .er-act:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .er-fine { text-align: center; font-size: 12px; color: #7f97a8; margin-top: 10px; }
+  .er-link { display: block; margin: 14px auto 0; background: none; border: 0; color: #9fb7c7; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+  .er-proof { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 16px; font-size: 13px; color: #cfe1ee; }
+  .er-proof .av { display: flex; }
+  .er-proof .av i { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #0b1c28; margin-left: -8px; background: linear-gradient(135deg, #3a86b5, #123a52); display: block; }
+  .er-proof .av i:first-child { margin-left: 0; }
+  .er-proof b { color: #fff; }
+  .er-sec { padding: 0 0 56px; }
+  .er-sh { text-align: center; margin-bottom: 22px; }
+  .er-sh .k { font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #35C2FF; margin-bottom: 8px; }
+  .er-sh h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(28px, 7vw, 38px); line-height: 1.08; color: #fff; text-wrap: balance; }
+  .er-hero { padding: 46px 0 40px; }
+  .er-hero .er-h { font-size: clamp(34px, 9.4vw, 48px); }
+  .er-quiz { margin-top: 22px; border: 1px solid rgba(53,194,255,0.35); background: rgba(53,194,255,0.06); border-radius: 20px; padding: 20px 18px; box-shadow: 0 0 40px rgba(53,194,255,0.10); scroll-margin-top: 16px; }
+  .er-quiz .top { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: #9fb7c7; font-weight: 700; margin-bottom: 8px; }
+  .er-back { background: none; border: 0; color: #9fb7c7; font-weight: 700; font-size: 12px; padding: 4px 0; }
+  .er-bar { height: 6px; border-radius: 9px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .er-bar i { display: block; height: 100%; background: linear-gradient(90deg, #0088d6, #35C2FF); border-radius: 9px; transition: width 0.35s ease; }
+  .er-q { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(22px, 6vw, 27px); line-height: 1.15; color: #fff; text-align: center; margin: 18px 0 16px !important; text-wrap: balance; }
+  .er-opts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .er-opt { text-align: center; font-size: 14.5px; font-weight: 700; color: #eaf3fb; border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 15px 8px; background: rgba(255,255,255,0.04); transition: border-color 0.2s, background 0.2s, transform 0.15s; }
+  .er-opt:hover { border-color: rgba(53,194,255,0.7); background: rgba(53,194,255,0.10); }
+  .er-opt:active { transform: scale(0.98); }
+  .er-opt.sel { border-color: #35C2FF; background: rgba(53,194,255,0.18); }
+  .er-res { text-align: center; }
+  .er-ok { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; color: #8fe6b0; background: rgba(127,224,166,0.1); border: 1px solid rgba(127,224,166,0.3); border-radius: 99px; padding: 6px 12px; }
+  .er-res h3 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(24px, 6.6vw, 30px); line-height: 1.12; color: #fff; margin: 14px 0 6px; }
+  .er-res > p { color: #9fb7c7; font-size: 14px; }
+  .er-recs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0 18px; text-align: left; }
+  .er-rec { display: flex; flex-direction: column; gap: 8px; }
+  .er-rec .er-cover { aspect-ratio: 4 / 3; }
+  .er-rec .why { font-size: 12px; color: #cfe1ee; line-height: 1.35; }
+  .er-rec .why b { color: #35C2FF; }
+  .er-cover { position: relative; border-radius: 12px; overflow: hidden; padding: 11px 11px 12px; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 3 / 4; color: #fff; border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 24px rgba(0,0,0,0.45); }
+  .er-cover::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 60% at 20% 0%, rgba(255,255,255,0.18), transparent 55%); pointer-events: none; }
+  .er-cover .n { font-family: "Sora", sans-serif; font-weight: 800; font-size: 12px; opacity: 0.85; }
+  .er-cover .k { font-size: 9px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: #04202b; background: rgba(255,255,255,0.85); padding: 2px 6px; border-radius: 4px; align-self: flex-start; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .er-cover .t { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(17px, 4.6vw, 21px); line-height: 1.02; text-wrap: balance; }
+  .er-g1 { background: linear-gradient(160deg, #1a6fa3, #0a2436); }
+  .er-g2 { background: linear-gradient(160deg, #2a4f9e, #0d1a3a); }
+  .er-g3 { background: linear-gradient(160deg, #0e8a9a, #06262c); }
+  .er-g4 { background: linear-gradient(160deg, #3a3f9e, #101236); }
+  .er-g5 { background: linear-gradient(160deg, #b58a2f, #2a1d06); }
+  .er-g6 { background: linear-gradient(160deg, #1d8f6d, #06261c); }
+  .er-g7 { background: linear-gradient(160deg, #c2566e, #2e0c15); }
+  .er-g8 { background: linear-gradient(160deg, #d08a2c, #2e1a06); }
+  .er-g9 { background: linear-gradient(160deg, #8a4fb0, #1d0c2a); }
+  .er-g10 { background: linear-gradient(160deg, #2b86c9, #0a1f33); }
+  .er-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #06121c; box-shadow: 0 24px 70px rgba(0,0,0,0.55); }
+  .er-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .er-video { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #000; }
+  .er-video video { width: 100%; height: auto; display: block; }
+  .er-cases { display: flex; flex-direction: column; gap: 14px; }
+  .er-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .er-stat { border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.035); border-radius: 16px; padding: 18px 10px; text-align: center; }
+  .er-stat b { display: block; font-family: "Sora", sans-serif; font-weight: 800; font-size: clamp(26px, 7vw, 34px); color: #35C2FF; letter-spacing: -1px; }
+  .er-stat span { font-size: 12px; color: #9fb7c7; }
+  .er-list { display: flex; flex-direction: column; gap: 12px; }
+  .er-item { display: flex; gap: 14px; align-items: stretch; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 12px; }
+  .er-item .er-cover { width: 88px; flex: 0 0 88px; align-self: flex-start; }
+  .er-item .er-cover .t { font-size: 14.5px; }
+  .er-item .nm { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(21px, 5.6vw, 24px); line-height: 1.08; color: #fff; }
+  .er-item .hk { font-size: 13.5px; color: #cfe1ee; margin-top: 5px; line-height: 1.4; }
+  .er-item .gift { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #8fe6b0; margin-top: 8px; }
+  .er-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .er-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; padding: 9px 14px; border-radius: 99px; border: 0; background: linear-gradient(90deg, #0088d6, #35C2FF); color: #04202b; text-decoration: none; }
+  .er-act.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #eaf3fb; }
+  .er-ok-wrap { text-align: center; margin-bottom: 14px; }
+  .er-step { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #35C2FF; margin: 26px 0 12px; }
+  .er-step i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: #35C2FF; color: #04202b; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+  .er-box { border: 1px solid rgba(53,194,255,0.35); background: rgba(53,194,255,0.06); border-radius: 20px; padding: 26px 20px; text-align: center; }
+  .er-box h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(26px, 6.6vw, 32px); line-height: 1.1; color: #fff; margin-bottom: 8px; }
+  .er-box p { color: #9fb7c7; font-size: 14px; margin-bottom: 18px; }
+  .er-modal { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .er-modal .box { position: relative; width: 100%; max-width: 900px; }
+  .er-modal .x { position: absolute; top: -46px; right: 0; width: 38px; height: 38px; border-radius: 50%; border: 0; background: #1b2b38; color: #fff; font-size: 17px; }
+  .er-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 26px 20px; text-align: center; color: #5a7183; font-size: 12px; }
+  .er-footer a { color: #5a7183; text-decoration: none; }
+  /* Ventana del formulario */
+  .er-fmodal { position: fixed; inset: 0; z-index: 2147483000; background: rgba(4,12,20,0.88); display: none; align-items: center; justify-content: center; padding: 16px; }
+  .er-fmodal.on { display: flex; }
+  .er-fmodal .box { position: relative; width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #0d1a26; border: 1px solid rgba(53,194,255,0.30); border-radius: 20px; padding: 32px 24px 24px; }
+  .er-fmodal .x { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #1b2b38; color: #fff; font-size: 15px; }
+  .er-fmodal .bd { color: #35C2FF; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+  .er-fmodal h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(28px, 7vw, 35px); line-height: 1.08; color: #fff; margin-bottom: 8px; }
+  .er-fmodal h2 em { color: #35C2FF; }
+  .er-fmodal .sb { color: #9fb7c7; font-size: 14px; margin-bottom: 20px; }
+  .er-fmodal iframe { width: 100%; min-height: 600px; border: none; border-radius: 8px; display: block; }
+  .er-fmodal .fn { color: #5a7183; font-size: 11px; text-align: center; margin-top: 12px; }
 </style>
 
-<div id="fcd-recursos">
+<div id="fcd-er" class="er-page">
 
-  <!-- MODAL -->
-  <div class="fcd-modal" id="fcd-modal">
-    <div class="fcd-modal-box">
-      <button class="fcd-modal-close" id="fcd-modal-close" aria-label="Cerrar">&#10005;</button>
-      <p class="fcd-modal-badge">ACCESO INMEDIATO</p>
-      <h2>Accede a los recursos <em>gratis</em></h2>
-      <p class="fcd-modal-sub">Déjanos tu correo y te los enviamos al instante.</p>
-      <iframe class="fcd-modal-iframe"
+  <div class="er-fmodal" id="er-fmodal" role="dialog" aria-modal="true" aria-label="Formulario de acceso">
+    <div class="box">
+      <button type="button" class="x" id="er-fclose" aria-label="Cerrar">✕</button>
+      <p class="bd">Acceso inmediato</p>
+      <h2>Recibe tu test y tus 10 recursos <em>gratis</em></h2>
+      <p class="sb">Déjanos tus datos y accede al instante.</p>
+      <iframe
         src="https://links.fitcondamian.com/widget/form/vmfyZr4yJIrYZYPSkuko"
         style="width:100%;border:none;border-radius:3px;"
         id="inline-vmfyZr4yJIrYZYPSkuko"
@@ -185,197 +173,156 @@
         data-layout-iframe-id="inline-vmfyZr4yJIrYZYPSkuko"
         data-form-id="vmfyZr4yJIrYZYPSkuko"
         title="01 - Formulario LM Youtube"></iframe>
-      <p class="fcd-modal-fine">Sin spam · Cancela cuando quieras</p>
+      <p class="fn">Sin spam · Cancela cuando quieras</p>
     </div>
   </div>
 
-  <!-- HEADER -->
-  <header class="fcd-header">
-    <p><span style="font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-1.2px;">fitcon<span class="fcd-accent">damián</span></span></p>
-  </header>
+  <div class="er-band">Para mujeres en perimenopausia y menopausia</div>
+  <header class="er-logo"><p aria-label="Envejecimiento Revertido"><span class="t">envejecimiento</span><span class="b">revertido<i>.</i></span></p></header>
 
-  <div class="fcd-wrap">
+  <div class="er-wrap">
 
-    <!-- HERO -->
-    <section class="fcd-hero">
-      <div class="fcd-hero-bg"><canvas id="fcd-particles"></canvas></div>
-      <div class="fcd-hero-inner">
+    <div class="er-hero">
+      <p class="er-eb">Test gratuito · 2 minutos</p>
+      <h1 class="er-h">¿Cuántos años tiene tu cuerpo <span class="er-pill">por dentro</span>?</h1>
+      <p class="er-sub">Responde 5 preguntas y descubre qué te está envejeciendo. Al terminar te regalo el <b>Test de tu Edad Real</b> completo y <b>9 recursos más</b> para revertirlo.</p>
 
-        <p class="fcd-qualifier">Para mujeres que se miran al espejo y no se ven atractivas, arrastran cansancio todo el día y han dejado de ponerse la ropa que antes les encantaba</p>
-
-        <h1>Descubre cómo eliminar la flacidez, terminar con el cansancio y <span class="fcd-accent">recuperar tu figura sin esfuerzo</span></h1>
-
-        <button class="fcd-cta" data-open-modal>Acceder a los recursos</button>
-
-        <p class="fcd-subcta">Te regalo los <strong>10 recursos gratis</strong> que han ayudado a cientos de mujeres a verse más firmes, recuperar su energía y volver a su ropa favorita. <span class="fcd-accent">Empieza a ver cambios en menos de 5 días.</span></p>
-
-        <!-- VIDEO de presentacion. Enlazado desde Vercel (fitcondamian.com). -->
-        <!-- Si migras el dominio raiz a GHL, sube el .mp4 a Contenido       -->
-        <!-- multimedia de GHL y cambia estas dos URLs por las de GHL.       -->
-        <div class="fcd-video">
-          <video controls playsinline preload="metadata"
-            poster="https://fitcondamian.com/inicio-lead-poster.jpg"
-            src="https://fitcondamian.com/inicio-lead.mp4"></video>
+      <div class="er-quiz" id="test" aria-live="polite">
+        <div id="er-qa">
+          <div class="top"><button type="button" class="er-back" id="er-back" style="visibility:hidden">← Atrás</button><span id="er-count"></span></div>
+          <div class="er-bar"><i id="er-barfill" style="width:0"></i></div>
+          <p class="er-q" id="er-q"></p>
+          <div class="er-opts" id="er-opts"></div>
+        </div>
+        <div class="er-res" id="er-res" style="display:none">
+          <span class="er-ok">✓ Test completado</span>
+          <h3>Tu plan de inicio está listo</h3>
+          <p>Según tus respuestas, te recomiendo empezar por estos dos recursos:</p>
+          <div class="er-recs" id="er-recs"></div>
+          <button type="button" class="er-btn" data-open-form>Recibir mi test completo y los 10 recursos →</button>
+          <p class="er-fine">Acceso inmediato · Solo tu correo · Sin tarjeta</p>
         </div>
       </div>
-    </section>
 
-    <!-- STATS -->
-    <div class="fcd-stats" id="fcd-stats">
-      <div class="fcd-stat"><p class="fcd-num" data-count="1000" data-suffix="+">0</p><p class="fcd-lab">personas transformadas</p></div>
-      <div class="fcd-stat"><p class="fcd-num" data-count="7" data-suffix="+">0</p><p class="fcd-lab">años de experiencia</p></div>
-      <div class="fcd-stat"><p class="fcd-num" data-count="30" data-suffix="">0</p><p class="fcd-lab">minutos de llamada gratis</p></div>
-      <div class="fcd-stat"><p class="fcd-num" data-count="100" data-suffix="%">0</p><p class="fcd-lab">método basado en ciencia</p></div>
+      <button type="button" class="er-link" data-open-form>¿Prefieres ir directa a los recursos? Accede aquí</button>
+      <div class="er-proof"><span class="av" aria-hidden="true"><i></i><i></i><i></i></span><span><b>+1.000 mujeres</b> ya han usado estos recursos</span></div>
     </div>
 
-    <!-- RECURSOS -->
-    <section class="fcd-recursos-sec">
-      <div class="fcd-sec-head">
-        <p class="fcd-eyebrow">ESTO ES LO QUE TE LLEVAS</p>
-        <h2>10 recursos, <span class="fcd-accent">acceso inmediato y gratis</span></h2>
-      </div>
+    <section class="er-sec">
+      <div class="er-sh"><p class="k">Por qué funciona</p><h2>Te lo explico en <span class="er-c">2 minutos</span></h2></div>
+      <div class="er-video"><video controls playsinline preload="metadata" poster="https://fitcondamian.com/inicio-lead-poster.jpg" src="https://fitcondamian.com/inicio-lead.mp4"></video></div>
+    </section>
 
-      <div class="fcd-grid" id="fcd-grid"></div>
-
-      <div class="fcd-final-cta">
-        <button class="fcd-cta" data-open-modal>Acceder a los recursos</button>
-        <p class="fcd-fine">Sin tarjeta · Acceso inmediato · Solo tu correo</p>
+    <section class="er-sec">
+      <div class="er-stats">
+        <div class="er-stat"><b>+1.000</b><span>mujeres transformadas</span></div>
+        <div class="er-stat"><b>+7</b><span>años de experiencia</span></div>
+        <div class="er-stat"><b>10</b><span>recursos gratis</span></div>
+        <div class="er-stat"><b>100%</b><span>basado en ciencia</span></div>
       </div>
     </section>
 
+    <section class="er-sec">
+      <div class="er-sh"><p class="k">Casos de éxito reales</p><h2>Mujeres que ya lo han <span class="er-pill">conseguido</span></h2></div>
+      <div class="er-cases">
+        <div class="er-frame"><iframe src="https://www.youtube-nocookie.com/embed/wnaKW0mFnHw?rel=0" title="Caso de éxito 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <div class="er-frame"><iframe src="https://www.youtube-nocookie.com/embed/hrVa6H6ankg?rel=0" title="Caso de éxito 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <div class="er-frame"><iframe src="https://www.youtube-nocookie.com/embed/E8AU7yjUHGA?rel=0" title="Caso de éxito 3" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      </div>
+    </section>
+
+    <section class="er-sec">
+      <div class="er-sh"><p class="k">Esto es lo que te llevas</p><h2>El test y <span class="er-c">9 regalos más</span>, gratis</h2></div>
+      <div class="er-list" id="er-list"></div>
+      <div style="margin-top:24px">
+        <button type="button" class="er-btn" id="er-totest">Hacer el test gratis →</button>
+        <p class="er-fine">2 minutos · Acceso inmediato · Sin tarjeta</p>
+      </div>
+    </section>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="fcd-footer">
-    <p>© <span id="fcd-year"></span> Fit con Damián · fitcondamian.com ·
-      <a href="/privacidad">Privacidad</a> ·
-      <a href="/politica-cookies">Cookies</a> ·
-      <a href="/aviso-legal">Aviso Legal</a>
-    </p>
-  </footer>
+  <footer class="er-footer">© <span data-year></span> Fit con Damián · fitcondamian.com · <a href="https://fitcondamian.com/privacidad">Privacidad</a> · <a href="https://fitcondamian.com/politica-cookies">Cookies</a> · <a href="https://fitcondamian.com/aviso-legal">Aviso Legal</a></footer>
 </div>
 
 <script src="https://links.fitcondamian.com/js/form_embed.js"></script>
 <script>
 (function () {
-  var root = document.getElementById('fcd-recursos');
+  var root = document.getElementById('fcd-er');
   if (!root) return;
+  // Descontar la barra de desplazamiento (ordenadores con barra clásica) para que el ancho completo quede centrado
+  function fcdSb(){ root.style.setProperty('--fcd-sb', (window.innerWidth - document.documentElement.clientWidth) + 'px'); }
+  fcdSb(); window.addEventListener('resize', fcdSb);
+  root.querySelectorAll('[data-year]').forEach(function (y) { y.textContent = new Date().getFullYear(); });
 
-  // Pinta de negro TODOS los contenedores de GHL (quita el gris de los bordes, arriba/abajo/lados)
-  function fcdBlacken() {
-    try {
-      var B = '#0D0D0D';
-      function paint(el) { if (el && el.style) { el.style.background = B; el.style.backgroundColor = B; } }
-      paint(document.documentElement); paint(document.body);
-      var node = root.parentElement;
-      while (node) { paint(node); node = node.parentElement; }
-      document.querySelectorAll('.c-section, .c-row, .c-column, .section, .row, .container, [class*="section"], [class*="Section"], [class*="row"], [class*="wrapper"], [class*="Wrapper"], [class*="fullSection"]').forEach(paint);
-    } catch (e) {}
-  }
-  fcdBlacken();
-  window.addEventListener('load', fcdBlacken);
-  setTimeout(fcdBlacken, 400);
+  var R = [{"id": "r01", "n": "01", "g": "er-g1", "cat": "Test", "name": "Test de tu Edad Real", "hook": "Descubre cuántos años tiene tu cuerpo por dentro y cómo empezar a quitárselos.", "linkVideo": "https://youtu.be/0b7aIuPJaKo", "linkDoc": "https://docs.google.com/document/d/1V7yt1PqsGQ94hrfg0ZvKssG5anq9YQdWChuIUWF29uk/edit?usp=sharing"}, {"id": "r02", "n": "02", "g": "er-g2", "cat": "Test", "name": "El Test del Espejo", "hook": "Los hábitos que te están envejeciendo y haciendo verte flácida sin que lo sepas.", "linkVideo": "https://youtu.be/WFn9kDt3FsA", "linkDoc": "https://docs.google.com/document/d/1VZ4_MZc70PqgGliHsGplkZ6xoK_r1FdxmZi_1YRyT8I/edit?usp=sharing"}, {"id": "r03", "n": "03", "g": "er-g3", "cat": "Con IA", "name": "Tu Coach Personal con IA", "hook": "Te crea un plan a tu medida para que esta vez no lo abandones.", "linkVideo": "https://youtu.be/qZArQavUepk", "linkDoc": "https://docs.google.com/document/d/1Y9gKtg2GO50LH30e8dKqpp99Y2afHN4GZlgDTZiMInU/edit?usp=sharing"}, {"id": "r04", "n": "04", "g": "er-g4", "cat": "Plan", "name": "El Mapa de las +1.000", "hook": "El plan paso a paso que han seguido más de 1.000 mujeres para eliminar la flacidez.", "linkVideo": "https://youtu.be/pUwfONeAbuk", "linkDoc": "https://docs.google.com/document/d/1SWwjWBsRMb1K4SEcLMGYE7ASWvjAkNXOhFFV_1u9qk8/edit?usp=sharing"}, {"id": "r05", "n": "05", "g": "er-g5", "cat": "Exclusivo", "name": "Acceso VIP: Técnicas Filtradas", "hook": "Lo que solo ven las alumnas de mi programa privado Envejecimiento Revertido.", "linkVideo": "#", "linkDoc": "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing"}, {"id": "r06", "n": "06", "g": "er-g6", "cat": "Nutrición", "name": "El Plato Anti-Menopausia", "hook": "Qué comer para deshincharte, tener energía y no ganar peso.", "linkVideo": "https://youtu.be/oQqtijKMbHw", "linkDoc": "https://guialaimentacionmenopausia.netlify.app", "docLabel": "Abrir guía"}, {"id": "r07", "n": "07", "g": "er-g7", "cat": "Grasa", "name": "Adiós a la Tripa de la Menopausia", "hook": "3 cambios para perder grasa abdominal sin pasar hambre.", "linkVideo": "#", "linkDoc": "https://guiaperdidadegrasa.netlify.app", "docLabel": "Abrir guía"}, {"id": "r08", "n": "08", "g": "er-g8", "cat": "Energía", "name": "¿Qué te Roba la Energía?", "hook": "Descubre por qué estás cansada todo el día y cómo recuperar tu vitalidad.", "linkVideo": "#", "linkDoc": "https://test-amticansancio.netlify.app", "docLabel": "Hacer el test"}, {"id": "r09", "n": "09", "g": "er-g9", "cat": "Grasa", "name": "Adelgaza Sin Rebote", "hook": "La estrategia para perder grasa y que no vuelva.", "linkVideo": "#", "linkDoc": "https://estrategia-perdida-grasa.netlify.app", "docLabel": "Abrir estrategia"}, {"id": "r10", "n": "10", "g": "er-g10", "cat": "Músculo", "name": "Firme y Tonificada", "hook": "Recupera músculo y di adiós a la flacidez en brazos, glúteos y piernas.", "linkVideo": "#", "linkDoc": "https://protocolomasamuscular.netlify.app", "docLabel": "Abrir protocolo"}];
+  var byId = {}; R.forEach(function (r) { byId[r.id] = r; });
+  function cover(r){ return '<div class="er-cover ' + r.g + '" aria-hidden="true"><span class="n">' + r.n + '</span><span class="k">' + r.cat + '</span><span class="t">' + r.name + '</span></div>'; }
 
-  // Año footer
-  var y = document.getElementById('fcd-year');
-  if (y) y.textContent = new Date().getFullYear();
+  // Lista de los 10 recursos
+  document.getElementById('er-list').innerHTML = R.map(function (r, i) {
+    return '<div class="er-item">' + cover(r) + '<div><h3 class="nm">' + r.name + '</h3><p class="hk">' + r.hook + '</p><span class="gift">' + (i === 0 ? 'Incluido · el test' : 'Regalo incluido') + '</span></div></div>';
+  }).join('');
 
-  // ---- Modal ----
-  var modal = document.getElementById('fcd-modal');
-  function openModal() { modal.classList.add('fcd-open'); document.body.style.overflow = 'hidden'; }
-  function closeModal() { modal.classList.remove('fcd-open'); document.body.style.overflow = ''; }
-  function bindOpeners(scope) {
-    scope.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
-  }
-  bindOpeners(root);
-  document.getElementById('fcd-modal-close').addEventListener('click', closeModal);
-  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  // Formulario
+  var fm = document.getElementById('er-fmodal');
+  function openForm() { fm.classList.add('on'); document.body.style.overflow = 'hidden'; }
+  function closeForm() { fm.classList.remove('on'); document.body.style.overflow = ''; }
+  root.addEventListener('click', function (e) { if (e.target.closest('[data-open-form]')) openForm(); });
+  document.getElementById('er-fclose').addEventListener('click', closeForm);
+  fm.addEventListener('click', function (e) { if (e.target === fm) closeForm(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeForm(); });
+  document.getElementById('er-totest').addEventListener('click', function () { document.getElementById('test').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 
-  // ---- Recursos (cuadricula compacta) ----
-  var recursos = [
-    { vol: "01", nombre: "Medidor de Edad-Muscular", emoji: "📋", categoria: "DIAGNÓSTICO" },
-    { vol: "02", nombre: "Test Inteligente de Hábitos", emoji: "🥗", categoria: "NUTRICIÓN" },
-    { vol: "03", nombre: "IA Experta en Sistemas", emoji: "💪", categoria: "ENTRENAMIENTO" },
-    { vol: "04", nombre: "Plan de Ruta Anti Envejecimiento y Flacidez", emoji: "😴", categoria: "RECUPERACIÓN" },
-    { vol: "05", nombre: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", emoji: "📅", categoria: "EXCLUSIVO" },
-    { vol: "06", nombre: "Guía de Alimentación en la Menopausia", emoji: "🍽️", categoria: "NUTRICIÓN" },
-    { vol: "07", nombre: "Pierde Grasa Más Rápido con Estos 3 Cambios", emoji: "🔥", categoria: "PÉRDIDA DE GRASA" },
-    { vol: "08", nombre: "Test Anti-Cansancio", emoji: "⚡", categoria: "ENERGÍA" },
-    { vol: "09", nombre: "Estrategia para Pérdida de Grasa", emoji: "🎯", categoria: "PÉRDIDA DE GRASA" },
-    { vol: "10", nombre: "Protocolo de Masa Muscular", emoji: "🏋️", categoria: "MÚSCULO" }
+  // Test: cada respuesta suma puntos a los recursos más útiles; se recomiendan los 2 con más puntos.
+  var Q = [
+    { q: "¿Cómo te sientes al terminar el día?", o: [["Agotada", { r08: 3, r06: 1 }], ["Cansada", { r08: 2 }], ["Normal", { r01: 1 }], ["Con energía", { r01: 1 }]], why: { r08: "porque terminas el día sin energía" } },
+    { q: "¿Cuántos días a la semana haces ejercicio de fuerza?", o: [["Ninguno", { r10: 3, r03: 1 }], ["1 día", { r10: 2 }], ["2 o 3 días", { r04: 1 }], ["4 o más", { r05: 1 }]], why: { r10: "porque ahora apenas trabajas tu fuerza", r03: "para crear un plan que no abandones" } },
+    { q: "¿Notas flacidez en brazos, abdomen o piernas?", o: [["Mucha", { r04: 3, r10: 1 }], ["Bastante", { r04: 2 }], ["Un poco", { r02: 1 }], ["Nada", { r01: 1 }]], why: { r04: "porque la flacidez es lo que más te preocupa", r02: "para saber qué hábitos la están causando" } },
+    { q: "¿Qué es lo que más te gustaría cambiar?", o: [["La tripa", { r07: 5, r09: 1 }], ["La flacidez", { r04: 5, r10: 1 }], ["El cansancio", { r08: 5, r06: 1 }], ["Mi alimentación", { r06: 5 }]], why: { r07: "para empezar por la grasa abdominal", r06: "para comer bien en esta etapa", r09: "para perder grasa sin rebote" } },
+    { q: "¿En qué etapa estás?", o: [["Perimenopausia", { r06: 1 }], ["Menopausia", { r06: 1 }], ["Postmenopausia", { r06: 1 }], ["No lo sé", { r01: 2 }]], why: { r01: "para conocer el punto exacto en el que estás" } }
   ];
-  var grid = document.getElementById('fcd-grid');
-  recursos.forEach(function (r) {
-    var card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'fcd-gcard';
-    card.setAttribute('data-open-modal', '');
-    card.innerHTML =
-      '<div class="fcd-gtop">' +
-        '<span class="fcd-gemoji">' + r.emoji + '</span>' +
-        '<span class="fcd-gvol">' + r.vol + '</span>' +
-      '</div>' +
-      '<span class="fcd-gcat">' + r.categoria + '</span>' +
-      '<h3>' + r.nombre + '</h3>' +
-      '<span class="fcd-glink">Acceder →</span>';
-    grid.appendChild(card);
-  });
-  bindOpeners(grid);
-
-  // ---- Scroll reveal (fade de la cuadricula) ----
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { grid.classList.add('fcd-visible'); io.disconnect(); } });
-  }, { threshold: 0.1 });
-  io.observe(grid);
-
-  // ---- Contadores ----
-  var counted = false;
-  function runCounters() {
-    if (counted) return; counted = true;
-    root.querySelectorAll('[data-count]').forEach(function (el) {
-      var target = parseInt(el.getAttribute('data-count'), 10);
-      var suffix = el.getAttribute('data-suffix') || '';
-      var t0 = null;
-      function step(ts) {
-        if (!t0) t0 = ts;
-        var p = Math.min((ts - t0) / 1800, 1);
-        el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target) + suffix;
-        if (p < 1) requestAnimationFrame(step); else el.textContent = target + suffix;
-      }
-      requestAnimationFrame(step);
+  var DEF = { r01: "para conocer el punto exacto en el que estás", r02: "para descubrir qué hábitos te están envejeciendo", r03: "para tener un plan que no abandones",
+    r04: "para eliminar la flacidez paso a paso", r05: "para acceder a lo que solo ven mis alumnas", r06: "para comer bien en esta etapa",
+    r07: "para empezar por la grasa abdominal", r08: "para recuperar tu energía", r09: "para perder grasa sin rebote", r10: "para ganar firmeza en brazos, glúteos y piernas" };
+  var i = 0, ans = [];
+  var $q = document.getElementById('er-q'), $o = document.getElementById('er-opts'), $bar = document.getElementById('er-barfill'),
+      $count = document.getElementById('er-count'), $back = document.getElementById('er-back');
+  function render() {
+    var item = Q[i];
+    $q.textContent = item.q;
+    $count.textContent = 'Pregunta ' + (i + 1) + ' de ' + Q.length;
+    $bar.style.width = (i / Q.length * 100) + '%';
+    $back.style.visibility = i > 0 ? 'visible' : 'hidden';
+    $o.innerHTML = '';
+    item.o.forEach(function (op, j) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'er-opt' + (ans[i] === j ? ' sel' : ''); b.textContent = op[0];
+      b.addEventListener('click', function () {
+        ans[i] = j; b.classList.add('sel');
+        setTimeout(function () { i++; if (i < Q.length) render(); else finish(); }, 180);
+      });
+      $o.appendChild(b);
     });
   }
-  var statsEl = document.getElementById('fcd-stats');
-  var io2 = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { runCounters(); io2.disconnect(); } });
-  }, { threshold: 0.2 });
-  io2.observe(statsEl);
-
-  // ---- Particulas ----
-  var c = document.getElementById('fcd-particles');
-  if (c && c.getContext) {
-    var ctx = c.getContext('2d');
-    function resize() { c.width = c.offsetWidth; c.height = c.offsetHeight; }
-    c.style.position = 'absolute'; c.style.inset = '0'; c.style.width = '100%'; c.style.height = '100%'; c.style.pointerEvents = 'none';
-    resize(); window.addEventListener('resize', resize);
-    var pts = [];
-    for (var k = 0; k < 70; k++) {
-      pts.push({ x: Math.random() * c.width, y: Math.random() * c.height, r: Math.random() * 1.8 + 0.3,
-        dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
-        a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65 });
-    }
-    function draw() {
-      ctx.clearRect(0, 0, c.width, c.height);
-      for (var j = 0; j < pts.length; j++) {
-        var p = pts[j]; p.x += p.dx; p.y += p.dy;
-        if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
-        if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.blue ? '#00AAFF' : '#fff'; ctx.globalAlpha = p.a; ctx.fill();
-      }
-      ctx.globalAlpha = 1; requestAnimationFrame(draw);
-    }
-    requestAnimationFrame(draw);
+  $back.addEventListener('click', function () { if (i > 0) { i--; render(); } });
+  function finish() {
+    $bar.style.width = '100%';
+    var score = {}, reason = {};
+    Q.forEach(function (item, k) {
+      var pts = item.o[ans[k]][1];
+      Object.keys(pts).forEach(function (r) {
+        score[r] = (score[r] || 0) + pts[r];
+        if (!reason[r] && item.why[r]) reason[r] = item.why[r];
+      });
+    });
+    var top = Object.keys(score).filter(function (r) { return r !== 'r01'; }).sort(function (a, b) { return score[b] - score[a]; }).slice(0, 2);
+    ['r04', 'r08'].forEach(function (r) { if (top.length < 2 && top.indexOf(r) < 0) top.push(r); });
+    document.getElementById('er-recs').innerHTML = top.slice(0, 2).map(function (r) {
+      return '<div class="er-rec">' + cover(byId[r]) + '<p class="why"><b>' + byId[r].name + '</b> ' + (reason[r] || DEF[r]) + '.</p></div>';
+    }).join('');
+    document.getElementById('er-qa').style.display = 'none';
+    document.getElementById('er-res').style.display = 'block';
   }
+  render();
 })();
 </script>

@@ -1,0 +1,153 @@
+/* ─────────────────────────────────────────────────────────────
+   Identidad "Envejecimiento Revertido" para /recursos y /acceso-recursos.
+   Todas las clases llevan el prefijo er- para no chocar con otros estilos:
+   este mismo archivo se incrusta en los códigos de GoHighLevel
+   (ghl-export/recursos.html y ghl-export/acceso-recursos.html).
+   ───────────────────────────────────────────────────────────── */
+
+.er-page {
+  background: radial-gradient(120% 40% at 50% 0%, #12314b, #081521 55%);
+  background-color: #081521;
+  color: #eaf3fb;
+  font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.er-page *, .er-page *::before, .er-page *::after { box-sizing: border-box; }
+.er-page h1, .er-page h2, .er-page h3, .er-page p { margin: 0; }
+.er-page button { font-family: inherit; cursor: pointer; }
+
+/* Franja superior de público — siempre en una línea */
+.er-band {
+  text-align: center;
+  background: linear-gradient(90deg, #0088d6, #35C2FF);
+  color: #04202b;
+  font-family: var(--font-montserrat), "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: clamp(9px, 2.78vw, 10px);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 12px 8px;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+@media (min-width: 640px) {
+  .er-band { font-size: 12.5px; letter-spacing: 1px; padding: 13px 16px; }
+}
+
+/* Logo — envejecimiento revertido. */
+.er-logo { text-align: center; padding: 24px 20px 0; }
+.er-logo p { display: inline-block; text-align: left; font-family: var(--font-sora), "Sora", sans-serif; font-size: 22px; line-height: 1; letter-spacing: -0.05em; color: #fff; }
+.er-logo span { display: block; }
+.er-logo .t { font-weight: 300; }
+.er-logo .b { font-weight: 800; margin-top: 0.04em; }
+.er-logo i { font-style: normal; color: #35C2FF; }
+
+.er-wrap { max-width: 620px; margin: 0 auto; padding: 0 20px; }
+.er-eb { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #35C2FF; margin-bottom: 12px; }
+.er-h { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-weight: 400; text-align: center; color: #fff; line-height: 1.1; text-wrap: balance; }
+.er-pill { display: inline-block; font-style: italic; color: #04202b; background: linear-gradient(90deg, #0088d6, #35C2FF); padding: 0 0.26em 0.03em; border-radius: 0.3em; line-height: 1.1; box-shadow: 0 4px 16px rgba(53,194,255,0.35); }
+.er-c { color: #35C2FF; }
+.er-sub { text-align: center; color: #9fb7c7; font-size: 15px; line-height: 1.55; margin-top: 14px; text-wrap: balance; }
+.er-sub b { color: #fff; }
+
+.er-btn { display: block; width: 100%; text-align: center; font-weight: 900; font-size: 16px; padding: 17px 14px; border-radius: 99px; border: 0; background: linear-gradient(90deg, #0088d6, #35C2FF); color: #04202b; box-shadow: 0 12px 30px rgba(53,194,255,0.32); letter-spacing: -0.2px; text-decoration: none; }
+.er-btn:focus-visible, .er-opt:focus-visible, .er-link:focus-visible, .er-act:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.er-fine { text-align: center; font-size: 12px; color: #7f97a8; margin-top: 10px; }
+.er-link { display: block; margin: 14px auto 0; background: none; border: 0; color: #9fb7c7; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+
+.er-proof { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 16px; font-size: 13px; color: #cfe1ee; }
+.er-proof .av { display: flex; }
+.er-proof .av i { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #0b1c28; margin-left: -8px; background: linear-gradient(135deg, #3a86b5, #123a52); display: block; }
+.er-proof .av i:first-child { margin-left: 0; }
+.er-proof b { color: #fff; }
+
+.er-sec { padding: 0 0 56px; }
+.er-sh { text-align: center; margin-bottom: 22px; }
+.er-sh .k { font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #35C2FF; margin-bottom: 8px; }
+.er-sh h2 { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(28px, 7vw, 38px); line-height: 1.08; color: #fff; text-wrap: balance; }
+
+/* Hero */
+.er-hero { padding: 46px 0 40px; }
+.er-hero .er-h { font-size: clamp(34px, 9.4vw, 48px); }
+
+/* Test */
+.er-quiz { margin-top: 22px; border: 1px solid rgba(53,194,255,0.35); background: rgba(53,194,255,0.06); border-radius: 20px; padding: 20px 18px; box-shadow: 0 0 40px rgba(53,194,255,0.10); scroll-margin-top: 16px; }
+.er-quiz .top { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: #9fb7c7; font-weight: 700; margin-bottom: 8px; }
+.er-back { background: none; border: 0; color: #9fb7c7; font-weight: 700; font-size: 12px; padding: 4px 0; }
+.er-bar { height: 6px; border-radius: 9px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.er-bar i { display: block; height: 100%; background: linear-gradient(90deg, #0088d6, #35C2FF); border-radius: 9px; transition: width 0.35s ease; }
+.er-q { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-size: clamp(22px, 6vw, 27px); line-height: 1.15; color: #fff; text-align: center; margin: 18px 0 16px !important; text-wrap: balance; }
+.er-opts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.er-opt { text-align: center; font-size: 14.5px; font-weight: 700; color: #eaf3fb; border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 15px 8px; background: rgba(255,255,255,0.04); transition: border-color 0.2s, background 0.2s, transform 0.15s; }
+.er-opt:hover { border-color: rgba(53,194,255,0.7); background: rgba(53,194,255,0.10); }
+.er-opt:active { transform: scale(0.98); }
+.er-opt.sel { border-color: #35C2FF; background: rgba(53,194,255,0.18); }
+.er-res { text-align: center; }
+.er-ok { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; color: #8fe6b0; background: rgba(127,224,166,0.1); border: 1px solid rgba(127,224,166,0.3); border-radius: 99px; padding: 6px 12px; }
+.er-res h3 { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(24px, 6.6vw, 30px); line-height: 1.12; color: #fff; margin: 14px 0 6px; }
+.er-res > p { color: #9fb7c7; font-size: 14px; }
+.er-recs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0 18px; text-align: left; }
+.er-rec { display: flex; flex-direction: column; gap: 8px; }
+.er-rec .er-cover { aspect-ratio: 4 / 3; }
+.er-rec .why { font-size: 12px; color: #cfe1ee; line-height: 1.35; }
+.er-rec .why b { color: #35C2FF; }
+
+/* Portadas de los recursos */
+.er-cover { position: relative; border-radius: 12px; overflow: hidden; padding: 11px 11px 12px; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 3 / 4; color: #fff; border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 24px rgba(0,0,0,0.45); }
+.er-cover::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 60% at 20% 0%, rgba(255,255,255,0.18), transparent 55%); pointer-events: none; }
+.er-cover .n { font-family: var(--font-sora), "Sora", sans-serif; font-weight: 800; font-size: 12px; opacity: 0.85; }
+.er-cover .k { font-size: 9px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: #04202b; background: rgba(255,255,255,0.85); padding: 2px 6px; border-radius: 4px; align-self: flex-start; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.er-cover .t { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-size: clamp(17px, 4.6vw, 21px); line-height: 1.02; text-wrap: balance; }
+.er-g1 { background: linear-gradient(160deg, #1a6fa3, #0a2436); }
+.er-g2 { background: linear-gradient(160deg, #2a4f9e, #0d1a3a); }
+.er-g3 { background: linear-gradient(160deg, #0e8a9a, #06262c); }
+.er-g4 { background: linear-gradient(160deg, #3a3f9e, #101236); }
+.er-g5 { background: linear-gradient(160deg, #b58a2f, #2a1d06); }
+.er-g6 { background: linear-gradient(160deg, #1d8f6d, #06261c); }
+.er-g7 { background: linear-gradient(160deg, #c2566e, #2e0c15); }
+.er-g8 { background: linear-gradient(160deg, #d08a2c, #2e1a06); }
+.er-g9 { background: linear-gradient(160deg, #8a4fb0, #1d0c2a); }
+.er-g10 { background: linear-gradient(160deg, #2b86c9, #0a1f33); }
+
+/* Vídeos */
+.er-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #06121c; box-shadow: 0 24px 70px rgba(0,0,0,0.55); }
+.er-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.er-video { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #000; }
+.er-video video { width: 100%; height: auto; display: block; }
+.er-cases { display: flex; flex-direction: column; gap: 14px; }
+
+/* Cifras */
+.er-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.er-stat { border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.035); border-radius: 16px; padding: 18px 10px; text-align: center; }
+.er-stat b { display: block; font-family: var(--font-sora), "Sora", sans-serif; font-weight: 800; font-size: clamp(26px, 7vw, 34px); color: #35C2FF; letter-spacing: -1px; }
+.er-stat span { font-size: 12px; color: #9fb7c7; }
+
+/* Lista de recursos */
+.er-list { display: flex; flex-direction: column; gap: 12px; }
+.er-item { display: flex; gap: 14px; align-items: stretch; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 12px; }
+.er-item .er-cover { width: 88px; flex: 0 0 88px; align-self: flex-start; }
+.er-item .er-cover .t { font-size: 14.5px; }
+.er-item .nm { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-size: clamp(21px, 5.6vw, 24px); line-height: 1.08; color: #fff; }
+.er-item .hk { font-size: 13.5px; color: #cfe1ee; margin-top: 5px; line-height: 1.4; }
+.er-item .gift { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #8fe6b0; margin-top: 8px; }
+.er-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.er-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; padding: 9px 14px; border-radius: 99px; border: 0; background: linear-gradient(90deg, #0088d6, #35C2FF); color: #04202b; text-decoration: none; }
+.er-act.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #eaf3fb; }
+
+/* Página de acceso */
+.er-ok-wrap { text-align: center; margin-bottom: 14px; }
+.er-step { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #35C2FF; margin: 26px 0 12px; }
+.er-step i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: #35C2FF; color: #04202b; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.er-box { border: 1px solid rgba(53,194,255,0.35); background: rgba(53,194,255,0.06); border-radius: 20px; padding: 26px 20px; text-align: center; }
+.er-box h2 { font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(26px, 6.6vw, 32px); line-height: 1.1; color: #fff; margin-bottom: 8px; }
+.er-box p { color: #9fb7c7; font-size: 14px; margin-bottom: 18px; }
+
+/* Ventana del reproductor de vídeo */
+.er-modal { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.er-modal .box { position: relative; width: 100%; max-width: 900px; }
+.er-modal .x { position: absolute; top: -46px; right: 0; width: 38px; height: 38px; border-radius: 50%; border: 0; background: #1b2b38; color: #fff; font-size: 17px; }
+
+.er-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 26px 20px; text-align: center; color: #5a7183; font-size: 12px; }
+.er-footer a { color: #5a7183; text-decoration: none; }

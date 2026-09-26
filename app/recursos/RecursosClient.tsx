@@ -1,297 +1,214 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { track } from "@vercel/analytics";
 import ModalForm from "./ModalForm";
 import VideoPlayer from "../_components/VideoPlayer";
-import { track } from "@vercel/analytics";
+import Cover from "../_components/Cover";
+import { RECURSOS, CASOS_EXITO, recursoPorId } from "../_data/recursos";
+import "../_styles/er.css";
 
-const recursos = [
-  { vol: "01", nombre: "Medidor de Edad-Muscular",  emoji: "📋", categoria: "DIAGNÓSTICO",  desc: "Sabrás en qué punto a nivel muscular te encuentras y qué deberás de hacer para mejorar en el punto en el que estás." },
-  { vol: "02", nombre: "Test Inteligente de Hábitos", emoji: "🥗", categoria: "NUTRICIÓN",  desc: "Entiende qué te está haciendo verte flácida, envejecer y perder energía para así poder revertirlo." },
-  { vol: "03", nombre: "IA Experta en Sistemas",    emoji: "💪", categoria: "ENTRENAMIENTO", desc: "Crea sistemas infalibles a largo plazo para nunca volver a empeorar tu físico y salud." },
-  { vol: "04", nombre: "Plan de Ruta Anti Envejecimiento y Flacidez", emoji: "😴", categoria: "RECUPERACIÓN", desc: "Utiliza el plan de ruta que ha llevado a más de 1000 mujeres a conseguir verse más atractivas, eliminar la flacidez y volver a tener energía del método Envejecimiento Revertido." },
-  { vol: "05", nombre: "Mapas y Técnicas Filtradas del Programa Exclusivo Envejecimiento Revertido", emoji: "📅", categoria: "EXCLUSIVO", desc: "Acceso a los mapas y técnicas filtradas del programa exclusivo Envejecimiento Revertido." },
-  { vol: "06", nombre: "Guía de Alimentación en la Menopausia", emoji: "🍽️", categoria: "NUTRICIÓN", desc: "La guía de alimentación para atravesar la menopausia con energía, sin flacidez y sintiéndote en tu mejor versión." },
-  { vol: "07", nombre: "Pierde Grasa Más Rápido con Estos 3 Cambios", emoji: "🔥", categoria: "PÉRDIDA DE GRASA", desc: "Los 3 cambios que aceleran la pérdida de grasa sin pasar hambre ni vivir en el gimnasio. Aplícalos desde hoy." },
-  { vol: "08", nombre: "Test Anti-Cansancio", emoji: "⚡", categoria: "ENERGÍA", desc: "Descubre qué te está robando la energía y cómo recuperarla para sentirte activa todo el día." },
-  { vol: "09", nombre: "Estrategia para Pérdida de Grasa", emoji: "🎯", categoria: "PÉRDIDA DE GRASA", desc: "La estrategia paso a paso para perder grasa de forma sostenible y sin recuperarla." },
-  { vol: "10", nombre: "Protocolo de Masa Muscular", emoji: "🏋️", categoria: "MÚSCULO", desc: "El protocolo para ganar masa muscular de forma eficiente y verte más firme y tonificada." },
+// Test de la landing: 5 preguntas. Cada respuesta suma puntos a los recursos
+// más útiles para ese caso; al final se recomiendan los 2 con más puntos.
+// No calcula ninguna edad: el test completo es el recurso 01, que recibe al registrarse.
+type Opcion = { t: string; p: Record<string, number> };
+const PREGUNTAS: { q: string; o: Opcion[]; why: Record<string, string> }[] = [
+  { q: "¿Cómo te sientes al terminar el día?",
+    o: [{ t: "Agotada", p: { r08: 3, r06: 1 } }, { t: "Cansada", p: { r08: 2 } }, { t: "Normal", p: { r01: 1 } }, { t: "Con energía", p: { r01: 1 } }],
+    why: { r08: "porque terminas el día sin energía" } },
+  { q: "¿Cuántos días a la semana haces ejercicio de fuerza?",
+    o: [{ t: "Ninguno", p: { r10: 3, r03: 1 } }, { t: "1 día", p: { r10: 2 } }, { t: "2 o 3 días", p: { r04: 1 } }, { t: "4 o más", p: { r05: 1 } }],
+    why: { r10: "porque ahora apenas trabajas tu fuerza", r03: "para crear un plan que no abandones" } },
+  { q: "¿Notas flacidez en brazos, abdomen o piernas?",
+    o: [{ t: "Mucha", p: { r04: 3, r10: 1 } }, { t: "Bastante", p: { r04: 2 } }, { t: "Un poco", p: { r02: 1 } }, { t: "Nada", p: { r01: 1 } }],
+    why: { r04: "porque la flacidez es lo que más te preocupa", r02: "para saber qué hábitos la están causando" } },
+  { q: "¿Qué es lo que más te gustaría cambiar?",
+    o: [{ t: "La tripa", p: { r07: 5, r09: 1 } }, { t: "La flacidez", p: { r04: 5, r10: 1 } }, { t: "El cansancio", p: { r08: 5, r06: 1 } }, { t: "Mi alimentación", p: { r06: 5 } }],
+    why: { r07: "para empezar por la grasa abdominal", r06: "para comer bien en esta etapa", r09: "para perder grasa sin rebote" } },
+  { q: "¿En qué etapa estás?",
+    o: [{ t: "Perimenopausia", p: { r06: 1 } }, { t: "Menopausia", p: { r06: 1 } }, { t: "Postmenopausia", p: { r06: 1 } }, { t: "No lo sé", p: { r01: 2 } }],
+    why: { r01: "para conocer el punto exacto en el que estás" } },
 ];
+// Motivo por defecto si ninguna respuesta aporta uno concreto.
+const MOTIVO: Record<string, string> = {
+  r01: "para conocer el punto exacto en el que estás", r02: "para descubrir qué hábitos te están envejeciendo",
+  r03: "para tener un plan que no abandones", r04: "para eliminar la flacidez paso a paso",
+  r05: "para acceder a lo que solo ven mis alumnas", r06: "para comer bien en esta etapa",
+  r07: "para empezar por la grasa abdominal", r08: "para recuperar tu energía",
+  r09: "para perder grasa sin rebote", r10: "para ganar firmeza en brazos, glúteos y piernas",
+};
 
-const stats = [
-  { value: 1000, suffix: "+", label: "personas transformadas"    },
-  { value: 7,    suffix: "+", label: "años de experiencia"       },
-  { value: 30,   suffix: "",  label: "minutos de llamada gratis" },
-  { value: 100,  suffix: "%", label: "método basado en ciencia"  },
-];
-
-// Testimonios en vídeo (YouTube). Para añadir más, añade su ID aquí.
-const testimoniosVideo = [
-  "wnaKW0mFnHw",
-  "hrVa6H6ankg",
-  "E8AU7yjUHGA",
-];
-
-// — Partículas —
-function ParticlesCanvas() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const c = ref.current; if (!c) return;
-    const ctx = c.getContext("2d"); if (!ctx) return;
-    const resize = () => { c.width = c.offsetWidth; c.height = c.offsetHeight; };
-    resize(); window.addEventListener("resize", resize);
-    const pts = Array.from({ length: 70 }, () => ({
-      x: Math.random() * c.width, y: Math.random() * c.height,
-      r: Math.random() * 1.8 + 0.3,
-      dx: (Math.random() - 0.5) * 0.35, dy: (Math.random() - 0.5) * 0.35,
-      a: Math.random() * 0.45 + 0.08, blue: Math.random() > 0.65,
-    }));
-    let id = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, c.width, c.height);
-      for (const p of pts) {
-        p.x += p.dx; p.y += p.dy;
-        if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
-        if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.blue ? "#00AAFF" : "#fff";
-        ctx.globalAlpha = p.a; ctx.fill();
-      }
-      ctx.globalAlpha = 1; id = requestAnimationFrame(draw);
-    };
-    id = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
-  }, []);
-  return <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />;
+function recomendar(respuestas: number[]) {
+  const puntos: Record<string, number> = {};
+  const motivo: Record<string, string> = {};
+  PREGUNTAS.forEach((pr, k) => {
+    const p = pr.o[respuestas[k]].p;
+    for (const id of Object.keys(p)) {
+      puntos[id] = (puntos[id] ?? 0) + p[id];
+      if (!motivo[id] && pr.why[id]) motivo[id] = pr.why[id];
+    }
+  });
+  // El test (r01) ya se lo lleva siempre: se recomiendan los otros.
+  let top = Object.keys(puntos).filter((id) => id !== "r01").sort((a, b) => puntos[b] - puntos[a]).slice(0, 2);
+  for (const extra of ["r04", "r08"]) if (top.length < 2 && !top.includes(extra)) top.push(extra);
+  top = top.slice(0, 2);
+  return top.map((id) => ({ r: recursoPorId(id), motivo: motivo[id] ?? MOTIVO[id] }));
 }
 
-// — Contador —
-function Counter({ target, suffix, start }: { target: number; suffix: string; start: boolean }) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let id = 0;
-    let t0: number | null = null;
-    const step = (ts: number) => {
-      if (!t0) t0 = ts;
-      const p = Math.min((ts - t0) / 1800, 1);
-      setVal(Math.floor((1 - Math.pow(1 - p, 3)) * target));
-      if (p < 1) { id = requestAnimationFrame(step); } else { setVal(target); }
-    };
-    id = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(id);
-  }, [start, target]);
-  return <>{val}{suffix}</>;
-}
+function Test({ onAcceder }: { onAcceder: () => void }) {
+  const [paso, setPaso] = useState(0);
+  const [resp, setResp] = useState<number[]>([]);
+  const terminado = paso >= PREGUNTAS.length;
 
-// — Scroll reveal —
-function useReveal(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold }
-    );
-    obs.observe(el); return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
+  const elegir = (j: number) => {
+    const nuevas = [...resp];
+    nuevas[paso] = j;
+    setResp(nuevas);
+    setTimeout(() => {
+      setPaso((p) => p + 1);
+      if (paso + 1 === PREGUNTAS.length) track("test_completado");
+    }, 180);
+  };
 
-// — Tarjeta compacta de recurso (cuadrícula) —
-function RecursoCard({
-  r, index, visible, onOpenModal,
-}: {
-  r: typeof recursos[0];
-  index: number;
-  visible: boolean;
-  onOpenModal: () => void;
-}) {
-  const [hover, setHover] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={onOpenModal}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        textAlign: "left", cursor: "pointer", font: "inherit", color: "inherit",
-        background: hover ? "rgba(0,170,255,0.08)" : "rgba(255,255,255,0.04)",
-        border: `1px solid ${hover ? "rgba(0,170,255,0.55)" : "rgba(255,255,255,0.09)"}`,
-        borderRadius: "18px",
-        padding: "18px 16px",
-        display: "flex", flexDirection: "column", gap: "10px",
-        minHeight: "170px",
-        boxShadow: hover ? "0 14px 34px rgba(0,170,255,0.25)" : "none",
-        opacity: visible ? 1 : 0,
-        transform: visible ? (hover ? "translateY(-4px)" : "translateY(0)") : "translateY(24px)",
-        transition: `opacity 0.5s ease ${index * 0.06}s, transform 0.3s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease`,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span aria-hidden="true" style={{
-          width: "44px", height: "44px", borderRadius: "13px", flexShrink: 0,
-          background: "linear-gradient(135deg, #00AAFF, #0077CC)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "22px", boxShadow: "0 6px 18px rgba(0,170,255,0.35)",
-        }}>
-          {r.emoji}
-        </span>
-        <span style={{ color: "#444", fontSize: "12px", fontWeight: 900, letterSpacing: "-0.5px" }}>{r.vol}</span>
+  if (terminado) {
+    return (
+      <div className="er-quiz" id="test" aria-live="polite">
+        <div className="er-res">
+          <span className="er-ok">✓ Test completado</span>
+          <h3>Tu plan de inicio está listo</h3>
+          <p>Según tus respuestas, te recomiendo empezar por estos dos recursos:</p>
+          <div className="er-recs">
+            {recomendar(resp).map(({ r, motivo }) => (
+              <div key={r.id} className="er-rec">
+                <Cover r={r} />
+                <p className="why"><b>{r.name}</b> {motivo}.</p>
+              </div>
+            ))}
+          </div>
+          <button type="button" className="er-btn" onClick={onAcceder}>Recibir mi test completo y los 10 recursos →</button>
+          <p className="er-fine">Acceso inmediato · Solo tu correo · Sin tarjeta</p>
+        </div>
       </div>
-      <span style={{ color: "#00AAFF", fontSize: "10px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase" }}>
-        {r.categoria}
-      </span>
-      <h3 style={{
-        fontWeight: 900, fontSize: "15px", color: "#fff", margin: 0, lineHeight: 1.2, letterSpacing: "-0.3px",
-        display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden",
-      }}>
-        {r.nombre}
-      </h3>
-      <span style={{ marginTop: "auto", color: hover ? "#00AAFF" : "#8a8a8a", fontSize: "13px", fontWeight: 800, transition: "color 0.25s ease" }}>
-        Acceder →
-      </span>
-    </button>
-  );
-}
+    );
+  }
 
-// — Cuadrícula compacta de recursos —
-function RecursosGrid({ onOpenModal }: { onOpenModal: () => void }) {
-  const { ref, visible } = useReveal(0.1);
+  const pr = PREGUNTAS[paso];
   return (
-    <div ref={ref} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "12px" }}>
-      {recursos.map((r, i) => (
-        <RecursoCard key={r.vol} r={r} index={i} visible={visible} onOpenModal={onOpenModal} />
-      ))}
+    <div className="er-quiz" id="test" aria-live="polite">
+      <div className="top">
+        <button type="button" className="er-back" onClick={() => setPaso((p) => p - 1)} style={{ visibility: paso > 0 ? "visible" : "hidden" }}>← Atrás</button>
+        <span>Pregunta {paso + 1} de {PREGUNTAS.length}</span>
+      </div>
+      <div className="er-bar"><i style={{ width: `${(paso / PREGUNTAS.length) * 100}%` }} /></div>
+      <p className="er-q">{pr.q}</p>
+      <div className="er-opts">
+        {pr.o.map((op, j) => (
+          <button key={op.t} type="button" className={`er-opt${resp[paso] === j ? " sel" : ""}`} onClick={() => elegir(j)}>{op.t}</button>
+        ))}
+      </div>
     </div>
   );
 }
 
 export default function RecursosClient() {
   const [modalOpen, setModalOpen] = useState(false);
-  const statsReveal  = useReveal(0.2);
-  const accordReveal = useReveal(0.1);
 
   // Abre el formulario y registra el evento de conversión "registro".
   const openModal = () => {
     track("registro");
     setModalOpen(true);
   };
+  const irAlTest = () => document.getElementById("test")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <main style={{ background: "#0D0D0D", minHeight: "100vh", color: "#fff", fontFamily: "var(--font-inter), sans-serif", overflowX: "hidden" }}>
+    <main className="er-page">
       <ModalForm open={modalOpen} onClose={() => setModalOpen(false)} />
 
-      <header style={{ borderBottom: "1px solid #1f1f1f", padding: "20px 24px", textAlign: "center", position: "relative", zIndex: 10 }}>
-        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#00AAFF" }}>damián</span></span>
-        </p>
+      <div className="er-band">Para mujeres en perimenopausia y menopausia</div>
+      <header className="er-logo">
+        <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
       </header>
 
-      <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 24px" }}>
+      <div className="er-wrap">
 
-        {/* HERO */}
-        <section style={{ paddingTop: "40px", paddingBottom: "40px", textAlign: "center", position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, overflow: "hidden", borderRadius: "24px", pointerEvents: "none" }}>
-            <ParticlesCanvas />
+        {/* HERO + TEST */}
+        <div className="er-hero">
+          <p className="er-eb">Test gratuito · 2 minutos</p>
+          <h1 className="er-h">¿Cuántos años tiene tu cuerpo <span className="er-pill">por dentro</span>?</h1>
+          <p className="er-sub">
+            Responde 5 preguntas y descubre qué te está envejeciendo. Al terminar te regalo el <b>Test de tu Edad Real</b> completo y <b>9 recursos más</b> para revertirlo.
+          </p>
+          <Test onAcceder={openModal} />
+          <button type="button" className="er-link" onClick={openModal}>¿Prefieres ir directa a los recursos? Accede aquí</button>
+          <div className="er-proof">
+            <span className="av" aria-hidden="true"><i /><i /><i /></span>
+            <span><b>+1.000 mujeres</b> ya han usado estos recursos</span>
           </div>
-          <div style={{ position: "relative", zIndex: 1 }}>
+        </div>
 
-            {/* Calificador (público objetivo) */}
-            <p style={{ color: "#00AAFF", fontSize: "clamp(13px, 3.4vw, 15px)", fontWeight: 800, lineHeight: 1.4, letterSpacing: "-0.2px", margin: "0 auto 20px", maxWidth: "560px" }}>
-              Para mujeres que se miran al espejo y no se ven atractivas, arrastran cansancio todo el día y han dejado de ponerse la ropa que antes les encantaba
-            </p>
-
-            {/* Titular principal (dos tonos, estilo del ejemplo) */}
-            <h1 style={{ fontSize: "clamp(2rem, 7.5vw, 3.2rem)", fontWeight: 900, lineHeight: 1.08, margin: "0 0 28px 0", letterSpacing: "-1.5px", textTransform: "uppercase" }}>
-              Descubre cómo eliminar la flacidez, terminar con el cansancio y{" "}
-              <span style={{ color: "#00AAFF" }}>recuperar tu figura sin esfuerzo</span>
-            </h1>
-
-            <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "10px", width: "100%", maxWidth: "520px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "clamp(16px, 4.2vw, 19px)", padding: "20px 32px", borderRadius: "16px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", marginBottom: "16px", boxShadow: "0 10px 30px rgba(0,170,255,0.35)", textTransform: "uppercase" }}>
-              Acceder a los recursos
-            </button>
-
-            {/* Subtexto / promesa */}
-            <p style={{ color: "#B8B8B8", fontSize: "15px", fontWeight: 500, lineHeight: 1.6, margin: "0 auto 36px", maxWidth: "560px" }}>
-              Te regalo los <strong style={{ color: "#fff" }}>10 recursos gratis</strong> que han ayudado a cientos de mujeres a verse más firmes, recuperar su energía y volver a su ropa favorita. <span style={{ color: "#00AAFF", fontWeight: 700 }}>Empieza a ver cambios en menos de 5 días.</span>
-            </p>
-            <div style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid #252525", background: "#000" }}>
-              <VideoPlayer src="/inicio-lead.mp4" poster="/inicio-lead-poster.jpg" />
-            </div>
+        {/* VÍDEO */}
+        <section className="er-sec">
+          <div className="er-sh"><p className="k">Por qué funciona</p><h2>Te lo explico en <span className="er-c">2 minutos</span></h2></div>
+          <div className="er-video">
+            <VideoPlayer src="/inicio-lead.mp4" poster="/inicio-lead-poster.jpg" />
           </div>
         </section>
 
-        {/* CONTADORES */}
-        <div ref={statsReveal.ref} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "56px", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
-          {stats.map((s, i) => (
-            <div key={s.label} style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: "16px", padding: "20px", textAlign: "center", opacity: statsReveal.visible ? 1 : 0, transform: statsReveal.visible ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s` }}>
-              <p style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 5vw, 2.4rem)", color: "#00AAFF", margin: "0 0 4px 0", letterSpacing: "-1px" }}>
-                <Counter target={s.value} suffix={s.suffix} start={statsReveal.visible} />
-              </p>
-              <p style={{ color: "#888", fontSize: "12px", margin: 0, lineHeight: 1.4 }}>{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* CASOS DE ÉXITO EN VÍDEO */}
-        <section style={{ paddingBottom: "56px" }}>
-          <div style={{ textAlign: "center", marginBottom: "28px" }}>
-            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>CASOS DE ÉXITO REALES</p>
-            <h2 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 5vw, 2rem)", margin: 0, letterSpacing: "-0.8px" }}>
-              Mujeres que ya lo han <span style={{ color: "#00AAFF" }}>conseguido</span>
-            </h2>
+        {/* CIFRAS */}
+        <section className="er-sec">
+          <div className="er-stats">
+            <div className="er-stat"><b>+1.000</b><span>mujeres transformadas</span></div>
+            <div className="er-stat"><b>+7</b><span>años de experiencia</span></div>
+            <div className="er-stat"><b>10</b><span>recursos gratis</span></div>
+            <div className="er-stat"><b>100%</b><span>basado en ciencia</span></div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {testimoniosVideo.map((id, i) => (
-              <div key={id} style={{
-                position: "relative", aspectRatio: "16/9",
-                borderRadius: "16px", overflow: "hidden",
-                border: "1px solid #1f1f1f", background: "#000",
-              }}>
+        </section>
+
+        {/* CASOS DE ÉXITO */}
+        <section className="er-sec">
+          <div className="er-sh"><p className="k">Casos de éxito reales</p><h2>Mujeres que ya lo han <span className="er-pill">conseguido</span></h2></div>
+          <div className="er-cases">
+            {CASOS_EXITO.map((id, i) => (
+              <div key={id} className="er-frame">
                 <iframe
                   src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
                   title={`Caso de éxito ${i + 1}`}
+                  loading="lazy"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
                 />
               </div>
             ))}
           </div>
         </section>
 
-        {/* RECURSOS — cuadrícula compacta */}
-        <section
-          ref={accordReveal.ref}
-          style={{ paddingBottom: "56px", opacity: accordReveal.visible ? 1 : 0, transform: accordReveal.visible ? "translateY(0)" : "translateY(40px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}
-        >
-          <div style={{ textAlign: "center", marginBottom: "24px" }}>
-            <p style={{ color: "#00AAFF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>ESTO ES LO QUE TE LLEVAS</p>
-            <h2 style={{ fontWeight: 900, fontSize: "clamp(1.4rem, 5vw, 2rem)", margin: 0, letterSpacing: "-0.8px" }}>
-              10 recursos, <span style={{ color: "#00AAFF" }}>acceso inmediato y gratis</span>
-            </h2>
+        {/* LOS 10 RECURSOS */}
+        <section className="er-sec">
+          <div className="er-sh"><p className="k">Esto es lo que te llevas</p><h2>El test y <span className="er-c">9 regalos más</span>, gratis</h2></div>
+          <div className="er-list">
+            {RECURSOS.map((r, i) => (
+              <div key={r.id} className="er-item">
+                <Cover r={r} />
+                <div>
+                  <h3 className="nm">{r.name}</h3>
+                  <p className="hk">{r.hook}</p>
+                  <span className="gift">{i === 0 ? "Incluido · el test" : "Regalo incluido"}</span>
+                </div>
+              </div>
+            ))}
           </div>
-
-          <RecursosGrid onOpenModal={openModal} />
-
-          {/* CTA final */}
-          <div style={{ textAlign: "center", marginTop: "32px" }}>
-            <button onClick={openModal} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "10px", width: "100%", maxWidth: "520px", background: "#00AAFF", color: "#fff", fontWeight: 900, fontSize: "clamp(16px, 4.2vw, 19px)", padding: "20px 32px", borderRadius: "16px", border: "none", cursor: "pointer", letterSpacing: "-0.3px", boxShadow: "0 10px 30px rgba(0,170,255,0.35)", textTransform: "uppercase" }}>
-              Acceder a los recursos
-            </button>
-            <p style={{ color: "#666", fontSize: "12px", margin: "12px 0 0 0" }}>Sin tarjeta · Acceso inmediato · Solo tu correo</p>
+          <div style={{ marginTop: "24px" }}>
+            <button type="button" className="er-btn" onClick={irAlTest}>Hacer el test gratis →</button>
+            <p className="er-fine">2 minutos · Acceso inmediato · Sin tarjeta</p>
           </div>
         </section>
       </div>
 
-      <footer style={{ borderTop: "1px solid #1f1f1f", padding: "28px 24px", textAlign: "center" }}>
-        <p style={{ color: "#444", fontSize: "12px", margin: 0 }}>
-          © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
-          <a href="/privacidad" style={{ color: "#444", textDecoration: "none" }}>Privacidad</a>{" · "}
-          <a href="/politica-cookies" style={{ color: "#444", textDecoration: "none" }}>Cookies</a>{" · "}
-          <a href="/aviso-legal" style={{ color: "#444", textDecoration: "none" }}>Aviso Legal</a>
-        </p>
+      <footer className="er-footer">
+        © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
+        <a href="/privacidad">Privacidad</a>{" · "}
+        <a href="/politica-cookies">Cookies</a>{" · "}
+        <a href="/aviso-legal">Aviso Legal</a>
       </footer>
     </main>
   );
