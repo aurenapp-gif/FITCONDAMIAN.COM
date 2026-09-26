@@ -65,23 +65,21 @@ export default function VslPage() {
 
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "24px 20px 80px", width: "100%" }}>
 
-        {/* TITULAR — una sola frase con jerarquía + subrayados (estructura F·5) */}
-        <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 400, fontSize: "clamp(16px, 4.6vw, 20px)", lineHeight: 1.5, letterSpacing: "-0.2px", color: "#9fb7c7", margin: "0 auto", maxWidth: "480px" }}>
-            <span style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(23px, 6.8vw, 30px)", lineHeight: 1.18 }}>
-              Cómo recuperar tu <span style={{ fontStyle: "italic", fontWeight: 600, color: "#35C2FF" }}>juventud</span> durante la menopausia
-            </span>{" "}
+        {/* TITULAR — una sola frase en 3 líneas (Instrument Serif, estilos en globals.css) */}
+        <div className="fcd-h1-wrap" style={{ textAlign: "center", marginBottom: "24px" }}>
+          <h1 className="fcd-h1">
+            <span className="g">Cómo recuperar tu <em>atractivo</em> durante la menopausia</span>{" "}
             multiplicando tu{" "}
-            <span style={{ position: "relative", color: "#fff", fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span className="u">
               energía
-              <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true" style={{ position: "absolute", left: "-3%", bottom: "-0.3em", width: "106%", height: "0.32em" }}>
+              <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
                 <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>{" "}
             y eliminando la{" "}
-            <span style={{ position: "relative", color: "#fff", fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span className="u">
               flacidez
-              <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true" style={{ position: "absolute", left: "-3%", bottom: "-0.3em", width: "106%", height: "0.32em" }}>
+              <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
                 <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>

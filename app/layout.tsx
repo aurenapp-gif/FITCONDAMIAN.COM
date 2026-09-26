@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Sora, Fraunces, Montserrat } from "next/font/google";
+import { Inter, Sora, Fraunces, Montserrat, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -24,6 +24,15 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+});
+
+// Tipografía del titular de la landing VSL.
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
   style: ["normal", "italic"],
 });
 
@@ -66,7 +75,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} ${sora.variable} ${fraunces.variable} ${montserrat.variable}`}>
+    <html lang="es" className={`${inter.variable} ${sora.variable} ${fraunces.variable} ${montserrat.variable} ${instrument.variable}`}>
       <link rel="preconnect" href="https://links.fitcondamian.com" />
       <link rel="dns-prefetch" href="https://links.fitcondamian.com" />
       <body className="antialiased">

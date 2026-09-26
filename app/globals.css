@@ -72,6 +72,27 @@
   .fcd-band { font-size: 12.5px; letter-spacing: 1px; padding: 13px 16px; }
 }
 
+/* Titular de la landing VSL — una sola frase, 3 líneas en móvil.
+   El tamaño depende del ancho real de su caja (cqi), no de la pantalla. */
+.fcd-h1-wrap { container-type: inline-size; }
+.fcd-h1 {
+  font-family: var(--font-instrument), "Instrument Serif", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(15px, 4.9vw, 26px);
+  font-size: clamp(14px, 5.5cqi, 26px);
+  line-height: 1.28;
+  letter-spacing: 0.1px;
+  color: #b3c6d3;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.fcd-h1 .g { color: #fff; }
+.fcd-h1 em { font-style: italic; color: #35C2FF; }
+.fcd-h1 .u { position: relative; color: #fff; white-space: nowrap; }
+.fcd-h1 .u svg { position: absolute; left: -3%; bottom: -0.28em; width: 106%; height: 0.3em; }
+
 /* Cinta deslizante (marquee) */
 @keyframes fcd-marq { to { transform: translateX(-50%); } }
 .fcd-marq-track { display: inline-flex; white-space: nowrap; animation: fcd-marq 22s linear infinite; }
