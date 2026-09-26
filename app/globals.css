@@ -82,15 +82,15 @@
   font-size: clamp(14px, 5.5cqi, 26px);
   line-height: 1.28;
   letter-spacing: 0.1px;
-  color: #b3c6d3;
+  color: #dbe7f0;
   text-align: center;
   text-wrap: balance;
   max-width: 500px;
   margin: 0 auto;
 }
 .fcd-h1 .g { color: #fff; }
-.fcd-h1 em { font-style: italic; color: #35C2FF; }
-.fcd-h1 .u { position: relative; color: #fff; white-space: nowrap; }
+.fcd-h1 em { display: inline-block; font-style: italic; color: #04202b; background: linear-gradient(90deg, #0088d6, #35C2FF); padding: 0 0.28em 0.04em; border-radius: 0.3em; line-height: 1.1; box-shadow: 0 4px 16px rgba(53,194,255,0.35); }
+.fcd-h1 .u { position: relative; color: #35C2FF; white-space: nowrap; }
 .fcd-h1 .u svg { position: absolute; left: -3%; bottom: -0.28em; width: 106%; height: 0.3em; }
 
 /* Cinta deslizante (marquee) */
