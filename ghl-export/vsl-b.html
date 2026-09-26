@@ -5,7 +5,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,600&display=swap" rel="stylesheet">
 
@@ -14,14 +14,17 @@
   #fcd-vsl { background: radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%); background-color: #081521; color: #eaf3fb; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; line-height: 1.5; }
   #fcd-vsl a { text-decoration: none; }
   #fcd-vsl .fcd-accent { color: #35C2FF; }
-  #fcd-vsl .fcd-header { padding: 26px 24px 4px; text-align: center; }
-  #fcd-vsl .fcd-header p { font-weight: 900; font-size: 18px; letter-spacing: -0.8px; }
-  #fcd-vsl .fcd-wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
-  /* Banner — línea fina */
-  #fcd-vsl .fcd-banner { display: flex; align-items: center; justify-content: center; gap: 9px; text-align: center; margin: 22px 0 26px; line-height: 1.5; }
-  #fcd-vsl .fcd-banner .dot { width: 6px; height: 6px; border-radius: 50%; background: #35C2FF; flex: 0 0 auto; box-shadow: 0 0 12px #35C2FF; }
-  #fcd-vsl .fcd-banner .q { font-size: 12.5px; font-weight: 700; color: #9fb7c7; letter-spacing: 0.2px; }
-  #fcd-vsl .fcd-banner .hl { color: #35C2FF; font-weight: 800; }
+  /* Franja superior — filtro de público (subrayada) */
+  #fcd-vsl .fcd-band { text-align: center; font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #9fb7c7; padding: 12px 16px; border-bottom: 1px solid rgba(53,194,255,0.30); line-height: 1.5; }
+  #fcd-vsl .fcd-band b { color: #fff; }
+  /* Logo — envejecimiento revertido. */
+  #fcd-vsl .fcd-header { padding: 26px 24px 0; text-align: center; }
+  #fcd-vsl .fcd-logo { display: inline-block; text-align: left; font-family: 'Sora', sans-serif; font-size: 22px; line-height: 1; letter-spacing: -0.05em; color: #fff; }
+  #fcd-vsl .fcd-logo span { display: block; }
+  #fcd-vsl .fcd-logo .t { font-weight: 300; }
+  #fcd-vsl .fcd-logo .b { font-weight: 800; margin-top: 0.04em; }
+  #fcd-vsl .fcd-logo .b i { font-style: normal; color: #35C2FF; }
+  #fcd-vsl .fcd-wrap { max-width: 760px; margin: 0 auto; padding: 24px 20px 80px; }
   #fcd-vsl .fcd-head { text-align: center; margin-bottom: 30px; }
   #fcd-vsl h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 400; font-size: clamp(16px, 4.6vw, 20px); line-height: 1.5; letter-spacing: -0.2px; color: #9fb7c7; max-width: 480px; margin: 0 auto; }
   #fcd-vsl h1 .lead2 { color: #fff; font-weight: 600; font-size: clamp(23px, 6.8vw, 30px); line-height: 1.18; }
@@ -67,14 +70,11 @@
 
 <div id="fcd-vsl">
 
-  <header class="fcd-header"><p><span style="font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-1.2px;">fitcon<span class="fcd-accent">damián</span></span></p></header>
+  <div class="fcd-band">Para mujeres en <b>perimenopausia</b> y <b>menopausia</b></div>
+
+  <header class="fcd-header"><p class="fcd-logo" aria-label="Envejecimiento Revertido"><span class="t">envejecimiento</span><span class="b">revertido<i>.</i></span></p></header>
 
   <div class="fcd-wrap">
-
-    <div class="fcd-banner">
-      <span class="dot" aria-hidden="true"></span>
-      <span class="q">Solo para mujeres con <span class="hl">perimenopausia</span> o <span class="hl">menopausia</span></span>
-    </div>
 
     <div class="fcd-head">
       <h1><span class="lead2">Cómo recuperar tu <em>juventud</em> durante la menopausia</span> multiplicando tu <span class="u">energía<svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" stroke-width="3.5" stroke-linecap="round"/></svg></span> y eliminando la <span class="u">flacidez<svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" stroke-width="3.5" stroke-linecap="round"/></svg></span>, sin renunciar a tu rutina diaria</h1>

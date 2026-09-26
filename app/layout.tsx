@@ -10,12 +10,12 @@ const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-// Tipografía del logotipo (wordmark "fitcondamián").
+// Tipografía de los logotipos ("fitcondamián" y "envejecimiento revertido.").
 const sora = Sora({
   variable: "--font-sora",
   subsets: ["latin"],
   display: "swap",
-  weight: ["800"],
+  weight: ["300", "800"],
 });
 
 // Tipografía editorial (titulares serif de la landing VSL).

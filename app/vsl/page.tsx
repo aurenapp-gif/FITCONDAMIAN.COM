@@ -52,22 +52,20 @@ export default function VslPage() {
   return (
     <main style={{ background: "radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%)", backgroundColor: "#081521", minHeight: "100vh", color: "#eaf3fb", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
 
-      {/* HEADER */}
-      <header style={{ padding: "26px 24px 4px", textAlign: "center" }}>
-        <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "-0.8px" }}>
-          <span style={{ fontFamily: "var(--font-sora), sans-serif", fontWeight: 800, letterSpacing: "-1.2px" }}>fitcon<span style={{ color: "#35C2FF" }}>damián</span></span>
+      {/* FRANJA — filtro de público objetivo (subrayada) */}
+      <div style={{ textAlign: "center", fontSize: "10.5px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "#9fb7c7", padding: "12px 16px", borderBottom: "1px solid rgba(53,194,255,0.30)", lineHeight: 1.5 }}>
+        Para mujeres en <b style={{ color: "#fff" }}>perimenopausia</b> y <b style={{ color: "#fff" }}>menopausia</b>
+      </div>
+
+      {/* LOGO — Envejecimiento Revertido */}
+      <header style={{ padding: "26px 24px 0", textAlign: "center" }}>
+        <p aria-label="Envejecimiento Revertido" style={{ display: "inline-block", margin: 0, textAlign: "left", fontFamily: "var(--font-sora), sans-serif", fontSize: "22px", lineHeight: 1, letterSpacing: "-0.05em", color: "#fff" }}>
+          <span style={{ display: "block", fontWeight: 300 }}>envejecimiento</span>
+          <span style={{ display: "block", fontWeight: 800, marginTop: "0.04em" }}>revertido<span style={{ color: "#35C2FF" }}>.</span></span>
         </p>
       </header>
 
-      <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 20px 80px", width: "100%" }}>
-
-        {/* BANNER — filtro de público objetivo (línea fina) */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "9px", textAlign: "center", margin: "22px 0 26px", lineHeight: 1.5 }}>
-          <span aria-hidden="true" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#35C2FF", flex: "0 0 auto", boxShadow: "0 0 12px #35C2FF" }} />
-          <span style={{ fontSize: "12.5px", fontWeight: 700, color: "#9fb7c7", letterSpacing: "0.2px" }}>
-            Solo para mujeres con <span style={{ color: "#35C2FF", fontWeight: 800 }}>perimenopausia</span> o <span style={{ color: "#35C2FF", fontWeight: 800 }}>menopausia</span>
-          </span>
-        </div>
+      <div style={{ maxWidth: "760px", margin: "0 auto", padding: "24px 20px 80px", width: "100%" }}>
 
         {/* TITULAR — una sola frase con jerarquía + subrayados (estructura F·5) */}
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
