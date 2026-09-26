@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { track } from "@vercel/analytics";
 import ModalForm from "./ModalForm";
-import VideoPlayer from "../_components/VideoPlayer";
 import Cover from "../_components/Cover";
 import { RECURSOS, CASOS_EXITO, recursoPorId } from "../_data/recursos";
 import "../_styles/er.css";
@@ -141,18 +140,17 @@ export default function RecursosClient() {
           <Test onAcceder={openModal} />
           <button type="button" className="er-link" onClick={openModal}>¿Prefieres ir directa a los recursos? Accede aquí</button>
           <div className="er-proof">
-            <span className="av" aria-hidden="true"><i /><i /><i /></span>
-            <span><b>+1.000 mujeres</b> ya han usado estos recursos</span>
+            <span className="av" aria-hidden="true">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/avatar-1.jpg?v=2" alt="" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/avatar-2.jpg?v=2" alt="" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/avatar-3.jpg?v=2" alt="" />
+            </span>
+            <span><b>+1.000 mujeres</b> lo han conseguido</span>
           </div>
         </div>
-
-        {/* VÍDEO */}
-        <section className="er-sec">
-          <div className="er-sh"><p className="k">Por qué funciona</p><h2>Te lo explico en <span className="er-c">2 minutos</span></h2></div>
-          <div className="er-video">
-            <VideoPlayer src="/inicio-lead.mp4" poster="/inicio-lead-poster.jpg" />
-          </div>
-        </section>
 
         {/* CIFRAS */}
         <section className="er-sec">

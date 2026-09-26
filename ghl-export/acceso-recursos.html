@@ -59,10 +59,11 @@
   .er-btn:focus-visible, .er-opt:focus-visible, .er-link:focus-visible, .er-act:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .er-fine { text-align: center; font-size: 12px; color: #7f97a8; margin-top: 10px; }
   .er-link { display: block; margin: 14px auto 0; background: none; border: 0; color: #9fb7c7; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
-  .er-proof { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 16px; font-size: 13px; color: #cfe1ee; }
+  .er-proof { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px; margin-top: 18px; font-size: 14px; color: #cfe1ee; text-align: center; }
+  .er-proof > span:last-child { white-space: nowrap; }
   .er-proof .av { display: flex; }
-  .er-proof .av i { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #0b1c28; margin-left: -8px; background: linear-gradient(135deg, #3a86b5, #123a52); display: block; }
-  .er-proof .av i:first-child { margin-left: 0; }
+  .er-proof .av img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #0b1c28; margin-left: -10px; object-fit: cover; object-position: center; display: block; background: #16455f; flex-shrink: 0; }
+  .er-proof .av img:first-child { margin-left: 0; }
   .er-proof b { color: #fff; }
   .er-sec { padding: 0 0 56px; }
   .er-sh { text-align: center; margin-bottom: 22px; }
