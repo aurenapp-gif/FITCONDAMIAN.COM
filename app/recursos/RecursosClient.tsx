@@ -151,16 +151,6 @@ export default function RecursosClient() {
           </div>
         </div>
 
-        {/* CIFRAS */}
-        <section className="er-sec">
-          <div className="er-stats">
-            <div className="er-stat"><b>+1.000</b><span>mujeres transformadas</span></div>
-            <div className="er-stat"><b>+7</b><span>años de experiencia</span></div>
-            <div className="er-stat"><b>10</b><span>recursos gratis</span></div>
-            <div className="er-stat"><b>100%</b><span>basado en ciencia</span></div>
-          </div>
-        </section>
-
         {/* CASOS DE ÉXITO */}
         <section className="er-sec">
           <div className="er-sh"><p className="k">Casos de éxito reales</p><h2>Mujeres que ya lo han <span className="er-pill">conseguido</span></h2></div>
