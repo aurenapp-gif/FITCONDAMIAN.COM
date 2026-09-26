@@ -139,7 +139,6 @@ export default function RecursosClient() {
           <p className="er-sub1">Responde 5 preguntas y te digo por dónde empezar.</p>
           <p className="er-gift"><span aria-hidden="true">🎁</span> Al terminar te regalo <b>9 recursos gratis</b></p>
           <Test onAcceder={openModal} />
-          <button type="button" className="er-link" onClick={openModal}>¿Prefieres ir directa a los recursos? Accede aquí</button>
           <div className="er-proof">
             <span className="av" aria-hidden="true">
               {/* eslint-disable-next-line @next/next/no-img-element */}
