@@ -85,7 +85,6 @@ function Test({ onAcceder }: { onAcceder: () => void }) {
             ))}
           </div>
           <button type="button" className="er-btn" onClick={onAcceder}>Recibir mi test completo y los 10 recursos →</button>
-          <p className="er-fine">Acceso inmediato · Solo tu correo · Sin tarjeta</p>
         </div>
       </div>
     );
@@ -197,7 +196,6 @@ export default function RecursosClient() {
           </div>
           <div style={{ marginTop: "24px" }}>
             <button type="button" className="er-btn" onClick={irAlTest}>Hacer el test gratis →</button>
-            <p className="er-fine">2 minutos · Acceso inmediato · Sin tarjeta</p>
           </div>
         </section>
       </div>
