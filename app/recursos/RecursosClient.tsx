@@ -95,7 +95,9 @@ function Test({ onAcceder }: { onAcceder: () => void }) {
   return (
     <div className="er-quiz" id="test" aria-live="polite">
       <div className="top">
-        <button type="button" className="er-back" onClick={() => setPaso((p) => p - 1)} style={{ visibility: paso > 0 ? "visible" : "hidden" }}>← Atrás</button>
+        {paso > 0
+          ? <button type="button" className="er-back" onClick={() => setPaso((p) => p - 1)}>← Atrás</button>
+          : <span className="er-giftmini">🎁 9 recursos al terminar</span>}
         <span>Pregunta {paso + 1} de {PREGUNTAS.length}</span>
       </div>
       <div className="er-bar"><i style={{ width: `${(paso / PREGUNTAS.length) * 100}%` }} /></div>
@@ -132,11 +134,10 @@ export default function RecursosClient() {
 
         {/* HERO + TEST */}
         <div className="er-hero">
-          <p className="er-eb">Test gratuito · 2 minutos</p>
+          <p className="er-eb">Test gratis · 2 minutos</p>
           <h1 className="er-h">¿Cuántos años tiene tu cuerpo <span className="er-pill">por dentro</span>?</h1>
-          <p className="er-sub">
-            Responde 5 preguntas y descubre qué te está envejeciendo. Al terminar te regalo el <b>Test de tu Edad Real</b> completo y <b>9 recursos más</b> para revertirlo.
-          </p>
+          <p className="er-sub1">Responde 5 preguntas y te digo por dónde empezar.</p>
+          <p className="er-gift"><span aria-hidden="true">🎁</span> Al terminar te regalo <b>9 recursos gratis</b></p>
           <Test onAcceder={openModal} />
           <button type="button" className="er-link" onClick={openModal}>¿Prefieres ir directa a los recursos? Accede aquí</button>
           <div className="er-proof">
