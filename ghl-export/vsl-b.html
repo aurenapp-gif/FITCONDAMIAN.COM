@@ -12,6 +12,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
 <style>
+  /* Ocupar todo el ancho aunque GoHighLevel meta el bloque en una sección más estrecha,
+     y pintar el fondo de la página del mismo azul para que no se vean bordes negros */
+  html, body { background: #081521 !important; }
+  html { overflow-x: clip; }
+  #fcd-vsl { --fcd-sb: 0px; width: calc(100vw - var(--fcd-sb)); max-width: calc(100vw - var(--fcd-sb)); margin-left: calc(50% - 50vw + var(--fcd-sb) / 2) !important; margin-right: calc(50% - 50vw + var(--fcd-sb) / 2) !important; }
   #fcd-vsl * { margin: 0; padding: 0; box-sizing: border-box; }
   #fcd-vsl { background: radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%); background-color: #081521; color: #eaf3fb; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; line-height: 1.5; }
   #fcd-vsl a { text-decoration: none; }
@@ -142,6 +147,10 @@
 <script>
   (function () {
     var y = document.getElementById('fcd-year-vsl'); if (y) y.textContent = new Date().getFullYear();
+    // Descontar la barra de desplazamiento (ordenadores con barra clásica) para que el ancho completo quede centrado
+    var root = document.getElementById('fcd-vsl');
+    function fcdSb(){ if (root) root.style.setProperty('--fcd-sb', (window.innerWidth - document.documentElement.clientWidth) + 'px'); }
+    fcdSb(); window.addEventListener('resize', fcdSb);
     var m = document.getElementById('fcd-min'), s = document.getElementById('fcd-sec');
     if (m && s) {
       var t = 10 * 60;
