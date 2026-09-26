@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Sora, Fraunces } from "next/font/google";
+import { Inter, Sora, Fraunces, Montserrat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -25,6 +25,14 @@ const fraunces = Fraunces({
   display: "swap",
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+});
+
+// Tipografía de la franja superior de la landing VSL.
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["800"],
 });
 
 const description = "Recursos gratuitos de fitness y nutrición para transformar tu cuerpo.";
@@ -58,7 +66,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} ${sora.variable} ${fraunces.variable}`}>
+    <html lang="es" className={`${inter.variable} ${sora.variable} ${fraunces.variable} ${montserrat.variable}`}>
       <link rel="preconnect" href="https://links.fitcondamian.com" />
       <link rel="dns-prefetch" href="https://links.fitcondamian.com" />
       <body className="antialiased">

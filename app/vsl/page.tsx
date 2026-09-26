@@ -52,10 +52,8 @@ export default function VslPage() {
   return (
     <main style={{ background: "radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%)", backgroundColor: "#081521", minHeight: "100vh", color: "#eaf3fb", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
 
-      {/* FRANJA — filtro de público objetivo (subrayada) */}
-      <div style={{ textAlign: "center", fontSize: "10.5px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "#9fb7c7", padding: "12px 16px", borderBottom: "1px solid rgba(53,194,255,0.30)", lineHeight: 1.5 }}>
-        Para mujeres en <b style={{ color: "#fff" }}>perimenopausia</b> y <b style={{ color: "#fff" }}>menopausia</b>
-      </div>
+      {/* FRANJA — filtro de público objetivo (cian sólida, estilos en globals.css) */}
+      <div className="fcd-band">Para mujeres en perimenopausia y menopausia</div>
 
       {/* LOGO — Envejecimiento Revertido */}
       <header style={{ padding: "26px 24px 0", textAlign: "center" }}>
