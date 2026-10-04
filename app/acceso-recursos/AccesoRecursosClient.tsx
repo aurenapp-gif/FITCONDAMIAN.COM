@@ -41,18 +41,16 @@ export default function AccesoRecursosClient() {
         <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
       </header>
 
-      <div className="er-wrap" style={{ paddingTop: "26px", paddingBottom: "64px" }}>
+      <div className="er-wrap" style={{ paddingTop: "18px", paddingBottom: "64px" }}>
 
-        <div className="er-ok-wrap"><span className="er-ok">✓ Acceso desbloqueado</span></div>
-        <h1 className="er-h" style={{ fontSize: "clamp(30px, 8vw, 42px)" }}>
-          Ya tienes tus 10 recursos. Antes de empezar, <span className="er-pill">mira esto</span>
-        </h1>
-
-        {/* PASO 1 — VSL */}
-        <div className="er-step"><i>1</i>El vídeo más importante</div>
-        <div className="er-frame">
+        {/* 1 — VSL: lo primero */}
+        <div className="er-must"><span className="dot" aria-hidden="true" />Importante ver</div>
+        <h1 className="er-h er-acc-h">Antes de abrir tus recursos, <span className="er-pill">mira este vídeo</span></h1>
+        <div className="er-frame er-frame-must">
           <iframe src={VSL_SRC} title="Vídeo Envejecimiento Revertido" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowFullScreen />
         </div>
+
+        {/* 2 — AGENDAR LLAMADA */}
         <p className="er-under">
           Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
         </p>
@@ -62,7 +60,7 @@ export default function AccesoRecursosClient() {
         </div>
 
         {/* PASO 2 — RECURSOS */}
-        <div className="er-step" style={{ marginTop: "52px" }}><i>2</i>Tus 10 recursos</div>
+        <div className="er-step er-step-rec"><span className="er-ok">✓ Acceso desbloqueado</span>Tus 10 recursos</div>
         <div className="er-list">
           {RECURSOS.map((r) => {
             const yt = youtubeId(r.linkVideo);
