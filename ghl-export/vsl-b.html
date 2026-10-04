@@ -64,11 +64,6 @@
   #fcd-vsl .fcd-msg img { width: 100%; height: auto; display: block; }
   /* Sin·Sin·Sin, urgencia y cinta */
   #fcd-vsl .fcd-nolist { text-align: center; color: #9fb7c7; font-size: 14px; font-weight: 600; line-height: 1.6; margin: 20px auto 0; max-width: 460px; }
-  #fcd-vsl .fcd-urgency { max-width: 420px; margin: 28px auto 0; border: 1px solid rgba(53,194,255,0.30); border-radius: 14px; padding: 18px; text-align: center; background: rgba(53,194,255,0.05); }
-  #fcd-vsl .fcd-timer { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; font-size: 30px; color: #35C2FF; letter-spacing: 1px; }
-  #fcd-vsl .fcd-timer .ic { font-size: 24px; }
-  #fcd-vsl .fcd-urgency-txt { color: #9fb7c7; font-size: 14px; margin: 6px 0 0 0; }
-  #fcd-vsl .fcd-urgency-txt b { color: #fff; font-weight: 900; }
   #fcd-vsl .fcd-marquee { overflow: hidden; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 12px 0; }
   #fcd-vsl .fcd-marq-track { display: inline-flex; white-space: nowrap; animation: fcd-marq 22s linear infinite; }
   #fcd-vsl .fcd-marq-track span { color: #35C2FF; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding-right: 40px; }
@@ -97,10 +92,6 @@
     <div class="fcd-cta-wrap">
       <a class="fcd-cta" href="https://links.fitcondamian.com/widget/bookings/reserva-de-la-llamada">📞 Agenda tu llamada</a>
       <p class="fcd-cta-note">30 minutos · 100% gratuito · sin compromiso</p>
-      <div class="fcd-urgency">
-        <div class="fcd-timer"><span class="ic">⏱️</span><span id="fcd-min">10</span><span>:</span><span id="fcd-sec">00</span></div>
-        <p class="fcd-urgency-txt">Solo quedan <b>5 plazas</b> disponibles este mes</p>
-      </div>
     </div>
 
     <!-- CASOS DE ÉXITO EN VÍDEO -->
@@ -151,10 +142,5 @@
     var root = document.getElementById('fcd-vsl');
     function fcdSb(){ if (root) root.style.setProperty('--fcd-sb', (window.innerWidth - document.documentElement.clientWidth) + 'px'); }
     fcdSb(); window.addEventListener('resize', fcdSb);
-    var m = document.getElementById('fcd-min'), s = document.getElementById('fcd-sec');
-    if (m && s) {
-      var t = 10 * 60;
-      (function tick(){ var mm=Math.floor(t/60), ss=t%60; m.textContent=(mm<10?'0':'')+mm; s.textContent=(ss<10?'0':'')+ss; if(t>0){t--; setTimeout(tick,1000);} })();
-    }
   })();
 </script>

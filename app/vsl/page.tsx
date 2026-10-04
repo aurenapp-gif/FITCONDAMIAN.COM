@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Urgency from "./Urgency";
 
 export const metadata: Metadata = {
   title: "Vídeo | Fit con Damián",
@@ -138,7 +137,6 @@ export default function VslPage() {
           <p style={{ color: "#7f97a8", fontSize: "13px", margin: "16px 0 0 0" }}>
             30 minutos · 100% gratuito · sin compromiso
           </p>
-          <Urgency minutos={10} plazas={5} />
         </div>
 
         {/* CASOS DE ÉXITO EN VÍDEO */}
