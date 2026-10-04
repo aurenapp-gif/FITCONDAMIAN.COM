@@ -148,6 +148,13 @@
   .er-modal .x { position: absolute; top: -46px; right: 0; width: 38px; height: 38px; border-radius: 50%; border: 0; background: #1b2b38; color: #fff; font-size: 17px; }
   .er-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 26px 20px; text-align: center; color: #5a7183; font-size: 12px; }
   .er-footer a { color: #5a7183; text-decoration: none; }
+  .er-must { display: flex; align-items: center; justify-content: center; gap: 8px; width: fit-content; margin: 0 auto 14px; padding: 7px 14px; border-radius: 99px; background: rgba(255,92,92,0.12); border: 1px solid rgba(255,92,92,0.45); color: #ffb3b3; font-size: 13px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; white-space: nowrap; }
+  .er-must .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5c5c; box-shadow: 0 0 0 0 rgba(255,92,92,0.6); animation: er-pulse 1.6s infinite; }
+  @keyframes er-pulse { 70% { box-shadow: 0 0 0 8px rgba(255,92,92,0); } 100% { box-shadow: 0 0 0 0 rgba(255,92,92,0); } }
+  @media (prefers-reduced-motion: reduce) { .er-must .dot { animation: none; } }
+  .er-acc-h { font-size: clamp(28px, 7.6vw, 40px); margin-bottom: 18px !important; }
+  .er-frame-must { border: 2px solid rgba(255,92,92,0.55); }
+  .er-step-rec { flex-direction: column; gap: 10px; text-align: center; margin-top: 56px; font-size: 13px; }
   /* Ventana del formulario */
   .er-fmodal { position: fixed; inset: 0; z-index: 2147483000; background: rgba(4,12,20,0.88); display: none; align-items: center; justify-content: center; padding: 16px; }
   .er-fmodal.on { display: flex; }
