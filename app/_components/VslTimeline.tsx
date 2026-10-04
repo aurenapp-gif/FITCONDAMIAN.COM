@@ -9,7 +9,14 @@ const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; yo
   { id: "04", titulo: "¿Estás Lista para Descubrir el Secreto de las Mujeres Jóvenes a los 40 Años?", lado: "derecha", youtube: "qZArQavUepk" },
 ];
 
-export default function VslTimeline() {
+// Paletas: la oscura original y la de "Envejecimiento Revertido" (er).
+const PALETAS = {
+  base: { acc: "#00AAFF", rgb: "0,170,255", card: "#111", line: "#1f1f1f", thumb: "#161616", fondo: "#0D0D0D", off: "#1b2b33", txt: "#E0E0E0", sobreAcc: "#fff" },
+  er: { acc: "#35C2FF", rgb: "53,194,255", card: "#0c1d2a", line: "rgba(255,255,255,0.09)", thumb: "#0b1c29", fondo: "#081521", off: "#16303f", txt: "#eaf3fb", sobreAcc: "#04202b" },
+};
+
+export default function VslTimeline({ er = false }: { er?: boolean }) {
+  const C = er ? PALETAS.er : PALETAS.base;
   const [videoAbierto, setVideoAbierto] = useState<string | null>(null);
 
   // Estela de scroll: la línea se ilumina y las bolas se encienden al bajar.
@@ -88,7 +95,7 @@ export default function VslTimeline() {
       {/* Línea vertical central (base tenue) */}
       <div style={{
         position: "absolute", left: "50%", top: 0, bottom: 0,
-        width: "2px", background: "rgba(0,170,255,0.15)",
+        width: "2px", background: `rgba(${C.rgb},0.15)`,
         transform: "translateX(-50%)",
       }} />
       {/* Estela iluminada que crece con el scroll */}
@@ -96,8 +103,8 @@ export default function VslTimeline() {
         position: "absolute", left: "50%", top: 0,
         width: "3px", height: `${fillPx}px`,
         transform: "translateX(-50%)",
-        background: "linear-gradient(180deg, rgba(0,170,255,0.2), #00AAFF)",
-        boxShadow: "0 0 12px rgba(0,170,255,0.8), 0 0 24px rgba(0,170,255,0.5)",
+        background: `linear-gradient(180deg, rgba(${C.rgb},0.2), ${C.acc})`,
+        boxShadow: `0 0 12px rgba(${C.rgb},0.8), 0 0 24px rgba(${C.rgb},0.5)`,
         borderRadius: "2px",
       }} />
 
@@ -117,10 +124,10 @@ export default function VslTimeline() {
               position: "absolute", left: "50%", top: "28px",
               transform: "translateX(-50%)",
               width: "14px", height: "14px",
-              background: activos[i] ? "#00AAFF" : "#1b2b33",
+              background: activos[i] ? C.acc : C.off,
               borderRadius: "50%",
-              border: "3px solid #0D0D0D",
-              boxShadow: activos[i] ? "0 0 0 4px rgba(0,170,255,0.25), 0 0 14px rgba(0,170,255,0.9)" : "none",
+              border: `3px solid ${C.fondo}`,
+              boxShadow: activos[i] ? `0 0 0 4px rgba(${C.rgb},0.25), 0 0 14px rgba(${C.rgb},0.9)` : "none",
               transition: "background 0.4s ease, box-shadow 0.4s ease",
               zIndex: 1,
             }} />
@@ -128,7 +135,7 @@ export default function VslTimeline() {
             {/* Tarjeta vídeo */}
             <div style={{
               width: "clamp(200px, 46%, 260px)",
-              background: "#111", border: "1px solid #1f1f1f",
+              background: C.card, border: `1px solid ${C.line}`,
               borderRadius: "14px", overflow: "hidden",
             }}>
               <button
@@ -138,10 +145,10 @@ export default function VslTimeline() {
                 style={{
                   aspectRatio: "16/9",
                   width: "100%",
-                  background: "#161616",
+                  background: C.thumb,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   position: "relative",
-                  borderBottom: "1px solid #1f1f1f",
+                  borderBottom: `1px solid ${C.line}`,
                   border: "none", padding: 0, cursor: "pointer", overflow: "hidden",
                 }}
               >
@@ -162,7 +169,7 @@ export default function VslTimeline() {
                 />
                 <span style={{
                   position: "absolute", top: "8px", left: "8px",
-                  background: "#00AAFF", color: "#fff",
+                  background: C.acc, color: C.sobreAcc,
                   fontSize: "10px", fontWeight: 900,
                   padding: "3px 8px", borderRadius: "99px", zIndex: 1,
                 }}>
@@ -170,15 +177,15 @@ export default function VslTimeline() {
                 </span>
                 <div aria-hidden="true" style={{
                   width: "36px", height: "36px",
-                  background: "#00AAFF", borderRadius: "50%",
+                  background: C.acc, borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: "14px", paddingLeft: "3px",
-                  boxShadow: "0 0 0 8px rgba(0,170,255,0.12)",
-                  color: "#fff",
+                  boxShadow: `0 0 0 8px rgba(${C.rgb},0.12)`,
+                  color: C.sobreAcc,
                 }}>▶</div>
               </button>
               <div style={{ padding: "14px" }}>
-                <p style={{ fontWeight: 800, fontSize: "12px", lineHeight: 1.4, margin: 0, color: "#E0E0E0" }}>
+                <p style={{ fontWeight: 800, fontSize: "12px", lineHeight: 1.4, margin: 0, color: C.txt }}>
                   {v.titulo}
                 </p>
               </div>
