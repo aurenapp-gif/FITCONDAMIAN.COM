@@ -154,6 +154,31 @@
   .er-acc-h { font-size: clamp(28px, 7.6vw, 40px); margin-bottom: 18px !important; }
   .er-frame-must { border: 2px solid rgba(255,92,92,0.55); }
   .er-step-rec { flex-direction: column; gap: 10px; text-align: center; margin-top: 56px; font-size: 13px; }
+  .gr-prog .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #9fb7c7; }
+  .gr-prog .top b { font-size: 14px; letter-spacing: 0; color: #ff8a8a; }
+  .gr-prog .bar { height: 10px; border-radius: 99px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  .gr-prog .bar i { display: block; width: 80%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #0088d6, #35C2FF); box-shadow: 0 0 14px rgba(53,194,255,0.5); }
+  .gr-warn { display: flex; gap: 12px; align-items: center; margin-top: 16px; padding: 14px 16px; border-radius: 16px; background: rgba(255,92,92,0.10); border: 1px solid rgba(255,92,92,0.45); }
+  .gr-warn .dot { flex: 0 0 10px; width: 10px; height: 10px; border-radius: 50%; background: #ff5c5c; animation: er-pulse 1.6s infinite; }
+  .gr-warn .t1 { font-weight: 900; font-size: 13px; letter-spacing: 0.8px; text-transform: uppercase; color: #ffb3b3; }
+  .gr-warn .t2 { font-size: 14px; color: #cfe1ee; margin-top: 2px; }
+  @media (prefers-reduced-motion: reduce) { .gr-warn .dot { animation: none; } }
+  .gr-h { font-size: clamp(32px, 8.4vw, 44px); margin: 30px 0 6px !important; }
+  .gr-paso { margin-top: 34px; }
+  .gr-head { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+  .gr-head i { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #0088d6, #35C2FF); color: #04202b; font-style: normal; font-weight: 900; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(53,194,255,0.35); }
+  .gr-head h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(24px, 6.4vw, 30px); line-height: 1.1; color: #fff; text-wrap: balance; }
+  .gr-spam { font-size: 13px; font-weight: 700; color: #ff8a8a; margin-top: 3px !important; }
+  .gr-media { position: relative; border-radius: 16px; overflow: hidden; background: #06121c; border: 1px solid rgba(255,255,255,0.10); box-shadow: 0 24px 70px rgba(0,0,0,0.55); }
+  .gr-badge { position: absolute; top: 12px; right: 12px; z-index: 1; pointer-events: none; font-size: 11px; font-weight: 900; letter-spacing: 1px; padding: 4px 11px; border-radius: 99px; background: #35C2FF; color: #04202b; }
+  .gr-card { background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px; }
+  .gr-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .gr-list li { position: relative; padding-left: 26px; font-size: 15px; line-height: 1.5; color: #cfe1ee; }
+  .gr-list li::before { content: "→"; position: absolute; left: 0; color: #35C2FF; font-weight: 900; }
+  .gr-list b { color: #fff; }
+  .gr-list b.er-c { color: #35C2FF; }
+  .gr-img { margin-top: 16px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); }
+  .gr-paso + .er-sec { margin-top: 56px; }
 </style>
 
 <div id="fcd-er" class="er-page">
