@@ -135,8 +135,8 @@ export default function RecursosClient() {
         <div className="er-hero">
           <p className="er-eb">Test gratis · 2 minutos</p>
           <h1 className="er-h">¿Cuántos años tiene tu cuerpo <span className="er-pill">por dentro</span>?</h1>
-          <p className="er-sub1">Responde 5 preguntas y te digo por dónde empezar.</p>
-          <p className="er-gift"><span aria-hidden="true">🎁</span> Al terminar te regalo <b>9 recursos gratis</b></p>
+          <p className="er-sub1">Responde 5 preguntas y te digo por dónde empezar a reducir la flacidez, ganar energía y volver a ponerte la ropa que te gustaba.</p>
+          <p className="er-gift"><span aria-hidden="true">🎁</span> Al terminar te regalo <b>9 recursos gratis</b> para mejorar tu salud y cómo te ves</p>
           <Test onAcceder={openModal} />
           <div className="er-proof">
             <span className="av" aria-hidden="true">
