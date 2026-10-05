@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Vídeo | Fit con Damián",
@@ -17,8 +18,9 @@ const VSL: { tipo: "vimeo" | "youtube"; id: string } = {
   id: "1228323445",
 };
 
-// Enlace del calendario (botón "Agenda tu llamada").
-const CALENDARIO = "https://links.fitcondamian.com/widget/bookings/reserva-de-la-llamada";
+// Calendario de GoHighLevel incrustado al final de la página (mismo calendario que
+// links.fitcondamian.com/widget/bookings/reserva-de-la-llamada). El botón baja hasta él.
+const CALENDARIO_EMBED = "https://links.fitcondamian.com/widget/booking/ZW1BMfIE9nqeZvmsoNRy";
 
 // Casos de éxito en vídeo (YouTube). Para añadir más, añade su ID aquí.
 const casosExito = [
@@ -118,7 +120,7 @@ export default function VslPage() {
         {/* CTA — Agenda tu llamada */}
         <div style={{ textAlign: "center", marginTop: "28px" }}>
           <a
-            href={CALENDARIO}
+            href="#agendar"
             style={{
               display: "inline-block",
               background: "linear-gradient(90deg, #0088d6, #35C2FF)",
@@ -186,6 +188,29 @@ export default function VslPage() {
             </div>
           ))}
         </div>
+
+        {/* CALENDARIO INCRUSTADO — el botón "Agenda tu llamada" baja hasta aquí */}
+        <section id="agendar" style={{ scrollMarginTop: "16px", marginTop: "56px" }}>
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <p style={{ color: "#35C2FF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+              Elige tu horario
+            </p>
+            <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: "0 0 6px 0", letterSpacing: "-0.3px", color: "#fff" }}>
+              Agenda tu llamada gratuita
+            </h3>
+            <p style={{ color: "#7f97a8", fontSize: "13px", margin: 0 }}>30 minutos · 100% gratuito · sin compromiso</p>
+          </div>
+          <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)", background: "#fff" }}>
+            <iframe
+              src={CALENDARIO_EMBED}
+              id="ZW1BMfIE9nqeZvmsoNRy_vsl"
+              title="Reserva tu llamada con Damián"
+              scrolling="no"
+              style={{ width: "100%", minHeight: "700px", border: "none", display: "block" }}
+            />
+          </div>
+          <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="afterInteractive" />
+        </section>
 
       </div>
 
