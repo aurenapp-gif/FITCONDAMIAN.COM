@@ -134,7 +134,7 @@ export default function RecursosClient() {
         {/* HERO + TEST */}
         <div className="er-hero">
           <p className="er-eb">Test gratis · 2 minutos</p>
-          <h1 className="er-h">¿Cuántos años tiene tu cuerpo <span className="er-pill">por dentro</span>?</h1>
+          <h1 className="er-h er-h-long">Cómo volver a sentirte <span className="er-nw"><span className="er-pill">atractiva</span>,</span> ponerte de nuevo esa ropa que tanto te gustaba y verte en el espejo como hace 10 años, con una metodología adaptada a los cambios hormonales de tu cuerpo</h1>
           <p className="er-sub1">Responde 5 preguntas y te digo por dónde empezar a reducir la flacidez, ganar energía y volver a ponerte la ropa que te gustaba.</p>
           <p className="er-gift"><span aria-hidden="true">🎁</span> Al terminar te regalo <b>9 recursos gratis</b> para mejorar tu salud y cómo te ves</p>
           <Test onAcceder={openModal} />

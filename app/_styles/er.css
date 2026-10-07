@@ -258,3 +258,7 @@
 .er-agendar { margin-top: 48px; scroll-margin-top: 16px; }
 .er-cal { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #fff; }
 .er-cal iframe { width: 100%; min-height: 700px; border: 0; display: block; }
+
+/* Titular largo de la landing de recursos */
+.er-hero .er-h.er-h-long { font-size: clamp(25px, 6.9vw, 36px); line-height: 1.15; }
+.er-nw { white-space: nowrap; }

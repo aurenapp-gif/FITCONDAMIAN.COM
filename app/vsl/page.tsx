@@ -69,22 +69,22 @@ export default function VslPage() {
         {/* TITULAR — una sola frase en 3 líneas (Instrument Serif, estilos en globals.css) */}
         <div className="fcd-h1-wrap" style={{ textAlign: "center", marginBottom: "24px" }}>
           <h1 className="fcd-h1">
-            <span className="g">Cómo recuperar tu <em>atractivo</em> durante la menopausia</span>{" "}
-            multiplicando tu{" "}
+            <span className="g">Cómo volver a sentirte <em>atractiva</em>,</span>{" "}
+            ponerte de nuevo esa{" "}
             <span className="u">
-              energía
+              ropa que tanto te gustaba
               <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
                 <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>{" "}
-            y eliminando la{" "}
+            y verte en el espejo{" "}
             <span className="u">
-              flacidez
+              como hace 10 años
               <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
                 <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>
-            , sin renunciar a tu rutina diaria
+            , con una metodología adaptada a los cambios hormonales de tu cuerpo
           </h1>
         </div>
 
