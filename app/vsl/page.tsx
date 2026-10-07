@@ -86,6 +86,7 @@ export default function VslPage() {
             </span>
             , con una metodología adaptada a los cambios hormonales de tu cuerpo
           </h1>
+          <p className="fcd-sub">Elimina la flacidez, los rollitos de la espalda y los dolores físicos que te genera el trabajo.</p>
         </div>
 
         {/* VSL — VÍDEO 16:9 */}

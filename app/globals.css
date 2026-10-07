@@ -107,3 +107,6 @@
     @apply w-16 h-1 bg-brand mx-auto rounded-full my-8;
   }
 }
+
+/* Subtítulo bajo el titular del VSL */
+.fcd-sub { font-family: var(--font-inter), "Inter", sans-serif; font-size: clamp(13.5px, 3.8vw, 16px); line-height: 1.5; color: #9fb7c7; text-align: center; max-width: 340px; margin: 14px auto 0; text-wrap: balance; }
