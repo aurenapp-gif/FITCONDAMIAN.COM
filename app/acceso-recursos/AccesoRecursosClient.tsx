@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Script from "next/script";
 import Cover from "../_components/Cover";
-import { RECURSOS, CALENDARIO, VSL_SRC, youtubeId } from "../_data/recursos";
+import { RECURSOS, CALENDARIO_EMBED, VSL_SRC, youtubeId } from "../_data/recursos";
 import "../_styles/er.css";
 
 export default function AccesoRecursosClient() {
@@ -55,7 +56,7 @@ export default function AccesoRecursosClient() {
           Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
         </p>
         <div className="er-cta-wrap">
-          <a className="er-btn" href={CALENDARIO}>📞 Agenda tu llamada gratis</a>
+          <a className="er-btn" href="#agendar">📞 Agenda tu llamada gratis</a>
           <p className="er-fine">30 minutos · 100% gratuito · sin compromiso</p>
         </div>
 
@@ -84,14 +85,18 @@ export default function AccesoRecursosClient() {
           })}
         </div>
 
-        {/* LLAMADA */}
-        <div className="er-box" style={{ marginTop: "40px" }}>
-          <p className="er-eb" style={{ marginBottom: "8px" }}>¿Quieres ir más rápido?</p>
-          <h2>Agenda una llamada gratuita conmigo</h2>
-          <p>30 minutos. Te digo exactamente qué tienes que hacer según tu caso.</p>
-          <a className="er-btn" href={CALENDARIO}>📞 Agenda tu llamada gratis</a>
-          <p className="er-fine">Sin compromiso · 100% gratuito</p>
-        </div>
+        {/* CALENDARIO INCRUSTADO — los botones "Agenda tu llamada" bajan hasta aquí */}
+        <section id="agendar" className="er-agendar">
+          <div className="er-sh">
+            <p className="k">¿Quieres ir más rápido?</p>
+            <h2>Agenda tu llamada <span className="er-pill">gratuita</span></h2>
+            <p className="er-fine" style={{ marginTop: "10px" }}>30 minutos · 100% gratuito · sin compromiso</p>
+          </div>
+          <div className="er-cal">
+            <iframe src={CALENDARIO_EMBED} id="ZW1BMfIE9nqeZvmsoNRy_acceso" title="Reserva tu llamada con Damián" scrolling="no" />
+          </div>
+          <Script src="https://links.fitcondamian.com/js/form_embed.js" strategy="afterInteractive" />
+        </section>
       </div>
 
       <footer className="er-footer">

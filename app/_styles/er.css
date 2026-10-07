@@ -253,3 +253,8 @@
 .gu-link b { display: block; font-family: var(--font-instrument), "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 21px; line-height: 1.1; color: #fff; }
 .gu-link small { display: block; font-size: 13px; color: #9fb7c7; margin-top: 3px; line-height: 1.4; }
 .gu-link:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Calendario incrustado al final (acceso a recursos) */
+.er-agendar { margin-top: 48px; scroll-margin-top: 16px; }
+.er-cal { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: #fff; }
+.er-cal iframe { width: 100%; min-height: 700px; border: 0; display: block; }
