@@ -4,7 +4,7 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import ModalForm from "./ModalForm";
 import Cover from "../_components/Cover";
-import { RECURSOS, CASOS_EXITO, recursoPorId } from "../_data/recursos";
+import { RECURSOS, recursoPorId } from "../_data/recursos";
 import "../_styles/er.css";
 
 // Test de la landing: 5 preguntas. Cada respuesta suma puntos a los recursos
@@ -150,24 +150,6 @@ export default function RecursosClient() {
             <span><b>+1.000 mujeres</b> lo han conseguido</span>
           </div>
         </div>
-
-        {/* CASOS DE ÉXITO */}
-        <section className="er-sec">
-          <div className="er-sh"><p className="k">Casos de éxito reales</p><h2>Mujeres que ya lo han <span className="er-pill">conseguido</span></h2></div>
-          <div className="er-cases">
-            {CASOS_EXITO.map((id, i) => (
-              <div key={id} className="er-frame">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
-                  title={`Caso de éxito ${i + 1}`}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* LOS 10 RECURSOS */}
         <section className="er-sec">

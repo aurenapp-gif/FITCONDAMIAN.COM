@@ -215,17 +215,6 @@ export default function VslPage() {
 
       </div>
 
-      {/* CINTA DESLIZANTE */}
-      <div style={{ overflow: "hidden", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "12px 0" }}>
-        <div className="fcd-marq-track">
-          {[0, 1].map((k) => (
-            <span key={k} style={{ color: "#35C2FF", fontSize: "12px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", paddingRight: "40px" }}>
-              +1.300 mujeres ✦ Sin dietas extremas ✦ Método Envejecimiento Revertido ✦ Energía y figura después de los 40 ✦
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* FOOTER */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "24px", textAlign: "center" }}>
         <p style={{ color: "#5a7183", fontSize: "12px", margin: 0 }}>
