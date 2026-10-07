@@ -46,7 +46,7 @@ export default function AccesoRecursosClient() {
 
         {/* 1 — VSL: lo primero */}
         <div className="er-must"><span className="dot" aria-hidden="true" />Importante ver</div>
-        <h1 className="er-h er-acc-h">Antes de abrir tus recursos, <span className="er-pill">mira este vídeo</span></h1>
+        <h1 className="er-h er-acc-h er-acc-long">Cómo volver a sentirte <span className="er-nw"><span className="er-pill">atractiva</span>,</span> ponerte de nuevo esa ropa que tanto te gustaba y verte en el espejo como hace 10 años, con una metodología adaptada a los cambios hormonales de tu cuerpo</h1>
         <div className="er-frame er-frame-must">
           <iframe src={VSL_SRC} title="Vídeo Envejecimiento Revertido" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowFullScreen />
         </div>
