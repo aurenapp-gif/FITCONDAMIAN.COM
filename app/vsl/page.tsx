@@ -77,9 +77,9 @@ export default function VslPage() {
                 <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>{" "}
-            y verte en el espejo{" "}
+            y dejar de estar{" "}
             <span className="u">
-              como hace 10 años
+              cansada todo el día
               <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
                 <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
