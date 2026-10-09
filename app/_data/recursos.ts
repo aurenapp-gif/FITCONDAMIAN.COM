@@ -63,7 +63,7 @@ export const recursoPorId = (id: string) => RECURSOS.find((r) => r.id === id)!;
 export const CALENDARIO = "https://links.fitcondamian.com/widget/bookings/reserva-de-la-llamada";
 // Mismo calendario, versión para incrustar en la página (el botón baja hasta él).
 export const CALENDARIO_EMBED = "https://links.fitcondamian.com/widget/booking/ZW1BMfIE9nqeZvmsoNRy";
-export const VSL_SRC = "https://player.vimeo.com/video/1228323445?title=0&byline=0&portrait=0&badge=0&dnt=1&color=35C2FF";
+export const VSL_SRC = "https://player.vimeo.com/video/1228323445?title=0&byline=0&portrait=0&badge=0&color=35C2FF";
 export const CASOS_EXITO = ["wnaKW0mFnHw", "hrVa6H6ankg", "E8AU7yjUHGA"];
 
 // Extrae el ID de un enlace de YouTube (null si no hay vídeo).

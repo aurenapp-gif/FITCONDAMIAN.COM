@@ -63,6 +63,11 @@ export default function PoliticaCookiesPage() {
                       <td style={td}>Miden el número de visitas y el uso del sitio para mejorarlo. Requieren tu consentimiento.</td>
                     </tr>
                     <tr>
+                      <td style={td}><strong style={b}>Analíticas</strong></td>
+                      <td style={td}>Vimeo (Vimeo.com Inc.)</td>
+                      <td style={td}>Reproducen los vídeos de la web y miden cuántas veces se ven y durante cuánto tiempo.</td>
+                    </tr>
+                    <tr>
                       <td style={td}><strong style={b}>Marketing</strong></td>
                       <td style={td}>Meta Pixel (Meta Platforms Inc.)</td>
                       <td style={td}>Miden la eficacia de las campañas publicitarias y permiten mostrar anuncios personalizados. Requieren tu consentimiento.</td>

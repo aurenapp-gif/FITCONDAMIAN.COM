@@ -86,6 +86,7 @@ export default function PrivacidadPage() {
                 <li><strong style={b}>GoHighLevel</strong> (HighLevel Inc.) — CRM, gestión de formularios, envío de correos y agenda de citas.</li>
                 <li><strong style={b}>Vercel Inc.</strong> — alojamiento (hosting) del sitio web.</li>
                 <li><strong style={b}>Google LLC</strong> — Google Analytics (analítica) y alojamiento de documentos.</li>
+                <li><strong style={b}>Vimeo.com Inc.</strong> — alojamiento y reproducción de vídeos, y estadísticas de visualización.</li>
                 <li><strong style={b}>Meta Platforms Inc.</strong> — píxel de seguimiento de Facebook/Instagram para medición de campañas.</li>
               </ul>
               <p style={{ margin: "12px 0 0 0" }}>
