@@ -2,9 +2,10 @@
    Fit con Damián · Quiz funnel «Diagnóstico gratis + plan personalizado»
 
    Un solo script para la web (fitcondamian.com) y para GoHighLevel:
-     <div data-fcd="quiz"></div>   → hero + preguntas + adelanto + formulario
+     <div data-fcd="quiz"></div>   → portada con la pregunta 1, preguntas,
+                                     adelanto y formulario
      <div data-fcd="plan"></div>   → plan personalizado (página de acceso)
-     <script src="https://fitcondamian.com/fcd-quiz.js" defer></script>
+     <script src="https://fitcondamian.com/fcd-quiz.js"></script>
 
    La captura de datos es el formulario de GoHighLevel tal cual
    (vmfyZr4yJIrYZYPSkuko): mismos campos, misma redirección, misma
@@ -21,42 +22,43 @@
   try { if (SCRIPT && SCRIPT.src) BASE = new URL(SCRIPT.src, location.href).origin; } catch (e) {}
   var FORM_ID = "vmfyZr4yJIrYZYPSkuko";
   var COOKIE = "fcd_plan";
-  var PROGRESO = "fcd_quiz_progreso";
+  var PROGRESO = "fcd_quiz_progreso_v2";
+  var MAX_TXT = 500;
 
   /* ── Preguntas ─────────────────────────────────────────────────────────── */
   var Q = [
-    { id: "nombre", tipo: "nombre", q: "Antes de empezar, ¿cómo te llamas?", sub: "Así personalizo tu plan." },
-    { id: "edad", q: "¿Cuántos años tienes?", o: ["24 a 29", "30 a 34", "35 a 40", "Más de 40"] },
-    { id: "espejo", q: "{n}, cuando te miras al espejo, ¿qué es lo que más te molesta?", o: ["La tripa y los rollitos de la espalda", "La flacidez en brazos, piernas o glúteos", "Me veo hinchada casi siempre", "Ya no reconozco mi cuerpo"] },
-    { id: "ropa", q: "¿Cómo te queda la ropa últimamente?", o: ["Me aprieta lo que antes me quedaba bien", "Evito ciertas prendas (bikini, vestidos ajustados…)", "Casi siempre voy con ropa ancha", "Bien, pero quiero verme mejor"] },
-    { id: "peso", q: "¿Cuánto tiempo llevas intentando bajar de peso?", o: ["Menos de 6 meses", "Entre 6 meses y 2 años", "Más de 2 años", "Bajo y vuelvo a subir (efecto rebote)"] },
-    { id: "comida", q: "¿Cómo describirías tu alimentación?", o: ["Como sano, pero no bajo", "Picoteo y como a deshoras", "Hago dietas estrictas y luego lo dejo", "Como fuera a menudo por trabajo o planes"] },
-    { id: "entreno", q: "¿Qué ejercicio haces ahora mismo?", o: ["Nada o casi nada", "Cardio: caminar, correr o clases", "Pesas, pero sin un plan claro", "Pesas con un plan"] },
-    { id: "tiempo", q: "¿Cuánto tiempo real tienes para entrenar?", o: ["Menos de 2 h a la semana", "2 a 3 h a la semana", "3 a 5 h a la semana", "Más de 5 h a la semana"] },
-    { id: "ciclo", q: "¿Cómo es tu ciclo menstrual?", o: ["Regular y sin muchos síntomas", "Irregular o tengo SOP", "Mucha retención y antojos antes de la regla", "Tomo anticonceptivos o no lo sé"] },
-    { id: "energia", q: "¿Cómo está tu energía durante el día?", o: ["Me levanto ya cansada", "Tengo un bajón después de comer", "Llego sin fuerzas a la noche", "Bien en general"] },
-    { id: "sueno", q: "¿Cuánto duermes de verdad?", o: ["Menos de 6 horas", "Entre 6 y 7 horas", "7 u 8 horas, pero me despierto cansada", "7 u 8 horas y descanso bien"] },
-    { id: "freno", q: "¿Qué es lo que más te frena?", o: ["Empiezo con ganas y lo dejo a las semanas", "No sé qué hacer exactamente", "No tengo tiempo", "Me cuesta controlar la ansiedad por comer"] },
-    { id: "meta", tipo: "abierta", q: "Imagina que dentro de 90 días te miras al espejo y te encanta lo que ves. ¿Qué ha cambiado?", sub: "Escríbelo con tus palabras. Lo usaré en tu plan.", ph: "Ej.: Me pongo mis vaqueros de antes, tengo energía para jugar con mis hijos…" },
-    { id: "invertir", q: "Si encuentras el método adecuado para ti, ¿estarías dispuesta a invertir en una profesional que te acompañe?", o: ["Sí, si veo que es para mí", "Sí, pero con un presupuesto ajustado", "De momento prefiero hacerlo sola"] }
+    { id: "espejo", sec: "Tu cuerpo", q: "¿Qué es lo que más te molesta cuando te miras al espejo?", o: ["La tripa y los rollitos de la espalda", "La flacidez en brazos, piernas o glúteos", "Me veo hinchada casi siempre", "He ganado peso y no consigo bajarlo", "Ya no reconozco mi cuerpo"] },
+    { id: "edad", sec: "Tu cuerpo", q: "¿Cuántos años tienes?", sub: "Tu cuerpo no responde igual a los 25 que a los 38.", o: ["Entre 24 y 29", "Entre 30 y 34", "Entre 35 y 40", "Más de 40"] },
+    { id: "situacion", sec: "Tu cuerpo", tipo: "abierta", q: "Cuéntame tu situación: cómo te ves y te sientes ahora, y cómo te gustaría verte.", sub: "Cuanto más concreta seas, más preciso será tu plan. Respuestas vagas dan un plan vago.", ph: "Ej.: Desde que tuve a mi hija no consigo quitarme la tripa, me noto flácida y quiero volver a ponerme mis vaqueros." },
+    { id: "comida", sec: "Tus hábitos", q: "¿Cómo describirías tu alimentación?", o: ["Como sano, pero no bajo", "Picoteo y como a deshoras", "Hago dietas estrictas y luego lo dejo", "Como fuera a menudo por trabajo o planes"] },
+    { id: "entreno", sec: "Tus hábitos", q: "¿Qué ejercicio haces ahora mismo?", o: ["Nada o casi nada", "Cardio: caminar, correr o clases", "Pesas, pero sin un plan claro", "Pesas con un plan"] },
+    { id: "tiempo", sec: "Tus hábitos", q: "¿Cuánto tiempo real tienes para entrenar?", sub: "Siendo realista con tu semana, no con la semana ideal.", o: ["Menos de 2 horas a la semana", "Entre 2 y 3 horas a la semana", "Entre 3 y 5 horas a la semana", "Más de 5 horas a la semana"] },
+    { id: "ciclo", sec: "Tus hábitos", q: "¿Cómo es tu ciclo menstrual?", sub: "Tus hormonas cambian cómo quemas grasa y cómo retienes líquidos.", o: ["Regular y sin muchos síntomas", "Irregular, o tengo SOP", "Mucha retención y antojos antes de la regla", "Tomo anticonceptivos o no lo sé"] },
+    { id: "energia", sec: "Tus hábitos", q: "¿Cómo está tu energía durante el día?", o: ["Me levanto ya cansada", "Tengo un bajón después de comer", "Llego sin fuerzas a la noche", "Bien en general"] },
+    { id: "freno", sec: "Tu objetivo", tipo: "abierta", q: "En tu opinión, ¿qué es lo que más te frena hoy para conseguirlo?", sub: "Lo que sientes tú, aunque no estés segura de que sea la causa real.", ph: "Ej.: Empiezo con muchas ganas y a las tres semanas lo dejo." },
+    { id: "peso", sec: "Tu objetivo", q: "¿Cuánto tiempo llevas intentando cambiar tu cuerpo?", o: ["Menos de 6 meses", "Entre 6 meses y 2 años", "Más de 2 años", "Bajo y vuelvo a subir (efecto rebote)"] },
+    { id: "probado", sec: "Tu objetivo", tipo: "abierta", q: "¿Qué has probado que no te ha funcionado?", sub: "Así no te recomiendo repetir lo mismo. Si es la primera vez que lo intentas, escribe «nada todavía».", ph: "Ej.: Hice dieta keto dos meses, bajé 5 kilos y los recuperé todos." },
+    { id: "nohacer", sec: "Tu objetivo", tipo: "abierta", q: "¿Hay algo que no quieras hacer sí o sí?", sub: "Ej.: contar calorías, ir al gimnasio, correr, dejar el pan… Si no hay nada, escribe «nada».", ph: "Ej.: No quiero pasar hambre ni pesar la comida." },
+    { id: "prioridad", sec: "Tu objetivo", q: "¿Qué tan importante es para ti cambiar tu cuerpo ahora?", sub: "Me ayuda a priorizar tu plan y el seguimiento.", o: ["Es mi prioridad número uno ahora", "Muy importante: quiero conseguirlo en los próximos meses", "Importante, pero ahora tengo otras prioridades", "Poco importante: solo estoy mirando"] }
   ];
-  var L = "abcd";
+  var L = "abcde";
 
   var AREAS = [
     { k: "ali", n: "Alimentación" },
     { k: "ent", n: "Entrenamiento" },
     { k: "hor", n: "Hormonas y ciclo" },
-    { k: "ene", n: "Energía y descanso" },
-    { k: "men", n: "Mentalidad" }
+    { k: "ene", n: "Energía" },
+    { k: "men", n: "Constancia" }
   ];
 
   /* ── Utilidades ────────────────────────────────────────────────────────── */
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function clamp(v) { return Math.max(12, Math.min(88, Math.round(v))); }
-  function nombreCorto(n) { n = String(n || "").trim().split(/\s+/)[0] || ""; return n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : ""; }
   function track(name, data) { try { if (typeof window.va === "function") window.va("event", { name: name, data: data }); } catch (e) {} }
   function ls(get, k, v) { try { if (get) return window.localStorage.getItem(k); window.localStorage.setItem(k, v); } catch (e) {} return null; }
-  function ss(get, k, v) { try { if (get) return window.sessionStorage.getItem(k); if (v == null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} return null; }
+  function ss(get, k, v) { try { if (get) return window.sessionStorage.getItem(k); window.sessionStorage.setItem(k, v); } catch (e) {} return null; }
+  function norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function vacio(s) { return !s || /^\s*(nada|nada todavia|ninguno|ninguna|no|-)\s*\.?\s*$/.test(norm(s)); }
 
   function guardar(d) {
     var v = encodeURIComponent(JSON.stringify(d));
@@ -73,12 +75,21 @@
     try { var d = JSON.parse(decodeURIComponent(raw)); return d && d.a ? d : null; } catch (e) { return null; }
   }
 
+  /* ── Lo que dice con sus palabras: qué la frena ─────────────────────────── */
+  function tipoFreno(t) {
+    t = norm(t);
+    if (/ansiedad|antojo|dulce|atracon|comer emocional|picar|picoteo|hambre/.test(t)) return "d";
+    if (/tiempo|trabajo|hijo|nino|nina|bebe|turno|horario|no llego|agenda/.test(t)) return "c";
+    if (/no se |no se$|que hacer|informacion|perdida|por donde|confus|no entiendo|como empezar/.test(t)) return "b";
+    return "a"; // constancia: empezar y dejarlo (lo más habitual)
+  }
+
   /* ── Diagnóstico: puntuación por área (más alto = mejor) ───────────────── */
-  function puntuar(a) {
-    var s = { ali: 50, ent: 50, hor: 55, ene: 50, men: 45 };
+  function puntuar(a, t) {
+    var s = {};
     s.ali = { a: 52, b: 30, c: 26, d: 36 }[a.comida] || 45;
     if (a.peso === "d") s.ali -= 8;
-    if (a.espejo === "a") s.ali -= 4;
+    if (a.espejo === "a" || a.espejo === "d") s.ali -= 5;
     s.ent = { a: 16, b: 34, c: 52, d: 76 }[a.entreno] || 40;
     if (a.tiempo === "a") s.ent -= 8; else if (a.tiempo === "d") s.ent += 4;
     if (a.espejo === "b") s.ent -= 6;
@@ -86,54 +97,80 @@
     if (a.espejo === "c") s.hor -= 10;
     if (a.edad === "c" || a.edad === "d") s.hor -= 6;
     s.ene = { a: 22, b: 40, c: 34, d: 74 }[a.energia] || 45;
-    s.ene += { a: -16, b: -4, c: -12, d: 8 }[a.sueno] || 0;
-    s.men = { a: 30, b: 46, c: 40, d: 26 }[a.freno] || 40;
+    s.men = { a: 30, b: 46, c: 42, d: 28 }[tipoFreno(t.freno)];
     if (a.peso === "c") s.men -= 8;
-    if (a.ropa === "c") s.men -= 5;
-    if (a.espejo === "d") s.men -= 4;
+    if (a.peso === "d") s.men -= 4;
+    if (a.espejo === "e") s.men -= 4;
     Object.keys(s).forEach(function (k) { s[k] = clamp(s[k]); });
     return s;
   }
-  function peorArea(s) {
-    // En empate decide el orden de AREAS.
-    return AREAS.slice().sort(function (x, y) { return s[x.k] - s[y.k]; })[0].k;
-  }
+  function peorArea(s) { return AREAS.slice().sort(function (x, y) { return s[x.k] - s[y.k]; })[0].k; }
   function media(s) { return Math.round(AREAS.reduce(function (t, x) { return t + s[x.k]; }, 0) / AREAS.length); }
+  function etiqueta(v, peor) { return peor ? ["t-fr", "Tu freno"] : v >= 60 ? ["t-ok", "Sólido"] : ["t-mej", "Mejorar"]; }
 
   /* ── Textos del plan ───────────────────────────────────────────────────── */
+  var CUESTA = { ali: "tu alimentación", ent: "tu entrenamiento", hor: "tus hormonas", ene: "tu energía", men: "tu constancia" };
+
   var FRENO = {
     ali: {
-      a: ["Comes bien… pero no lo suficiente de lo que importa", "Que comas sano y no bajes no es culpa tuya. Lo más habitual es comer poca proteína y, en general, demasiado poco: tu cuerpo se pone en modo ahorro, pierde músculo y se aferra a la grasa. Por eso te ves igual, o más flácida, aunque lo hagas «todo bien»."],
-      b: ["El picoteo te está saboteando sin que te des cuenta", "Comer a deshoras dispara tu azúcar en sangre y tu hambre. No es falta de fuerza de voluntad: es que tus comidas no te sacian. Cuando cada comida lleva la proteína y la fibra que necesitas, el picoteo baja solo."],
-      c: ["Las dietas estrictas son las que te hacen rebotar", "Cada dieta muy restrictiva te quita músculo y enseña a tu cuerpo a defenderse. Al dejarla recuperas el peso… y algo más. Necesitas un plan que puedas mantener, no otra dieta de tres semanas."],
-      d: ["Comer fuera no es el problema; no tener un sistema, sí", "Con tu ritmo de vida no puedes depender de cocinar perfecto. Lo que necesitas son reglas sencillas para elegir bien en cualquier restaurante o menú del día, sin contar calorías."]
+      a: "Comes sano y aun así no bajas. No es culpa tuya: lo más habitual es comer poca proteína y, en general, demasiado poco. Tu cuerpo se pone en modo ahorro, pierde músculo y se aferra a la grasa. Por eso te ves igual, o más flácida, aunque lo hagas «todo bien».",
+      b: "Comer a deshoras dispara tu azúcar en sangre y tu hambre. No es falta de fuerza de voluntad: es que tus comidas no te sacian. Cuando cada comida lleva la proteína y la fibra que necesitas, el picoteo baja solo.",
+      c: "Cada dieta muy estricta te quita músculo y enseña a tu cuerpo a defenderse. Al dejarla recuperas el peso… y algo más. No necesitas otra dieta de tres semanas: necesitas una forma de comer que puedas mantener.",
+      d: "Con tu ritmo de vida no puedes depender de cocinar perfecto. Sin unas reglas sencillas para elegir bien fuera de casa, cada comida es una lotería, y la báscula no se mueve."
     },
     ent: {
-      a: ["Tu cuerpo necesita músculo para verse firme", "Sin entrenamiento de fuerza pierdes un poco de músculo cada año. Menos músculo es más flacidez y un metabolismo más lento. La buena noticia: es lo que más rápido cambia cuando empiezas bien."],
-      b: ["Más cardio no te va a dar el cuerpo que quieres", "Caminar o correr es genial para la salud, pero por sí solo no tonifica: puedes bajar de peso y seguir viéndote flácida. Lo que da forma a glúteos, brazos y abdomen es la fuerza bien programada."],
-      c: ["Entrenas, pero sin un plan tu cuerpo no tiene motivos para cambiar", "Sin progresión (más peso, más repeticiones, mejor técnica) tu cuerpo se acostumbra y deja de responder. Con un plan que se ajuste a ti cada semana, el mismo esfuerzo da mucho más resultado."],
-      d: ["Tu entrenamiento no está alineado con el resto de tu vida", "Entrenas con plan, pero si no está adaptado a tu ciclo, a tu descanso y a tu alimentación, el resultado se queda corto. Ese ajuste fino es lo que ahora marca la diferencia."]
+      a: "Sin entrenamiento de fuerza pierdes un poco de músculo cada año. Menos músculo es más flacidez y un metabolismo más lento: comes lo mismo y engordas más. Es justo lo que más rápido cambia cuando empiezas bien.",
+      b: "Caminar o correr es genial para la salud, pero por sí solo no tonifica: puedes bajar de peso y seguir viéndote flácida. Lo que da forma a glúteos, brazos y abdomen es la fuerza bien programada.",
+      c: "Entrenas, pero sin progresión (más peso, más repeticiones, mejor técnica) tu cuerpo se acostumbra y deja de cambiar. Estás poniendo el esfuerzo sin recibir el resultado.",
+      d: "Entrenas con plan, pero si no está adaptado a tu ciclo, tu descanso y tu alimentación, el resultado se queda corto. Ese ajuste fino es lo que ahora marca la diferencia."
     },
     hor: {
-      a: ["La inflamación no te deja ver tus avances", "La hinchazón y la retención pueden esconder kilos de cambio real. Cuando bajas la inflamación con alimentación, descanso y el entrenamiento adecuado, de repente «aparece» el cuerpo que has estado trabajando."],
-      b: ["Tus hormonas están jugando en tu contra", "Con un ciclo irregular o SOP, la resistencia a la insulina hace que almacenes grasa con más facilidad, sobre todo en la tripa. No necesitas comer menos: necesitas comer y entrenar de forma que tus hormonas te ayuden."],
-      c: ["Tu ciclo explica gran parte de tu hinchazón y tus antojos", "Esa retención y esos antojos antes de la regla son normales, pero si entrenas y comes igual todo el mes, sientes que retrocedes cada pocas semanas. Adaptando el plan a cada fase dejas de pelearte con tu cuerpo."],
-      d: ["La inflamación no te deja ver tus avances", "La hinchazón y la retención pueden esconder kilos de cambio real. Cuando bajas la inflamación con alimentación, descanso y el entrenamiento adecuado, de repente «aparece» el cuerpo que has estado trabajando."]
+      a: "La hinchazón y la retención pueden esconder kilos de cambio real. Mientras tu cuerpo esté inflamado, por mucho que hagas no verás tus avances en el espejo.",
+      b: "Con un ciclo irregular o SOP, la resistencia a la insulina hace que almacenes grasa con más facilidad, sobre todo en la tripa. Comer menos no lo arregla: lo empeora.",
+      c: "Esa retención y esos antojos antes de la regla son normales, pero si entrenas y comes igual todo el mes, sientes que retrocedes cada pocas semanas y acabas abandonando.",
+      d: "La hinchazón y la retención pueden esconder kilos de cambio real. Mientras tu cuerpo esté inflamado, por mucho que hagas no verás tus avances en el espejo."
     },
     ene: {
-      a: ["Te levantas cansada porque tu cuerpo no se está recuperando", "Si duermes poco o mal, tu cuerpo produce más cortisol y más hambre, y te pide azúcar para aguantar el día. Sin arreglar tu energía, cualquier plan se hace cuesta arriba."],
-      b: ["Ese bajón después de comer es una señal", "Suele aparecer cuando las comidas llevan muchos hidratos rápidos y poca proteína. El azúcar sube y baja de golpe y te deja sin energía, con sueño y con ganas de dulce."],
-      c: ["Llegas a la noche sin fuerzas, y así es imposible ser constante", "Cuando el día te exprime, entrenar o cocinar bien parece imposible. Necesitas un plan que te dé energía en lugar de quitártela, empezando por lo que comes por la mañana y a mediodía."],
-      d: ["Tu descanso no te está dejando recuperarte", "Aunque te notes bien, dormir poco o mal sube el cortisol y el hambre, y frena la pérdida de grasa. Ajustar tu descanso es la palanca más fácil que tienes ahora mismo."]
+      a: "Levantarte ya cansada es señal de que tu cuerpo no se está recuperando. Con poco descanso produces más cortisol y más hambre, y tu cuerpo te pide azúcar para aguantar el día. Así cualquier plan se hace cuesta arriba.",
+      b: "Ese bajón después de comer aparece cuando las comidas llevan muchos hidratos rápidos y poca proteína. El azúcar sube y baja de golpe y te deja sin energía, con sueño y con ganas de dulce.",
+      c: "Cuando el día te exprime y llegas a la noche sin fuerzas, entrenar o cocinar bien parece imposible. Sin energía no hay constancia, y sin constancia no hay cambio.",
+      d: "Aunque te notes bien, si tu energía depende del café y del azúcar, tu cuerpo almacena grasa con más facilidad. Es la palanca más fácil que tienes ahora mismo."
     },
     men: {
-      a: ["No te falta disciplina; te falta un plan que puedas mantener", "Empezar fuerte y dejarlo a las semanas es lo que pasa cuando el plan es demasiado exigente para tu vida real. La clave es empezar con lo mínimo que funciona e ir subiendo."],
-      b: ["No es falta de ganas: es exceso de información", "Con tanto consejo contradictorio es normal no saber por dónde empezar. Necesitas un camino claro, paso a paso, pensado para tu cuerpo y tu situación."],
-      c: ["No necesitas más tiempo; necesitas usarlo mejor", "Con tres sesiones cortas bien hechas a la semana y unas pocas reglas de alimentación se consiguen cambios visibles. El problema no es tu tiempo, son los planes pensados para gente sin vida."],
-      d: ["La ansiedad por comer no se arregla con fuerza de voluntad", "Suele venir de comidas que no sacian, estrés acumulado y poco descanso. Cuando corriges eso, la ansiedad baja de forma natural y dejas de sentir que pierdes el control."]
+      a: "Empezar con ganas y dejarlo a las semanas es lo que pasa cuando el plan es demasiado exigente para tu vida real. No te falta disciplina: te falta un plan que puedas mantener.",
+      b: "Con tanto consejo contradictorio es normal no saber por dónde empezar, y cuando no sabes qué hacer acabas no haciendo nada. Te falta un camino claro, paso a paso.",
+      c: "Sientes que no tienes tiempo, pero el problema no es tu agenda: son los planes pensados para gente sin vida. Con tres sesiones cortas bien hechas a la semana se consiguen cambios visibles.",
+      d: "La ansiedad por comer no se arregla con fuerza de voluntad. Suele venir de comidas que no sacian, estrés acumulado y poco descanso. Mientras no lo corrijas, sentirás que pierdes el control."
     }
   };
-  var CLAVE = { ali: "comida", ent: "entreno", hor: "ciclo", ene: "energia", men: "freno" };
+
+  var PASOS = {
+    ali: [
+      ["Proteína en cada comida", "Una ración del tamaño de la palma de tu mano 3 o 4 veces al día: huevos, pollo, pescado, yogur griego o legumbres. Te sacia, protege tu músculo y acelera la pérdida de grasa."],
+      ["El método del plato", "Medio plato de verdura, un cuarto de proteína y un cuarto de hidrato. Sin pesar, sin contar calorías y sirve en casa, en el táper o en el restaurante."],
+      ["Comer suficiente, sin rebote", "Tres comidas completas al día en lugar de dietas estrictas o picoteo. Bajas de forma constante y no recuperas lo perdido."]
+    ],
+    ent: [
+      ["Fuerza 3 veces por semana", "Sesiones de 30 a 45 minutos de cuerpo completo: sentadilla, peso muerto, remo, press y puente de glúteo. Es lo que da forma y quita la flacidez."],
+      ["Progresión semanal", "Cada semana un poco más de peso o una repetición más, y lo apuntas. Así tu cuerpo siempre tiene un motivo para cambiar."],
+      ["El cardio, en forma de pasos", "7.000 a 9.000 pasos al día en lugar de horas de cardio. Quemas grasa sin robarle energía a tus entrenos."]
+    ],
+    hor: [
+      ["Comer a favor de tus hormonas", "Proteína y fibra en cada comida y menos azúcar y ultraprocesados para mejorar tu sensibilidad a la insulina."],
+      ["Entrenar según tu ciclo", "Más intensidad en la primera mitad del ciclo y más suave antes de la regla. Dejas de sentir que retrocedes cada mes."],
+      ["Bajar la inflamación", "Más agua y verdura, menos sal y ultraprocesados, y un paseo después de comer. En dos semanas te ves menos hinchada."]
+    ],
+    ene: [
+      ["Desayuno con proteína", "Empezar el día con proteína estabiliza tu azúcar en sangre: adiós al bajón de media mañana y después de comer."],
+      ["Rutina de sueño", "Misma hora de acostarte cada día y sin pantallas 30 minutos antes. Dormir bien baja el hambre y el cortisol."],
+      ["Movimiento después de comer", "10 minutos caminando después de las comidas principales. Evita el bajón y ayuda a tu cuerpo a usar lo que comes."]
+    ],
+    men: [
+      ["Empezar por lo mínimo", "Dos o tres hábitos que puedas cumplir incluso en tu peor semana. Primero constancia, después intensidad."],
+      ["Un plan cerrado, sin dudas", "Sabes exactamente qué comer y qué entrenar cada día. Sin tener que decidir, no hay excusas."],
+      ["Un plan para los días malos", "Qué hacer cuando fallas un día para no volver a empezar de cero el lunes."]
+    ]
+  };
 
   var HOY = {
     ali: "En tu próxima comida, añade una ración de proteína del tamaño de la palma de tu mano: huevos, pollo, pescado, yogur griego o legumbres.",
@@ -142,8 +179,6 @@
     ene: "Esta noche, deja el móvil 30 minutos antes de dormir y acuéstate a la misma hora que mañana.",
     men: "Elige UN solo hábito de este plan y hazlo 7 días seguidos. Solo uno."
   };
-
-  // En energía, el primer paso depende de cuándo le falta energía.
   var HOY_ENE = {
     b: "En tu próxima comida, empieza por la proteína y la verdura y deja el hidrato para el final. Después, camina 10 minutos: notarás mucho menos bajón.",
     c: "Mañana, desayuna con proteína (huevos, yogur griego o tostada con pavo) y come a mediodía un plato completo. Fíjate en cómo llegas a la noche."
@@ -156,13 +191,27 @@
     d: "Pasados los 40 las hormonas cambian y el músculo se pierde más rápido: tu plan prioriza fuerza, proteína y descanso."
   };
 
-  var OBJETIVO_ROPA = { a: "volver a ponerte esa ropa que ahora te aprieta", b: "ponerte sin pensarlo esas prendas que hoy evitas", c: "dejar la ropa ancha y ponerte lo que te apetezca", d: "verte espectacular con lo que te pongas" };
+  var OBJETIVO = { a: "una tripa más plana y una espalda sin rollitos", b: "brazos, piernas y glúteos firmes", c: "dejar de verte hinchada", d: "bajar de peso y no volver a subir", e: "volver a reconocerte en el espejo" };
 
-  function fases(a) {
+  // Lo que NO quiere hacer: el plan lo respeta.
+  function respetos(t) {
+    var n = norm(t), r = [];
+    if (vacio(t)) return r;
+    if (/calori|pesar|contar|macros|gramo/.test(n)) r.push("Sin contar calorías ni pesar la comida: usarás el método del plato.");
+    if (/gimnas|gym/.test(n)) r.push("Sin gimnasio: todo el entrenamiento se puede hacer en casa con poco material.");
+    if (/correr|cardio|running|bici|spinning/.test(n)) r.push("Sin horas de cardio: el cardio va en forma de pasos diarios.");
+    if (/hambre|ayun/.test(n)) r.push("Sin pasar hambre: comerás suficiente, con proteína en cada comida.");
+    if (/pan|pasta|arroz|hidrato|carbohidrat|dulce|chocolate|azucar/.test(n)) r.push("Sin prohibir alimentos: tendrás hidratos y algún capricho, en la cantidad que te funciona.");
+    if (/pastilla|suplement|batido|quemador/.test(n)) r.push("Sin pastillas, batidos ni quemadores: solo comida real y entrenamiento.");
+    if (!r.length) r.push("Lo tengo en cuenta: «" + String(t).trim().slice(0, 140) + "». Tu plan se adapta a eso.");
+    return r;
+  }
+
+  function fases(a, k) {
     var f1 = [], f2 = [], f3 = [];
     f1.push({ a: "Sube la proteína en cada comida: una palma de tu mano, 3 o 4 veces al día.", b: "Haz 3 comidas completas al día, con proteína y verdura, para cortar el picoteo.", c: "Deja las dietas extremas: come suficiente, con un plato equilibrado en cada comida.", d: "Aplica la regla del plato fuera de casa: proteína, verdura y una ración de hidrato." }[a.comida] || "Sube la proteína en cada comida.");
-    if (a.sueno === "a" || a.energia === "a") f1.push("Adelanta 30 minutos la hora de dormir y deja las pantallas media hora antes.");
-    else if (a.energia === "b") f1.push("Desayuna con proteína y deja los hidratos rápidos para después de entrenar: adiós al bajón.");
+    if (a.energia === "a") f1.push("Adelanta 30 minutos la hora de dormir y deja las pantallas media hora antes.");
+    else if (a.energia === "b") f1.push("Desayuna con proteína y camina 10 minutos después de comer: adiós al bajón.");
     else f1.push("Bebe 2 litros de agua al día y camina 7.000 pasos diarios.");
     f1.push({ b: "Prioriza proteína y fibra y reduce el azúcar para mejorar tu sensibilidad a la insulina.", c: "Reduce sal y ultraprocesados y sube agua y verdura para bajar la retención." }[a.ciclo] || (a.espejo === "c" ? "Reduce sal y ultraprocesados y sube agua y verdura para deshincharte." : "Apunta en qué fase de tu ciclo estás para empezar a ajustar el plan."));
 
@@ -170,9 +219,9 @@
     f2.push({ a: "Aprende la técnica de 5 ejercicios básicos: sentadilla, peso muerto, remo, press y puente de glúteo.", b: "Cambia parte del cardio por fuerza: el cardio, en forma de pasos diarios.", c: "Sigue una progresión: sube peso o repeticiones cada semana y apúntalo.", d: "Ajusta el volumen de tu plan actual a tu descanso y a tu ciclo." }[a.entreno] || "Sigue una progresión semanal.");
     f2.push(a.ciclo === "d" ? "Fíjate en cómo te encuentras cada semana y ajusta la intensidad según tu energía." : "Adapta la intensidad a tu ciclo: más fuerte en la primera mitad y más suave antes de la regla.");
 
-    f3.push({ a: "Trabajo específico de core y espalda para reducir tripa y rollitos.", b: "Más volumen en glúteos, piernas y brazos para eliminar la flacidez.", c: "Mantén la alimentación antiinflamatoria y mide tu cintura, no solo el peso.", d: "Fotos y medidas cada 2 semanas para ver cómo cambia tu cuerpo." }[a.espejo] || "Mide tu progreso cada 2 semanas.");
-    f3.push({ a: "Hábitos mínimos para los días malos: así no vuelves a empezar de cero.", b: "Una rutina semanal sencilla que puedas seguir sin pensar.", c: "Sesiones cortas e intensas que encajen en tu semana.", d: "Estrategias para la ansiedad: comidas que sacian y una rutina de noche." }[a.freno] || "Un sistema que puedas mantener.");
-    f3.push("Objetivo: " + (OBJETIVO_ROPA[a.ropa] || "verte y sentirte bien") + ".");
+    f3.push({ a: "Trabajo específico de core y espalda para reducir tripa y rollitos.", b: "Más volumen en glúteos, piernas y brazos para eliminar la flacidez.", c: "Mantén la alimentación antiinflamatoria y mide tu cintura, no solo el peso.", d: "Ajusta las cantidades según tu progreso para seguir bajando sin rebote.", e: "Fotos y medidas cada 2 semanas para ver cómo cambia tu cuerpo." }[a.espejo] || "Mide tu progreso cada 2 semanas.");
+    f3.push(k === "men" ? "Hábitos mínimos para los días malos: así no vuelves a empezar de cero." : "Revisa fotos y medidas cada 2 semanas, no solo la báscula.");
+    f3.push("Objetivo: " + (OBJETIVO[a.espejo] || "verte y sentirte bien") + ".");
 
     return [
       { k: "Semanas 1 y 2", t: "Desinflamar y ordenar", l: f1 },
@@ -181,159 +230,198 @@
     ];
   }
 
-  function porQue(a) {
-    if (a.peso === "d") return "Llevas tiempo bajando y volviendo a subir. El efecto rebote aparece cuando pierdes peso a base de pasar hambre: pierdes músculo, tu metabolismo se frena y el cuerpo recupera lo perdido. Este plan va al revés: primero músculo y hábitos, después la grasa cae y no vuelve.";
-    if (a.peso === "c") return "Llevas más de dos años intentándolo, y eso dice mucho de tus ganas. Si no ha funcionado no es por ti: es porque los planes que has probado no estaban pensados para tu cuerpo, tus hormonas ni tu día a día.";
-    if (a.peso === "b") return "Llevas un tiempo intentándolo sin el resultado que mereces. No es falta de esfuerzo: te ha faltado un plan adaptado a ti que ataque lo que de verdad te frena.";
-    return "Estás a tiempo de hacerlo bien desde el principio, sin dietas extremas ni horas de cardio que no te llevan a ningún sitio.";
+  function porQue(a, probado) {
+    var base;
+    if (a.peso === "d") base = "Llevas tiempo bajando y volviendo a subir. El efecto rebote aparece cuando pierdes peso a base de pasar hambre: pierdes músculo, tu metabolismo se frena y el cuerpo recupera lo perdido. Este plan va al revés: primero músculo y hábitos; después la grasa cae y no vuelve.";
+    else if (a.peso === "c") base = "Llevas más de dos años intentándolo, y eso dice mucho de tus ganas. Si no ha funcionado no es por ti: los planes que has probado no estaban pensados para tu cuerpo, tus hormonas ni tu día a día.";
+    else if (a.peso === "b") base = "Llevas un tiempo intentándolo sin el resultado que mereces. No es falta de esfuerzo: te ha faltado un plan adaptado a ti que ataque lo que de verdad te frena.";
+    else base = "Estás a tiempo de hacerlo bien desde el principio, sin dietas extremas ni horas de cardio que no llevan a ningún sitio.";
+    return base;
   }
 
   function construir(d) {
-    var a = d.a || {};
-    var s = puntuar(a);
+    var a = d.a || {}, t = d.t || {};
+    var s = puntuar(a, t);
     var k = peorArea(s);
-    var fr = FRENO[k][a[CLAVE[k]]] || FRENO[k].a;
-    return { s: s, media: media(s), area: k, areaNombre: AREAS.filter(function (x) { return x.k === k; })[0].n, freno: fr, fases: fases(a), hoy: (k === "ene" && HOY_ENE[a.energia]) || HOY[k], edad: EDAD[a.edad] || "", porque: porQue(a) };
+    var clave = k === "men" ? tipoFreno(t.freno) : a[{ ali: "comida", ent: "entreno", hor: "ciclo", ene: "energia" }[k]];
+    return {
+      s: s, media: media(s), area: k,
+      areaNombre: AREAS.filter(function (x) { return x.k === k; })[0].n,
+      cuesta: CUESTA[k],
+      freno: FRENO[k][clave] || FRENO[k].a,
+      pasos: PASOS[k],
+      fases: fases(a, k),
+      hoy: (k === "ene" && HOY_ENE[a.energia]) || HOY[k],
+      edad: EDAD[a.edad] || "",
+      porque: porQue(a, t.probado),
+      respetos: respetos(t.nohacer)
+    };
   }
 
   /* ── Estilos (se inyectan una vez) ─────────────────────────────────────── */
+  var SERIF = "var(--font-instrument,'Instrument Serif'),Georgia,serif";
+  var SANS = "var(--font-inter,Inter),-apple-system,BlinkMacSystemFont,sans-serif";
+  var NUM = "var(--font-sora,Sora),sans-serif";
   var CSS = [
-    ".fcdq{--b:#35C2FF;--bd:#0088d6;--ink:#04202b;--tx:#eaf3fb;--mu:#9fb7c7;--mu2:#7f97a8;--ln:rgba(255,255,255,.1);color:var(--tx);font-family:var(--font-inter,Inter),-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;max-width:560px;margin:0 auto;padding:0 20px;scroll-margin-top:12px}",
+    ".fcdq{--b:#35C2FF;--bd:#0088d6;--ink:#04202b;--tx:#eaf3fb;--mu:#9fb7c7;--mu2:#7f97a8;--ln:rgba(255,255,255,.1);--card:#0c1d2b;color:var(--tx);font-family:" + SANS + ";line-height:1.5;-webkit-font-smoothing:antialiased;max-width:560px;margin:0 auto;padding:0 18px;scroll-margin-top:12px}",
     ".fcdq *,.fcdq *::before,.fcdq *::after{box-sizing:border-box}",
     ".er-wrap .fcdq,.er-wrap.fcdq{padding-left:0;padding-right:0}",
     ".fcdq :where(h1,h2,h3,p,ul,ol){margin:0;padding:0}",
     ".fcdq button{font-family:inherit;cursor:pointer}",
     ".fcdq .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}",
-    ".fcdq .serif{font-family:var(--font-instrument,'Instrument Serif'),Georgia,serif;font-weight:400}",
-    ".fcdq .pill{display:inline-block;font-style:italic;color:var(--ink);background:linear-gradient(90deg,var(--bd),var(--b));padding:0 .26em .03em;border-radius:.3em;line-height:1.1;box-shadow:0 4px 16px rgba(53,194,255,.35)}",
-    ".fcdq .eb{text-align:center;font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--b)}",
-    ".fcdq .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;font-weight:900;font-size:17px;padding:18px 16px;border-radius:99px;border:0;background:linear-gradient(90deg,var(--bd),var(--b));color:var(--ink);box-shadow:0 12px 30px rgba(53,194,255,.32);letter-spacing:-.2px;text-decoration:none;transition:transform .15s,opacity .2s}",
+    ".fcdq .serif{font-family:" + SERIF + ";font-weight:400}",
+    ".fcdq .pill{display:inline-block;font-style:italic;color:var(--ink);background:linear-gradient(90deg,var(--bd),var(--b));padding:0 .26em .05em;border-radius:.3em;line-height:1.1;box-shadow:0 4px 16px rgba(53,194,255,.35)}",
+    ".fcdq .eb{font-size:11.5px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase;color:var(--b)}",
+    ".fcdq .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;text-align:center;font-weight:900;font-size:17px;padding:19px 18px;border-radius:99px;border:0;background:linear-gradient(90deg,var(--bd),var(--b));color:var(--ink);box-shadow:0 12px 30px rgba(53,194,255,.32);letter-spacing:-.2px;text-decoration:none;transition:transform .15s,opacity .2s}",
     ".fcdq .btn:active{transform:scale(.985)}",
-    ".fcdq .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}",
-    ".fcdq .btn:focus-visible,.fcdq .opt:focus-visible,.fcdq .lnk:focus-visible,.fcdq input:focus-visible,.fcdq textarea:focus-visible{outline:3px solid #fff;outline-offset:3px}",
-    ".fcdq .meta{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;margin-top:12px;font-size:13px;color:var(--mu)}",
-    ".fcdq .meta span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}",
-    ".fcdq .meta i{font-style:normal;color:#8fe6b0}",
-    ".fcdq .lnk{display:block;margin:14px auto 0;background:none;border:0;color:var(--mu);font-size:13.5px;text-decoration:underline;text-underline-offset:3px;padding:6px}",
-    /* hero */
-    ".fcdq .hero{padding:28px 0 8px;text-align:center}",
-    ".fcdq .hero h1{font-size:clamp(31px,8.6vw,44px);line-height:1.1;color:#fff;margin-top:12px;text-wrap:balance}",
-    ".fcdq .hero .sub{color:#cfe1ee;font-size:16px;line-height:1.5;margin:16px auto 0;max-width:400px;text-wrap:balance}",
-    ".fcdq .mock{position:relative;margin:24px 0 22px;border-radius:20px;border:1px solid rgba(53,194,255,.35);background:linear-gradient(180deg,rgba(53,194,255,.09),rgba(53,194,255,.03));padding:18px 18px 20px;text-align:left;overflow:hidden;box-shadow:0 0 50px rgba(53,194,255,.12)}",
-    ".fcdq .mock .in{filter:blur(4px);opacity:.85;pointer-events:none;user-select:none}",
-    ".fcdq .mock .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}",
-    ".fcdq .mock .hd b{font-size:15px}",
-    ".fcdq .mock .sc{font-family:var(--font-sora,Sora),sans-serif;font-weight:800;font-size:26px;color:var(--b)}",
-    ".fcdq .mock .ln{height:9px;border-radius:9px;background:rgba(255,255,255,.12);margin-top:10px}",
-    ".fcdq .lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;font-size:13px;font-weight:800;color:#fff;background:rgba(8,21,33,.88);border:1px solid rgba(53,194,255,.5);border-radius:99px;padding:9px 16px;box-shadow:0 10px 30px rgba(0,0,0,.4)}",
-    ".fcdq .gift{display:table;margin:16px auto 0;max-width:340px;font-size:13.5px;line-height:1.45;font-weight:600;color:#dff4ff;background:rgba(53,194,255,.1);border:1px solid rgba(53,194,255,.35);border-radius:18px;padding:9px 16px;text-align:center;text-wrap:balance}",
-    ".fcdq .proof{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;margin-top:18px;font-size:14px;color:#cfe1ee}",
-    ".fcdq .proof .av{display:flex}",
-    ".fcdq .proof img{width:32px;height:32px;border-radius:50%;border:2px solid #0b1c28;margin-left:-10px;object-fit:cover;display:block;background:#16455f}",
-    ".fcdq .proof img:first-child{margin-left:0}",
-    ".fcdq .proof b{color:#fff}",
-    ".fcdq .areas{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:22px}",
-    ".fcdq .areas span{font-size:12px;font-weight:700;color:var(--mu);border:1px solid var(--ln);border-radius:99px;padding:5px 10px}",
-    /* barras por área */
-    ".fcdq .bars{display:flex;flex-direction:column;gap:12px}",
-    ".fcdq .bar .t{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;color:#dbe9f4;margin-bottom:6px}",
-    ".fcdq .bar .t b{font-family:var(--font-sora,Sora),sans-serif;font-weight:800}",
-    ".fcdq .bar .tr{height:9px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}",
-    ".fcdq .bar .tr i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--bd),var(--b));transform-origin:left;animation:fcdq-grow .9s ease both}",
-    ".fcdq .bar.lo .tr i{background:linear-gradient(90deg,#ff5c5c,#ff9a7a)}",
-    ".fcdq .bar.lo .t b{color:#ff9a8a}",
-    ".fcdq .bar.mid .tr i{background:linear-gradient(90deg,#d99a2b,#ffc65c)}",
-    ".fcdq .bar.mid .t b{color:#ffd27a}",
-    "@keyframes fcdq-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}",
-    /* quiz */
-    ".fcdq .qz{padding:22px 0 30px;min-height:70vh}",
-    ".fcdq .qtop{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:28px}",
-    ".fcdq .back{background:none;border:0;color:var(--mu);font-weight:700;font-size:13px;padding:6px 0}",
-    ".fcdq .count{font-size:12px;font-weight:700;color:var(--mu2)}",
-    ".fcdq .pills{display:flex;gap:4px;margin:10px 0 0}",
-    ".fcdq .pills i{flex:1;height:6px;border-radius:9px;background:rgba(255,255,255,.1);transition:background .3s}",
+    ".fcdq .btn[disabled]{opacity:.38;cursor:not-allowed;box-shadow:none}",
+    ".fcdq .btn:focus-visible,.fcdq .opt:focus-visible,.fcdq .lnk:focus-visible,.fcdq textarea:focus-visible,.fcdq .back:focus-visible{outline:3px solid #fff;outline-offset:3px}",
+    ".fcdq .ticks{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 18px;margin-top:18px;font-size:14px;font-weight:600;color:var(--mu)}",
+    ".fcdq .ticks span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}",
+    ".fcdq .ticks i{font-style:normal;color:#8fe6b0;font-weight:900}",
+    ".fcdq .lnk{display:block;margin:12px auto 0;background:none;border:0;color:var(--mu);font-size:13.5px;text-decoration:underline;text-underline-offset:3px;padding:6px}",
+    ".fcdq .fine{text-align:center;font-size:13px;color:var(--mu2);margin-top:12px;line-height:1.5}",
+    /* portada */
+    ".fcdq .hero{padding:22px 0 36px;text-align:center}",
+    ".fcdq .chip{display:block;margin:0 auto;max-width:430px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid var(--ln);padding:11px 14px;font-size:14px;line-height:1.55;color:var(--mu)}",
+    ".fcdq .chip b{color:#fff}",
+    ".fcdq .chip em{font-style:normal;color:#8fe6b0;font-weight:700}",
+    ".fcdq .hero h1{font-size:clamp(36px,10vw,50px);line-height:1.08;color:#fff;margin-top:26px;text-wrap:balance}",
+    ".fcdq .rot{display:inline-grid;vertical-align:bottom}",
+    ".fcdq .rot>span{grid-area:1/1;opacity:0;transform:translateY(.45em);transition:opacity .45s,transform .45s}",
+    ".fcdq .rot>span.on{opacity:1;transform:none}",
+    /* mockups */
+    ".fcdq .mk{position:relative;margin:30px -6px 26px}",
+    ".fcdq .mc{position:absolute;top:0;width:58%;border-radius:16px;background:#071019;border:1px solid rgba(255,255,255,.12);box-shadow:0 24px 50px rgba(0,0,0,.55);padding:12px 12px 14px;text-align:left;font-size:10.5px;color:#cfe1ee}",
+    ".fcdq .mc.c{position:relative;left:auto;margin:0 auto;z-index:2}",
+    ".fcdq .mc.l{left:0;top:36px;transform:perspective(700px) rotateY(16deg) rotate(-3deg);opacity:.8;width:46%}",
+    ".fcdq .mc.r{right:0;top:36px;transform:perspective(700px) rotateY(-16deg) rotate(3deg);opacity:.8;width:46%}",
+    ".fcdq .mc .dots{display:flex;gap:4px;align-items:center;margin-bottom:8px;font-size:8.5px;color:var(--mu2)}",
+    ".fcdq .mc .dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2)}",
+    ".fcdq .mc h4{margin:0 0 10px;font-size:12.5px;font-weight:800;color:#fff}",
+    ".fcdq .mc .sc{display:flex;align-items:center;gap:10px;border:1px solid var(--ln);border-radius:12px;padding:9px;margin-bottom:9px}",
+    ".fcdq .mc .sc .ring{flex:0 0 46px;width:46px;height:46px}",
+    ".fcdq .mc .sc .ring span{width:36px;height:36px;font-size:14px;background:#071019}",
+    ".fcdq .mc .sc .ring small{font-size:6.5px}",
+    ".fcdq .mc .sc p{font-size:9.5px;line-height:1.55;color:var(--mu)}",
+    ".fcdq .mc .sc p b{color:#fff}",
+    ".fcdq .mc .k{font-size:7.5px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--mu2);margin:4px 0 6px}",
+    ".fcdq .mc .row{display:flex;align-items:center;justify-content:space-between;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:6px 7px;margin-top:5px;font-weight:700;color:#fff;font-size:9.5px}",
+    ".fcdq .mc .row.bad{border-color:rgba(255,92,92,.55);background:rgba(255,92,92,.08)}",
+    ".fcdq .mc .row span:last-child{display:flex;align-items:center;gap:5px;color:var(--mu2);font-weight:600}",
+    ".fcdq .mc .li{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.04);border-radius:7px;padding:6px 7px;margin-top:5px;font-weight:600;color:#fff;font-size:9px}",
+    ".fcdq .mc .li i{flex:0 0 5px;width:5px;height:5px;border-radius:50%;background:#ff7a7a}",
+    ".fcdq .mc .li.y i{background:#ffd27a}",
+    ".fcdq .mc .li.g i{background:var(--b)}",
+    ".fcdq .mc .nx{margin-top:9px;border-radius:9px;background:linear-gradient(90deg,var(--bd),var(--b));color:var(--ink);font-weight:800;font-size:9.5px;padding:7px 9px;display:flex;justify-content:space-between}",
+    ".fcdq .tag{display:inline-block;font-size:7.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;border-radius:5px;padding:2px 5px}",
+    ".fcdq .tag.t-ok{background:rgba(127,224,166,.14);color:#8fe6b0}",
+    ".fcdq .tag.t-mej{background:rgba(255,198,92,.14);color:#ffd27a}",
+    ".fcdq .tag.t-fr{background:rgba(255,92,92,.16);color:#ff9a8a}",
+    "@media (max-width:380px){.fcdq .mc{font-size:9.5px}}",
+    /* tarjeta de pregunta */
+    ".fcdq .qc{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:26px;padding:24px 20px 24px;box-shadow:0 24px 60px rgba(0,0,0,.35);text-align:left}",
+    ".fcdq .hero .qc{margin-top:8px;text-align:center;border-color:rgba(53,194,255,.35);box-shadow:0 0 50px rgba(53,194,255,.12),0 24px 60px rgba(0,0,0,.35)}",
+    ".fcdq .qc .hd{display:flex;align-items:center;justify-content:space-between;gap:10px}",
+    ".fcdq .qc .cnt{font-size:12px;font-weight:800;letter-spacing:2.2px;text-transform:uppercase;color:var(--mu2);margin-left:auto}",
+    ".fcdq .qc .cnt b{color:#fff}",
+    ".fcdq .back{background:none;border:0;color:var(--mu);font-weight:700;font-size:13px;padding:4px 0}",
+    ".fcdq .pills{display:flex;gap:5px;margin:14px 0 22px}",
+    ".fcdq .pills i{flex:1;height:6px;border-radius:9px;background:rgba(255,255,255,.08)}",
     ".fcdq .pills i.on{background:linear-gradient(90deg,var(--bd),var(--b))}",
-    ".fcdq .pills i.now{background:rgba(53,194,255,.45)}",
-    ".fcdq .q{font-size:clamp(25px,6.8vw,32px);line-height:1.15;color:#fff;text-align:center;margin:30px 0 8px;text-wrap:balance;outline:none}",
-    ".fcdq .qs{text-align:center;color:var(--mu);font-size:14.5px;margin-bottom:6px}",
-    ".fcdq .opts{display:flex;flex-direction:column;gap:10px;margin-top:22px}",
-    ".fcdq .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-size:16px;font-weight:600;color:var(--tx);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:16px 16px;background:rgba(255,255,255,.04);transition:border-color .2s,background .2s,transform .15s}",
-    ".fcdq .opt .lt{flex:0 0 28px;width:28px;height:28px;border-radius:9px;border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:var(--mu);text-transform:uppercase}",
-    "@media (hover:hover){.fcdq .opt:hover{border-color:rgba(53,194,255,.7);background:rgba(53,194,255,.1)}}",
+    ".fcdq .pills i.now{background:linear-gradient(90deg,var(--b) 50%,rgba(255,255,255,.08) 50%)}",
+    ".fcdq .sec{font-size:12px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase;color:var(--b);margin-bottom:10px}",
+    ".fcdq .q{font-family:" + SERIF + ";font-weight:400;font-size:clamp(27px,7.4vw,34px);line-height:1.12;color:#fff;text-wrap:balance;outline:none}",
+    ".fcdq .hero .q{font-size:clamp(28px,7.8vw,36px)}",
+    ".fcdq .qs{color:var(--mu);font-size:15.5px;line-height:1.55;margin-top:10px}",
+    ".fcdq .opts{display:flex;flex-direction:column;gap:11px;margin-top:22px}",
+    ".fcdq .opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;font-size:16.5px;line-height:1.35;font-weight:700;color:var(--tx);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:17px 16px;background:rgba(255,255,255,.03);transition:border-color .2s,background .2s,transform .15s}",
+    ".fcdq .opt .lt{flex:0 0 34px;width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--mu);text-transform:uppercase}",
+    ".fcdq .opt .tx{flex:1}",
+    ".fcdq .opt .rd{flex:0 0 24px;width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.22);transition:all .2s}",
+    ".fcdq .hero .opt{justify-content:center;text-align:center;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08);padding:19px 16px}",
+    "@media (hover:hover){.fcdq .opt:hover{border-color:rgba(53,194,255,.7);background:rgba(53,194,255,.08)}}",
     ".fcdq .opt:active{transform:scale(.99)}",
-    ".fcdq .opt.sel{border-color:var(--b);background:rgba(53,194,255,.18)}",
+    ".fcdq .opt.sel{border-color:var(--b);background:rgba(53,194,255,.14)}",
     ".fcdq .opt.sel .lt{background:var(--b);border-color:var(--b);color:var(--ink)}",
-    ".fcdq .fld{display:block;width:100%;margin-top:24px;font:inherit;font-size:18px;color:#fff;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:16px 18px}",
-    ".fcdq textarea.fld{min-height:130px;resize:vertical;font-size:16px;line-height:1.5}",
-    ".fcdq .fld::placeholder{color:#6f8798}",
-    ".fcdq .fld:focus{border-color:var(--b);outline:none}",
-    ".fcdq .qz .btn{margin-top:18px}",
+    ".fcdq .opt.sel .rd{border-color:var(--b);background:var(--b);box-shadow:inset 0 0 0 4px var(--card)}",
+    ".fcdq textarea{display:block;width:100%;margin-top:22px;font:inherit;font-size:16.5px;line-height:1.5;color:#fff;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:16px 18px;min-height:140px;resize:vertical}",
+    ".fcdq textarea::placeholder{color:#6f8798}",
+    ".fcdq textarea:focus{border-color:var(--b);outline:none}",
+    ".fcdq .cc{text-align:right;font-size:13px;color:var(--mu2);margin-top:8px}",
+    ".fcdq .cc b{color:#fff}",
+    ".fcdq .qc .btn{margin-top:16px}",
+    ".fcdq .qz{padding:20px 0 40px}",
+    ".fcdq .intro{color:#cfe1ee;font-size:16.5px;line-height:1.6;margin:24px auto 0;max-width:460px;text-wrap:balance}",
+    ".fcdq .basado{color:var(--mu2);font-size:13.5px;margin:12px auto 0;max-width:420px}",
     /* analizando */
-    ".fcdq .an{padding:60px 0 80px;text-align:center;min-height:70vh}",
+    ".fcdq .an{padding:56px 0 80px;text-align:center;min-height:60vh}",
     ".fcdq .spin{width:54px;height:54px;margin:0 auto 22px;border-radius:50%;border:4px solid rgba(255,255,255,.1);border-top-color:var(--b);animation:fcdq-spin .8s linear infinite}",
     "@keyframes fcdq-spin{to{transform:rotate(360deg)}}",
-    ".fcdq .an h2{font-size:clamp(26px,7vw,32px);color:#fff;line-height:1.15}",
-    ".fcdq .chk{list-style:none;display:flex;flex-direction:column;gap:10px;max-width:300px;margin:26px auto 0;text-align:left}",
-    ".fcdq .chk li{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--mu2);transition:color .3s}",
+    ".fcdq .an h2{font-size:clamp(27px,7.4vw,34px);color:#fff;line-height:1.15}",
+    ".fcdq .chk{list-style:none;display:flex;flex-direction:column;gap:11px;max-width:300px;margin:26px auto 0;text-align:left}",
+    ".fcdq .chk li{display:flex;align-items:center;gap:10px;font-size:15.5px;color:var(--mu2);transition:color .3s}",
     ".fcdq .chk li i{flex:0 0 22px;width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:900;color:transparent;transition:all .3s}",
     ".fcdq .chk li.ok{color:#eaf3fb}",
     ".fcdq .chk li.ok i{background:#8fe6b0;border-color:#8fe6b0;color:#06261c}",
-    /* adelanto y plan */
-    ".fcdq .card{border-radius:20px;border:1px solid var(--ln);background:rgba(255,255,255,.035);padding:20px 18px}",
-    ".fcdq .card+.card{margin-top:14px}",
-    ".fcdq .kk{font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--b);margin-bottom:10px}",
-    ".fcdq .res{padding:28px 0 40px}",
-    ".fcdq .res .ttl{font-size:clamp(28px,7.6vw,38px);line-height:1.12;color:#fff;text-align:center;margin:12px 0 20px;text-wrap:balance}",
-    ".fcdq .score{display:flex;align-items:center;gap:16px;margin-bottom:18px}",
-    ".fcdq .ring{flex:0 0 84px;width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:conic-gradient(var(--b) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}",
-    ".fcdq .ring span{width:68px;height:68px;border-radius:50%;background:#0b1c2a;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:var(--font-sora,Sora),sans-serif;font-weight:800;font-size:24px;color:#fff;line-height:1}",
-    ".fcdq .ring small{font-family:var(--font-inter,Inter),sans-serif;font-size:10px;font-weight:700;color:var(--mu2);margin-top:3px}",
-    ".fcdq .score p{font-size:14.5px;color:#cfe1ee;line-height:1.45}",
-    ".fcdq .score p b{color:#fff}",
-    ".fcdq .pain{border-color:rgba(255,92,92,.4);background:rgba(255,92,92,.07)}",
-    ".fcdq .pain .kk{color:#ffb3b3}",
-    ".fcdq .pain h3{font-size:clamp(22px,6vw,26px);line-height:1.15;color:#fff;margin-bottom:8px}",
-    ".fcdq .pain p{font-size:15px;color:#dbe9f4;line-height:1.6}",
-    ".fcdq .steps{position:relative}",
-    ".fcdq .step{display:flex;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.06)}",
-    ".fcdq .step:first-of-type{border-top:0}",
-    ".fcdq .step .n{flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--bd),var(--b));color:var(--ink);font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}",
-    ".fcdq .step b{display:block;color:#fff;font-size:15.5px}",
-    ".fcdq .step small{display:block;color:var(--mu2);font-size:11.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase}",
-    ".fcdq .step span{display:block;color:#cfe1ee;font-size:14px;margin-top:2px}",
-    ".fcdq .lockd .step span,.fcdq .lockd .step b{filter:blur(5px);user-select:none}",
-    ".fcdq .lockd .lock{top:58%}",
-    ".fcdq .fine{text-align:center;font-size:12.5px;color:var(--mu2);margin-top:10px}",
+    /* adelanto */
+    ".fcdq .cost{border-radius:24px;padding:24px 20px;background:radial-gradient(120% 90% at 100% 0%,rgba(255,92,92,.28),transparent 60%),#0a0f14;border:1px solid rgba(255,92,92,.25)}",
+    ".fcdq .kl{display:flex;align-items:flex-start;gap:12px;font-size:12px;font-weight:900;letter-spacing:2.4px;text-transform:uppercase;line-height:1.6;color:#ff9a8a;margin-bottom:14px}",
+    ".fcdq .kl::before{content:'';flex:0 0 20px;height:2px;background:currentColor;margin-top:.8em}",
+    ".fcdq .kl.g{color:#8fe6b0}",
+    ".fcdq .cost p{font-size:17px;line-height:1.6;color:#fff}",
+    ".fcdq .rec{margin-top:14px;border-radius:24px;padding:24px 18px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)}",
+    ".fcdq .rec h3{font-size:clamp(24px,6.6vw,30px);line-height:1.15;color:#fff;margin-bottom:16px;text-wrap:balance}",
+    ".fcdq .stp{display:flex;gap:14px;padding:16px 14px;border-radius:18px;background:rgba(255,255,255,.04)}",
+    ".fcdq .stp+.stp{margin-top:10px}",
+    ".fcdq .stp .n{flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#04121c;border:1px solid rgba(53,194,255,.35);color:var(--b);font-family:" + NUM + ";font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}",
+    ".fcdq .stp b{display:block;color:#fff;font-size:16.5px;line-height:1.3}",
+    ".fcdq .stp span{display:block;color:#cfe1ee;font-size:14.5px;line-height:1.55;margin-top:5px}",
+    ".fcdq .stp.lk div span{filter:blur(5.5px);user-select:none;pointer-events:none}",
+    ".fcdq .res .btn{margin-top:20px}",
     /* formulario */
-    ".fcdq .cap{padding:24px 0 40px}",
-    ".fcdq .cap h2{font-size:clamp(27px,7.4vw,36px);line-height:1.12;color:#fff;text-align:center;margin-top:12px;text-wrap:balance}",
-    ".fcdq .cap .sub{text-align:center;color:#cfe1ee;font-size:15px;margin:10px auto 18px;max-width:390px;text-wrap:balance}",
-    ".fcdq .inc{list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 auto 18px;max-width:360px}",
-    ".fcdq .inc li{display:flex;gap:10px;font-size:14.5px;color:#dbe9f4}",
-    ".fcdq .inc li::before{content:'✓';color:#8fe6b0;font-weight:900}",
-    ".fcdq .frm{position:relative;min-height:792px;border-radius:16px;overflow:hidden;background:#fff}",
+    ".fcdq .send{width:56px;height:56px;border-radius:16px;background:#04121c;border:1px solid rgba(53,194,255,.35);display:flex;align-items:center;justify-content:center;margin-bottom:16px}",
+    ".fcdq .frm{position:relative;min-height:792px;margin-top:20px;border-radius:18px;overflow:hidden;background:#fff}",
     ".fcdq .frm iframe{width:100%;height:792px;border:0;display:block;position:relative}",
     ".fcdq .frm .ld{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0b1722}",
-    /* plan */
-    ".fcdq.plan{padding-top:22px;padding-bottom:10px}",
+    /* barras y plan */
+    ".fcdq .ring{position:relative;flex:0 0 84px;width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--b) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}",
+    ".fcdq .ring span{width:68px;height:68px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:" + NUM + ";font-weight:800;font-size:24px;color:#fff;line-height:1}",
+    ".fcdq .ring small{font-family:" + SANS + ";font-size:10px;font-weight:700;color:var(--mu2);margin-top:3px}",
+    ".fcdq .card{border-radius:22px;border:1px solid var(--ln);background:var(--card);padding:22px 18px}",
+    ".fcdq .card+.card,.fcdq .cost+.card,.fcdq .card+.cost{margin-top:14px}",
+    ".fcdq .kk{font-size:11.5px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;color:var(--b);margin-bottom:12px}",
+    ".fcdq .score{display:flex;align-items:center;gap:16px;margin-bottom:16px}",
+    ".fcdq .score p{font-size:15px;color:#cfe1ee;line-height:1.5}",
+    ".fcdq .score p b{color:#fff}",
+    ".fcdq .ar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);font-size:15px;font-weight:700;color:#fff}",
+    ".fcdq .ar+.ar{margin-top:7px}",
+    ".fcdq .ar.bad{border-color:rgba(255,92,92,.55);background:rgba(255,92,92,.08)}",
+    ".fcdq .ar .v{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu2);font-weight:600;white-space:nowrap}",
+    ".fcdq .ar .v b{color:#fff;font-family:" + NUM + ";font-size:15px}",
+    ".fcdq .ar .tag{font-size:9.5px;padding:3px 7px}",
+    ".fcdq.plan{padding-top:20px}",
     ".fcdq .ok{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#8fe6b0;background:rgba(127,224,166,.1);border:1px solid rgba(127,224,166,.3);border-radius:99px;padding:6px 12px}",
     ".fcdq .ctr{text-align:center}",
-    ".fcdq .goal{font-family:var(--font-instrument,'Instrument Serif'),Georgia,serif;font-style:italic;font-size:21px;line-height:1.35;color:#fff}",
-    ".fcdq .ph{position:relative;padding:0 0 18px 22px;border-left:2px solid rgba(53,194,255,.3);margin-left:7px}",
+    ".fcdq .ttl{font-size:clamp(30px,8.4vw,40px);line-height:1.1;color:#fff;text-align:center;margin:14px 0 22px;text-wrap:balance}",
+    ".fcdq .quote{font-family:" + SERIF + ";font-style:italic;font-size:20px;line-height:1.4;color:#fff}",
+    ".fcdq .tx{font-size:15.5px;color:#cfe1ee;line-height:1.65}",
+    ".fcdq .tx+.tx{margin-top:10px}",
+    ".fcdq .ph{position:relative;padding:0 0 20px 24px;border-left:2px solid rgba(53,194,255,.3);margin-left:7px}",
     ".fcdq .ph:last-child{padding-bottom:0;border-left-color:transparent}",
-    ".fcdq .ph::before{content:'';position:absolute;left:-8px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--b);box-shadow:0 0 0 4px #0b1c2a}",
+    ".fcdq .ph::before{content:'';position:absolute;left:-8px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--b);box-shadow:0 0 0 4px var(--card)}",
     ".fcdq .ph small{display:block;font-size:11px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:var(--b)}",
-    ".fcdq .ph h3{font-size:22px;line-height:1.15;color:#fff;margin:2px 0 8px}",
-    ".fcdq .ph ul{list-style:none;display:flex;flex-direction:column;gap:7px}",
-    ".fcdq .ph li{position:relative;padding-left:18px;font-size:14.5px;color:#cfe1ee;line-height:1.5}",
-    ".fcdq .ph li::before{content:'→';position:absolute;left:0;color:var(--b);font-weight:900}",
+    ".fcdq .ph h3{font-size:23px;line-height:1.15;color:#fff;margin:2px 0 8px}",
+    ".fcdq .ph ul,.fcdq .lst{list-style:none;display:flex;flex-direction:column;gap:8px}",
+    ".fcdq .ph li,.fcdq .lst li{position:relative;padding-left:20px;font-size:15px;color:#cfe1ee;line-height:1.55}",
+    ".fcdq .ph li::before,.fcdq .lst li::before{content:'→';position:absolute;left:0;color:var(--b);font-weight:900}",
+    ".fcdq .lst.ck li::before{content:'✓';color:#8fe6b0}",
     ".fcdq .today{border-color:rgba(53,194,255,.5);background:linear-gradient(180deg,rgba(53,194,255,.14),rgba(53,194,255,.04))}",
-    ".fcdq .today p{font-size:15.5px;color:#fff;line-height:1.55}",
-    ".fcdq .tx{font-size:15px;color:#cfe1ee;line-height:1.6}",
-    ".fcdq .cta{margin-top:18px;text-align:center}",
-    ".fcdq .cta h3{font-size:clamp(25px,6.8vw,30px);line-height:1.12;color:#fff;margin-bottom:8px;text-wrap:balance}",
-    ".fcdq .cta p{font-size:14.5px;color:#cfe1ee;margin-bottom:16px}",
-    ".fcdq .div{display:flex;align-items:center;gap:12px;margin:34px 0 0;color:var(--mu2);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}",
+    ".fcdq .today p{font-size:16px;color:#fff;line-height:1.6}",
+    ".fcdq .cta{text-align:center}",
+    ".fcdq .cta h3{font-size:clamp(26px,7vw,32px);line-height:1.12;color:#fff;margin-bottom:8px;text-wrap:balance}",
+    ".fcdq .cta p{font-size:15px;color:#cfe1ee;margin-bottom:16px}",
+    ".fcdq .div{display:flex;align-items:center;gap:12px;margin:36px 0 0;color:var(--mu2);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}",
     ".fcdq .div::before,.fcdq .div::after{content:'';flex:1;height:1px;background:var(--ln)}",
     "@media (prefers-reduced-motion:reduce){.fcdq *{animation:none!important;transition:none!important}}"
   ].join("\n");
@@ -347,120 +435,131 @@
   }
 
   /* ── Piezas de interfaz ────────────────────────────────────────────────── */
-  function barras(s, peor) {
-    return '<div class="bars">' + AREAS.map(function (x) {
-      var v = s[x.k];
-      var cls = v < 40 ? " lo" : v < 60 ? " mid" : "";
-      return '<div class="bar' + cls + '"><div class="t"><span>' + x.n + (x.k === peor ? " · tu mayor freno" : "") + '</span><b>' + v + '%</b></div><div class="tr"><i style="width:' + v + '%"></i></div></div>';
-    }).join("") + "</div>";
+  function ring(p) { return '<div class="ring" style="--p:' + p + '"><span>' + p + "<small>de 100</small></span></div>"; }
+
+  function areasHTML(s, peor) {
+    return AREAS.map(function (x) {
+      var v = s[x.k], e = etiqueta(v, x.k === peor);
+      return '<div class="ar' + (x.k === peor ? " bad" : "") + '"><span>' + x.n + '</span><span class="v"><b>' + v + '</b>/100 <span class="tag ' + e[0] + '">' + e[1] + "</span></span></div>";
+    }).join("");
   }
 
-  function ring(p) { return '<div class="ring" style="--p:' + p + '"><span>' + p + '<small>de 100</small></span></div>'; }
+  function mockups() {
+    var filas = [["Alimentación", 64, "t-ok"], ["Entrenamiento", 18, "t-fr"], ["Hormonas y ciclo", 41, "t-mej"], ["Energía", 36, "t-mej"], ["Constancia", 47, "t-mej"]];
+    var c = '<div class="mc c"><div class="dots"><i></i><i></i><i></i>&nbsp;Envejecimiento Revertido · Diagnóstico</div><h4>Tu diagnóstico</h4>' +
+      '<div class="sc">' + ring(38) + "<p>Áreas analizadas <b>5</b><br>Tu mayor freno <b>Entrenamiento</b><br>Plan <b>12 semanas</b></p></div>" +
+      '<p class="k">Tus áreas</p>' + filas.map(function (f) {
+        var lbl = { "t-ok": "Sólido", "t-mej": "Mejorar", "t-fr": "Tu freno" }[f[2]];
+        return '<div class="row' + (f[2] === "t-fr" ? " bad" : "") + '"><span>' + f[0] + "</span><span>" + f[1] + '/100 <span class="tag ' + f[2] + '">' + lbl + "</span></span></div>";
+      }).join("") + '<div class="nx"><span>Siguiente · Tu plan de 12 semanas</span><span>→</span></div></div>';
+    var l = '<div class="mc l" aria-hidden="true"><div class="dots"><i></i><i></i><i></i></div><h4>Tu mayor freno</h4><p class="k">Síntomas detectados</p>' +
+      '<div class="li"><i></i>Flacidez en brazos</div><div class="li"><i></i>Bajón después de comer</div><div class="li"><i></i>Tripa hinchada</div>' +
+      '<p class="k" style="margin-top:10px">Causa raíz</p><div class="li y"><i></i>Sin fuerza</div><div class="li y"><i></i>Poca proteína</div></div>';
+    var r = '<div class="mc r" aria-hidden="true"><div class="dots"><i></i><i></i><i></i></div><h4>Tu plan de 12 semanas</h4><p class="k">Semanas 1 y 2</p>' +
+      '<div class="li g"><i></i>Proteína en cada comida</div><div class="li g"><i></i>Desinflamar</div><p class="k" style="margin-top:10px">Semanas 3 a 6</p>' +
+      '<div class="li g"><i></i>Fuerza 3 días</div><div class="li g"><i></i>Progresión semanal</div><p class="k" style="margin-top:10px">Semanas 7 a 12</p><div class="li g"><i></i>Esculpir</div></div>';
+    return '<div class="mk" aria-hidden="true">' + l + r + c + "</div>";
+  }
 
   /* ── QUIZ ──────────────────────────────────────────────────────────────── */
   function montarQuiz(root) {
-    var st = { paso: "hero", a: {}, n: "", meta: "" };
-    try { var g = JSON.parse(ss(true, PROGRESO) || "null"); if (g && g.a) st = g; } catch (e) {}
+    var st = { paso: 0, a: {}, t: {} };
+    try { var g = JSON.parse(ss(true, PROGRESO) || "null"); if (g && g.a && g.t) st = g; } catch (e) {}
     if (st.paso === "analizando") st.paso = "adelanto";
-    var analisisTimer = null;
+    var timer = null, rotTimer = null;
 
     function salvar() { ss(false, PROGRESO, JSON.stringify(st)); }
-    function datos() { return { v: 1, n: st.n, a: st.a, o: st.meta, t: Date.now() }; }
+    function datos() {
+      var t = {};
+      Object.keys(st.t).forEach(function (k) { t[k] = String(st.t[k] || "").trim().slice(0, 220); });
+      return { v: 2, a: st.a, t: t, ts: Date.now() };
+    }
 
-    function ir(paso, enfocar) {
+    function ir(paso) {
       st.paso = paso;
       salvar();
       pintar();
       var r = root.getBoundingClientRect();
-      if (r.top < 0 || r.top > window.innerHeight * 0.4) root.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (enfocar !== false) {
-        var h = root.querySelector("[data-focus]");
-        if (h) try { h.focus({ preventScroll: true }); } catch (e) {}
-      }
+      if (r.top < -10 || r.top > window.innerHeight * 0.4) root.scrollIntoView({ behavior: "smooth", block: "start" });
+      var h = root.querySelector("[data-focus]");
+      if (h) try { h.focus({ preventScroll: true }); } catch (e) {}
     }
 
-    function heroHTML() {
-      var mock = '<div class="mock" aria-hidden="true"><div class="in"><div class="hd"><b>Tu diagnóstico personal</b><span class="sc">58%</span></div>' +
-        barras({ ali: 46, ent: 31, hor: 63, ene: 38, men: 55 }, "") +
-        '<div class="ln" style="width:92%;margin-top:18px"></div><div class="ln" style="width:74%"></div><div class="ln" style="width:83%"></div></div>' +
-        '<span class="lock">🔒 Tu resultado aparecerá aquí</span></div>';
+    function opcionesHTML(p, hero) {
+      return '<div class="opts" role="group" aria-label="Respuestas">' + p.o.map(function (t, j) {
+        var sel = st.a[p.id] === L[j];
+        return '<button type="button" class="opt' + (sel ? " sel" : "") + '" data-op="' + L[j] + '" aria-pressed="' + sel + '">' +
+          (hero ? esc(t) : '<span class="lt" aria-hidden="true">' + L[j] + '</span><span class="tx">' + esc(t) + '</span><span class="rd" aria-hidden="true"></span>') + "</button>";
+      }).join("") + "</div>";
+    }
+
+    function pillsHTML(i) {
+      return '<div class="pills" aria-hidden="true">' + Q.map(function (_, j) { return '<i class="' + (j < i ? "on" : j === i ? "now" : "") + '"></i>'; }).join("") + "</div>";
+    }
+
+    function portadaHTML() {
+      var p = Q[0];
       return '<section class="hero">' +
-        '<p class="eb">Diagnóstico gratuito</p>' +
-        '<h1 class="serif">Descubre por qué tu cuerpo <span class="pill">no responde</span> y recibe tu plan para volver a verte bien</h1>' +
-        '<p class="sub">Responde unas preguntas rápidas sobre tu alimentación, entrenamiento, ciclo, energía y mentalidad, y te doy tu plan paso a paso.</p>' +
-        mock +
-        '<button type="button" class="btn" data-act="empezar">Obtener mi plan gratis →</button>' +
-        '<div class="meta"><span><i>✓</i> Unos 2 minutos</span><span><i>✓</i> Sin llamada</span><span><i>✓</i> 100% gratis</span></div>' +
-        '<p class="gift">🎁 Y de regalo, todos mis recursos gratuitos para mejorar tu salud y cómo te ves</p>' +
-        '<div class="proof"><span class="av" aria-hidden="true"><img src="' + BASE + '/avatar-1.jpg?v=2" alt=""><img src="' + BASE + '/avatar-2.jpg?v=2" alt=""><img src="' + BASE + '/avatar-3.jpg?v=2" alt=""></span><span><b>+1.000 mujeres</b> lo han conseguido</span></div>' +
-        '<div class="areas" aria-label="Áreas que analiza el diagnóstico">' + AREAS.map(function (x) { return "<span>" + x.n + "</span>"; }).join("") + "</div>" +
+        '<p class="chip"><b>+1.000 mujeres</b> han cambiado su cuerpo con este método · <em>sin dietas extremas</em></p>' +
+        '<h1 class="serif">Recibe tu <span class="rot" aria-hidden="true"><span class="pill on">plan de entreno</span><span class="pill">plan de alimentación</span><span class="pill">plan hormonal</span><span class="pill">plan de energía</span></span><span class="sr">plan</span> personalizado en 2 minutos.</h1>' +
+        mockups() +
+        '<div class="qc"><p class="eb">Pregunta 1 de ' + Q.length + " · Empieza aquí</p>" +
+        '<h2 class="q" style="margin-top:12px" tabindex="-1">' + esc(p.q) + "</h2>" + opcionesHTML(p, true) + "</div>" +
+        '<div class="ticks"><span><i>✓</i> Resultado al instante</span><span><i>✓</i> 100% gratis</span><span><i>✓</i> Sin llamada</span></div>' +
+        '<p class="intro">' + Q.length + " preguntas sobre tu cuerpo, tus hábitos y tu objetivo, unos 2 minutos. Te digo qué te está frenando, qué hacer y tu plan para las próximas 12 semanas.</p>" +
+        '<p class="basado">Basado en Envejecimiento Revertido, el método que aplico con mis clientas 1:1.</p>' +
         "</section>";
     }
 
     function preguntaHTML(i) {
       var p = Q[i];
-      var n = nombreCorto(st.n);
-      var texto = p.q.replace("{n}, ", n ? n + ", " : "").replace("{n}", n);
-      if (!n) texto = texto.charAt(0).toUpperCase() + texto.slice(1);
-      var pills = Q.map(function (_, j) { return '<i class="' + (j < i ? "on" : j === i ? "now" : "") + '"></i>'; }).join("");
-      var top = '<div class="qtop">' + (i > 0 ? '<button type="button" class="back" data-act="atras">← Atrás</button>' : "<span></span>") +
-        '<span class="count">' + (i + 1) + " de " + Q.length + "</span></div>" +
-        '<div class="pills" role="progressbar" aria-valuemin="1" aria-valuemax="' + Q.length + '" aria-valuenow="' + (i + 1) + '" aria-label="Progreso del diagnóstico">' + pills + "</div>";
       var cuerpo;
-      if (p.tipo === "nombre") {
-        cuerpo = '<label class="sr" for="fcdq-n">Tu nombre</label><input id="fcdq-n" class="fld" type="text" autocomplete="given-name" maxlength="40" placeholder="Tu nombre" value="' + esc(st.n) + '">' +
-          '<button type="button" class="btn" data-act="nombre"' + (st.n.trim() ? "" : " disabled") + ">Empezar →</button>";
-      } else if (p.tipo === "abierta") {
-        cuerpo = '<label class="sr" for="fcdq-m">Tu respuesta</label><textarea id="fcdq-m" class="fld" maxlength="220" placeholder="' + esc(p.ph) + '">' + esc(st.meta) + "</textarea>" +
-          '<button type="button" class="btn" data-act="meta">Siguiente →</button>' +
-          '<button type="button" class="lnk" data-act="saltar">Prefiero saltar esta pregunta</button>';
-      } else {
-        cuerpo = '<div class="opts" role="group" aria-label="Opciones">' + p.o.map(function (t, j) {
-          var sel = st.a[p.id] === L[j];
-          return '<button type="button" class="opt' + (sel ? " sel" : "") + '" data-op="' + L[j] + '" aria-pressed="' + sel + '"><span class="lt" aria-hidden="true">' + L[j] + "</span><span>" + esc(t) + "</span></button>";
-        }).join("") + "</div>";
-      }
-      return '<section class="qz">' + top + '<h2 class="q serif" tabindex="-1" data-focus>' + esc(texto) + "</h2>" + (p.sub ? '<p class="qs">' + esc(p.sub) + "</p>" : "") + cuerpo + "</section>";
+      if (p.tipo === "abierta") {
+        var v = st.t[p.id] || "";
+        cuerpo = '<label class="sr" for="fcdq-t">Tu respuesta</label><textarea id="fcdq-t" maxlength="' + MAX_TXT + '" placeholder="' + esc(p.ph) + '">' + esc(v) + "</textarea>" +
+          '<p class="cc"><b>' + v.length + "</b>/" + MAX_TXT + "</p>" +
+          '<button type="button" class="btn" data-act="texto"' + (v.trim().length >= 2 ? "" : " disabled") + '>Continuar <span aria-hidden="true">→</span></button>';
+      } else cuerpo = opcionesHTML(p, false);
+      return '<section class="qz"><div class="qc">' +
+        '<div class="hd"><button type="button" class="back" data-act="atras">← Atrás</button><span class="cnt">Pregunta <b>' + (i + 1) + "</b> de " + Q.length + "</span></div>" +
+        pillsHTML(i) +
+        '<p class="sec">' + esc(p.sec) + "</p>" +
+        '<h2 class="q" tabindex="-1" data-focus>' + esc(p.q) + "</h2>" +
+        (p.sub ? '<p class="qs">' + esc(p.sub) + "</p>" : "") +
+        cuerpo + "</div></section>";
     }
 
     function analizandoHTML() {
-      var items = ["Alimentación", "Entrenamiento", "Hormonas y ciclo", "Energía y descanso", "Mentalidad"];
       return '<section class="an" aria-live="polite"><div class="spin" aria-hidden="true"></div><h2 class="serif" tabindex="-1" data-focus>Analizando tus respuestas…</h2>' +
-        '<ul class="chk">' + items.map(function (t) { return "<li><i aria-hidden=\"true\">✓</i>" + t + "</li>"; }).join("") + "</ul></section>";
+        '<ul class="chk">' + AREAS.map(function (x) { return '<li><i aria-hidden="true">✓</i>' + x.n + "</li>"; }).join("") + "</ul></section>";
     }
 
     function adelantoHTML() {
       var p = construir(datos());
-      var n = nombreCorto(st.n);
-      var pasos = p.fases.map(function (f, i) { return '<div class="step"><span class="n">' + (i + 1) + '</span><div><small>' + f.k + "</small><b>" + esc(f.t) + "</b><span>" + esc(f.l[0]) + "</span></div></div>"; }).join("");
-      return '<section class="res">' +
-        '<p class="eb">Tu adelanto</p>' +
-        '<h2 class="ttl serif" tabindex="-1" data-focus>' + (n ? esc(n) + ", ya " : "Ya ") + "sé qué te está frenando</h2>" +
-        '<div class="card"><div class="score">' + ring(p.media) + "<p>Tu puntuación global es <b>" + p.media + " de 100</b>. Tu mayor freno ahora mismo es <b>" + esc(p.areaNombre.toLowerCase()) + "</b>.</p></div>" + barras(p.s, p.area) + "</div>" +
-        '<div class="card pain"><p class="kk">Lo que te está pasando</p><h3 class="serif">' + esc(p.freno[0]) + "</h3><p>" + esc(p.freno[1]) + "</p></div>" +
-        '<div class="card steps lockd"><p class="kk">Tu plan de 12 semanas</p>' + pasos + '<span class="lock">🔒 Desbloquea tu plan completo</span></div>' +
-        '<div style="margin-top:20px"><button type="button" class="btn" data-act="desbloquear">Ver mi plan completo →</button></div>' +
-        '<p class="fine">Gratis · Sin llamada · Lo ves al instante</p>' +
-        "</section>";
+      return '<section class="qz res"><div class="qc">' +
+        '<div class="hd"><button type="button" class="back" data-act="atras">← Atrás</button><span class="cnt">Tu adelanto</span></div>' + pillsHTML(Q.length) +
+        '<div class="cost"><p class="kl" tabindex="-1" data-focus>Lo que ' + esc(p.cuesta) + " te está costando</p><p>" + esc(p.freno) + "</p></div>" +
+        '<div class="rec"><p class="kl g">Cómo recuperarlo</p><h3 class="serif">3 pasos para mejorar ' + esc(p.cuesta) + "</h3>" +
+        p.pasos.map(function (s, i) { return '<div class="stp lk"><span class="n">' + (i + 1) + "</span><div><b>" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div></div>"; }).join("") + "</div>" +
+        '<button type="button" class="btn" data-act="desbloquear">Desbloquea tu plan completo <span aria-hidden="true">→</span></button>' +
+        '<p class="fine">Dejas tus datos en el paso siguiente y ves tu plan al instante. 100% gratis.</p>' +
+        "</div></section>";
     }
 
     function formularioHTML() {
-      var n = nombreCorto(st.n);
-      return '<section class="cap">' +
-        '<p class="eb">Último paso</p>' +
-        '<h2 class="serif" tabindex="-1" data-focus>' + (n ? esc(n) + ", ¿a" : "¿A") + " dónde te envío tu plan?</h2>" +
-        '<p class="sub">Déjame tus datos y lo verás al instante en la siguiente página.</p>' +
-        '<ul class="inc"><li>Tu plan personalizado de 12 semanas</li><li>Tu primer paso para empezar hoy</li><li>Todos mis recursos gratuitos</li></ul>' +
+      return '<section class="qz"><div class="qc">' +
+        '<div class="hd"><button type="button" class="back" data-act="atras">← Atrás</button><span class="cnt">Último paso</span></div>' + pillsHTML(Q.length) +
+        '<div class="send" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#35C2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></div>' +
+        '<h2 class="q" tabindex="-1" data-focus>¿A dónde te envío tu plan personalizado?</h2>' +
+        '<p class="qs">Tu diagnóstico ya está listo. Déjame tus datos y te muestro tu mayor freno, tu plan de 12 semanas y tu primer paso.</p>' +
         '<div class="frm"><div class="ld" aria-hidden="true"><div class="spin" style="margin:0"></div></div>' +
         '<iframe src="https://links.fitcondamian.com/widget/form/' + FORM_ID + '" id="inline-' + FORM_ID + '" data-layout="{\'id\':\'INLINE\'}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="01 - Formulario LM Youtube" data-height="792" data-layout-iframe-id="inline-' + FORM_ID + '" data-form-id="' + FORM_ID + '" title="01 - Formulario LM Youtube"></iframe></div>' +
-        '<p class="fine">Sin spam · Tus datos están seguros</p>' +
-        '<button type="button" class="lnk" data-act="volver-adelanto">← Volver a mi adelanto</button>' +
-        "</section>";
+        '<div class="ticks" style="margin-top:14px"><span><i>🔒</i> Tus datos están protegidos</span><span><i>✓</i> Sin spam</span><span><i>✓</i> 100% gratis</span></div>' +
+        "</div></section>";
     }
 
     function cargarFormEmbed() {
-      var fr = root.querySelector(".frm iframe");
-      var ld = root.querySelector(".frm .ld");
+      var fr = root.querySelector(".frm iframe"), ld = root.querySelector(".frm .ld");
       if (fr && ld) fr.addEventListener("load", function () { ld.style.display = "none"; });
       var s = document.createElement("script");
       s.src = "https://links.fitcondamian.com/js/form_embed.js";
@@ -468,29 +567,38 @@
       document.body.appendChild(s);
     }
 
+    function rotar() {
+      var items = root.querySelectorAll(".rot > span");
+      if (items.length < 2) return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var k = 0;
+      rotTimer = setInterval(function () {
+        if (!document.body.contains(items[0])) { clearInterval(rotTimer); return; }
+        items[k].classList.remove("on"); k = (k + 1) % items.length; items[k].classList.add("on");
+      }, 2200);
+    }
+
     function pintar() {
-      if (analisisTimer) { clearTimeout(analisisTimer); analisisTimer = null; }
+      if (timer) { clearTimeout(timer); timer = null; }
+      if (rotTimer) { clearInterval(rotTimer); rotTimer = null; }
       var p = st.paso;
-      if (p === "hero") root.innerHTML = heroHTML();
+      if (p === 0) { root.innerHTML = portadaHTML(); rotar(); }
       else if (typeof p === "number") root.innerHTML = preguntaHTML(p);
       else if (p === "analizando") {
         root.innerHTML = analizandoHTML();
         var lis = root.querySelectorAll(".chk li"), k = 0;
         (function tick() {
-          if (k < lis.length) { lis[k].className = "ok"; k++; analisisTimer = setTimeout(tick, 520); }
-          else analisisTimer = setTimeout(function () { ir("adelanto"); }, 450);
+          if (k < lis.length) { lis[k].className = "ok"; k++; timer = setTimeout(tick, 520); }
+          else timer = setTimeout(function () { ir("adelanto"); }, 450);
         })();
       }
       else if (p === "adelanto") root.innerHTML = adelantoHTML();
       else if (p === "form") { root.innerHTML = formularioHTML(); cargarFormEmbed(); }
-      var inp = root.querySelector("#fcdq-n");
-      if (inp) {
-        var b = root.querySelector('[data-act="nombre"]');
-        inp.addEventListener("input", function () { st.n = inp.value; b.disabled = !inp.value.trim(); });
-        inp.addEventListener("keydown", function (e) { if (e.key === "Enter" && inp.value.trim()) { e.preventDefault(); siguiente(); } });
+      var ta = root.querySelector("#fcdq-t");
+      if (ta) {
+        var id = Q[st.paso].id, b = root.querySelector('[data-act="texto"]'), cc = root.querySelector(".cc b");
+        ta.addEventListener("input", function () { st.t[id] = ta.value; cc.textContent = ta.value.length; b.disabled = ta.value.trim().length < 2; salvar(); });
       }
-      var ta = root.querySelector("#fcdq-m");
-      if (ta) ta.addEventListener("input", function () { st.meta = ta.value; });
     }
 
     function siguiente() {
@@ -509,20 +617,21 @@
         var p = Q[st.paso];
         st.a[p.id] = op.getAttribute("data-op");
         root.querySelectorAll(".opt").forEach(function (b) { var on = b === op; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", String(on)); });
-        guardar(datos());
-        setTimeout(siguiente, 220);
+        if (st.paso === 0) track("quiz_inicio");
+        salvar();
+        setTimeout(siguiente, 240);
         return;
       }
       var act = e.target.closest("[data-act]");
       if (!act) return;
       var a = act.getAttribute("data-act");
-      if (a === "empezar") { track("quiz_inicio"); ir(0); }
-      else if (a === "atras") { if (typeof st.paso === "number" && st.paso > 0) ir(st.paso - 1); }
-      else if (a === "nombre") { st.n = (root.querySelector("#fcdq-n") || {}).value || st.n; if (st.n.trim()) siguiente(); }
-      else if (a === "meta") { var t = root.querySelector("#fcdq-m"); st.meta = t ? t.value.trim() : st.meta; siguiente(); }
-      else if (a === "saltar") { st.meta = ""; siguiente(); }
+      if (a === "atras") {
+        if (st.paso === "form") ir("adelanto");
+        else if (st.paso === "adelanto") ir(Q.length - 1);
+        else if (typeof st.paso === "number" && st.paso > 0) ir(st.paso - 1);
+      }
+      else if (a === "texto") { var t = root.querySelector("#fcdq-t"); if (t && t.value.trim().length >= 2) { st.t[Q[st.paso].id] = t.value.trim(); siguiente(); } }
       else if (a === "desbloquear") { guardar(datos()); track("registro"); ir("form"); }
-      else if (a === "volver-adelanto") ir("adelanto");
     });
 
     pintar();
@@ -531,23 +640,25 @@
   /* ── PLAN (página de acceso) ───────────────────────────────────────────── */
   function montarPlan(root) {
     var d = cargar();
-    if (!d) { root.innerHTML = ""; root.style.display = "none"; return; }
-    var p = construir(d);
-    var n = nombreCorto(d.n);
+    if (!d || !d.t) { root.innerHTML = ""; root.style.display = "none"; return; }
+    var p = construir(d), t = d.t;
     var fasesHTML = p.fases.map(function (f) {
       return '<div class="ph"><small>' + f.k + '</small><h3 class="serif">' + esc(f.t) + "</h3><ul>" + f.l.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
     }).join("");
-    var invertir = d.a && d.a.invertir;
-    var ctaTxt = invertir === "c"
-      ? "Si en algún momento quieres ir más rápido, en una llamada gratuita de 30 minutos revisamos tu plan y te digo cómo aplicarlo a tu caso."
+    var tibia = d.a && (d.a.prioridad === "c" || d.a.prioridad === "d");
+    var ctaTxt = tibia
+      ? "Cuando quieras ir en serio, en una llamada gratuita de 30 minutos revisamos tu plan y te digo cómo aplicarlo a tu caso."
       : "En una llamada gratuita de 30 minutos revisamos tu plan juntos y te digo exactamente cómo aplicarlo a tu cuerpo y a tu día a día.";
-    root.innerHTML = '<section class="res" style="padding-top:0">' +
+    var probadoHTML = vacio(t.probado) ? "" : '<p class="tx">Me dijiste que has probado: <b style="color:#fff">«' + esc(t.probado) + "»</b>. Este plan no va por ahí.</p>";
+    root.innerHTML = '<section class="res">' +
       '<div class="ctr"><span class="ok">✓ Plan desbloqueado</span></div>' +
-      '<h1 class="ttl serif">' + (n ? esc(n) + ", este es tu plan" : "Este es tu plan") + ' <span class="pill">personalizado</span></h1>' +
-      '<div class="card"><div class="score">' + ring(p.media) + "<p>Tu puntuación global es <b>" + p.media + " de 100</b>. Tu mayor freno es <b>" + esc(p.areaNombre.toLowerCase()) + "</b>: por ahí empieza tu plan.</p></div>" + barras(p.s, p.area) + "</div>" +
-      (d.o ? '<div class="card"><p class="kk">Tu objetivo a 90 días</p><p class="goal">«' + esc(d.o) + "»</p></div>" : "") +
-      '<div class="card pain"><p class="kk">Lo que te está pasando</p><h3 class="serif">' + esc(p.freno[0]) + "</h3><p>" + esc(p.freno[1]) + "</p></div>" +
-      '<div class="card"><p class="kk">Por qué no te ha funcionado hasta ahora</p><p class="tx">' + esc(p.porque) + (p.edad ? " " + esc(p.edad) : "") + "</p></div>" +
+      '<h1 class="ttl serif">Este es tu plan <span class="pill">personalizado</span></h1>' +
+      '<div class="card"><p class="kk">Tu diagnóstico</p><div class="score">' + ring(p.media) + "<p>Tu puntuación global es <b>" + p.media + " de 100</b>. Tu mayor freno es <b>" + esc(p.areaNombre.toLowerCase()) + "</b>: por ahí empieza tu plan.</p></div>" + areasHTML(p.s, p.area) + "</div>" +
+      (vacio(t.situacion) ? "" : '<div class="card"><p class="kk">Tu punto de partida</p><p class="quote">«' + esc(t.situacion) + "»</p></div>") +
+      '<div class="cost"><p class="kl">Lo que ' + esc(p.cuesta) + " te está costando</p><p>" + esc(p.freno) + "</p></div>" +
+      '<div class="card"><p class="kl g">Cómo recuperarlo</p>' + p.pasos.map(function (s, i) { return '<div class="stp"><span class="n">' + (i + 1) + "</span><div><b>" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div></div>"; }).join("") + "</div>" +
+      '<div class="card"><p class="kk">Por qué no te ha funcionado hasta ahora</p><p class="tx">' + esc(p.porque) + "</p>" + probadoHTML + (p.edad ? '<p class="tx">' + esc(p.edad) + "</p>" : "") + "</div>" +
+      (p.respetos.length ? '<div class="card"><p class="kk">Respetando lo que no quieres hacer</p><ul class="lst ck">' + p.respetos.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" : "") +
       '<div class="card"><p class="kk">Tu plan de 12 semanas</p>' + fasesHTML + "</div>" +
       '<div class="card today"><p class="kk">Tu primer paso, hoy mismo</p><p>' + esc(p.hoy) + "</p></div>" +
       '<div class="card cta"><h3 class="serif">¿Quieres que te ayude a aplicarlo?</h3><p>' + ctaTxt + '</p><a class="btn" href="#agendar" data-agendar>📞 Revisar mi plan en una llamada gratis</a><p class="fine">30 minutos · 100% gratuito · sin compromiso</p></div>' +
@@ -555,9 +666,9 @@
       "</section>";
     var a = root.querySelector("[data-agendar]");
     if (a) a.addEventListener("click", function (e) {
-      var t = document.getElementById("agendar") || document.getElementById("fcd-agendar");
+      var tg = document.getElementById("agendar") || document.getElementById("fcd-agendar");
       track("plan_agendar");
-      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      if (tg) { e.preventDefault(); tg.scrollIntoView({ behavior: "smooth", block: "start" }); }
     });
     track("plan_visto", { freno: p.area });
   }
