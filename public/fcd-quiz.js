@@ -446,7 +446,7 @@
 
   function mockups() {
     var filas = [["Alimentación", 64, "t-ok"], ["Entrenamiento", 18, "t-fr"], ["Hormonas y ciclo", 41, "t-mej"], ["Energía", 36, "t-mej"], ["Constancia", 47, "t-mej"]];
-    var c = '<div class="mc c"><div class="dots"><i></i><i></i><i></i>&nbsp;Envejecimiento Revertido · Diagnóstico</div><h4>Tu diagnóstico</h4>' +
+    var c = '<div class="mc c"><div class="dots"><i></i><i></i><i></i>&nbsp;Método RHS · Diagnóstico</div><h4>Tu diagnóstico</h4>' +
       '<div class="sc">' + ring(38) + "<p>Áreas analizadas <b>5</b><br>Tu mayor freno <b>Entrenamiento</b><br>Plan <b>12 semanas</b></p></div>" +
       '<p class="k">Tus áreas</p>' + filas.map(function (f) {
         var lbl = { "t-ok": "Sólido", "t-mej": "Mejorar", "t-fr": "Tu freno" }[f[2]];
@@ -507,7 +507,7 @@
         '<h2 class="q" style="margin-top:12px" tabindex="-1">' + esc(p.q) + "</h2>" + opcionesHTML(p, true) + "</div>" +
         '<div class="ticks"><span><i>✓</i> Resultado al instante</span><span><i>✓</i> 100% gratis</span><span><i>✓</i> Sin llamada</span></div>' +
         '<p class="intro">' + Q.length + " preguntas sobre tu cuerpo, tus hábitos y tu objetivo, unos 2 minutos. Te digo qué te está frenando, qué hacer y tu plan para las próximas 12 semanas.</p>" +
-        '<p class="basado">Basado en Envejecimiento Revertido, el método que aplico con mis clientas 1:1.</p>' +
+        '<p class="basado">Basado en el Método RHS, lo que aplico con mis clientas 1:1.</p>' +
         "</section>";
     }
 

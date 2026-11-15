@@ -9,7 +9,7 @@ const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; yo
   { id: "04", titulo: "¿Estás Lista para Descubrir el Secreto de las Mujeres Jóvenes a los 40 Años?", lado: "derecha", youtube: "qZArQavUepk" },
 ];
 
-// Paletas: la oscura original y la de "Envejecimiento Revertido" (er).
+// Paletas: la oscura original y la de "Método RHS" (er).
 const PALETAS = {
   base: { acc: "#00AAFF", rgb: "0,170,255", card: "#111", line: "#1f1f1f", thumb: "#161616", fondo: "#0D0D0D", off: "#1b2b33", txt: "#E0E0E0", sobreAcc: "#fff" },
   er: { acc: "#35C2FF", rgb: "53,194,255", card: "#0c1d2a", line: "rgba(255,255,255,0.09)", thumb: "#0b1c29", fondo: "#081521", off: "#16303f", txt: "#eaf3fb", sobreAcc: "#04202b" },

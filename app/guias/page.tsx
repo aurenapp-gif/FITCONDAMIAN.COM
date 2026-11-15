@@ -4,7 +4,7 @@ import { GUIAS } from "../_data/guias";
 import "../_styles/er.css";
 
 export const metadata: Metadata = {
-  title: "Guías gratuitas · Envejecimiento Revertido",
+  title: "Guías gratuitas · Método RHS",
   description: "5 guías prácticas para mujeres en perimenopausia y menopausia: sueño, antojos, hinchazón, rodillas y fines de semana.",
 };
 
@@ -13,7 +13,7 @@ export default function GuiasPage() {
     <main className="er-page">
       <div className="er-band">Para mujeres en perimenopausia y menopausia</div>
       <header className="er-logo">
-        <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
+        <p aria-label="Método RHS"><span className="t">método</span><span className="b">RHS<i>.</i></span></p>
       </header>
 
       <div className="er-wrap" style={{ paddingTop: "30px", paddingBottom: "64px" }}>

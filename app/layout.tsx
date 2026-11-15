@@ -10,7 +10,7 @@ const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-// Tipografía de los logotipos ("fitcondamián" y "envejecimiento revertido.").
+// Tipografía de los logotipos ("fitcondamián" y "método RHS.").
 const sora = Sora({
   variable: "--font-sora",
   subsets: ["latin"],

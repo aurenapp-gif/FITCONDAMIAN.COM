@@ -25,7 +25,7 @@ export default function GuiaPage({ params }: { params: { slug: string } }) {
     <main className="er-page">
       <div className="er-band">Para mujeres en perimenopausia y menopausia</div>
       <header className="er-logo">
-        <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
+        <p aria-label="Método RHS"><span className="t">método</span><span className="b">RHS<i>.</i></span></p>
       </header>
 
       <div className="er-wrap gu" style={{ paddingTop: "26px", paddingBottom: "64px" }}>

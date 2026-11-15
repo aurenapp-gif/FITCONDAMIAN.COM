@@ -39,7 +39,7 @@ export default function AccesoRecursosClient() {
       )}
 
       <header className="er-logo">
-        <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
+        <p aria-label="Método RHS"><span className="t">método</span><span className="b">RHS<i>.</i></span></p>
       </header>
 
       <div className="er-wrap" style={{ paddingTop: "18px", paddingBottom: "64px" }}>
@@ -53,7 +53,7 @@ export default function AccesoRecursosClient() {
         <h1 className="er-h er-acc-h er-acc-long">Cómo volver a sentirte <span className="er-nw"><span className="er-pill">atractiva</span>,</span> ponerte de nuevo esa <span className="er-u">ropa que tanto te gustaba<svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" /></svg></span> y dejar de estar <span className="er-u">cansada todo el día<svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" /></svg></span>, con una metodología adaptada a los cambios hormonales de tu cuerpo</h1>
         <p className="er-acc-sub">Elimina la flacidez, los rollitos de la espalda y los dolores físicos que te genera el trabajo.</p>
         <div className="er-frame er-frame-must">
-          <iframe src={VSL_SRC} title="Vídeo Envejecimiento Revertido" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowFullScreen />
+          <iframe src={VSL_SRC} title="Vídeo Método RHS" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowFullScreen />
         </div>
 
         {/* 2 — AGENDAR LLAMADA */}

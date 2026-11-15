@@ -21,7 +21,7 @@ export default function GraciasPage() {
     <main className="er-page">
 
       <header className="er-logo">
-        <p aria-label="Envejecimiento Revertido"><span className="t">envejecimiento</span><span className="b">revertido<i>.</i></span></p>
+        <p aria-label="Método RHS"><span className="t">método</span><span className="b">RHS<i>.</i></span></p>
       </header>
 
       <div className="er-wrap" style={{ paddingTop: "26px", paddingBottom: "64px" }}>

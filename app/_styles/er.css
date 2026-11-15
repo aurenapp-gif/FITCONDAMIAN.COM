@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
-   Identidad "Envejecimiento Revertido" para /recursos y /acceso-recursos.
+   Identidad "Método RHS" para /recursos y /acceso-recursos.
    Todas las clases llevan el prefijo er- para no chocar con otros estilos:
    este mismo archivo se incrusta en los códigos de GoHighLevel
    (ghl-export/recursos.html y ghl-export/acceso-recursos.html).
@@ -37,7 +37,7 @@
   .er-band { font-size: 12.5px; letter-spacing: 1px; padding: 13px 16px; }
 }
 
-/* Logo — envejecimiento revertido. */
+/* Logo — método RHS. */
 .er-logo { text-align: center; padding: 24px 20px 0; }
 .er-logo p { display: inline-block; text-align: left; font-family: var(--font-sora), "Sora", sans-serif; font-size: 22px; line-height: 1; letter-spacing: -0.05em; color: #fff; }
 .er-logo span { display: block; }

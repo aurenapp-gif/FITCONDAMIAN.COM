@@ -32,7 +32,7 @@ export const RECURSOS: Recurso[] = [
     linkVideo: "https://youtu.be/pUwfONeAbuk",
     linkDoc: "https://docs.google.com/document/d/1SWwjWBsRMb1K4SEcLMGYE7ASWvjAkNXOhFFV_1u9qk8/edit?usp=sharing" },
   { id: "r05", n: "05", g: "er-g5",  cat: "Exclusivo", name: "Acceso VIP: Técnicas Filtradas",
-    hook: "Lo que solo ven las alumnas de mi programa privado Envejecimiento Revertido.",
+    hook: "Lo que solo ven las alumnas de mi programa privado, el Método RHS.",
     linkVideo: "#",
     linkDoc: "https://docs.google.com/document/d/1xv9LAmY7VfWKhhnN19oRk48FzuM0hssq1NvaXWUAQL4/edit?usp=sharing" },
   { id: "r06", n: "06", g: "er-g6",  cat: "Nutrición", name: "El Plato Anti-Menopausia",

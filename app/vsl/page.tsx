@@ -56,11 +56,11 @@ export default function VslPage() {
       {/* FRANJA — filtro de público objetivo (cian sólida, estilos en globals.css) */}
       <div className="fcd-band">Para mujeres en perimenopausia y menopausia</div>
 
-      {/* LOGO — Envejecimiento Revertido */}
+      {/* LOGO — Método RHS */}
       <header style={{ padding: "26px 24px 0", textAlign: "center" }}>
-        <p aria-label="Envejecimiento Revertido" style={{ display: "inline-block", margin: 0, textAlign: "left", fontFamily: "var(--font-sora), sans-serif", fontSize: "22px", lineHeight: 1, letterSpacing: "-0.05em", color: "#fff" }}>
-          <span style={{ display: "block", fontWeight: 300 }}>envejecimiento</span>
-          <span style={{ display: "block", fontWeight: 800, marginTop: "0.04em" }}>revertido<span style={{ color: "#35C2FF" }}>.</span></span>
+        <p aria-label="Método RHS" style={{ display: "inline-block", margin: 0, textAlign: "left", fontFamily: "var(--font-sora), sans-serif", fontSize: "22px", lineHeight: 1, letterSpacing: "-0.05em", color: "#fff" }}>
+          <span style={{ display: "block", fontWeight: 300 }}>método</span>
+          <span style={{ display: "block", fontWeight: 800, marginTop: "0.04em" }}>RHS<span style={{ color: "#35C2FF" }}>.</span></span>
         </p>
       </header>
 
