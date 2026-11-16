@@ -24,6 +24,7 @@
   var COOKIE = "fcd_plan";
   var PROGRESO = "fcd_quiz_progreso_v2";
   var MAX_TXT = 500;
+  var API = BASE + "/api/quiz-lead";
 
   /* ── Preguntas ─────────────────────────────────────────────────────────── */
   var Q = [
@@ -384,6 +385,22 @@
     ".fcdq .frm{position:relative;min-height:792px;margin-top:20px;border-radius:18px;overflow:hidden;background:#fff}",
     ".fcdq .frm iframe{width:100%;height:792px;border:0;display:block;position:relative}",
     ".fcdq .frm .ld{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0b1722}",
+    /* formulario propio */
+    ".fcdq .fp{margin-top:18px}",
+    ".fcdq .lb{display:block;font-size:15px;font-weight:800;color:#fff;margin:16px 0 8px}",
+    ".fcdq .in,.fcdq .fp select{display:block;width:100%;font:inherit;font-size:16.5px;color:#fff;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:16px 16px;min-height:56px}",
+    ".fcdq .in::placeholder{color:#6f8798}",
+    ".fcdq .in:focus,.fcdq .fp select:focus{border-color:var(--b);outline:none}",
+    ".fcdq .telw{display:flex;gap:8px}",
+    ".fcdq .telw select{flex:0 0 112px;width:112px;padding:0 10px;background-color:#0f2232;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,#9fb7c7 50%),linear-gradient(135deg,#9fb7c7 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat}",
+    ".fcdq .telw .in{flex:1;min-width:0}",
+    ".fcdq .hint{font-size:13px;color:var(--mu2);margin-top:7px}",
+    ".fcdq .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}",
+    ".fcdq .chkb{display:flex;gap:12px;align-items:flex-start;margin-top:20px;font-size:14px;line-height:1.5;color:#cfe1ee;cursor:pointer}",
+    ".fcdq .chkb input{flex:0 0 22px;width:22px;height:22px;margin:1px 0 0;accent-color:var(--b)}",
+    ".fcdq .chkb a{color:var(--b)}",
+    ".fcdq .err{margin-top:14px;padding:11px 14px;border-radius:12px;background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.45);color:#ffb3b3;font-size:14px;font-weight:600}",
+    ".fcdq .fp .btn{margin-top:18px}",
     /* barras y plan */
     ".fcdq .ring{position:relative;flex:0 0 84px;width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--b) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}",
     ".fcdq .ring span{width:68px;height:68px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:" + NUM + ";font-weight:800;font-size:24px;color:#fff;line-height:1}",
@@ -469,6 +486,11 @@
     var timer = null, rotTimer = null;
 
     function salvar() { ss(false, PROGRESO, JSON.stringify(st)); }
+    // ¿Está configurado el envío por correo? Si no, se usa el formulario de GoHighLevel.
+    var propio = null, esperandoForm = false;
+    fetch(API, { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) { propio = !!(j && j.ready); })
+      .catch(function () { propio = false; })
+      .then(function () { if (esperandoForm && st.paso === "form") pintar(); });
     function datos() {
       var t = {};
       Object.keys(st.t).forEach(function (k) { t[k] = String(st.t[k] || "").trim().slice(0, 220); });
@@ -546,16 +568,88 @@
         "</div></section>";
     }
 
-    function formularioHTML() {
+    var PREFIJOS = [["+34", "🇪🇸 +34"], ["+52", "🇲🇽 +52"], ["+54", "🇦🇷 +54"], ["+57", "🇨🇴 +57"], ["+56", "🇨🇱 +56"], ["+51", "🇵🇪 +51"], ["+593", "🇪🇨 +593"], ["+58", "🇻🇪 +58"], ["+598", "🇺🇾 +598"], ["+595", "🇵🇾 +595"], ["+591", "🇧🇴 +591"], ["+506", "🇨🇷 +506"], ["+507", "🇵🇦 +507"], ["+502", "🇬🇹 +502"], ["+503", "🇸🇻 +503"], ["+504", "🇭🇳 +504"], ["+505", "🇳🇮 +505"], ["+1", "🇺🇸 +1"], ["+1809", "🇩🇴 +1"], ["+351", "🇵🇹 +351"], ["+33", "🇫🇷 +33"], ["+39", "🇮🇹 +39"], ["+49", "🇩🇪 +49"], ["+44", "🇬🇧 +44"], ["+41", "🇨🇭 +41"]];
+
+    function formPropioHTML() {
+      return '<form class="fp" novalidate>' +
+        '<label class="lb" for="fcdq-nom">Nombre y apellido</label><input class="in" id="fcdq-nom" name="nombre" type="text" autocomplete="name" maxlength="80" placeholder="Tu nombre" required>' +
+        '<label class="lb" for="fcdq-em">Email</label><input class="in" id="fcdq-em" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" placeholder="tu@email.com" required>' +
+        '<label class="lb" for="fcdq-tel">WhatsApp</label><div class="telw"><select id="fcdq-pre" name="prefijo" aria-label="Prefijo del país">' + PREFIJOS.map(function (x) { return '<option value="' + x[0] + '">' + x[1] + "</option>"; }).join("") + '</select>' +
+        '<input class="in" id="fcdq-tel" name="telefono" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="20" placeholder="612 34 56 78" required></div>' +
+        '<p class="hint">Sin el prefijo: ya lo eliges a la izquierda.</p>' +
+        '<input class="hp" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+        '<label class="chkb"><input type="checkbox" name="acepto" required><span>Acepto la <a href="' + BASE + '/privacidad" target="_blank" rel="noopener">política de privacidad</a> y que me contactéis por WhatsApp o email para enviarme el plan.</span></label>' +
+        '<p class="err" role="alert" hidden></p>' +
+        '<button type="submit" class="btn">Ver mi plan <span aria-hidden="true">→</span></button>' +
+        "</form>";
+    }
+
+    function formGhlHTML() {
+      return '<div class="frm"><div class="ld" aria-hidden="true"><div class="spin" style="margin:0"></div></div>' +
+        '<iframe src="https://links.fitcondamian.com/widget/form/' + FORM_ID + '" id="inline-' + FORM_ID + '" data-layout="{\'id\':\'INLINE\'}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="01 - Formulario LM Youtube" data-height="792" data-layout-iframe-id="inline-' + FORM_ID + '" data-form-id="' + FORM_ID + '" title="01 - Formulario LM Youtube"></iframe></div>';
+    }
+
+    function formularioHTML(propio) {
       return '<section class="qz"><div class="qc">' +
         '<div class="hd"><button type="button" class="back" data-act="atras">← Atrás</button><span class="cnt">Último paso</span></div>' + pillsHTML(Q.length) +
         '<div class="send" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#35C2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></div>' +
         '<h2 class="q" tabindex="-1" data-focus>¿A dónde te envío tu plan personalizado?</h2>' +
         '<p class="qs">Tu diagnóstico ya está listo. Déjame tus datos y te muestro tu mayor freno, tu plan de 12 semanas y tu primer paso.</p>' +
-        '<div class="frm"><div class="ld" aria-hidden="true"><div class="spin" style="margin:0"></div></div>' +
-        '<iframe src="https://links.fitcondamian.com/widget/form/' + FORM_ID + '" id="inline-' + FORM_ID + '" data-layout="{\'id\':\'INLINE\'}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="01 - Formulario LM Youtube" data-height="792" data-layout-iframe-id="inline-' + FORM_ID + '" data-form-id="' + FORM_ID + '" title="01 - Formulario LM Youtube"></iframe></div>' +
+        (propio ? formPropioHTML() : formGhlHTML()) +
         '<div class="ticks" style="margin-top:14px"><span><i>🔒</i> Tus datos están protegidos</span><span><i>✓</i> Sin spam</span><span><i>✓</i> 100% gratis</span></div>' +
         "</div></section>";
+    }
+
+    function respuestasEtiquetadas() {
+      return Q.map(function (p) {
+        var a = p.tipo === "abierta" ? (st.t[p.id] || "") : (p.o[L.indexOf(st.a[p.id])] || "");
+        return { q: p.q, a: String(a).trim() };
+      });
+    }
+    function utm() {
+      var u = {};
+      try { new URLSearchParams(location.search).forEach(function (v, k) { if (/^utm_|^fbclid$|^gclid$/.test(k)) u[k] = v.slice(0, 200); }); } catch (e) {}
+      return u;
+    }
+
+    function activarFormPropio() {
+      var f = root.querySelector("form.fp");
+      if (!f) return;
+      var err = f.querySelector(".err"), btn = f.querySelector('button[type="submit"]');
+      function fallo(m, campo) { err.textContent = m; err.hidden = false; if (campo) try { campo.focus(); } catch (e) {} }
+      f.addEventListener("submit", function (e) {
+        e.preventDefault();
+        err.hidden = true;
+        var nom = f.nombre.value.trim(), em = f.email.value.trim(), tel = f.telefono.value.replace(/[^\d]/g, "");
+        if (tel.indexOf("00") === 0) tel = tel.slice(2);
+        var pre = f.prefijo.value === "+1809" ? "+1" : f.prefijo.value;
+        if (nom.length < 2) return fallo("Escribe tu nombre.", f.nombre);
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) return fallo("Revisa tu email: parece que no está bien escrito.", f.email);
+        if (tel.length < 6 || tel.length > 13) return fallo("Revisa tu número de WhatsApp (sin el prefijo del país).", f.telefono);
+        if (!f.acepto.checked) return fallo("Para enviarte el plan necesito que aceptes la política de privacidad.", f.acepto);
+        var p = construir(datos());
+        var cuerpo = {
+          nombre: nom, email: em, telefono: pre + tel, web: f.web.value,
+          respuestas: respuestasEtiquetadas(),
+          diagnostico: { media: p.media, freno: p.areaNombre, areas: AREAS.map(function (x) { return { n: x.n, v: p.s[x.k] }; }) },
+          pagina: location.href.split("#")[0].slice(0, 300), utm: utm()
+        };
+        btn.disabled = true; btn.innerHTML = "Enviando…";
+        fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, j: j }; }); })
+          .then(function (res) {
+            if (res.status === 503) { propio = false; pintar(); return; } // sin configurar: formulario de GoHighLevel
+            if (!res.j || !res.j.ok) throw new Error("envio");
+            var d = datos(); d.n = nom; guardar(d);
+            track("registro_enviado", { freno: p.area });
+            try { if (typeof window.fbq === "function") window.fbq("track", "Lead"); } catch (e2) {}
+            location.href = BASE + "/acceso-recursos";
+          })
+          .catch(function () {
+            btn.disabled = false; btn.innerHTML = 'Ver mi plan <span aria-hidden="true">→</span>';
+            fallo("No se ha podido enviar. Revisa tu conexión e inténtalo de nuevo.");
+          });
+      });
     }
 
     function cargarFormEmbed() {
@@ -593,7 +687,10 @@
         })();
       }
       else if (p === "adelanto") root.innerHTML = adelantoHTML();
-      else if (p === "form") { root.innerHTML = formularioHTML(); cargarFormEmbed(); }
+      else if (p === "form") {
+        if (propio === null) { esperandoForm = true; root.innerHTML = '<section class="an"><div class="spin" aria-hidden="true"></div></section>'; }
+        else { root.innerHTML = formularioHTML(propio); if (propio) activarFormPropio(); else cargarFormEmbed(); }
+      }
       var ta = root.querySelector("#fcdq-t");
       if (ta) {
         var id = Q[st.paso].id, b = root.querySelector('[data-act="texto"]'), cc = root.querySelector(".cc b");
@@ -642,6 +739,8 @@
     var d = cargar();
     if (!d || !d.t) { root.innerHTML = ""; root.style.display = "none"; return; }
     var p = construir(d), t = d.t;
+    var nom = String(d.n || "").trim().split(/\s+/)[0] || "";
+    if (nom) nom = nom.charAt(0).toUpperCase() + nom.slice(1).toLowerCase();
     var fasesHTML = p.fases.map(function (f) {
       return '<div class="ph"><small>' + f.k + '</small><h3 class="serif">' + esc(f.t) + "</h3><ul>" + f.l.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
     }).join("");
@@ -652,7 +751,7 @@
     var probadoHTML = vacio(t.probado) ? "" : '<p class="tx">Me dijiste que has probado: <b style="color:#fff">«' + esc(t.probado) + "»</b>. Este plan no va por ahí.</p>";
     root.innerHTML = '<section class="res">' +
       '<div class="ctr"><span class="ok">✓ Plan desbloqueado</span></div>' +
-      '<h1 class="ttl serif">Este es tu plan <span class="pill">personalizado</span></h1>' +
+      '<h1 class="ttl serif">' + (nom ? esc(nom) + ", este es tu plan" : "Este es tu plan") + ' <span class="pill">personalizado</span></h1>' +
       '<div class="card"><p class="kk">Tu diagnóstico</p><div class="score">' + ring(p.media) + "<p>Tu puntuación global es <b>" + p.media + " de 100</b>. Tu mayor freno es <b>" + esc(p.areaNombre.toLowerCase()) + "</b>: por ahí empieza tu plan.</p></div>" + areasHTML(p.s, p.area) + "</div>" +
       (vacio(t.situacion) ? "" : '<div class="card"><p class="kk">Tu punto de partida</p><p class="quote">«' + esc(t.situacion) + "»</p></div>") +
       '<div class="cost"><p class="kl">Lo que ' + esc(p.cuesta) + " te está costando</p><p>" + esc(p.freno) + "</p></div>" +
