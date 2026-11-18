@@ -11,8 +11,9 @@ import { NextResponse } from "next/server";
 //   GHL_WEBHOOK_URL  (opcional) webhook de entrada de un workflow de GoHighLevel:
 //                    si existe, también se le envía la lead para que salte la automatización.
 //
-// Mientras falten las obligatorias, GET devuelve { ready: false } y el quiz
-// sigue usando el formulario de GoHighLevel, así no se pierde ninguna lead.
+// Si falta la configuración o falla el envío, la lead queda registrada en los
+// logs de Vercel (Deployments → Logs, busca «quiz-lead») y la usuaria ve su
+// plan igualmente. GET devuelve { ready } para saber si el correo está activo.
 
 export const dynamic = "force-dynamic";
 
@@ -113,12 +114,19 @@ ${fila("Áreas", areas || "—")}${fila("Página", l.pagina || "—")}${utm ? fi
 
 export async function POST(req: Request) {
   const h = cors(req);
-  if (!listo()) return NextResponse.json({ ok: false, error: "no_configurado" }, { status: 503, headers: h });
   let body: unknown;
   try { body = await req.json(); } catch { return NextResponse.json({ ok: false, error: "json" }, { status: 400, headers: h }); }
   const l = validar(body);
   if (!l) return NextResponse.json({ ok: false, error: "datos" }, { status: 400, headers: h });
   if (l.web) return NextResponse.json({ ok: true }, { headers: h }); // bot: se ignora en silencio
+
+  // Copia de seguridad en los logs de Vercel por si el correo no llega.
+  const copia = () => console.warn("quiz-lead SIN CORREO", JSON.stringify({ nombre: l.nombre, email: l.email, telefono: l.telefono, freno: l.diagnostico?.freno, respuestas: l.respuestas, utm: l.utm }));
+
+  if (!listo()) {
+    copia();
+    return NextResponse.json({ ok: true, correo: false }, { headers: h });
+  }
 
   const { html, text } = correo(l);
   const r = await fetch("https://api.resend.com/emails", {
@@ -145,7 +153,8 @@ export async function POST(req: Request) {
 
   if (!r || !r.ok) {
     console.error("quiz-lead: fallo al enviar el correo", r?.status, r ? await r.text().catch(() => "") : "sin respuesta");
-    return NextResponse.json({ ok: false, error: "envio" }, { status: 502, headers: h });
+    copia();
+    return NextResponse.json({ ok: true, correo: false }, { headers: h });
   }
-  return NextResponse.json({ ok: true }, { headers: h });
+  return NextResponse.json({ ok: true, correo: true }, { headers: h });
 }

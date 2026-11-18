@@ -7,11 +7,11 @@
      <div data-fcd="plan"></div>   → plan personalizado (página de acceso)
      <script src="https://fitcondamian.com/fcd-quiz.js"></script>
 
-   La captura de datos es el formulario de GoHighLevel tal cual
-   (vmfyZr4yJIrYZYPSkuko): mismos campos, misma redirección, misma
-   automatización. Las respuestas del quiz NO se envían a GoHighLevel:
-   se guardan en una cookie de *.fitcondamian.com para pintar el plan en
-   la página a la que redirige el formulario.
+   La captura de datos es un formulario propio (nombre, email y WhatsApp):
+   se envía a /api/quiz-lead, que manda un correo con los datos y todas las
+   respuestas, y el plan aparece en la misma página, sin redirigir. Las
+   respuestas también se guardan en una cookie de *.fitcondamian.com para
+   que la página de acceso a recursos pueda mostrar el plan.
    ───────────────────────────────────────────────────────────────────────── */
 (function () {
   "use strict";
@@ -20,7 +20,6 @@
   var SCRIPT = document.currentScript;
   var BASE = "https://fitcondamian.com";
   try { if (SCRIPT && SCRIPT.src) BASE = new URL(SCRIPT.src, location.href).origin; } catch (e) {}
-  var FORM_ID = "vmfyZr4yJIrYZYPSkuko";
   var COOKIE = "fcd_plan";
   var PROGRESO = "fcd_quiz_progreso_v2";
   var MAX_TXT = 500;
@@ -382,9 +381,6 @@
     ".fcdq .res .btn{margin-top:20px}",
     /* formulario */
     ".fcdq .send{width:56px;height:56px;border-radius:16px;background:#04121c;border:1px solid rgba(53,194,255,.35);display:flex;align-items:center;justify-content:center;margin-bottom:16px}",
-    ".fcdq .frm{position:relative;min-height:792px;margin-top:20px;border-radius:18px;overflow:hidden;background:#fff}",
-    ".fcdq .frm iframe{width:100%;height:792px;border:0;display:block;position:relative}",
-    ".fcdq .frm .ld{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0b1722}",
     /* formulario propio */
     ".fcdq .fp{margin-top:18px}",
     ".fcdq .lb{display:block;font-size:15px;font-weight:800;color:#fff;margin:16px 0 8px}",
@@ -401,6 +397,12 @@
     ".fcdq .chkb a{color:var(--b)}",
     ".fcdq .err{margin-top:14px;padding:11px 14px;border-radius:12px;background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.45);color:#ffb3b3;font-size:14px;font-weight:600}",
     ".fcdq .fp .btn{margin-top:18px}",
+    ".fcdq .vsl{position:relative;aspect-ratio:16/9;margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#06121c;box-shadow:0 24px 70px rgba(0,0,0,.55)}",
+    ".fcdq .vsl iframe{position:absolute;inset:0;width:100%;height:100%;border:0}",
+    ".fcdq .agendar{margin-top:44px;scroll-margin-top:16px;text-align:center}",
+    ".fcdq .agendar h2{font-size:clamp(28px,7.6vw,36px);line-height:1.12;color:#fff;margin-top:8px}",
+    ".fcdq .cal{border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#fff}",
+    ".fcdq .cal iframe{width:100%;min-height:700px;border:0;display:block}",
     /* barras y plan */
     ".fcdq .ring{position:relative;flex:0 0 84px;width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--b) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}",
     ".fcdq .ring span{width:68px;height:68px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:" + NUM + ";font-weight:800;font-size:24px;color:#fff;line-height:1}",
@@ -486,11 +488,6 @@
     var timer = null, rotTimer = null;
 
     function salvar() { ss(false, PROGRESO, JSON.stringify(st)); }
-    // ¿Está configurado el envío por correo? Si no, se usa el formulario de GoHighLevel.
-    var propio = null, esperandoForm = false;
-    fetch(API, { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) { propio = !!(j && j.ready); })
-      .catch(function () { propio = false; })
-      .then(function () { if (esperandoForm && st.paso === "form") pintar(); });
     function datos() {
       var t = {};
       Object.keys(st.t).forEach(function (k) { t[k] = String(st.t[k] || "").trim().slice(0, 220); });
@@ -584,18 +581,13 @@
         "</form>";
     }
 
-    function formGhlHTML() {
-      return '<div class="frm"><div class="ld" aria-hidden="true"><div class="spin" style="margin:0"></div></div>' +
-        '<iframe src="https://links.fitcondamian.com/widget/form/' + FORM_ID + '" id="inline-' + FORM_ID + '" data-layout="{\'id\':\'INLINE\'}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="01 - Formulario LM Youtube" data-height="792" data-layout-iframe-id="inline-' + FORM_ID + '" data-form-id="' + FORM_ID + '" title="01 - Formulario LM Youtube"></iframe></div>';
-    }
-
-    function formularioHTML(propio) {
+    function formularioHTML() {
       return '<section class="qz"><div class="qc">' +
         '<div class="hd"><button type="button" class="back" data-act="atras">← Atrás</button><span class="cnt">Último paso</span></div>' + pillsHTML(Q.length) +
         '<div class="send" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#35C2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></div>' +
         '<h2 class="q" tabindex="-1" data-focus>¿A dónde te envío tu plan personalizado?</h2>' +
         '<p class="qs">Tu diagnóstico ya está listo. Déjame tus datos y te muestro tu mayor freno, tu plan de 12 semanas y tu primer paso.</p>' +
-        (propio ? formPropioHTML() : formGhlHTML()) +
+        formPropioHTML() +
         '<div class="ticks" style="margin-top:14px"><span><i>🔒</i> Tus datos están protegidos</span><span><i>✓</i> Sin spam</span><span><i>✓</i> 100% gratis</span></div>' +
         "</div></section>";
     }
@@ -638,27 +630,18 @@
         fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) })
           .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, j: j }; }); })
           .then(function (res) {
-            if (res.status === 503) { propio = false; pintar(); return; } // sin configurar: formulario de GoHighLevel
+            if (res.status === 400) { var e400 = new Error("datos"); e400.datos = true; throw e400; }
             if (!res.j || !res.j.ok) throw new Error("envio");
             var d = datos(); d.n = nom; guardar(d);
             track("registro_enviado", { freno: p.area });
             try { if (typeof window.fbq === "function") window.fbq("track", "Lead"); } catch (e2) {}
-            location.href = BASE + "/acceso-recursos";
+            ir("plan");
           })
-          .catch(function () {
+          .catch(function (er) {
             btn.disabled = false; btn.innerHTML = 'Ver mi plan <span aria-hidden="true">→</span>';
-            fallo("No se ha podido enviar. Revisa tu conexión e inténtalo de nuevo.");
+            fallo(er && er.datos ? "Revisa tus datos: el email o el WhatsApp no parecen correctos." : "No se ha podido enviar. Revisa tu conexión e inténtalo de nuevo.");
           });
       });
-    }
-
-    function cargarFormEmbed() {
-      var fr = root.querySelector(".frm iframe"), ld = root.querySelector(".frm .ld");
-      if (fr && ld) fr.addEventListener("load", function () { ld.style.display = "none"; });
-      var s = document.createElement("script");
-      s.src = "https://links.fitcondamian.com/js/form_embed.js";
-      s.type = "text/javascript";
-      document.body.appendChild(s);
     }
 
     function rotar() {
@@ -687,9 +670,16 @@
         })();
       }
       else if (p === "adelanto") root.innerHTML = adelantoHTML();
-      else if (p === "form") {
-        if (propio === null) { esperandoForm = true; root.innerHTML = '<section class="an"><div class="spin" aria-hidden="true"></div></section>'; }
-        else { root.innerHTML = formularioHTML(propio); if (propio) activarFormPropio(); else cargarFormEmbed(); }
+      else if (p === "form") { root.innerHTML = formularioHTML(); activarFormPropio(); }
+      else if (p === "plan") {
+        var d = cargar() || datos();
+        root.innerHTML = planHTML(d, true);
+        activarPlan(root, construir(d));
+        if (!document.querySelector('script[src*="form_embed.js"]')) {
+          var sc = document.createElement("script");
+          sc.src = "https://links.fitcondamian.com/js/form_embed.js";
+          document.body.appendChild(sc);
+        }
       }
       var ta = root.querySelector("#fcdq-t");
       if (ta) {
@@ -734,11 +724,13 @@
     pintar();
   }
 
-  /* ── PLAN (página de acceso) ───────────────────────────────────────────── */
-  function montarPlan(root) {
-    var d = cargar();
-    if (!d || !d.t) { root.innerHTML = ""; root.style.display = "none"; return; }
-    var p = construir(d), t = d.t;
+  /* ── PLAN ──────────────────────────────────────────────────────────────── */
+  var VSL = "https://player.vimeo.com/video/1228323445?title=0&byline=0&portrait=0&badge=0&color=35C2FF";
+  var CALENDARIO = "https://links.fitcondamian.com/widget/booking/ZW1BMfIE9nqeZvmsoNRy";
+
+  // completo = true: en el propio quiz (añade el vídeo y el calendario debajo del plan).
+  function planHTML(d, completo) {
+    var p = construir(d), t = d.t || {};
     var nom = String(d.n || "").trim().split(/\s+/)[0] || "";
     if (nom) nom = nom.charAt(0).toUpperCase() + nom.slice(1).toLowerCase();
     var fasesHTML = p.fases.map(function (f) {
@@ -749,27 +741,45 @@
       ? "Cuando quieras ir en serio, en una llamada gratuita de 30 minutos revisamos tu plan y te digo cómo aplicarlo a tu caso."
       : "En una llamada gratuita de 30 minutos revisamos tu plan juntos y te digo exactamente cómo aplicarlo a tu cuerpo y a tu día a día.";
     var probadoHTML = vacio(t.probado) ? "" : '<p class="tx">Me dijiste que has probado: <b style="color:#fff">«' + esc(t.probado) + "»</b>. Este plan no va por ahí.</p>";
-    root.innerHTML = '<section class="res">' +
+    var extra = completo
+      ? '<div class="div">Antes de la llamada, mira este vídeo</div>' +
+        '<div class="vsl"><iframe src="' + VSL + '" title="Vídeo Método RHS" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe></div>' +
+        '<section id="agendar" class="agendar"><p class="eb" style="text-align:center">Elige tu horario</p><h2 class="serif">Agenda tu llamada <span class="pill">gratuita</span></h2>' +
+        '<p class="fine" style="margin:8px 0 18px">30 minutos · 100% gratuito · sin compromiso</p>' +
+        '<div class="cal"><iframe src="' + CALENDARIO + '" id="ZW1BMfIE9nqeZvmsoNRy_quiz" title="Reserva tu llamada con Damián" scrolling="no"></iframe></div></section>'
+      : '<div class="div">Antes de la llamada, mira este vídeo</div>';
+    return '<section class="res' + (completo ? " qz" : "") + '">' +
       '<div class="ctr"><span class="ok">✓ Plan desbloqueado</span></div>' +
-      '<h1 class="ttl serif">' + (nom ? esc(nom) + ", este es tu plan" : "Este es tu plan") + ' <span class="pill">personalizado</span></h1>' +
+      '<h1 class="ttl serif" tabindex="-1" data-focus>' + (nom ? esc(nom) + ", este es tu plan" : "Este es tu plan") + ' <span class="pill">personalizado</span></h1>' +
       '<div class="card"><p class="kk">Tu diagnóstico</p><div class="score">' + ring(p.media) + "<p>Tu puntuación global es <b>" + p.media + " de 100</b>. Tu mayor freno es <b>" + esc(p.areaNombre.toLowerCase()) + "</b>: por ahí empieza tu plan.</p></div>" + areasHTML(p.s, p.area) + "</div>" +
       (vacio(t.situacion) ? "" : '<div class="card"><p class="kk">Tu punto de partida</p><p class="quote">«' + esc(t.situacion) + "»</p></div>") +
       '<div class="cost"><p class="kl">Lo que ' + esc(p.cuesta) + " te está costando</p><p>" + esc(p.freno) + "</p></div>" +
-      '<div class="card"><p class="kl g">Cómo recuperarlo</p>' + p.pasos.map(function (s, i) { return '<div class="stp"><span class="n">' + (i + 1) + "</span><div><b>" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div></div>"; }).join("") + "</div>" +
+      '<div class="card"><p class="kl g">Cómo recuperarlo</p>' + p.pasos.map(function (x, i) { return '<div class="stp"><span class="n">' + (i + 1) + "</span><div><b>" + esc(x[0]) + "</b><span>" + esc(x[1]) + "</span></div></div>"; }).join("") + "</div>" +
       '<div class="card"><p class="kk">Por qué no te ha funcionado hasta ahora</p><p class="tx">' + esc(p.porque) + "</p>" + probadoHTML + (p.edad ? '<p class="tx">' + esc(p.edad) + "</p>" : "") + "</div>" +
       (p.respetos.length ? '<div class="card"><p class="kk">Respetando lo que no quieres hacer</p><ul class="lst ck">' + p.respetos.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" : "") +
       '<div class="card"><p class="kk">Tu plan de 12 semanas</p>' + fasesHTML + "</div>" +
       '<div class="card today"><p class="kk">Tu primer paso, hoy mismo</p><p>' + esc(p.hoy) + "</p></div>" +
       '<div class="card cta"><h3 class="serif">¿Quieres que te ayude a aplicarlo?</h3><p>' + ctaTxt + '</p><a class="btn" href="#agendar" data-agendar>📞 Revisar mi plan en una llamada gratis</a><p class="fine">30 minutos · 100% gratuito · sin compromiso</p></div>' +
-      '<div class="div">Antes de la llamada, mira este vídeo</div>' +
-      "</section>";
-    var a = root.querySelector("[data-agendar]");
-    if (a) a.addEventListener("click", function (e) {
-      var tg = document.getElementById("agendar") || document.getElementById("fcd-agendar");
-      track("plan_agendar");
-      if (tg) { e.preventDefault(); tg.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      extra + "</section>";
+  }
+
+  function activarPlan(root, p) {
+    root.querySelectorAll("[data-agendar]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var tg = document.getElementById("agendar") || document.getElementById("fcd-agendar");
+        track("plan_agendar");
+        if (tg) { e.preventDefault(); tg.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      });
     });
     track("plan_visto", { freno: p.area });
+  }
+
+  // Página de acceso a recursos: pinta el plan si la lead viene del quiz.
+  function montarPlan(root) {
+    var d = cargar();
+    if (!d || !d.t) { root.innerHTML = ""; root.style.display = "none"; return; }
+    root.innerHTML = planHTML(d, false);
+    activarPlan(root, construir(d));
   }
 
   /* ── Arranque ──────────────────────────────────────────────────────────── */
