@@ -8,10 +8,9 @@
      <script src="https://fitcondamian.com/fcd-quiz.js"></script>
 
    La captura de datos es un formulario propio (nombre, email y WhatsApp):
-   se envía a /api/quiz-lead, que manda un correo con los datos y todas las
-   respuestas, y el plan aparece en la misma página, sin redirigir. Las
-   respuestas también se guardan en una cookie de *.fitcondamian.com para
-   que la página de acceso a recursos pueda mostrar el plan.
+   se envía a /api/quiz-lead, que manda un correo con los datos, todas las
+   respuestas y el plan ya redactado. La lead solo ve una pantalla de gracias
+   («te enviaremos tu plan por WhatsApp»): el equipo le escribe después.
    ───────────────────────────────────────────────────────────────────────── */
 (function () {
   "use strict";
@@ -398,12 +397,14 @@
     ".fcdq .chkb a{color:var(--ink);font-weight:700}",
     ".fcdq .err{margin-top:14px;padding:11px 14px;border-radius:12px;background:var(--rosa);border:1.5px solid var(--ink);color:var(--ink);font-size:14px;font-weight:700}",
     ".fcdq .fp .btn{margin-top:18px}",
-    ".fcdq .vsl{position:relative;aspect-ratio:16/9;margin-top:16px;border-radius:16px;overflow:hidden;border:2px solid var(--ink);background:var(--ink);box-shadow:0 8px 0 var(--rosa)}",
-    ".fcdq .vsl iframe{position:absolute;inset:0;width:100%;height:100%;border:0}",
-    ".fcdq .agendar{margin-top:44px;scroll-margin-top:16px;text-align:center}",
-    ".fcdq .agendar h2{font-size:clamp(28px,7.6vw,36px);line-height:1.12;color:var(--ink);margin-top:8px}",
-    ".fcdq .cal{border-radius:20px;overflow:hidden;border:1px solid var(--ln);background:#fff}",
-    ".fcdq .cal iframe{width:100%;min-height:700px;border:0;display:block}",
+    /* gracias */
+    ".fcdq .gr{text-align:center;padding:34px 22px 30px}",
+    ".fcdq .okc{width:72px;height:72px;margin:0 auto 18px;border-radius:50%;background:var(--rosa);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 var(--ink)}",
+    ".fcdq .gr .q{margin-top:10px}",
+    ".fcdq .gr .qs b{color:var(--ink)}",
+    ".fcdq .wa{display:flex;gap:12px;align-items:center;text-align:left;margin-top:22px;padding:14px 16px;border-radius:16px;background:var(--beige);border:1px solid var(--ln)}",
+    ".fcdq .wa span{font-size:24px}",
+    ".fcdq .wa p{font-size:15px;line-height:1.5;color:var(--ink);font-weight:600}",
     /* barras y plan */
     ".fcdq .ring{position:relative;flex:0 0 84px;width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--ink) calc(var(--p)*1%),var(--rosa) 0)}",
     ".fcdq .ring span{width:68px;height:68px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:" + NUM + ";font-weight:800;font-size:24px;color:var(--ink);line-height:1}",
@@ -530,7 +531,7 @@
         mockups() +
         '<div class="qc"><p class="eb">Pregunta 1 de ' + Q.length + " · Empieza aquí</p>" +
         '<h2 class="q" style="margin-top:12px" tabindex="-1">' + esc(p.q) + "</h2>" + opcionesHTML(p, true) + "</div>" +
-        '<div class="ticks"><span><i>✓</i> Resultado al instante</span><span><i>✓</i> 100% gratis</span><span><i>✓</i> Sin llamada</span></div>' +
+        '<div class="ticks"><span><i>✓</i> Diagnóstico al instante</span><span><i>✓</i> 100% gratis</span><span><i>✓</i> Sin llamada</span></div>' +
         '<p class="intro">' + Q.length + " preguntas sobre tu cuerpo, tus hábitos y tu objetivo, unos 2 minutos. Te digo qué te está frenando, qué hacer y tu plan para las próximas 12 semanas.</p>" +
         '<p class="basado">Basado en el Método RHS, lo que aplico con mis clientas 1:1.</p>' +
         "</section>";
@@ -567,7 +568,7 @@
         '<div class="rec"><p class="kl g">Cómo recuperarlo</p><h3 class="serif">3 pasos para mejorar ' + esc(p.cuesta) + "</h3>" +
         p.pasos.map(function (s, i) { return '<div class="stp lk"><span class="n">' + (i + 1) + "</span><div><b>" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div></div>"; }).join("") + "</div>" +
         '<button type="button" class="btn" data-act="desbloquear">Desbloquea tu plan completo <span aria-hidden="true">→</span></button>' +
-        '<p class="fine">Dejas tus datos en el paso siguiente y ves tu plan al instante. 100% gratis.</p>' +
+        '<p class="fine">Dejas tus datos en el paso siguiente y te enviamos tu plan por WhatsApp. 100% gratis.</p>' +
         "</div></section>";
     }
 
@@ -583,7 +584,7 @@
         '<input class="hp" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
         '<label class="chkb"><input type="checkbox" name="acepto" required><span>Acepto la <a href="' + BASE + '/privacidad" target="_blank" rel="noopener">política de privacidad</a> y que me contactéis por WhatsApp o email para enviarme el plan.</span></label>' +
         '<p class="err" role="alert" hidden></p>' +
-        '<button type="submit" class="btn">Ver mi plan <span aria-hidden="true">→</span></button>' +
+        '<button type="submit" class="btn">Recibir mi plan <span aria-hidden="true">→</span></button>' +
         "</form>";
     }
 
@@ -592,7 +593,7 @@
         '<div class="hd"><button type="button" class="back" data-act="atras">← Atrás</button><span class="cnt">Último paso</span></div>' + pillsHTML(Q.length) +
         '<div class="send" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFCFFD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></div>' +
         '<h2 class="q" tabindex="-1" data-focus>¿A dónde te envío tu plan personalizado?</h2>' +
-        '<p class="qs">Tu diagnóstico ya está listo. Déjame tus datos y te muestro tu mayor freno, tu plan de 12 semanas y tu primer paso.</p>' +
+        '<p class="qs">Tu diagnóstico ya está listo. Déjame tus datos y te enviamos por WhatsApp tu plan de 12 semanas y tu primer paso.</p>' +
         formPropioHTML() +
         '<div class="ticks" style="margin-top:14px"><span><i>🔒</i> Tus datos están protegidos</span><span><i>✓</i> Sin spam</span><span><i>✓</i> 100% gratis</span></div>' +
         "</div></section>";
@@ -630,6 +631,7 @@
           nombre: nom, email: em, telefono: pre + tel, web: f.web.value,
           respuestas: respuestasEtiquetadas(),
           diagnostico: { media: p.media, freno: p.areaNombre, areas: AREAS.map(function (x) { return { n: x.n, v: p.s[x.k] }; }) },
+          plan: planTexto(datos(), nom),
           pagina: location.href.split("#")[0].slice(0, 300), utm: utm()
         };
         btn.disabled = true; btn.innerHTML = "Enviando…";
@@ -639,12 +641,13 @@
             if (res.status === 400) { var e400 = new Error("datos"); e400.datos = true; throw e400; }
             if (!res.j || !res.j.ok) throw new Error("envio");
             var d = datos(); d.n = nom; guardar(d);
+            st.n = nom; st.tel = pre + " " + tel;
             track("registro_enviado", { freno: p.area });
             try { if (typeof window.fbq === "function") window.fbq("track", "Lead"); } catch (e2) {}
-            ir("plan");
+            ir("gracias");
           })
           .catch(function (er) {
-            btn.disabled = false; btn.innerHTML = 'Ver mi plan <span aria-hidden="true">→</span>';
+            btn.disabled = false; btn.innerHTML = 'Recibir mi plan <span aria-hidden="true">→</span>';
             fallo(er && er.datos ? "Revisa tus datos: el email o el WhatsApp no parecen correctos." : "No se ha podido enviar. Revisa tu conexión e inténtalo de nuevo.");
           });
       });
@@ -677,21 +680,24 @@
       }
       else if (p === "adelanto") root.innerHTML = adelantoHTML();
       else if (p === "form") { root.innerHTML = formularioHTML(); activarFormPropio(); }
-      else if (p === "plan") {
-        var d = cargar() || datos();
-        root.innerHTML = planHTML(d, true);
-        activarPlan(root, construir(d));
-        if (!document.querySelector('script[src*="form_embed.js"]')) {
-          var sc = document.createElement("script");
-          sc.src = "https://links.fitcondamian.com/js/form_embed.js";
-          document.body.appendChild(sc);
-        }
-      }
+      else if (p === "gracias" || p === "plan") root.innerHTML = graciasHTML();
       var ta = root.querySelector("#fcdq-t");
       if (ta) {
         var id = Q[st.paso].id, b = root.querySelector('[data-act="texto"]'), cc = root.querySelector(".cc b");
         ta.addEventListener("input", function () { st.t[id] = ta.value; cc.textContent = ta.value.length; b.disabled = ta.value.trim().length < 2; salvar(); });
       }
+    }
+
+    function graciasHTML() {
+      var nom = String(st.n || "").trim().split(/\s+/)[0] || "";
+      if (nom) nom = nom.charAt(0).toUpperCase() + nom.slice(1).toLowerCase();
+      return '<section class="qz"><div class="qc gr">' +
+        '<div class="okc" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#343337" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>' +
+        '<p class="eb">Solicitud recibida</p>' +
+        '<h2 class="q" tabindex="-1" data-focus>' + (nom ? "¡Gracias, " + esc(nom) + "!" : "¡Gracias!") + "</h2>" +
+        '<p class="qs">Ya tenemos tu diagnóstico. Te enviaremos tu <b>plan personalizado por WhatsApp</b>' + (st.tel ? " al <b>" + esc(st.tel) + "</b>" : "") + ".</p>" +
+        '<div class="wa"><span aria-hidden="true">💬</span><p>Estate atenta a tu WhatsApp: te escribiremos nosotros muy pronto.</p></div>' +
+        "</div></section>";
     }
 
     function siguiente() {
@@ -731,11 +737,31 @@
   }
 
   /* ── PLAN ──────────────────────────────────────────────────────────────── */
-  var VSL = "https://player.vimeo.com/video/1228323445?title=0&byline=0&portrait=0&badge=0&color=FFCFFD";
-  var CALENDARIO = "https://links.fitcondamian.com/widget/booking/ZW1BMfIE9nqeZvmsoNRy";
+  // Plan en texto: va en el correo para que el equipo se lo envíe por WhatsApp.
+  function planTexto(d, nombre) {
+    var p = construir(d);
+    var nom = String(nombre || "").trim().split(/\s+/)[0] || "";
+    if (nom) nom = nom.charAt(0).toUpperCase() + nom.slice(1).toLowerCase();
+    var L2 = [];
+    L2.push("Hola" + (nom ? " " + nom : "") + ", aquí tienes tu plan personalizado del Método RHS:");
+    L2.push("");
+    L2.push("Tu puntuación: " + p.media + "/100. Tu mayor freno: " + p.areaNombre.toLowerCase() + ".");
+    L2.push("");
+    L2.push("Lo que " + p.cuesta + " te está costando:");
+    L2.push(p.freno);
+    L2.push("");
+    L2.push("Cómo recuperarlo:");
+    p.pasos.forEach(function (x, i) { L2.push((i + 1) + ". " + x[0] + ": " + x[1]); });
+    if (p.respetos.length) { L2.push(""); L2.push("Respetando lo que no quieres hacer:"); p.respetos.forEach(function (x) { L2.push("- " + x); }); }
+    L2.push("");
+    L2.push("Tu plan de 12 semanas:");
+    p.fases.forEach(function (f) { L2.push(f.k + " · " + f.t); f.l.forEach(function (x) { L2.push("- " + x); }); });
+    L2.push("");
+    L2.push("Tu primer paso, hoy mismo: " + p.hoy);
+    return L2.join("\n");
+  }
 
-  // completo = true: en el propio quiz (añade el vídeo y el calendario debajo del plan).
-  function planHTML(d, completo) {
+  function planHTML(d) {
     var p = construir(d), t = d.t || {};
     var nom = String(d.n || "").trim().split(/\s+/)[0] || "";
     if (nom) nom = nom.charAt(0).toUpperCase() + nom.slice(1).toLowerCase();
@@ -747,14 +773,7 @@
       ? "Cuando quieras ir en serio, en una llamada gratuita de 30 minutos revisamos tu plan y te digo cómo aplicarlo a tu caso."
       : "En una llamada gratuita de 30 minutos revisamos tu plan juntos y te digo exactamente cómo aplicarlo a tu cuerpo y a tu día a día.";
     var probadoHTML = vacio(t.probado) ? "" : '<p class="tx">Me dijiste que has probado: <b>«' + esc(t.probado) + "»</b>. Este plan no va por ahí.</p>";
-    var extra = completo
-      ? '<div class="div">Antes de la llamada, mira este vídeo</div>' +
-        '<div class="vsl"><iframe src="' + VSL + '" title="Vídeo Método RHS" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe></div>' +
-        '<section id="agendar" class="agendar"><p class="eb" style="text-align:center">Elige tu horario</p><h2 class="serif">Agenda tu llamada <span class="pill">gratuita</span></h2>' +
-        '<p class="fine" style="margin:8px 0 18px">30 minutos · 100% gratuito · sin compromiso</p>' +
-        '<div class="cal"><iframe src="' + CALENDARIO + '" id="ZW1BMfIE9nqeZvmsoNRy_quiz" title="Reserva tu llamada con Damián" scrolling="no"></iframe></div></section>'
-      : '<div class="div">Antes de la llamada, mira este vídeo</div>';
-    return '<section class="res' + (completo ? " qz" : "") + '">' +
+    return '<section class="res">' +
       '<div class="ctr"><span class="ok">✓ Plan desbloqueado</span></div>' +
       '<h1 class="ttl serif" tabindex="-1" data-focus>' + (nom ? esc(nom) + ", este es tu plan" : "Este es tu plan") + ' <span class="pill">personalizado</span></h1>' +
       '<div class="card"><p class="kk">Tu diagnóstico</p><div class="score">' + ring(p.media) + "<p>Tu puntuación global es <b>" + p.media + " de 100</b>. Tu mayor freno es <b>" + esc(p.areaNombre.toLowerCase()) + "</b>: por ahí empieza tu plan.</p></div>" + areasHTML(p.s, p.area) + "</div>" +
@@ -766,7 +785,7 @@
       '<div class="card"><p class="kk">Tu plan de 12 semanas</p>' + fasesHTML + "</div>" +
       '<div class="card today"><p class="kk">Tu primer paso, hoy mismo</p><p>' + esc(p.hoy) + "</p></div>" +
       '<div class="card cta"><h3 class="serif">¿Quieres que te ayude a aplicarlo?</h3><p>' + ctaTxt + '</p><a class="btn" href="#agendar" data-agendar>📞 Revisar mi plan en una llamada gratis</a><p class="fine">30 minutos · 100% gratuito · sin compromiso</p></div>' +
-      extra + "</section>";
+      '<div class="div">Antes de la llamada, mira este vídeo</div>' + "</section>";
   }
 
   function activarPlan(root, p) {
@@ -784,7 +803,7 @@
   function montarPlan(root) {
     var d = cargar();
     if (!d || !d.t) { root.innerHTML = ""; root.style.display = "none"; return; }
-    root.innerHTML = planHTML(d, false);
+    root.innerHTML = planHTML(d);
     activarPlan(root, construir(d));
   }
 

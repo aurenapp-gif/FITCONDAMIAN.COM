@@ -49,6 +49,7 @@ type Lead = {
   telefono: string;
   respuestas: Respuesta[];
   diagnostico?: { media?: number; freno?: string; areas?: { n: string; v: number }[] };
+  plan?: string; // plan ya redactado, listo para enviar por WhatsApp
   pagina?: string;
   utm?: Record<string, string>;
   web?: string; // trampa para bots: debe llegar vacío
@@ -76,7 +77,7 @@ function validar(b: unknown): Lead | null {
   return {
     nombre, email, telefono, respuestas,
     diagnostico: { media: Number(d.media) || 0, freno: txt(d.freno, 40), areas },
-    pagina: txt(o.pagina, 300), utm, web: txt(o.web, 100),
+    plan: txt(o.plan, 6000), pagina: txt(o.pagina, 300), utm, web: txt(o.web, 100),
   };
 }
 
@@ -90,7 +91,7 @@ function correo(l: Lead) {
 <div style="max-width:640px;margin:0 auto;padding:24px 16px">
 <h1 style="font-size:20px;color:#0f2230;margin:0 0 4px">Nueva lead del quiz · ${esc(l.nombre)}</h1>
 <p style="color:#5a6f7d;margin:0 0 16px">Mayor freno: <b>${esc(l.diagnostico?.freno || "—")}</b> · Puntuación ${l.diagnostico?.media ?? "—"}/100</p>
-<p style="margin:0 0 18px"><a href="https://wa.me/${wa}" style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:8px">Escribir por WhatsApp</a></p>
+<p style="margin:0 0 18px">${l.plan ? `<a href="https://wa.me/${wa}?text=${encodeURIComponent(l.plan)}" style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:8px;margin:0 8px 8px 0">Enviarle el plan por WhatsApp</a>` : ""}<a href="https://wa.me/${wa}" style="display:inline-block;background:#343337;color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:8px">Abrir chat vacío</a></p>
 <h2 style="font-size:15px;color:#0f2230;margin:0 0 6px">Contacto</h2>
 <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;font-size:14px;margin-bottom:18px">
 ${fila("Nombre", l.nombre)}${fila("Email", l.email)}${fila("WhatsApp", l.telefono)}
@@ -99,6 +100,8 @@ ${fila("Nombre", l.nombre)}${fila("Email", l.email)}${fila("WhatsApp", l.telefon
 <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;font-size:14px;margin-bottom:18px">
 ${l.respuestas.map((r) => fila(r.q, r.a || "—")).join("")}
 </table>
+${l.plan ? `<h2 style="font-size:15px;color:#0f2230;margin:0 0 6px">Su plan (para enviárselo por WhatsApp)</h2>
+<div style="background:#fff;border-radius:8px;font-size:14px;line-height:1.55;color:#0f2230;padding:14px;margin-bottom:18px;white-space:pre-wrap">${esc(l.plan)}</div>` : ""}
 <h2 style="font-size:15px;color:#0f2230;margin:0 0 6px">Diagnóstico</h2>
 <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;font-size:14px;margin-bottom:18px">
 ${fila("Áreas", areas || "—")}${fila("Página", l.pagina || "—")}${utm ? fila("Campaña (UTM)", utm) : ""}
@@ -107,7 +110,7 @@ ${fila("Áreas", areas || "—")}${fila("Página", l.pagina || "—")}${utm ? fi
   const text = [
     `Nueva lead del quiz: ${l.nombre}`, `Email: ${l.email}`, `WhatsApp: ${l.telefono} (https://wa.me/${wa})`,
     `Mayor freno: ${l.diagnostico?.freno || "—"} · Puntuación ${l.diagnostico?.media ?? "—"}/100`, areas, "",
-    ...l.respuestas.map((r) => `${r.q}\n→ ${r.a || "—"}\n`), utm ? `UTM: ${utm}` : "", `Página: ${l.pagina || "—"}`,
+    ...l.respuestas.map((r) => `${r.q}\n→ ${r.a || "—"}\n`), l.plan ? `--- Su plan ---\n${l.plan}\n` : "", utm ? `UTM: ${utm}` : "", `Página: ${l.pagina || "—"}`,
   ].join("\n");
   return { html, text };
 }
