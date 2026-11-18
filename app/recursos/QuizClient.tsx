@@ -12,7 +12,7 @@ declare global {
 
 export default function QuizClient() {
   return (
-    <main className="er-page">
+    <main className="er-page rhs">
       <header className="er-logo">
         <p aria-label="Método RHS"><span className="t">método</span><span className="b">RHS<i>.</i></span></p>
       </header>

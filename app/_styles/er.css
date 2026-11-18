@@ -267,3 +267,11 @@
 .er-u { position: relative; color: #35C2FF; white-space: nowrap; }
 .er-u svg { position: absolute; left: -3%; bottom: -0.22em; width: 106%; height: 0.3em; }
 .er-acc-sub { font-size: clamp(13.5px, 3.8vw, 16px); line-height: 1.5; color: #9fb7c7; text-align: center; max-width: 340px; margin: -6px auto 18px; text-wrap: balance; }
+
+/* Nueva imagen de marca Método RHS (quiz /recursos):
+   rosa #FFCFFD · beige #FFF7D2 · negro ceniza #343337 */
+.er-page.rhs { background: #FFF7D2; color: #343337; }
+.er-page.rhs .er-logo p { color: #343337; }
+.er-page.rhs .er-logo i { color: #343337; }
+.er-page.rhs .er-footer { border-top-color: rgba(52,51,55,0.14); color: #6b6a6f; }
+.er-page.rhs .er-footer a { color: #6b6a6f; }
