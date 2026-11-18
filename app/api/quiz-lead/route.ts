@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 //
 // Variables de entorno (Vercel → Settings → Environment Variables):
 //   RESEND_API_KEY   clave de https://resend.com (obligatoria)
-//   LEAD_EMAIL_TO    correo donde llegan las leads (obligatoria; varios separados por comas)
+//   LEAD_EMAIL_TO    correo donde llegan las leads (opcional; por defecto fitcondamian@gmail.com;
+//                    varios separados por comas)
 //   LEAD_EMAIL_FROM  remitente (opcional). Sin dominio verificado en Resend usa
 //                    «onboarding@resend.dev», que solo puede enviar al correo de la cuenta de Resend.
 //   GHL_WEBHOOK_URL  (opcional) webhook de entrada de un workflow de GoHighLevel:
@@ -30,8 +31,10 @@ function cors(req: Request) {
   return h;
 }
 
+const DESTINO = process.env.LEAD_EMAIL_TO || "fitcondamian@gmail.com";
+
 function listo() {
-  return Boolean(process.env.RESEND_API_KEY && process.env.LEAD_EMAIL_TO);
+  return Boolean(process.env.RESEND_API_KEY);
 }
 
 export async function OPTIONS(req: Request) {
@@ -137,7 +140,7 @@ export async function POST(req: Request) {
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: process.env.LEAD_EMAIL_FROM || "Quiz Método RHS <onboarding@resend.dev>",
-      to: process.env.LEAD_EMAIL_TO!.split(",").map((s) => s.trim()).filter(Boolean),
+      to: DESTINO.split(",").map((s) => s.trim()).filter(Boolean),
       reply_to: l.email,
       subject: `Nueva lead del quiz: ${l.nombre} · freno: ${l.diagnostico?.freno || "—"}`,
       html, text,
