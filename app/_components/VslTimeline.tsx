@@ -12,7 +12,7 @@ const vslVideos: { id: string; titulo: string; lado: "izquierda" | "derecha"; yo
 // Paletas: la oscura original y la de "Método RHS" (er).
 const PALETAS = {
   base: { acc: "#00AAFF", rgb: "0,170,255", card: "#111", line: "#1f1f1f", thumb: "#161616", fondo: "#0D0D0D", off: "#1b2b33", txt: "#E0E0E0", sobreAcc: "#fff" },
-  er: { acc: "#35C2FF", rgb: "53,194,255", card: "#0c1d2a", line: "rgba(255,255,255,0.09)", thumb: "#0b1c29", fondo: "#081521", off: "#16303f", txt: "#eaf3fb", sobreAcc: "#04202b" },
+  er: { acc: "#343337", rgb: "52,51,55", card: "#FFFCEB", line: "rgba(52,51,55,0.14)", thumb: "#FFF7D2", fondo: "#FFF7D2", off: "#EFE6BC", txt: "#343337", sobreAcc: "#FFCFFD" },
 };
 
 export default function VslTimeline({ er = false }: { er?: boolean }) {

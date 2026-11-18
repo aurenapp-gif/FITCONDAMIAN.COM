@@ -43,10 +43,10 @@ export default function VideoPlayer({ src, poster }: { src: string; poster?: str
         }}>
           <div style={{
             width: "68px", height: "68px", borderRadius: "50%",
-            background: "#00AAFF", color: "#fff",
+            background: "#343337", color: "#343337",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: "24px", paddingLeft: "5px",
-            boxShadow: "0 0 0 12px rgba(0,170,255,0.15)",
+            boxShadow: "0 0 0 12px rgba(255,207,253,0.30)",
           }}>▶</div>
         </div>
       )}
@@ -55,13 +55,13 @@ export default function VideoPlayer({ src, poster }: { src: string; poster?: str
       <div aria-hidden="true" style={{
         position: "absolute", left: "8px", right: "8px", bottom: "8px",
         height: "7px", borderRadius: "99px",
-        background: "rgba(255,255,255,0.25)", overflow: "hidden",
+        background: "rgba(52,51,55,0.25)", overflow: "hidden",
         pointerEvents: "none",
       }}>
         <div style={{
           height: "100%", width: `${progress}%`, borderRadius: "99px",
-          background: "linear-gradient(90deg, #0077CC, #00AAFF)",
-          boxShadow: "0 0 8px rgba(0,170,255,0.7)",
+          background: "linear-gradient(90deg, #343337, #343337)",
+          boxShadow: "0 0 8px rgba(255,207,253,0.7)",
           transition: "width 0.2s linear",
         }} />
       </div>

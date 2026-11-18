@@ -42,7 +42,7 @@ function vslSrc(): string | null {
   if (!VSL.id) return null;
   if (VSL.tipo === "vimeo") {
     // Sin dnt=1 para que Vimeo cuente reproducciones y tiempo visto · sin título/autor · calidad alta
-    return `https://player.vimeo.com/video/${VSL.id}?title=0&byline=0&portrait=0&badge=0&color=00AAFF&quality=1080p`;
+    return `https://player.vimeo.com/video/${VSL.id}?title=0&byline=0&portrait=0&badge=0&color=FFCFFD&quality=1080p`;
   }
   return `https://www.youtube-nocookie.com/embed/${VSL.id}?rel=0&modestbranding=1`;
 }
@@ -52,16 +52,16 @@ export default function VslPage() {
   const src = vslSrc();
 
   return (
-    <main style={{ background: "radial-gradient(120% 55% at 50% -5%, #12314b, #081521 62%)", backgroundColor: "#081521", minHeight: "100vh", color: "#eaf3fb", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
+    <main style={{ background: "#FFF7D2", backgroundColor: "#FFFCEB", minHeight: "100vh", color: "#343337", fontFamily: "var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
 
       {/* FRANJA — filtro de público objetivo (cian sólida, estilos en globals.css) */}
       <div className="fcd-band">Para mujeres en perimenopausia y menopausia</div>
 
       {/* LOGO — Método RHS */}
       <header style={{ padding: "26px 24px 0", textAlign: "center" }}>
-        <p aria-label="Método RHS" style={{ display: "inline-block", margin: 0, textAlign: "left", fontFamily: "var(--font-sora), sans-serif", fontSize: "22px", lineHeight: 1, letterSpacing: "-0.05em", color: "#fff" }}>
+        <p aria-label="Método RHS" style={{ display: "inline-block", margin: 0, textAlign: "left", fontFamily: "var(--font-sora), sans-serif", fontSize: "22px", lineHeight: 1, letterSpacing: "-0.05em", color: "#343337" }}>
           <span style={{ display: "block", fontWeight: 300 }}>método</span>
-          <span style={{ display: "block", fontWeight: 800, marginTop: "0.04em" }}>RHS<span style={{ color: "#35C2FF" }}>.</span></span>
+          <span style={{ display: "block", fontWeight: 800, marginTop: "0.04em" }}>RHS<span style={{ color: "#343337" }}>.</span></span>
         </p>
       </header>
 
@@ -75,14 +75,14 @@ export default function VslPage() {
             <span className="u">
               ropa que tanto te gustaba
               <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
-                <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
+                <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#343337" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>{" "}
             y verte en el espejo{" "}
             <span className="u">
               como hace 10 años
               <svg viewBox="0 0 120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
-                <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#35C2FF" strokeWidth={3.5} strokeLinecap="round" />
+                <path d="M2 6 C 30 2, 90 2, 118 6" stroke="#343337" strokeWidth={3.5} strokeLinecap="round" />
               </svg>
             </span>
             , con una metodología adaptada a los cambios hormonales de tu cuerpo
@@ -94,8 +94,8 @@ export default function VslPage() {
         <div style={{
           position: "relative", aspectRatio: "16/9",
           borderRadius: "16px", overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.10)", background: "#06121c",
-          boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+          border: "1px solid rgba(52,51,55,0.10)", background: "#FFFCEB",
+          boxShadow: "0 24px 70px rgba(52,51,55,0.16)",
         }}>
           {src ? (
             <iframe
@@ -115,7 +115,7 @@ export default function VslPage() {
         </div>
 
         {/* INDICACIÓN — debajo del vídeo */}
-        <p style={{ textAlign: "center", color: "#9fb7c7", fontSize: "14px", fontWeight: 600, lineHeight: 1.6, margin: "20px auto 0", maxWidth: "460px" }}>
+        <p style={{ textAlign: "center", color: "#5c5b60", fontSize: "14px", fontWeight: 600, lineHeight: 1.6, margin: "20px auto 0", maxWidth: "460px" }}>
           Si al verlo te sientes identificada, reserva un hueco para hablar conmigo personalmente.
         </p>
 
@@ -125,31 +125,31 @@ export default function VslPage() {
             href="#agendar"
             style={{
               display: "inline-block",
-              background: "linear-gradient(90deg, #0088d6, #35C2FF)",
-              color: "#06202f",
+              background: "#343337",
+              color: "#FFF7D2",
               fontWeight: 900,
               fontSize: "clamp(1.05rem, 3.6vw, 1.35rem)",
               letterSpacing: "-0.3px",
               padding: "20px 44px",
               borderRadius: "99px",
               textDecoration: "none",
-              boxShadow: "0 14px 36px rgba(53,194,255,0.34)",
+              boxShadow: "0 14px 36px rgba(255,207,253,0.68)",
             }}
           >
             📞 Agenda tu llamada
           </a>
-          <p style={{ color: "#7f97a8", fontSize: "13px", margin: "16px 0 0 0" }}>
+          <p style={{ color: "#5c5b60", fontSize: "13px", margin: "16px 0 0 0" }}>
             30 minutos · 100% gratuito · sin compromiso
           </p>
         </div>
 
         {/* CASOS DE ÉXITO EN VÍDEO */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginTop: "56px", marginBottom: "32px" }} />
+        <div style={{ borderTop: "1px solid rgba(52,51,55,0.08)", marginTop: "56px", marginBottom: "32px" }} />
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
-          <p style={{ color: "#35C2FF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+          <p style={{ color: "#343337", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
             RESULTADOS REALES
           </p>
-          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: 0, letterSpacing: "-0.3px", color: "#fff" }}>
+          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: 0, letterSpacing: "-0.3px", color: "#343337" }}>
             Mujeres que ya lo han conseguido
           </h3>
         </div>
@@ -158,7 +158,7 @@ export default function VslPage() {
             <div key={id} style={{
               position: "relative", aspectRatio: "16/9",
               borderRadius: "16px", overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.10)", background: "#06121c",
+              border: "1px solid rgba(52,51,55,0.10)", background: "#FFFCEB",
             }}>
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
@@ -172,19 +172,19 @@ export default function VslPage() {
         </div>
 
         {/* MENSAJES DE CLIENTAS (estilo WhatsApp) — después de los vídeos */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginTop: "48px", marginBottom: "28px" }} />
+        <div style={{ borderTop: "1px solid rgba(52,51,55,0.08)", marginTop: "48px", marginBottom: "28px" }} />
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <p style={{ color: "#25D366", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
             💬 Mensajes reales
           </p>
-          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: "0 0 6px 0", letterSpacing: "-0.3px", color: "#fff" }}>
+          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: "0 0 6px 0", letterSpacing: "-0.3px", color: "#343337" }}>
             Lo que me dicen mis clientas
           </h3>
-          <p style={{ color: "#7f97a8", fontSize: "13px", margin: 0 }}>Desliza para ver más →</p>
+          <p style={{ color: "#5c5b60", fontSize: "13px", margin: 0 }}>Desliza para ver más →</p>
         </div>
         <div style={{ display: "flex", gap: "12px", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: "10px", alignItems: "flex-start" }}>
           {mensajes.map((src, i) => (
-            <div key={i} style={{ flex: "0 0 auto", width: "min(80%, 300px)", scrollSnapAlign: "center", border: "1px solid rgba(255,255,255,0.10)", borderRadius: "16px", overflow: "hidden", background: "#0b1a26" }}>
+            <div key={i} style={{ flex: "0 0 auto", width: "min(80%, 300px)", scrollSnapAlign: "center", border: "1px solid rgba(52,51,55,0.10)", borderRadius: "16px", overflow: "hidden", background: "#FFFCEB" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={src} alt="Mensaje de una clienta" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
@@ -194,15 +194,15 @@ export default function VslPage() {
         {/* CALENDARIO INCRUSTADO — el botón "Agenda tu llamada" baja hasta aquí */}
         <section id="agendar" style={{ scrollMarginTop: "16px", marginTop: "56px" }}>
           <div style={{ textAlign: "center", marginBottom: "20px" }}>
-            <p style={{ color: "#35C2FF", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
+            <p style={{ color: "#343337", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 8px 0" }}>
               Elige tu horario
             </p>
-            <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: "0 0 6px 0", letterSpacing: "-0.3px", color: "#fff" }}>
+            <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 600, fontSize: "clamp(1.5rem, 4.5vw, 2rem)", margin: "0 0 6px 0", letterSpacing: "-0.3px", color: "#343337" }}>
               Agenda tu llamada gratuita
             </h3>
-            <p style={{ color: "#7f97a8", fontSize: "13px", margin: 0 }}>30 minutos · 100% gratuito · sin compromiso</p>
+            <p style={{ color: "#5c5b60", fontSize: "13px", margin: 0 }}>30 minutos · 100% gratuito · sin compromiso</p>
           </div>
-          <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)", background: "#fff" }}>
+          <div style={{ borderRadius: "20px", overflow: "hidden", border: "1px solid rgba(52,51,55,0.10)", background: "#fff" }}>
             <iframe
               src={CALENDARIO_EMBED}
               id="ZW1BMfIE9nqeZvmsoNRy_vsl2"
@@ -217,12 +217,12 @@ export default function VslPage() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "24px", textAlign: "center" }}>
-        <p style={{ color: "#5a7183", fontSize: "12px", margin: 0 }}>
+      <footer style={{ borderTop: "1px solid rgba(52,51,55,0.08)", padding: "24px", textAlign: "center" }}>
+        <p style={{ color: "#5c5b60", fontSize: "12px", margin: 0 }}>
           © {new Date().getFullYear()} Fit con Damián · fitcondamian.com{" · "}
-          <a href="/privacidad" style={{ color: "#5a7183", textDecoration: "none" }}>Privacidad</a>{" · "}
-          <a href="/politica-cookies" style={{ color: "#5a7183", textDecoration: "none" }}>Cookies</a>{" · "}
-          <a href="/aviso-legal" style={{ color: "#5a7183", textDecoration: "none" }}>Aviso Legal</a>
+          <a href="/privacidad" style={{ color: "#5c5b60", textDecoration: "none" }}>Privacidad</a>{" · "}
+          <a href="/politica-cookies" style={{ color: "#5c5b60", textDecoration: "none" }}>Cookies</a>{" · "}
+          <a href="/aviso-legal" style={{ color: "#5c5b60", textDecoration: "none" }}>Aviso Legal</a>
         </p>
       </footer>
     </main>
