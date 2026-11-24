@@ -196,7 +196,9 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
   Object.keys(contGuardado).forEach((k) => { const f = contGuardado[k]?.fecha; if (f && f >= desde && f <= hasta) delete contGuardado[k]; });
   Object.entries(contenido).forEach(([k, v]) => { contGuardado[k] = { ...v, calculado_en: ahora } as never; });
   await guardar("contenido", contGuardado); await marcarSync("contenido");
-  return { conversaciones: convs.size, total_count: p1.total_count, excluidas: p1.excluded_by_has_agent ?? "—", final: final.size, datos: datos.size, desde, hasta };
+  const sumaAp = (k: string) => Object.values(embudo).reduce((t, d) => t + (Number(d[k]) || 0), 0);
+  return { bienvenidas: sumaAp("ap_b"), bienvenidas_resp: sumaAp("ap_b_resp"), seguidoras: sumaAp("ap_s"), seguidoras_resp: sumaAp("ap_s_resp"),
+    conversaciones: convs.size, total_count: p1.total_count, excluidas: p1.excluded_by_has_agent ?? "—", final: final.size, datos: datos.size, desde, hasta };
 }
 
 // ---------- Ejecución con registro ----------
