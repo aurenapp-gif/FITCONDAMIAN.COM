@@ -92,10 +92,11 @@ function clasificar(c: Conversacion) {
 async function idsContactos(filtro: { id: string; value: string }, desde: string, hasta: string): Promise<Set<string>> {
   const ids = new Set<string>();
   for (let page = 1; page <= 20; page++) {
-    const r = await ninjo<{ data?: { contacts?: { id: string }[]; totalCount?: number }; contacts?: { id: string }[]; totalCount?: number }>("/api/v1/crm/list_crm_contacts", {
-      method: "POST", body: { page, pageSize: 100, columnFilters: [filtro, { id: "createdAt", value: [desde, hasta] }] },
+    type Lista = { contacts?: { id: string }[]; totalCount?: number };
+    const r = await ninjo<Lista & { data?: Lista & { data?: Lista }; result?: Lista & { data?: Lista } }>("/api/v1/crm/list_crm_contacts", {
+      method: "POST", body: { input: { page, pageSize: 100, columnFilters: [filtro, { id: "createdAt", value: [desde, hasta] }] } },
     });
-    const d = r.data || r;
+    const d: Lista = [r.data?.data, r.data, r.result?.data, r.result, r].find((x) => x && Array.isArray(x.contacts)) || {};
     (d.contacts || []).forEach((c) => ids.add(c.id));
     if (page * 100 >= (d.totalCount || 0)) break;
   }
