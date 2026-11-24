@@ -1,6 +1,5 @@
 {
   "crons": [
-    { "path": "/api/panel/cron?solo=rapida", "schedule": "7 * * * *" },
-    { "path": "/api/panel/cron", "schedule": "13 3 * * *" }
+    { "path": "/api/panel/cron", "schedule": "7 * * * *" }
   ]
 }

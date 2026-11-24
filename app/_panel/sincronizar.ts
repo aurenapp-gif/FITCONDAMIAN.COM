@@ -62,11 +62,19 @@ export async function syncRapida(): Promise<Record<string, number | string>> {
     origenes[String(dias)] = (r.sources || []).map((s) => ({ origen: nombres[s.source] || s.source, conversaciones: s.total_conversations || 0, agendas: s.bookings_sent || 0 }));
   });
   await guardar("origenes", origenes); await marcarSync("origenes");
+
+  // Comprobación cruzada: recuento propio de Ninjo de mensajes manuales (autor "automation") por ventana de días.
+  const manuales: Record<string, number> = {};
+  await enParalelo([1, 7, 14, 30], 4, async (dias) => {
+    const r = await ninjo<{ channels?: { messages?: { automation?: number } }[] }>("/api/v1/analytics/agent-insights", { query: { days: dias, sections: "channels" } });
+    manuales[String(dias)] = (r.channels || []).reduce((t, c) => t + (c.messages?.automation || 0), 0);
+  });
+  await guardar("control", { manuales_ninjo: manuales, leido: new Date().toISOString() });
   return res;
 }
 
 // ---------- Embudo por día de entrada ----------
-type Mensaje = { direction?: string; type?: string; status?: string; sent_at?: string; content?: string; comment?: { post_url?: string | null } };
+type Mensaje = { direction?: string; author?: string; type?: string; status?: string; sent_at?: string; content?: string; comment?: { post_url?: string | null } };
 type Conversacion = { conversation_id: string; contact_id: string; messages?: Mensaje[] };
 type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
 const ORIGENES: Origen[] = ["bienvenida", "saludo", "comentario", "mensaje"];
@@ -148,6 +156,7 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     const doc: Dia = { fecha: d, conversaciones_revisadas: 0, ids: { bienvenida: [], saludo: [], comentario: [], mensaje: [] } };
     ORIGENES.forEach((o) => ["entran", "conversan", "final", "datos"].forEach((k) => { doc[`${o}_${k}`] = 0; }));
     ["b", "s", "o", "h"].forEach((t) => { doc[`ap_${t}`] = 0; doc[`ap_${t}_resp`] = 0; });
+    doc.ap_manual = 0;
     embudo[d] = doc;
   }
   const contenido: Record<string, { post: string; fecha: string; entran: number; conversan: number; final: number; datos: number; ids: string[] }> = {};
@@ -178,6 +187,10 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     const msgs = (c.messages || []).slice().sort((a, b) => String(a.sent_at || "").localeCompare(String(b.sent_at || "")));
     msgs.forEach((m, i) => {
       if (m.direction !== "OUTBOUND" || m.status === "FAILED" || !m.sent_at) return;
+      if (m.author === "automation") {
+        const em = embudo[diaMadrid(m.sent_at)];
+        if (em) em.ap_manual = ((em.ap_manual as number) || 0) + 1; // todo lo que el setter manda a mano (fuera de Ninjo)
+      }
       const t = tipoApertura(m.content || "");
       if (!t) return;
       const e = embudo[diaMadrid(m.sent_at)];

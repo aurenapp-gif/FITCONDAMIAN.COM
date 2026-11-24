@@ -21,6 +21,7 @@ export type Datos = {
   origenes: Record<string, FilaOrigen[]>;
   resultados: Record<string, Resultado>;
   meta: Record<string, string>;
+  control: { manuales_ninjo?: Record<string, number>; leido?: string } | null;
 };
 
 const ORIGENES: [Origen, string][] = [
@@ -165,11 +166,18 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
         b_env: num(nuevo ? d.ap_b : d.bienvenida_entran), b_resp: num(nuevo ? d.ap_b_resp : d.bienvenida_conversan),
         s_env: num(nuevo ? d.ap_s : d.saludo_entran), s_resp: num(nuevo ? d.ap_s_resp : d.saludo_conversan),
         o_env: num(d.ap_o) + num(d.ap_h), o_resp: num(d.ap_o_resp) + num(d.ap_h_resp),
+        manual: d.ap_manual === undefined ? null : num(d.ap_manual),
       };
     });
-    const tot = filas.reduce((t, f) => ({ b_env: t.b_env + f.b_env, b_resp: t.b_resp + f.b_resp, s_env: t.s_env + f.s_env, s_resp: t.s_resp + f.s_resp, o_env: t.o_env + f.o_env, o_resp: t.o_resp + f.o_resp }), { b_env: 0, b_resp: 0, s_env: 0, s_resp: 0, o_env: 0, o_resp: 0 });
+    const tot = filas.reduce((t, f) => ({ b_env: t.b_env + f.b_env, b_resp: t.b_resp + f.b_resp, s_env: t.s_env + f.s_env, s_resp: t.s_resp + f.s_resp, o_env: t.o_env + f.o_env, o_resp: t.o_resp + f.o_resp, manual: t.manual + (f.manual || 0) }), { b_env: 0, b_resp: 0, s_env: 0, s_resp: 0, o_env: 0, o_resp: 0, manual: 0 });
     return { filas: filas.slice().reverse(), tot, n: filas.length };
   }, [diasEmbudo]);
+
+  const controlNinjo = (() => {
+    const m = datos.control?.manuales_ninjo;
+    if (!m) return "todo lo enviado a mano, aperturas y seguimientos";
+    return `comprobación: Ninjo registra ${int(m["1"])} en las últimas 24 h y ${int(m["7"])} en 7 días`;
+  })();
 
   const embudo = useMemo(() => {
     const ors = origen === "todas" ? ORIGENES.map((o) => o[0]) : [origen];
@@ -353,11 +361,12 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
           <Tarjeta titulo="Responden a la bienvenida" valor={pct(ratio(aperturas.tot.b_resp, aperturas.tot.b_env))} pie={`${int(aperturas.tot.b_resp)} de ${int(aperturas.tot.b_env)}`} />
           <Tarjeta titulo="Mensajes a seguidoras al día" valor={int(aperturas.n ? Math.round(aperturas.tot.s_env / aperturas.n) : null)} pie={`${int(aperturas.tot.s_env)} ${nombrePeriodo}`} />
           <Tarjeta titulo="Responden al mensaje" valor={pct(ratio(aperturas.tot.s_resp, aperturas.tot.s_env))} pie={`${int(aperturas.tot.s_resp)} de ${int(aperturas.tot.s_env)}`} />
+          <Tarjeta titulo="Mensajes manuales del setter" valor={int(aperturas.tot.manual)} pie={controlNinjo} />
         </div>
         <div className="pn-tablewrap">
           <table className="pn-table">
             <thead>
-              <tr><th>Día</th><th className="r">Bienvenidas</th><th className="r">Responden</th><th className="r">%</th><th className="r">Mensajes a seguidoras</th><th className="r">Responden</th><th className="r">%</th><th className="r">Otros mensajes</th><th className="r">Responden</th></tr>
+              <tr><th>Día</th><th className="r">Bienvenidas</th><th className="r">Responden</th><th className="r">%</th><th className="r">Mensajes a seguidoras</th><th className="r">Responden</th><th className="r">%</th><th className="r">Otros mensajes</th><th className="r">Responden</th><th className="r">Total mensajes manuales</th></tr>
             </thead>
             <tbody>
               {aperturas.filas.length ? aperturas.filas.map((f) => (
@@ -365,15 +374,15 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   <td>{dia(f.fecha)}</td>
                   <td className="r">{int(f.b_env)}</td><td className="r">{int(f.b_resp)}</td><td className="r">{pct(ratio(f.b_resp, f.b_env))}</td>
                   <td className="r">{int(f.s_env)}</td><td className="r">{int(f.s_resp)}</td><td className="r">{pct(ratio(f.s_resp, f.s_env))}</td>
-                  <td className="r">{int(f.o_env)}</td><td className="r">{int(f.o_resp)}</td>
+                  <td className="r">{int(f.o_env)}</td><td className="r">{int(f.o_resp)}</td><td className="r">{int(f.manual)}</td>
                 </tr>
-              )) : <tr><td colSpan={9} className="pn-empty">Todavía no hay días calculados en este periodo. Pulsa &quot;Recalcular embudo&quot;.</td></tr>}
+              )) : <tr><td colSpan={10} className="pn-empty">Todavía no hay días calculados en este periodo. Pulsa &quot;Recalcular embudo&quot;.</td></tr>}
               {aperturas.filas.length > 0 && (
                 <tr className="pn-total">
                   <td>Total</td>
                   <td className="r">{int(aperturas.tot.b_env)}</td><td className="r">{int(aperturas.tot.b_resp)}</td><td className="r">{pct(ratio(aperturas.tot.b_resp, aperturas.tot.b_env))}</td>
                   <td className="r">{int(aperturas.tot.s_env)}</td><td className="r">{int(aperturas.tot.s_resp)}</td><td className="r">{pct(ratio(aperturas.tot.s_resp, aperturas.tot.s_env))}</td>
-                  <td className="r">{int(aperturas.tot.o_env)}</td><td className="r">{int(aperturas.tot.o_resp)}</td>
+                  <td className="r">{int(aperturas.tot.o_env)}</td><td className="r">{int(aperturas.tot.o_resp)}</td><td className="r">{int(aperturas.tot.manual)}</td>
                 </tr>
               )}
             </tbody>

@@ -19,7 +19,7 @@ export default async function Panel() {
       await Promise.race([ejecutar("apertura", false).catch(() => null), new Promise((r) => setTimeout(r, 12000))]);
     }
   }
-  const [embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, registro] = await Promise.all([
+  const [embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, registro, control] = await Promise.all([
     leer<Datos["embudo"]>("embudo", {}),
     leer<Datos["contenido"]>("contenido", {}),
     leer<Datos["seguidores"]>("seguidores", {}),
@@ -30,13 +30,14 @@ export default async function Panel() {
     leer<Datos["resultados"]>("resultados", {}),
     leer<Datos["meta"]>("meta", {}),
     leer<{ ok?: boolean; error?: string; fin?: string; via?: string }[]>("registro", []),
+    leer<Datos["control"]>("control", null),
   ]);
   const ultimo = registro[0] || null;
   return (
     <PanelClient
       almacen={listo}
       conexiones={{ ninjo: conNinjo, ultimoError: ultimo && !ultimo.ok ? ultimo.error || "error" : null, meta: false, stripe: false }}
-      datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta }}
+      datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, control }}
     />
   );
 }
