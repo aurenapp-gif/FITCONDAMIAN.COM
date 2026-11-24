@@ -1,5 +1,5 @@
 // Lee Ninjo y guarda en el almacén del panel. Lo usan el cron diario, el botón "Actualizar" y la apertura del panel.
-import { AGENTE, enParalelo, ninjo } from "./ninjo";
+import { AGENTE, enParalelo, ninjo, ninjoHerramienta } from "./ninjo";
 import { guardar, leer, marcarSync } from "./store";
 
 const fmtDia = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" });
@@ -112,13 +112,15 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
   const base = { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100,
     first_message_after: `${desde}T00:00:00${offsetMadrid(desde)}`, first_message_before: `${hasta}T23:59:59${offsetMadrid(hasta)}` };
   type Pagina = { conversations: Conversacion[]; total_pages: number; total_count: number; excluded_by_has_agent?: number };
-  const p1 = await ninjo<Pagina>("/api/v1/analytics/conversations/search", { query: { ...base, page: 1 } });
+  // Por MCP: la API normal solo devuelve conversaciones con agente y aquí hacen falta todas (has_agent "any").
+  const buscar = (page: number) => ninjoHerramienta<Pagina>("search_conversations", { ...base, page });
+  const p1 = await buscar(1);
   // Si la API deja fuera las conversaciones sin agente (bienvenidas sin respuesta), el embudo saldría mal: no se toca lo guardado.
   if ((p1.excluded_by_has_agent || 0) > 0) {
     return { omitido: `La API de Ninjo dejó fuera ${p1.excluded_by_has_agent} conversaciones sin agente; se conserva el embudo guardado.` };
   }
   const resto = await enParalelo(Array.from({ length: Math.max(0, (p1.total_pages || 1) - 1) }, (_, i) => i + 2), 4,
-    (page) => ninjo<Pagina>("/api/v1/analytics/conversations/search", { query: { ...base, page } }));
+    (page) => buscar(page));
   const convs = new Map<string, Conversacion>();
   [p1, ...resto].forEach((p) => (p.conversations || []).forEach((c) => convs.set(c.conversation_id, c)));
 
