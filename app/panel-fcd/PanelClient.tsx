@@ -109,11 +109,15 @@ function SiNo({ valor, onCambio, desactivado, etiqueta }: { valor: string; onCam
 }
 
 // ---------- Panel ----------
-export default function PanelClient({ datos, almacen }: { datos: Datos; almacen: boolean }) {
+export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean };
+
+export default function PanelClient({ datos, almacen, conexiones }: { datos: Datos; almacen: boolean; conexiones: Conexiones }) {
   const [dias, setDias] = useState(30);
   const [origen, setOrigen] = useState<"todas" | Origen>("todas");
   const [resultados, setResultados] = useState<Record<string, Resultado>>(datos.resultados || {});
   const [error, setError] = useState("");
+  const [actualizando, setActualizando] = useState<"" | "rapida" | "completa">("");
+  const [msgAct, setMsgAct] = useState("");
 
   const hoy = hoyMadrid();
   const desde = sumarDias(hoy, -dias);
@@ -223,6 +227,21 @@ export default function PanelClient({ datos, almacen }: { datos: Datos; almacen:
     }
   }
 
+  async function actualizar(completo: boolean) {
+    setActualizando(completo ? "completa" : "rapida");
+    setMsgAct(completo ? "Recalculando todo, puede tardar un par de minutos…" : "Actualizando…");
+    try {
+      const r = await fetch(`/api/panel/actualizar${completo ? "?completo=1" : ""}`, { method: "POST" });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || `error ${r.status}`);
+      window.location.reload();
+      return;
+    } catch (e) {
+      setMsgAct(`No se pudo actualizar: ${e instanceof Error ? e.message : "error"}`);
+    }
+    setActualizando("");
+  }
+
   async function salir() {
     await fetch("/api/panel/logout", { method: "POST" });
     window.location.href = "/panel-fcd/entrar";
@@ -249,10 +268,14 @@ export default function PanelClient({ datos, almacen }: { datos: Datos; almacen:
           <div className="pn-chips" role="group" aria-label="Periodo">
             {PERIODOS.map((p) => <button key={p} type="button" aria-pressed={dias === p} onClick={() => setDias(p)}>{p} días</button>)}
           </div>
+          <button type="button" className="pn-btn" disabled={!!actualizando || !conexiones.ninjo} onClick={() => actualizar(false)}>{actualizando === "rapida" ? "Actualizando…" : "Actualizar ahora"}</button>
+          <button type="button" className="pn-link" disabled={!!actualizando || !conexiones.ninjo} onClick={() => actualizar(true)}>Recalcular embudo</button>
           <button type="button" className="pn-link" onClick={salir}>Salir</button>
         </div>
       </header>
 
+      {msgAct && <p className="pn-aviso" role="status">{msgAct}</p>}
+      {conexiones.ultimoError && <p className="pn-aviso">La última actualización automática falló: {conexiones.ultimoError}</p>}
       {!almacen && (
         <p className="pn-aviso">Falta conectar el almacenamiento del panel en Vercel (Storage → Blob). Hasta entonces no hay datos que mostrar ni se puede marcar nada.</p>
       )}
@@ -266,6 +289,12 @@ export default function PanelClient({ datos, almacen }: { datos: Datos; almacen:
         <div className="pn-chips" role="group" aria-label="Por dónde entran">
           <button type="button" aria-pressed={origen === "todas"} onClick={() => setOrigen("todas")}>Todas</button>
           {ORIGENES.map(([o, n]) => <button key={o} type="button" aria-pressed={origen === o} onClick={() => setOrigen(o)}>{n}</button>)}
+        </div>
+        <div className="pn-grid">
+          <Tarjeta grande titulo="Conversan → nos dan sus datos" valor={pct(ratio(embudo.pasos[4].n, embudo.pasos[2].n))} pie={`${int(embudo.pasos[4].n)} de ${int(embudo.pasos[2].n)} que abrieron conversación`} />
+          <Tarjeta grande titulo="Conversan → agendan llamada" valor={pct(ratio(embudo.pasos[5].n, embudo.pasos[2].n))} pie={`${int(embudo.pasos[5].n)} de ${int(embudo.pasos[2].n)}`} />
+          <Tarjeta grande titulo="Conversan → pagan" valor={pct(ratio(embudo.pasos[7].n, embudo.pasos[2].n))} pie={`${int(embudo.pasos[7].n)} de ${int(embudo.pasos[2].n)}`} />
+          <Tarjeta grande titulo="Entran → agendan llamada" valor={pct(ratio(embudo.pasos[5].n, embudo.pasos[0].n))} pie={`${int(embudo.pasos[5].n)} de ${int(embudo.pasos[0].n)} que entraron`} />
         </div>
         <div className="pn-funnel">
           {embudo.pasos.map((p, i) => (
@@ -392,6 +421,21 @@ export default function PanelClient({ datos, almacen }: { datos: Datos; almacen:
         </div>
       </section>
 
+      <section className="pn-sec" id="conexiones">
+        <h2>Conexiones</h2>
+        <div className="pn-tablewrap">
+          <table className="pn-table">
+            <thead><tr><th>Fuente</th><th>Estado</th><th>Qué aporta</th></tr></thead>
+            <tbody>
+              <tr><td>Ninjo</td><td>{conexiones.ninjo ? `Conectado · última lectura ${hace(datos.meta.agendas)}` : "Falta el usuario de Ninjo en Vercel"}</td><td>Conversaciones, embudo, agendas (GoHighLevel), seguidores, publicaciones</td></tr>
+              <tr><td>Meta Ads</td><td>{conexiones.meta ? "Conectado" : "Pendiente de conectar"}</td><td>Inversión, coste por seguidor, por conversación y por agenda</td></tr>
+              <tr><td>Estadísticas de Instagram</td><td>{conexiones.meta ? "Conectado" : "Pendiente de conectar"}</td><td>Visualizaciones, alcance, seguidores por reel e historias</td></tr>
+              <tr><td>Stripe</td><td>{conexiones.stripe ? "Conectado" : "Pendiente de conectar"}</td><td>Pagos y facturación automáticos</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <details className="pn-details">
         <summary>Cómo se calcula cada número</summary>
         <dl>
@@ -401,7 +445,7 @@ export default function PanelClient({ datos, almacen }: { datos: Datos; almacen:
           <dt>Nos dan sus datos</dt><dd>Dejaron su correo en la conversación.</dd>
           <dt>Agendan, vienen y pagan</dt><dd>Tienen una llamada reservada en GoHighLevel sin cancelar; de esas, las que vinieron y las que compraron según lo marcado.</dd>
           <dt>Show rate y no-show</dt><dd>De las llamadas pasadas del periodo ya marcadas, qué parte vino y qué parte no.</dd>
-          <dt>Actualización</dt><dd>Claude lee Ninjo y manda los datos a este panel varias veces al día; el embudo se recalcula cada noche.</dd>
+          <dt>Actualización</dt><dd>La web lee Ninjo sola: cada vez que abres el panel (si los datos tienen más de 30 minutos), con el botón Actualizar y cada noche, cuando además recalcula el embudo de las últimas tres semanas.</dd>
         </dl>
       </details>
     </main>

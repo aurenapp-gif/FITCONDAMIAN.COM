@@ -1,12 +1,25 @@
+import { ninjoListo } from "../_panel/ninjo";
+import { ejecutar } from "../_panel/sincronizar";
 import { almacenListo, leer } from "../_panel/store";
 import PanelClient, { type Datos } from "./PanelClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const maxDuration = 60;
+
+const VIEJO_MIN = 30; // al abrir, si los datos tienen más de 30 minutos, se refrescan solos
 
 export default async function Panel() {
   const listo = almacenListo();
-  const [embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta] = await Promise.all([
+  const conNinjo = ninjoListo();
+  if (listo && conNinjo) {
+    const meta = await leer<Record<string, string>>("meta", {});
+    const edad = meta.agendas ? (Date.now() - new Date(meta.agendas).getTime()) / 60000 : Infinity;
+    if (edad > VIEJO_MIN) {
+      await Promise.race([ejecutar("apertura", false).catch(() => null), new Promise((r) => setTimeout(r, 12000))]);
+    }
+  }
+  const [embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, registro] = await Promise.all([
     leer<Datos["embudo"]>("embudo", {}),
     leer<Datos["contenido"]>("contenido", {}),
     leer<Datos["seguidores"]>("seguidores", {}),
@@ -16,6 +29,14 @@ export default async function Panel() {
     leer<Datos["origenes"]>("origenes", {}),
     leer<Datos["resultados"]>("resultados", {}),
     leer<Datos["meta"]>("meta", {}),
+    leer<{ ok?: boolean; error?: string; fin?: string; via?: string }[]>("registro", []),
   ]);
-  return <PanelClient almacen={listo} datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta }} />;
+  const ultimo = registro[0] || null;
+  return (
+    <PanelClient
+      almacen={listo}
+      conexiones={{ ninjo: conNinjo, ultimoError: ultimo && !ultimo.ok ? ultimo.error || "error" : null, meta: false, stripe: false }}
+      datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta }}
+    />
+  );
 }
