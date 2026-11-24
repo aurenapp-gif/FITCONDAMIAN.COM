@@ -30,7 +30,7 @@ const ORIGENES: [Origen, string][] = [
   ["mensaje", "Nos escriben ellas"],
 ];
 const COLORES: Record<Origen, string> = { bienvenida: "#343337", saludo: "#8a8790", comentario: "#e48be0", mensaje: "#c9a227" };
-const PERIODOS = [7, 14, 30, 90];
+const PERIODOS: (number | "mes")[] = ["mes", 7, 14, 30, 90];
 
 // ---------- Utilidades ----------
 const fmtDia = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" });
@@ -112,7 +112,7 @@ function SiNo({ valor, onCambio, desactivado, etiqueta }: { valor: string; onCam
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean };
 
 export default function PanelClient({ datos, almacen, conexiones }: { datos: Datos; almacen: boolean; conexiones: Conexiones }) {
-  const [dias, setDias] = useState(30);
+  const [periodo, setPeriodo] = useState<number | "mes">("mes");
   const [origen, setOrigen] = useState<"todas" | Origen>("todas");
   const [resultados, setResultados] = useState<Record<string, Resultado>>(datos.resultados || {});
   const [error, setError] = useState("");
@@ -120,7 +120,9 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const [msgAct, setMsgAct] = useState("");
 
   const hoy = hoyMadrid();
-  const desde = sumarDias(hoy, -dias);
+  const desde = periodo === "mes" ? `${hoy.slice(0, 8)}01` : sumarDias(hoy, -periodo);
+  const dias = periodo === "mes" ? Math.max(1, Math.round((Date.parse(`${hoy}T12:00:00Z`) - Date.parse(`${desde}T12:00:00Z`)) / 864e5)) : periodo;
+  const nombrePeriodo = periodo === "mes" ? `en lo que va de ${["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"][Number(hoy.slice(5, 7)) - 1]}` : `en los últimos ${periodo} días`;
 
   // Llamadas no canceladas desde el inicio del periodo, con su resultado.
   const llamadas = useMemo(() => {
@@ -153,6 +155,12 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   }, [datos.agendas, llamadas, desde]);
 
   const diasEmbudo = useMemo(() => Object.values(datos.embudo).filter((d) => d.fecha >= desde).sort((a, b) => (a.fecha < b.fecha ? -1 : 1)), [datos.embudo, desde]);
+
+  const aperturas = useMemo(() => {
+    const filas = diasEmbudo.map((d) => ({ fecha: d.fecha, b_env: num(d.bienvenida_entran), b_resp: num(d.bienvenida_conversan), s_env: num(d.saludo_entran), s_resp: num(d.saludo_conversan) }));
+    const tot = filas.reduce((t, f) => ({ b_env: t.b_env + f.b_env, b_resp: t.b_resp + f.b_resp, s_env: t.s_env + f.s_env, s_resp: t.s_resp + f.s_resp }), { b_env: 0, b_resp: 0, s_env: 0, s_resp: 0 });
+    return { filas: filas.slice().reverse(), tot, n: filas.length };
+  }, [diasEmbudo]);
 
   const embudo = useMemo(() => {
     const ors = origen === "todas" ? ORIGENES.map((o) => o[0]) : [origen];
@@ -249,7 +257,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
 
   const pasadas = llamadas.filter((l) => l.pasada).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
   const proximas = llamadas.filter((l) => !l.pasada).sort((a, b) => (a.fecha < b.fecha ? -1 : 1));
-  const origenesPeriodo = (datos.origenes[String(dias)] || []).slice().sort((a, b) => b.conversaciones - a.conversaciones);
+  const ventanaOrigen = [7, 14, 30, 90].find((v) => v >= dias) || 90;
+  const origenesPeriodo = (datos.origenes[String(ventanaOrigen)] || []).slice().sort((a, b) => b.conversaciones - a.conversaciones);
   const pendientes = kLlamadas.sin_marcar + kLlamadas.venta_sin_marcar;
   const maxEmbudo = Math.max(1, ...embudo.pasos.map((p) => p.n));
 
@@ -259,14 +268,14 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
         <div>
           <h1>Fit con Damián · panel</h1>
           <p className="pn-lede">
-            En los últimos {dias} días entraron <b>{int(embudo.pasos[0].n)}</b> personas, <b>{int(embudo.pasos[5].n)}</b> agendaron y <b>{int(embudo.pasos[7].n)}</b> pagaron.
+            {nombrePeriodo.charAt(0).toUpperCase() + nombrePeriodo.slice(1)} entraron <b>{int(embudo.pasos[0].n)}</b> personas, <b>{int(embudo.pasos[5].n)}</b> agendaron y <b>{int(embudo.pasos[7].n)}</b> pagaron.
             {kLlamadas.sin_marcar ? ` Faltan por marcar ${kLlamadas.sin_marcar} llamadas.` : ""}
           </p>
           <p className="pn-sync">Datos de Ninjo actualizados {hace(datos.meta.agendas)} · embudo {hace(datos.meta.embudo)}</p>
         </div>
         <div className="pn-head-r">
           <div className="pn-chips" role="group" aria-label="Periodo">
-            {PERIODOS.map((p) => <button key={p} type="button" aria-pressed={dias === p} onClick={() => setDias(p)}>{p} días</button>)}
+            {PERIODOS.map((p) => <button key={p} type="button" aria-pressed={periodo === p} onClick={() => setPeriodo(p)}>{p === "mes" ? "Este mes" : `${p} días`}</button>)}
           </div>
           <button type="button" className="pn-btn" disabled={!!actualizando || !conexiones.ninjo} onClick={() => actualizar(false)}>{actualizando === "rapida" ? "Actualizando…" : "Actualizar ahora"}</button>
           <button type="button" className="pn-link" disabled={!!actualizando || !conexiones.ninjo} onClick={() => actualizar(true)}>Recalcular embudo</button>
@@ -325,6 +334,40 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
           extra={(f) => `Conversan: ${int(num(f.conv))}`}
           vacio="Todavía no hay días calculados en este periodo."
         />
+      </section>
+
+      <section className="pn-sec" id="aperturas">
+        <h2>Bienvenidas y mensajes a seguidoras</h2>
+        <p className="pn-sub">Primeros mensajes que mandamos cada día y cuántas contestaron. Bienvenidas: a seguidoras nuevas. Mensajes a seguidoras: el saludo a las que ya nos seguían.</p>
+        <div className="pn-grid">
+          <Tarjeta titulo="Bienvenidas al día" valor={int(aperturas.n ? Math.round(aperturas.tot.b_env / aperturas.n) : null)} pie={`${int(aperturas.tot.b_env)} ${nombrePeriodo}`} />
+          <Tarjeta titulo="Responden a la bienvenida" valor={pct(ratio(aperturas.tot.b_resp, aperturas.tot.b_env))} pie={`${int(aperturas.tot.b_resp)} de ${int(aperturas.tot.b_env)}`} />
+          <Tarjeta titulo="Mensajes a seguidoras al día" valor={int(aperturas.n ? Math.round(aperturas.tot.s_env / aperturas.n) : null)} pie={`${int(aperturas.tot.s_env)} ${nombrePeriodo}`} />
+          <Tarjeta titulo="Responden al mensaje" valor={pct(ratio(aperturas.tot.s_resp, aperturas.tot.s_env))} pie={`${int(aperturas.tot.s_resp)} de ${int(aperturas.tot.s_env)}`} />
+        </div>
+        <div className="pn-tablewrap">
+          <table className="pn-table">
+            <thead>
+              <tr><th>Día</th><th className="r">Bienvenidas</th><th className="r">Responden</th><th className="r">%</th><th className="r">Mensajes a seguidoras</th><th className="r">Responden</th><th className="r">%</th></tr>
+            </thead>
+            <tbody>
+              {aperturas.filas.length ? aperturas.filas.map((f) => (
+                <tr key={f.fecha}>
+                  <td>{dia(f.fecha)}</td>
+                  <td className="r">{int(f.b_env)}</td><td className="r">{int(f.b_resp)}</td><td className="r">{pct(ratio(f.b_resp, f.b_env))}</td>
+                  <td className="r">{int(f.s_env)}</td><td className="r">{int(f.s_resp)}</td><td className="r">{pct(ratio(f.s_resp, f.s_env))}</td>
+                </tr>
+              )) : <tr><td colSpan={7} className="pn-empty">Todavía no hay días calculados en este periodo. Pulsa &quot;Recalcular embudo&quot;.</td></tr>}
+              {aperturas.filas.length > 0 && (
+                <tr className="pn-total">
+                  <td>Total</td>
+                  <td className="r">{int(aperturas.tot.b_env)}</td><td className="r">{int(aperturas.tot.b_resp)}</td><td className="r">{pct(ratio(aperturas.tot.b_resp, aperturas.tot.b_env))}</td>
+                  <td className="r">{int(aperturas.tot.s_env)}</td><td className="r">{int(aperturas.tot.s_resp)}</td><td className="r">{pct(ratio(aperturas.tot.s_resp, aperturas.tot.s_env))}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="pn-sec" id="anuncios">

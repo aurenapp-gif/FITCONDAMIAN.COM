@@ -73,6 +73,7 @@
 .pn-table td { padding: 9px 12px; border-bottom: 1px solid var(--pn-line); white-space: nowrap; vertical-align: middle; }
 .pn-table tr:last-child td { border-bottom: 0; }
 .pn-table .r { text-align: right; }
+.pn-table .pn-total td { font-weight: 600; border-top: 2px solid var(--pn-line); background: #faf7ee; }
 .pn-table a { color: inherit; }
 .pn-texto { max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 .pn-empty { color: var(--pn-muted); padding: 14px 12px; margin: 0; }

@@ -104,7 +104,10 @@ async function idsContactos(filtro: { id: string; value: string }, desde: string
 
 export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number | string>> {
   const hoy = diaMadrid(new Date());
-  const desde = sumarDias(hoy, -diasAtras), hasta = sumarDias(hoy, -1);
+  // Cubre al menos las últimas `diasAtras` jornadas y, siempre, el mes en curso desde el día 1.
+  const inicioMes = `${hoy.slice(0, 8)}01`;
+  const hace = sumarDias(hoy, -diasAtras);
+  const desde = inicioMes < hace ? inicioMes : hace, hasta = sumarDias(hoy, -1);
   const base = { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100,
     first_message_after: `${desde}T00:00:00${offsetMadrid(desde)}`, first_message_before: `${hasta}T23:59:59${offsetMadrid(hasta)}` };
   type Pagina = { conversations: Conversacion[]; total_pages: number; total_count: number; excluded_by_has_agent?: number };
