@@ -71,6 +71,17 @@ type Conversacion = { conversation_id: string; contact_id: string; messages?: Me
 type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
 const ORIGENES: Origen[] = ["bienvenida", "saludo", "comentario", "mensaje"];
 
+// Plantillas de apertura (sin acentos ni mayúsculas): b = bienvenida, s = mensaje a seguidora, o = otros, h = reacción a historia
+const sinAcentos = (t: string) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function tipoApertura(texto: string): "b" | "s" | "o" | "h" | null {
+  const n = sinAcentos(texto);
+  if ((n.includes("pillado") && n.includes("movil")) || n.includes("darte la bienvenida")) return "b";
+  if (n.includes("llevo viendo") || n.includes("llevo un tiempo viendote") || n.includes("llevo viendote")) return "s";
+  if (n.includes("darle algun consejo") || n.includes("video de trabajo a turnos")) return "o";
+  if (n.includes("reaccionado a mi historia")) return "h";
+  return null;
+}
+
 function clasificar(c: Conversacion) {
   const msgs = (c.messages || []).slice().sort((a, b) => String(a.sent_at || "").localeCompare(String(b.sent_at || "")));
   const m0 = msgs[0];
@@ -108,9 +119,10 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
   // Cubre al menos las últimas `diasAtras` jornadas y, siempre, el mes en curso desde el día 1.
   const inicioMes = `${hoy.slice(0, 8)}01`;
   const hace = sumarDias(hoy, -diasAtras);
-  const desde = inicioMes < hace ? inicioMes : hace, hasta = sumarDias(hoy, -1);
+  const desde = inicioMes < hace ? inicioMes : hace, hasta = hoy; // hoy va parcial y se completa en la siguiente lectura
   const base = { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100,
-    first_message_after: `${desde}T00:00:00${offsetMadrid(desde)}`, first_message_before: `${hasta}T23:59:59${offsetMadrid(hasta)}` };
+    // Todas las conversaciones con actividad desde `desde`: así entran también los mensajes enviados en conversaciones antiguas.
+    last_message_after: `${desde}T00:00:00${offsetMadrid(desde)}` };
   type Pagina = { conversations: Conversacion[]; total_pages: number; total_count: number; excluded_by_has_agent?: number };
   // Por MCP: la API normal solo devuelve conversaciones con agente y aquí hacen falta todas (has_agent "any").
   const buscar = (page: number) => ninjoHerramienta<Pagina>("search_conversations", { ...base, page });
@@ -135,6 +147,7 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
   for (let d = desde; d <= hasta; d = sumarDias(d, 1)) {
     const doc: Dia = { fecha: d, conversaciones_revisadas: 0, ids: { bienvenida: [], saludo: [], comentario: [], mensaje: [] } };
     ORIGENES.forEach((o) => ["entran", "conversan", "final", "datos"].forEach((k) => { doc[`${o}_${k}`] = 0; }));
+    ["b", "s", "o", "h"].forEach((t) => { doc[`ap_${t}`] = 0; doc[`ap_${t}_resp`] = 0; });
     embudo[d] = doc;
   }
   const contenido: Record<string, { post: string; fecha: string; entran: number; conversan: number; final: number; datos: number; ids: string[] }> = {};
@@ -158,6 +171,21 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
       const p = (contenido[id] ||= { post: r.post, fecha: r.dia, entran: 0, conversan: 0, final: 0, datos: 0, ids: [] });
       p.entran++; if (r.conversan) { p.conversan++; p.ids.push(r.contacto); } if (llega) p.final++; if (da) p.datos++;
     }
+  });
+
+  // Mensajes de apertura enviados cada día (estén o no al principio de la conversación) y si respondieron después.
+  convs.forEach((c) => {
+    const msgs = (c.messages || []).slice().sort((a, b) => String(a.sent_at || "").localeCompare(String(b.sent_at || "")));
+    msgs.forEach((m, i) => {
+      if (m.direction !== "OUTBOUND" || m.status === "FAILED" || !m.sent_at) return;
+      const t = tipoApertura(m.content || "");
+      if (!t) return;
+      const e = embudo[diaMadrid(m.sent_at)];
+      if (!e) return;
+      const resp = msgs.slice(i + 1).some((x) => x.direction === "INBOUND" && x.type !== "COMMENT" && String(x.sent_at || "") > String(m.sent_at));
+      e[`ap_${t}`] = ((e[`ap_${t}`] as number) || 0) + 1;
+      e[`ap_${t}_resp`] = ((e[`ap_${t}_resp`] as number) || 0) + (resp ? 1 : 0);
+    });
   });
 
   const ahora = new Date().toISOString();

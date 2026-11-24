@@ -157,8 +157,17 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const diasEmbudo = useMemo(() => Object.values(datos.embudo).filter((d) => d.fecha >= desde).sort((a, b) => (a.fecha < b.fecha ? -1 : 1)), [datos.embudo, desde]);
 
   const aperturas = useMemo(() => {
-    const filas = diasEmbudo.map((d) => ({ fecha: d.fecha, b_env: num(d.bienvenida_entran), b_resp: num(d.bienvenida_conversan), s_env: num(d.saludo_entran), s_resp: num(d.saludo_conversan) }));
-    const tot = filas.reduce((t, f) => ({ b_env: t.b_env + f.b_env, b_resp: t.b_resp + f.b_resp, s_env: t.s_env + f.s_env, s_resp: t.s_resp + f.s_resp }), { b_env: 0, b_resp: 0, s_env: 0, s_resp: 0 });
+    // Cuenta cada mensaje de apertura enviado ese día (ap_*); los días antiguos sin ese dato usan las conversaciones abiertas.
+    const filas = diasEmbudo.map((d) => {
+      const nuevo = d.ap_b !== undefined;
+      return {
+        fecha: d.fecha,
+        b_env: num(nuevo ? d.ap_b : d.bienvenida_entran), b_resp: num(nuevo ? d.ap_b_resp : d.bienvenida_conversan),
+        s_env: num(nuevo ? d.ap_s : d.saludo_entran), s_resp: num(nuevo ? d.ap_s_resp : d.saludo_conversan),
+        o_env: num(d.ap_o) + num(d.ap_h), o_resp: num(d.ap_o_resp) + num(d.ap_h_resp),
+      };
+    });
+    const tot = filas.reduce((t, f) => ({ b_env: t.b_env + f.b_env, b_resp: t.b_resp + f.b_resp, s_env: t.s_env + f.s_env, s_resp: t.s_resp + f.s_resp, o_env: t.o_env + f.o_env, o_resp: t.o_resp + f.o_resp }), { b_env: 0, b_resp: 0, s_env: 0, s_resp: 0, o_env: 0, o_resp: 0 });
     return { filas: filas.slice().reverse(), tot, n: filas.length };
   }, [diasEmbudo]);
 
@@ -338,7 +347,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
 
       <section className="pn-sec" id="aperturas">
         <h2>Bienvenidas y mensajes a seguidoras</h2>
-        <p className="pn-sub">Primeros mensajes que mandamos cada día y cuántas contestaron. Bienvenidas: a seguidoras nuevas. Mensajes a seguidoras: el saludo a las que ya nos seguían.</p>
+        <p className="pn-sub">Cada mensaje de apertura enviado ese día y si la persona contestó después. Bienvenidas: &quot;me has pillado (justo) con el móvil…&quot;. Mensajes a seguidoras: &quot;te llevo viendo un tiempo por aquí…&quot; y &quot;llevo un tiempo viéndote por mi cuenta…&quot;. Otros: &quot;darle algún consejo&quot;, &quot;vídeo de trabajo a turnos&quot; y respuestas a reacciones de historias. El día de hoy va en directo.</p>
         <div className="pn-grid">
           <Tarjeta titulo="Bienvenidas al día" valor={int(aperturas.n ? Math.round(aperturas.tot.b_env / aperturas.n) : null)} pie={`${int(aperturas.tot.b_env)} ${nombrePeriodo}`} />
           <Tarjeta titulo="Responden a la bienvenida" valor={pct(ratio(aperturas.tot.b_resp, aperturas.tot.b_env))} pie={`${int(aperturas.tot.b_resp)} de ${int(aperturas.tot.b_env)}`} />
@@ -348,7 +357,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
         <div className="pn-tablewrap">
           <table className="pn-table">
             <thead>
-              <tr><th>Día</th><th className="r">Bienvenidas</th><th className="r">Responden</th><th className="r">%</th><th className="r">Mensajes a seguidoras</th><th className="r">Responden</th><th className="r">%</th></tr>
+              <tr><th>Día</th><th className="r">Bienvenidas</th><th className="r">Responden</th><th className="r">%</th><th className="r">Mensajes a seguidoras</th><th className="r">Responden</th><th className="r">%</th><th className="r">Otros mensajes</th><th className="r">Responden</th></tr>
             </thead>
             <tbody>
               {aperturas.filas.length ? aperturas.filas.map((f) => (
@@ -356,13 +365,15 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   <td>{dia(f.fecha)}</td>
                   <td className="r">{int(f.b_env)}</td><td className="r">{int(f.b_resp)}</td><td className="r">{pct(ratio(f.b_resp, f.b_env))}</td>
                   <td className="r">{int(f.s_env)}</td><td className="r">{int(f.s_resp)}</td><td className="r">{pct(ratio(f.s_resp, f.s_env))}</td>
+                  <td className="r">{int(f.o_env)}</td><td className="r">{int(f.o_resp)}</td>
                 </tr>
-              )) : <tr><td colSpan={7} className="pn-empty">Todavía no hay días calculados en este periodo. Pulsa &quot;Recalcular embudo&quot;.</td></tr>}
+              )) : <tr><td colSpan={9} className="pn-empty">Todavía no hay días calculados en este periodo. Pulsa &quot;Recalcular embudo&quot;.</td></tr>}
               {aperturas.filas.length > 0 && (
                 <tr className="pn-total">
                   <td>Total</td>
                   <td className="r">{int(aperturas.tot.b_env)}</td><td className="r">{int(aperturas.tot.b_resp)}</td><td className="r">{pct(ratio(aperturas.tot.b_resp, aperturas.tot.b_env))}</td>
                   <td className="r">{int(aperturas.tot.s_env)}</td><td className="r">{int(aperturas.tot.s_resp)}</td><td className="r">{pct(ratio(aperturas.tot.s_resp, aperturas.tot.s_env))}</td>
+                  <td className="r">{int(aperturas.tot.o_env)}</td><td className="r">{int(aperturas.tot.o_resp)}</td>
                 </tr>
               )}
             </tbody>
