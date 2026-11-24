@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { iguales } from "../../../_panel/auth";
+import { cronCorrecto } from "../../../_panel/auth";
 import { ninjoListo } from "../../../_panel/ninjo";
 import { ejecutar } from "../../../_panel/sincronizar";
 import { almacenListo } from "../../../_panel/store";
@@ -11,8 +11,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 export async function GET(req: Request) {
-  const secreto = process.env.CRON_SECRET;
-  if (!secreto || !iguales(req.headers.get("authorization") || "", `Bearer ${secreto}`)) {
+  if (!cronCorrecto(req)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
   if (!almacenListo() || !ninjoListo()) return NextResponse.json({ error: "Falta configurar el almacén o el acceso a Ninjo" }, { status: 503 });

@@ -53,3 +53,10 @@ export function tokenSyncCorrecto(cabecera: string | null): boolean {
   const m = cabecera.match(/^Bearer\s+(.+)$/i);
   return Boolean(m) && iguales(m![1].trim(), t);
 }
+
+// Clave de las tareas programadas (CRON_SECRET): en "Authorization: Bearer" (como la manda Vercel) o en "x-cron-secret".
+export function cronCorrecto(req: Request): boolean {
+  const t = process.env.CRON_SECRET;
+  if (!t) return false;
+  return iguales(req.headers.get("authorization") || "", `Bearer ${t}`) || iguales(req.headers.get("x-cron-secret") || "", t);
+}

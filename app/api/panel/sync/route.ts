@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { tokenSyncCorrecto } from "../../../_panel/auth";
+import { cronCorrecto, tokenSyncCorrecto } from "../../../_panel/auth";
 import { FUSIONABLES, TIPOS, type Tipo, almacenListo, guardar, leer, marcarSync } from "../../../_panel/store";
 
 // Entrada de datos del panel. La usa la tarea de Claude que lee Ninjo cada día.
@@ -11,12 +11,12 @@ import { FUSIONABLES, TIPOS, type Tipo, almacenListo, guardar, leer, marcarSync 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  if (!tokenSyncCorrecto(req.headers.get("authorization"))) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!tokenSyncCorrecto(req.headers.get("authorization")) && !cronCorrecto(req)) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   return NextResponse.json({ almacen: almacenListo(), meta: await leer("meta", {}) });
 }
 
 export async function POST(req: Request) {
-  if (!tokenSyncCorrecto(req.headers.get("authorization"))) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!tokenSyncCorrecto(req.headers.get("authorization")) && !cronCorrecto(req)) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   if (!almacenListo()) return NextResponse.json({ error: "Falta conectar el Blob store (BLOB_READ_WRITE_TOKEN)." }, { status: 503 });
   let cuerpo: { tipo?: string; datos?: unknown };
   try {
