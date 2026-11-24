@@ -113,6 +113,10 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     first_message_after: `${desde}T00:00:00${offsetMadrid(desde)}`, first_message_before: `${hasta}T23:59:59${offsetMadrid(hasta)}` };
   type Pagina = { conversations: Conversacion[]; total_pages: number; total_count: number; excluded_by_has_agent?: number };
   const p1 = await ninjo<Pagina>("/api/v1/analytics/conversations/search", { query: { ...base, page: 1 } });
+  // Si la API deja fuera las conversaciones sin agente (bienvenidas sin respuesta), el embudo saldría mal: no se toca lo guardado.
+  if ((p1.excluded_by_has_agent || 0) > 0) {
+    return { omitido: `La API de Ninjo dejó fuera ${p1.excluded_by_has_agent} conversaciones sin agente; se conserva el embudo guardado.` };
+  }
   const resto = await enParalelo(Array.from({ length: Math.max(0, (p1.total_pages || 1) - 1) }, (_, i) => i + 2), 4,
     (page) => ninjo<Pagina>("/api/v1/analytics/conversations/search", { query: { ...base, page } }));
   const convs = new Map<string, Conversacion>();
