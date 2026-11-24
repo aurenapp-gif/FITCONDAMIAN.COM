@@ -58,3 +58,46 @@ export async function enParalelo<T, R>(items: T[], n: number, fn: (x: T) => Prom
   }));
   return out;
 }
+
+// Herramientas de Ninjo por su conexión MCP (la misma que usa Claude). Algunas opciones, como incluir las
+// conversaciones sin agente, solo están ahí.
+let mcpSesion: string | null = null;
+
+async function mcpPost(cuerpo: unknown): Promise<{ texto: string; sesion: string | null }> {
+  const r = await fetch(new URL("/mcp", BASE), {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${await token()}`,
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+      ...(mcpSesion ? { "Mcp-Session-Id": mcpSesion } : {}),
+    },
+    body: JSON.stringify(cuerpo),
+    cache: "no-store",
+  });
+  const texto = await r.text();
+  if (!r.ok) throw new Error(`Ninjo MCP respondió ${r.status}: ${texto.slice(0, 200)}`);
+  return { texto, sesion: r.headers.get("mcp-session-id") };
+}
+
+function leerRespuesta(texto: string): { result?: { content?: { type: string; text?: string }[]; isError?: boolean }; error?: { message: string } } {
+  const t = texto.trim();
+  if (t.startsWith("{")) return JSON.parse(t);
+  const datos = t.split("\n").filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).filter(Boolean);
+  return JSON.parse(datos[datos.length - 1] || "{}");
+}
+
+let mcpId = 1;
+export async function ninjoHerramienta<T = unknown>(nombre: string, args: Record<string, unknown>): Promise<T> {
+  if (!mcpSesion) {
+    const ini = await mcpPost({ jsonrpc: "2.0", id: mcpId++, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "panel-fcd", version: "1.0" } } });
+    mcpSesion = ini.sesion;
+    await mcpPost({ jsonrpc: "2.0", method: "notifications/initialized" }).catch(() => null);
+  }
+  const { texto } = await mcpPost({ jsonrpc: "2.0", id: mcpId++, method: "tools/call", params: { name: nombre, arguments: args } });
+  const res = leerRespuesta(texto);
+  if (res.error) throw new Error(`Ninjo ${nombre}: ${res.error.message}`);
+  const txt = (res.result?.content || []).filter((c) => c.type === "text").map((c) => c.text || "").join("");
+  if (res.result?.isError) throw new Error(`Ninjo ${nombre}: ${txt.slice(0, 200)}`);
+  return JSON.parse(txt) as T;
+}

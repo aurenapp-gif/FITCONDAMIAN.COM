@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cronCorrecto } from "../../../_panel/auth";
-import { ninjo } from "../../../_panel/ninjo";
+import { ninjo, ninjoHerramienta } from "../../../_panel/ninjo";
 
 // Diagnóstico (solo con CRON_SECRET): prueba parámetros de la búsqueda de conversaciones de Ninjo
 // y devuelve solo los recuentos, nunca las conversaciones.
@@ -12,6 +12,14 @@ export async function GET(req: Request) {
   const ruta = q._ruta || "/api/v1/analytics/conversations/search";
   delete q._ruta;
   try {
+    if (q._herramienta) {
+      const nombre = q._herramienta; delete q._herramienta;
+      const args: Record<string, unknown> = { limit: 1 };
+      for (const [k, v] of Object.entries(q)) args[k] = /^\d+$/.test(v) ? Number(v) : v;
+      const r = await ninjoHerramienta<Record<string, unknown>>(nombre, args);
+      const { conversations, ...resto } = r as { conversations?: unknown[] };
+      return NextResponse.json({ via: "mcp", ...resto, devueltas: Array.isArray(conversations) ? conversations.length : null });
+    }
     const r = await ninjo<Record<string, unknown>>(ruta, { query: { limit: 1, ...q } });
     const { conversations, ...resto } = r as { conversations?: unknown[] };
     return NextResponse.json({ ...resto, devueltas: Array.isArray(conversations) ? conversations.length : null });
