@@ -1,5 +1,5 @@
 // Almacén privado del panel en Vercel Blob (acceso "private"): un JSON por tipo de dato.
-// Necesita BLOB_READ_WRITE_TOKEN, que Vercel crea al conectar un Blob store al proyecto.
+// Necesita BLOB_READ_WRITE_TOKEN o BLOB_STORE_ID, que Vercel crea al conectar un Blob store al proyecto.
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
@@ -13,7 +13,8 @@ export const TIPOS = ["embudo", "contenido", "seguidores", "agendas", "perfil", 
 export type Tipo = (typeof TIPOS)[number];
 
 export function almacenListo(): boolean {
-  return Boolean(LOCAL || process.env.BLOB_READ_WRITE_TOKEN);
+  // Vale la clave de lectura/escritura o la conexión nueva de Vercel (BLOB_STORE_ID + OIDC).
+  return Boolean(LOCAL || process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 export async function leer<T>(tipo: Tipo, porDefecto: T): Promise<T> {
