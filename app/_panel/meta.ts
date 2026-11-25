@@ -26,14 +26,16 @@ export type FilaAnuncio = { fecha: string; campana: string; conjunto: string; an
 export async function anunciosMeta(desde: string, hasta: string): Promise<FilaAnuncio[]> {
   if (!cuenta()) throw new Error("Falta META_AD_ACCOUNT_ID");
   const filas: FilaAnuncio[] = [];
-  let url: string | null = `act_${cuenta()}/insights`;
-  let params: Record<string, string> = {
+  const ruta = `act_${cuenta()}/insights`;
+  const params: Record<string, string> = {
     level: "ad", time_increment: "1", limit: "500",
     fields: "date_start,campaign_name,adset_name,ad_name,ad_id,spend,impressions,reach,clicks,actions",
     time_range: JSON.stringify({ since: desde, until: hasta }),
   };
-  for (let i = 0; url && i < 30; i++) {
-    const r: { data: (Record<string, string> & { actions?: Accion[] })[]; paging?: { next?: string } } = await graph(url, params);
+  // Se pagina con el cursor "after" y la misma versión de la API (el enlace "next" de Meta apunta a una versión antigua).
+  let despues = "";
+  for (let i = 0; i < 40; i++) {
+    const r: { data: (Record<string, string> & { actions?: Accion[] })[]; paging?: { next?: string; cursors?: { after?: string } } } = await graph(ruta, despues ? { ...params, after: despues } : params);
     for (const d of r.data || []) {
       const acc = (tipo: RegExp) => (d.actions || []).filter((a) => tipo.test(a.action_type)).reduce((t, a) => t + (Number(a.value) || 0), 0);
       filas.push({
@@ -44,8 +46,8 @@ export async function anunciosMeta(desde: string, hasta: string): Promise<FilaAn
         visitas_perfil: acc(/profile_visit|instagram_profile_visit/),
       });
     }
-    url = r.paging?.next || null;
-    params = {};
+    despues = r.paging?.next ? r.paging?.cursors?.after || "" : "";
+    if (!despues) break;
   }
   return filas;
 }
