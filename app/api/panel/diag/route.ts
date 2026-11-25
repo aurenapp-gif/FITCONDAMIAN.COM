@@ -22,7 +22,10 @@ export async function GET(req: Request) {
     const dias = Number(q._origenes) > 1 ? Number(q._origenes) : 7;
     const desde = new Date(Date.now() - dias * 864e5).toISOString();
     type M = Record<string, unknown> & { direction?: string; type?: string; content?: string; sent_at?: string; author?: string };
-    const p = await ninjoHerramienta<{ conversations: { messages?: M[]; meta?: Record<string, unknown> }[]; total_pages: number }>("search_conversations", { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100, first_message_after: desde, page: 1 });
+    type P = { conversations: { messages?: M[]; meta?: Record<string, unknown> }[]; total_pages: number };
+    const p1 = await ninjoHerramienta<P>("search_conversations", { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100, first_message_after: desde, page: 1 });
+    const mas = await Promise.all(Array.from({ length: Math.min(9, (p1.total_pages || 1) - 1) }, (_, i) => ninjoHerramienta<P>("search_conversations", { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100, first_message_after: desde, page: i + 2 })));
+    const p = { conversations: [p1, ...mas].flatMap((x) => x.conversations || []) };
     const tipos: Record<string, number> = {}, campos: Record<string, number> = {}, metaCampos: Record<string, number> = {};
     const ejemplos: Record<string, string[]> = {};
     for (const c of p.conversations || []) {
@@ -30,10 +33,11 @@ export async function GET(req: Request) {
       const ms = (c.messages || []).slice().sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
       const m0 = ms[0]; if (!m0) continue;
       Object.keys(m0).forEach((k) => { campos[k] = (campos[k] || 0) + 1; });
-      const k = `${m0.direction}|${m0.type}|${m0.author}`;
+      const ap = m0.direction === "OUTBOUND" ? (/bienvenida/i.test(String(m0.content)) ? "bienv" : /llevo viendo|llevo un tiempo|viendote|viéndote/i.test(String(m0.content)) ? "seguid" : /historia/i.test(String(m0.content)) ? "historia" : "otro") : "";
+      const k = `${m0.direction}|${m0.type}|${m0.author}|${ap}`;
       tipos[k] = (tipos[k] || 0) + 1;
       const l = (ejemplos[k] ||= []);
-      if (l.length < 12) l.push(JSON.stringify(Object.fromEntries(Object.entries(m0).filter(([kk]) => !["content"].includes(kk)))).slice(0, 300) + " || " + String(m0.content || "").slice(0, 90));
+      if (l.length < 14 && (m0.direction === "INBOUND" || ap === "otro" || ap === "historia")) l.push(JSON.stringify(Object.fromEntries(Object.entries(m0).filter(([kk]) => !["content"].includes(kk)))).slice(0, 300) + " || " + String(m0.content || "").slice(0, 90));
     }
     return NextResponse.json({ total: (p.conversations || []).length, tipos, campos, metaCampos, ejemplos, metaEjemplo: JSON.stringify(p.conversations?.[0]?.meta || {}).slice(0, 1500) });
   }
