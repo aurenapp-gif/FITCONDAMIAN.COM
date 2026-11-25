@@ -1,54 +1,42 @@
-# Panel privado de Fit con Damián: cómo se rellena
+# Panel privado de Fit con Damián
 
 El panel vive en **https://fitcondamian.com/panel-fcd** (con contraseña, sin enlaces desde la web y con
-`noindex`). Sus datos están en un Blob store privado de Vercel y llegan por `POST /api/panel/sync`.
-Claude los lee de Ninjo y los envía; lo único manual es marcar en el panel si cada persona vino y compró.
+`noindex`). Se rellena solo: un cron de Vercel (`vercel.json`, cada hora) llama a `/api/panel/cron`, que lee
+Ninjo, Meta, Hotmart y Stripe y guarda cada tipo de dato como un JSON en un Blob store privado (`panel/`).
+Lo único manual es marcar en el panel si cada persona vino a la llamada y las ventas por transferencia.
 
-## Variables en Vercel (proyecto fitcondamian-com)
+## Variables en Vercel (proyecto fitcondamian-com, entorno Production)
 
-- `PANEL_PASSWORD`: contraseña del panel. También autoriza los envíos de datos (cabecera `Authorization: Bearer`).
-- `BLOB_READ_WRITE_TOKEN`: la crea Vercel al conectar un Blob store (privado) al proyecto.
-- `PANEL_SYNC_TOKEN` (opcional): clave aparte solo para los envíos.
+| Variable | Para qué |
+|---|---|
+| `PANEL_PASSWORD` | contraseña del panel |
+| `BLOB_READ_WRITE_TOKEN` | la crea Vercel al conectar el Blob store |
+| `CRON_SECRET` | autoriza el cron (también vale la cabecera `x-cron-secret`) |
+| `NINJO_USERNAME` / `NINJO_PASSWORD` | acceso al cortex-gateway de Ninjo |
+| `HOTMART_CLIENT_ID`, `HOTMART_CLIENT_SECRET`, `HOTMART_BASIC` | ventas de Hotmart |
+| `STRIPE_SECRET_KEY` | cobros de Stripe |
+| `META_ACCESS_TOKEN`, `META_AD_ACCOUNT_ID` (opcional `META_IG_ID`) | Meta Ads e Instagram |
 
-En la sesión de Claude que hace los envíos, la contraseña está guardada como secreto de red para
-`fitcondamian.com`: el proxy añade la cabecera sola, así que los `curl` no llevan la clave.
+Los nombres sin guiones bajos (`HOTMARTCLIENTID`, `METAACCESSTOKEN`…) también se aceptan. Tras añadir o cambiar una
+variable hay que volver a desplegar.
 
-## Qué se envía (`{ "tipo": ..., "datos": ... }`)
+El token de Meta es de un usuario del sistema del portfolio "Damián" con la app "Analisis Contenido" y los permisos
+`ads_read`, `business_management`, `instagram_basic`, `instagram_manage_insights`, `pages_show_list` y
+`pages_read_engagement`.
 
-| tipo            | datos                                   | de dónde                                   |
-|-----------------|-----------------------------------------|--------------------------------------------|
-| `agendas`       | lista de llamadas                       | `list_schedules` (Europe/Madrid, limit 100) |
-| `perfil`        | seguidores y publicaciones              | `get_instagram_profile`                    |
-| `seguidores`    | `{ HOY: {...} }` foto diaria            | `get_instagram_profile`                    |
-| `publicaciones` | últimas 30                              | `get_instagram_posts`                      |
-| `origenes`      | `{ "7": [...], "14": ..., "30": ..., "90": ... }` | `get_agent_insights` sections `["sources"]` |
-| `embudo`        | `{ día: {...} }` por día de entrada      | `embudo_diario.py`                          |
-| `contenido`     | `{ reel_día: {...} }`                   | `embudo_diario.py`                          |
-| `resultados`    | `{ schedule_id: {asistio, vendido, importe} }` | solo si Damián dicta resultados en el chat |
+## Código
 
-## Actualización rápida (mediodía)
+- `app/_panel/sincronizar.ts`: `syncRapida` (agendas, perfil, publicaciones, orígenes, mensajes manuales),
+  `syncEmbudo` (conversaciones y CRM de Ninjo por día de entrada), `syncMeta`, `syncVentas` y `ejecutar`.
+- `app/_panel/{ninjo,meta,ventas,store,auth}.ts`: clientes de cada fuente, almacén y sesión.
+- `app/api/panel/*`: login, cron, actualizar, ventas-manuales, sync y diag (solo nombres de variables y recuentos).
+- `app/panel-fcd/*`: la página del panel.
 
-1. `list_schedules` (timezone Europe/Madrid, limit 100, sort datetime_desc; si `total_pages` > 1, todas),
-   `get_instagram_profile`, `get_instagram_posts` (limit 30) y `get_agent_insights` con
-   `agent_id 01a0c9dc-7bd0-703c-892f-392b73fbdd0e`, `sections ["sources"]` y `days` 7, 14, 30 y 90.
-2. Pasa las respuestas a ficheros con `tools/portal/extraer_resultados.py --herramienta <nombre mcp> --salida <dir> --ultimas N`
-   (sirve tanto si la respuesta vino en línea como si se guardó en un fichero).
-3. `python3 tools/portal/preparar_sync.py --salida <out> --agendas ... --perfil ... --seguidores <HOY> --publicaciones ... --origenes 7=... 14=... 30=... 90=...`
-4. Envía cada fichero: `curl -sS -X POST https://fitcondamian.com/api/panel/sync -H "Content-Type: application/json" --data @<out>/<tipo>.json`.
+## Comprobar a mano
 
-## Actualización completa (noche)
+`curl -H "x-cron-secret: $CRON_SECRET" "https://fitcondamian.com/api/panel/cron?solo=rapida"` ejecuta una
+actualización y devuelve un resumen por fuente. `/api/panel/diag?_entorno=1` lista qué variables de conexión
+ve el despliegue (solo nombres y longitud).
 
-Lo mismo que la rápida y, además, el embudo. Todo en hora de Madrid; la ventana es de `HOY-21` a `HOY-1`.
-
-1. `search_conversations` con `has_agent "any"`, `channel "INSTAGRAM"`, `first_message_after <HOY-21>T00:00:00+01:00`,
-   `first_message_before <HOY-1>T23:59:59+01:00`, `sort_by "first_message_at"`. Primero `limit 1` para leer `total_count`;
-   luego todas las páginas con un `limit` entre 60 y 100 (usa `+02:00` en horario de verano).
-2. `list_crm_contacts` con `pageSize 100` y `createdAt [<HOY-60>, <HOY+1>]`, una vez con `booking_data_requested = "true"`
-   (final) y otra con `email_shared = "@"` (datos). Si `totalCount` > 100, pide también la página 2.
-3. Extrae todo a ficheros con `extraer_resultados.py` y ejecuta
-   `python3 tools/portal/embudo_diario.py --conv <conversaciones> --final <final> --datos <datos> --dias <cada día> > writes.json`
-4. `python3 tools/portal/preparar_sync.py --salida <out> --embudo writes.json` y envía `embudo.json` y `contenido.json`.
-5. Resumen: una línea por día (entran, conversan, llegan al final, dan datos). Si algo falla (Ninjo, la web devuelve
-   401/503), dilo claramente y no inventes números.
-
-Nunca cambies nada en Ninjo ni mandes mensajes. `resultados` solo se envía cuando Damián dicta en el chat quién vino o compró.
+Los scripts `embudo_diario.py`, `preparar_sync.py` y `extraer_resultados.py` son de la versión anterior, en la que
+Claude enviaba los datos a `/api/panel/sync`; siguen funcionando pero ya no hacen falta.
