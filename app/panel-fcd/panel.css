@@ -350,3 +350,5 @@
 .pn-h3 { font-size: 15px; margin: 22px 0 4px; }
 .pn-fuente { display: block; font-size: 10px; color: var(--pn-muted); margin-top: 2px; }
 .pn-fun-det-cab .pn-cuello-eti { color: #6b6672; }
+
+.pn-cuadre { font-size: 13px; background: #faf7ee; border: 1px solid var(--pn-line); border-radius: 10px; padding: 8px 12px; margin: 6px 0 10px; }

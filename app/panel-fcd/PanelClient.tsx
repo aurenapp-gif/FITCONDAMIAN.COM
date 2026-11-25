@@ -271,7 +271,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const llamadas = useMemo(() => datos.agendas.filter((a) => a.estado !== "CANCELLED" && String(a.fecha).slice(0, 10) >= desde).map(evaluar), [datos.agendas, desde, evaluar]);
 
   const [valores, setValores] = useState<Record<string, number>>(datos.valoresVenta || {});
-  const claveClienta = (v: Venta) => String(v.email || v.id).toLowerCase();
+  const claveCli = (v: Venta) => String(v.email || v.id).toLowerCase();
   const ventasPeriodo = useMemo(() => {
     const lista = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
     const emailsLlamada = new Set(datos.agendas.map((a) => String(a.email || "").toLowerCase()).filter(Boolean));
@@ -282,36 +282,52 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     const deLlamada = lista.filter(conLlamada);
     const compradorasLlamada = new Set(deLlamada.map((v) => v.email || v.agendaId || v.id));
 
-    // Clientas: primer pago, todo lo cobrado y valor de la venta (facturación).
-    const porClienta = new Map<string, { clave: string; nombre: string; email: string; producto: string; primero: string; cobros: Venta[]; cobrado: number }>();
+    // Ventas (no clientas): cada compra de Hotmart es una venta; un cobro de Stripe o manual que llega poco después
+    // de otro parecido de la misma clienta es una cuota de esa venta; el resto son ventas nuevas.
+    type VentaAgr = { clave: string; claveCli: string; nombre: string; email: string; producto: string; primero: string; cobros: Venta[]; cobrado: number; base: number };
+    const ventasAgr: VentaAgr[] = [];
+    const actual = new Map<string, VentaAgr>();
     [...cobradas].sort((a, b) => (a.fecha < b.fecha ? -1 : 1)).forEach((v) => {
-      const k = claveClienta(v);
-      const c = porClienta.get(k) || { clave: k, nombre: v.nombre, email: v.email, producto: v.producto, primero: v.fecha, cobros: [], cobrado: 0 };
-      c.cobros.push(v); c.cobrado += v.importe; if (!c.nombre && v.nombre) c.nombre = v.nombre;
-      porClienta.set(k, c);
+      const kc = claveCli(v);
+      const va = actual.get(kc);
+      const ult = va?.cobros[va.cobros.length - 1];
+      const gap = ult ? (new Date(v.fecha).getTime() - new Date(ult.fecha).getTime()) / 864e5 : Infinity;
+      const desc = String(v.producto || "").toLowerCase();
+      const parecido = va ? Math.abs(v.importe - va.base) <= Math.max(5, va.base * 0.15) : false;
+      const esCuota = Boolean(va) && v.fuente !== "hotmart" && (desc.includes("subscription update") ? gap <= 120 : gap <= 75 && parecido);
+      if (esCuota && va) { va.cobros.push(v); va.cobrado += v.importe; if (!va.nombre && v.nombre) va.nombre = v.nombre; return; }
+      const nueva: VentaAgr = { clave: String(v.id).toLowerCase(), claveCli: kc, nombre: v.nombre, email: v.email, producto: v.producto, primero: v.fecha, cobros: [v], cobrado: v.importe, base: v.importe };
+      ventasAgr.push(nueva); actual.set(kc, nueva);
     });
+    // Precios completos conocidos (compras de Hotmart) para estimar el total de las ventas a plazos.
+    const precios = Array.from(new Set(cobradas.filter((v) => v.fuente === "hotmart" && v.importe >= 300).map((v) => Math.round(v.importe)))).sort((a, b) => a - b);
+    const estimar = (cuota: number) => {
+      for (const p of precios) for (let n = 2; n <= 12; n++) if (Math.abs(p - n * cuota) <= p * 0.015) return { valor: p, n };
+      return null;
+    };
     // Importe que marcaste a mano en su llamada (valor de la venta), por correo.
     const marcadoPorEmail = new Map<string, number>();
     datos.agendas.forEach((a) => { const r = resultados[a.id]; const em = String(a.email || "").toLowerCase(); if (em && r && r.vendido === "si" && typeof r.importe === "number" && r.importe > 0) marcadoPorEmail.set(em, r.importe); });
-    const valorDe = (c: { clave: string; email: string; cobrado: number }) => {
+    const valorDe = (c: VentaAgr): { valor: number; fuente: string } => {
       if (typeof valores[c.clave] === "number") return { valor: valores[c.clave], fuente: "tú" };
       const m = c.email ? marcadoPorEmail.get(c.email.toLowerCase()) : undefined;
       if (m && m >= c.cobrado) return { valor: m, fuente: "llamada" };
+      if (c.cobros[0].fuente !== "hotmart") { const e = estimar(c.base); if (e && e.valor >= c.cobrado) return { valor: e.valor, fuente: `estimado: ${e.n} cuotas de ${Math.round(c.base)} €` }; }
       return { valor: c.cobrado, fuente: "cobrado" };
     };
-    const nuevas = Array.from(porClienta.values()).filter((c) => String(c.primero).slice(0, 10) >= desde)
+    const nuevas = ventasAgr.filter((c) => String(c.primero).slice(0, 10) >= desde)
       .map((c) => { const v = valorDe(c); return { ...c, valor: v.valor, fuente: v.fuente, pendiente: Math.max(0, v.valor - c.cobrado) }; })
       .sort((a, b) => (a.primero < b.primero ? 1 : -1));
     // Ventas cerradas en llamadas del periodo, con importe, sin ningún cobro registrado (pendientes de cobrar del todo).
-    const emailsCobro = new Set(Array.from(porClienta.values()).map((c) => String(c.email || "").toLowerCase()).filter(Boolean));
+    const emailsCobro = new Set(cobradas.map((v) => String(v.email || "").toLowerCase()).filter(Boolean));
     const sinCobro = datos.agendas.filter((a) => {
       const r = resultados[a.id]; const em = String(a.email || "").toLowerCase();
       return String(a.fecha).slice(0, 10) >= desde && a.estado !== "CANCELLED" && r && r.vendido === "si" && typeof r.importe === "number" && r.importe > 0 && !(em && emailsCobro.has(em)) && !cobradas.some((v) => v.agendaId === a.id);
     }).map((a) => ({ id: a.id, nombre: a.nombre, fecha: a.fecha, valor: resultados[a.id].importe as number }));
     const facturacion = nuevas.reduce((t, c) => t + c.valor, 0) + sinCobro.reduce((t, x) => t + x.valor, 0);
     const pendiente = nuevas.reduce((t, c) => t + c.pendiente, 0) + sinCobro.reduce((t, x) => t + x.valor, 0);
-    const clavesNuevas = new Set(nuevas.map((c) => c.clave));
-    const cashNuevas = lista.filter((v) => clavesNuevas.has(claveClienta(v))).reduce((t, v) => t + v.importe, 0);
+    const idsNuevas = new Set(nuevas.flatMap((c) => c.cobros.map((v) => v.id)));
+    const cashNuevas = lista.filter((v) => idsNuevas.has(v.id)).reduce((t, v) => t + v.importe, 0);
     const nVentas = nuevas.length + sinCobro.length;
     return {
       conLlamada, lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada,
@@ -1244,16 +1260,17 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   </form>
                 )}
                 <div className="pn-kpis">
-                  <Kpi etiqueta="Facturación (ventas nuevas)" valor={eur(ventasPeriodo.facturacion)} pie={`${int(ventasPeriodo.nVentas)} clientas nuevas · ticket ${eur(ventasPeriodo.ticket)}`} />
+                  <Kpi etiqueta="Facturación (ventas nuevas)" valor={eur(ventasPeriodo.facturacion)} pie={`${int(ventasPeriodo.nVentas)} ventas · ticket ${eur(ventasPeriodo.ticket)}`} />
                   <Kpi etiqueta="Cash collect" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.cashNuevas)} de ventas nuevas · ${eur(ventasPeriodo.cashAnteriores)} de cuotas anteriores`} />
                   <Kpi etiqueta="Pendiente de cobro" valor={eur(ventasPeriodo.pendiente)} tono={ventasPeriodo.pendiente > 0 ? "warn" : "ok"} pie="de las ventas nuevas del periodo" />
                   <Kpi etiqueta="Cobros" valor={int(ventasPeriodo.cobros)} pie={`${int(ventasPeriodo.n)} clientas pagaron · ${int(ventasPeriodo.deLlamada)} con llamada`} />
                 </div>
                 <h3 className="pn-h3">Ventas nuevas del periodo (facturación)</h3>
-                <p className="pn-sub">Si una clienta paga a plazos, escribe el valor total de la venta: así la facturación cuenta la venta entera y el resto queda como pendiente de cobro.</p>
+                <p className="pn-sub">Cada compra cuenta como venta, también si la clienta ya había comprado antes. Las ventas a plazos se valoran por el precio del programa que encaja con la cuota (estimado); si no es así, escribe el valor real y lo pendiente se recalcula. El cash collect puede superar a la facturación en un mes en el que entran muchas cuotas de ventas de meses anteriores.</p>
+                <p className="pn-cuadre">Cash collect {eur(ventasPeriodo.total)} = {eur(ventasPeriodo.cashNuevas)} de las ventas de este periodo + {eur(ventasPeriodo.cashAnteriores)} de cuotas de ventas anteriores · Facturación {eur(ventasPeriodo.facturacion)} = {eur(ventasPeriodo.cashNuevas)} ya cobrados + {eur(ventasPeriodo.pendiente)} pendientes</p>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
-                    <thead><tr><th>Primer pago</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Cobrado</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th></tr></thead>
+                    <thead><tr><th>Fecha de la venta</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Cobrado</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th></tr></thead>
                     <tbody>
                       {ventasPeriodo.nuevas.map((c) => (
                         <tr key={c.clave}>
@@ -1263,7 +1280,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                             <input className="pn-importe" type="number" min={0} step={1} inputMode="numeric" aria-label={`Valor de la venta de ${c.nombre || c.email}`}
                               key={`${c.clave}-${c.valor}`} defaultValue={Math.round(c.valor)}
                               onBlur={(ev) => { const raw = ev.target.value; const v = raw === "" ? null : Math.max(0, Number(raw)); if (v === null || v !== Math.round(c.valor)) guardarValor(c.clave, v); }} />
-                            <small className="pn-fuente">{c.fuente === "tú" ? "puesto por ti" : c.fuente === "llamada" ? "de la llamada" : "lo cobrado"}</small>
+                            <small className="pn-fuente">{c.fuente === "tú" ? "puesto por ti" : c.fuente === "llamada" ? "de la llamada" : c.fuente === "cobrado" ? "lo cobrado" : c.fuente}</small>
                           </td>
                           <td className="r">{c.pendiente > 0 ? <span className="pn-pill tono-warn">{eur(c.pendiente)}</span> : "—"}</td>
                         </tr>
