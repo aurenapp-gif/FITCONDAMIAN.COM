@@ -59,6 +59,16 @@ export async function GET(req: Request) {
     const mes = todas.filter((v) => v.fecha.slice(0, 10) >= desde);
     return NextResponse.json({ desde, cash: mes.reduce((t, v) => t + v.importe, 0), cobros: mes.length, clientas: filas.length, nuevas: filas.filter((f) => f.nueva).length, filas });
   }
+  if (q._ig) {
+    // Publicaciones públicas de una cuenta profesional de Instagram (business discovery), con enlace al vídeo.
+    const { idInstagram } = await import("../../../_panel/meta");
+    const tk = process.env.META_ACCESS_TOKEN || process.env.METAACCESSTOKEN || "";
+    const ig = await idInstagram();
+    const campos = `business_discovery.username(${q._ig}){username,name,biography,followers_count,media_count,media.limit(${Number(q.n) || 50})${q.after ? `.after(${q.after})` : ""}{id,caption,like_count,comments_count,media_type,media_product_type,permalink,timestamp,media_url,thumbnail_url}}`;
+    const u = new URL(`https://graph.facebook.com/v26.0/${ig}`); u.searchParams.set("fields", campos); u.searchParams.set("access_token", tk);
+    const r = await fetch(u, { cache: "no-store" }); const j = await r.json();
+    return NextResponse.json(j.error ? { error: j.error.message } : j);
+  }
   if (q._entorno) {
     // Solo nombres y longitud de las variables de conexión, nunca sus valores.
     const nombres = Object.keys(process.env).filter((k) => /meta|fb|facebook|insta|ig_|hotmart|stripe|ads|token|cuenta|account/i.test(k) && !/^(VERCEL|NEXT|NODE|npm_|TURBO)/.test(k));
