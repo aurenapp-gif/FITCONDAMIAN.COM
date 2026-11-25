@@ -78,7 +78,7 @@ export async function syncRapida(): Promise<Record<string, number | string>> {
 
 // ---------- Embudo por día de entrada ----------
 type Mensaje = { direction?: string; author?: string; type?: string; status?: string; sent_at?: string; content?: string; comment?: { post_url?: string | null } };
-type Conversacion = { conversation_id: string; contact_id: string; messages?: Mensaje[] };
+type Conversacion = { conversation_id: string; contact_id: string; contact_username?: string | null; messages?: Mensaje[] };
 type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
 const ORIGENES: Origen[] = ["bienvenida", "saludo", "comentario", "mensaje"];
 
@@ -125,6 +125,56 @@ async function idsContactos(filtro: { id: string; value: string }, desde: string
   return ids;
 }
 
+// ---------- Dónde se pierde cada persona (detalle del embudo) ----------
+const CATEGORIAS: [string, RegExp][] = [
+  ["llamada", /llamada|videollamada|agendar|agenda|calendario|hueco|reservar|enlace|link/],
+  ["datos", /correo|email|e-mail|mail|telefono|whatsapp|tu numero/],
+  ["dinero", /invertir|inversion|precio|presupuesto|dinero|pagar|cuesta|euros|€/],
+  ["probado", /has probado|probaste|has intentado|intentaste|que has hecho|has hecho algo/],
+  ["tiempo", /cuanto tiempo|hace cuanto|desde cuando|cuantos anos|cuantos meses/],
+  ["motivo", /por que ahora|importante para ti|que te ha hecho|que pasaria|como te sentirias|imaginate|del 1 al 10|que significaria/],
+  ["situacion", /trabajo|turno|horario|hijos|peques|rutina|dia a dia|edad|tienes anos|a que te dedicas/],
+  ["objetivo", /objetivo|te gustaria|quieres conseguir|cambiar|bajar|perder|energia|peso|ropa|cuerpo|cuesta mas/],
+  ["apertura", /pillado|bienvenida|llevo viendo|viendote|reaccionado a mi historia/],
+  ["agradecimiento", /gracias|me alegra|genial|perfecto/],
+];
+function categoria(texto: string): string {
+  const n = sinAcentos(texto);
+  return CATEGORIAS.find(([, re]) => re.test(n))?.[0] || "otra";
+}
+const franjaDe = (iso: string) => { const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Madrid", hour: "2-digit", hour12: false }).format(new Date(iso))); return h < 6 ? "00-05" : h < 10 ? "06-09" : h < 14 ? "10-13" : h < 19 ? "14-18" : "19-23"; };
+type Det = { estado: Record<string, number>; turnos: Record<string, number>; cat: Record<string, number>; ej: Record<string, string[]> };
+type Perdidas = { p1_franja: Record<string, number>; p1_perdidas_franja: Record<string, number>; p1_seguimiento: number; p1_sin_seguimiento: number; p2: Det; p3: Det; sin_contestar: { u: string; c: string; ult: string; h: number }[]; datos: { u: string; c: string }[] };
+const nuevoDet = (): Det => ({ estado: {}, turnos: {}, cat: {}, ej: {} });
+const nuevasPerdidas = (): Perdidas => ({ p1_franja: {}, p1_perdidas_franja: {}, p1_seguimiento: 0, p1_sin_seguimiento: 0, p2: nuevoDet(), p3: nuevoDet(), sin_contestar: [], datos: [] });
+const sumarEn = (o: Record<string, number>, k: string, v = 1) => { o[k] = (o[k] || 0) + v; };
+// Dónde se paró una conversación: quién escribió lo último, cuántas veces respondió la persona y qué le preguntamos antes de callarse.
+function puntoDeParada(c: Conversacion, det: Det, p: Perdidas) {
+  const msgs = (c.messages || []).filter((m) => m.sent_at && m.status !== "FAILED" && m.type !== "COMMENT").sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
+  if (!msgs.length) return;
+  const ult = msgs[msgs.length - 1];
+  const horas = Math.round((Date.now() - new Date(String(ult.sent_at)).getTime()) / 36e5);
+  let turnos = 0;
+  msgs.forEach((m, i) => { if (m.direction === "INBOUND" && (i === 0 || msgs[i - 1].direction !== "INBOUND")) turnos++; });
+  sumarEn(det.turnos, turnos >= 6 ? "6+" : turnos >= 4 ? "4-5" : String(turnos));
+  if (horas < 24) { sumarEn(det.estado, "curso"); return; }
+  if (ult.direction === "INBOUND") {
+    sumarEn(det.estado, "setter");
+    if (p.sin_contestar.length < 40) p.sin_contestar.push({ u: c.contact_username || "", c: c.contact_id, ult: String(ult.content || `[${ult.type || "mensaje"}]`).replace(/\s+/g, " ").slice(0, 140), h: horas });
+    return;
+  }
+  sumarEn(det.estado, "persona");
+  // Último bloque de mensajes del setter: se usa el último con pregunta (o el último).
+  const bloque: Mensaje[] = [];
+  for (let i = msgs.length - 1; i >= 0 && msgs[i].direction === "OUTBOUND"; i--) bloque.unshift(msgs[i]);
+  const clave = [...bloque].reverse().find((m) => /\?/.test(m.content || "")) || bloque[bloque.length - 1];
+  const texto = String(clave?.content || "").replace(/\s+/g, " ").trim();
+  const cat = categoria(texto);
+  sumarEn(det.cat, cat);
+  const ej = (det.ej[cat] ||= []);
+  if (texto && ej.length < 3 && !ej.includes(texto.slice(0, 220))) ej.push(texto.slice(0, 220));
+}
+
 export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number | string>> {
   const hoy = diaMadrid(new Date());
   // Cubre al menos las últimas `diasAtras` jornadas y, siempre, el mes en curso desde el día 1.
@@ -153,10 +203,10 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     idsContactos({ id: "email_shared", value: "@" }, desdeContactos, sumarDias(hoy, 1)),
   ]);
 
-  type Dia = Record<string, unknown> & { ids: Record<Origen, string[]> };
+  type Dia = Record<string, unknown> & { ids: Record<Origen, string[]>; pd: Record<Origen, Perdidas> };
   const embudo: Record<string, Dia> = {};
   for (let d = desde; d <= hasta; d = sumarDias(d, 1)) {
-    const doc: Dia = { fecha: d, conversaciones_revisadas: 0, ids: { bienvenida: [], saludo: [], comentario: [], mensaje: [] } };
+    const doc: Dia = { fecha: d, conversaciones_revisadas: 0, ids: { bienvenida: [], saludo: [], comentario: [], mensaje: [] }, pd: { bienvenida: nuevasPerdidas(), saludo: nuevasPerdidas(), comentario: nuevasPerdidas(), mensaje: nuevasPerdidas() } };
     ORIGENES.forEach((o) => ["entran", "conversan", "final", "datos"].forEach((k) => { doc[`${o}_${k}`] = 0; }));
     ["b", "s", "o", "h"].forEach((t) => { doc[`ap_${t}`] = 0; doc[`ap_${t}_resp`] = 0; });
     doc.ap_manual = 0;
@@ -178,6 +228,20 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     if (r.conversan) { inc("conversan"); e.ids[r.origen].push(r.contacto); }
     if (llega) inc("final");
     if (da) inc("datos");
+    // Detalle de dónde se pierde.
+    const pd = e.pd[r.origen];
+    if (r.origen === "bienvenida" || r.origen === "saludo") {
+      const ms = (c.messages || []).filter((m) => m.sent_at).sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
+      const fr = franjaDe(String(ms[0]?.sent_at));
+      sumarEn(pd.p1_franja, fr);
+      if (!r.conversan) {
+        sumarEn(pd.p1_perdidas_franja, fr);
+        if (ms.slice(1).some((m) => m.direction === "OUTBOUND" && m.status !== "FAILED")) pd.p1_seguimiento++; else pd.p1_sin_seguimiento++;
+      }
+    }
+    if (r.conversan && !llega) puntoDeParada(c, pd.p2, pd);
+    if (llega && !da) puntoDeParada(c, pd.p3, pd);
+    if (da && pd.datos.length < 60) pd.datos.push({ u: c.contact_username || "", c: c.contact_id });
     if (r.origen === "comentario" && r.post) {
       const id = `${r.post}_${r.dia}`;
       const p = (contenido[id] ||= { post: r.post, fecha: r.dia, entran: 0, conversan: 0, final: 0, datos: 0, ids: [] });

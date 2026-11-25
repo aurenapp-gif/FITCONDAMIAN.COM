@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 
 // ---------- Tipos de los datos guardados ----------
 type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
-type DiaEmbudo = { fecha: string; ids?: Partial<Record<Origen, string[]>> } & Record<string, unknown>;
+type DetPerdida = { estado: Record<string, number>; turnos: Record<string, number>; cat: Record<string, number>; ej: Record<string, string[]> };
+type PerdidasDia = { p1_franja: Record<string, number>; p1_perdidas_franja: Record<string, number>; p1_seguimiento: number; p1_sin_seguimiento: number; p2: DetPerdida; p3: DetPerdida; sin_contestar: { u: string; c: string; ult: string; h: number }[]; datos: { u: string; c: string }[] };
+type DiaEmbudo = { fecha: string; ids?: Partial<Record<Origen, string[]>>; pd?: Partial<Record<Origen, PerdidasDia>> } & Record<string, unknown>;
 type Agenda = { id: string; contacto: string; fecha: string; reservada: string; estado: string; nombre: string; instagram: string; telefono: string; setter: string; email?: string };
 type Venta = { id: string; fuente: "hotmart" | "stripe" | "manual"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string; metodo?: string; agendaId?: string; nota?: string };
 const COBRADAS = new Set(["APPROVED", "COMPLETE", "PAID"]);
@@ -34,6 +36,7 @@ export type Datos = {
   instagram: DatosInstagram | null;
   estudios: Estudio[];
   competidores: string[];
+  valoresVenta: Record<string, number>;
 };
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
@@ -70,6 +73,7 @@ const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "o
 const MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 const ANIO_ACTUAL = new Date().getFullYear();
 const dia = (iso: string) => { const s = String(iso).slice(0, 10); const y = Number(s.slice(0, 4)); return `${Number(s.slice(8, 10))} ${MESES[Number(s.slice(5, 7)) - 1]}${y && y !== ANIO_ACTUAL ? ` ${y}` : ""}`; };
+const franjaHora = (iso: string) => { const h = Number(String(iso).slice(11, 13)); return h < 6 ? "00-05" : h < 10 ? "06-09" : h < 14 ? "10-13" : h < 19 ? "14-18" : "19-23"; };
 const fechaHora = (iso: string) => `${dia(iso)} · ${String(iso).slice(11, 16)}`;
 const int = (n: number | null | undefined) => (n == null || Number.isNaN(n) ? "—" : Math.round(n).toLocaleString("es-ES"));
 const pct = (n: number | null | undefined) => (n == null ? "—" : `${n}%`);
@@ -191,6 +195,23 @@ function Seccion({ titulo, sub, children, accion }: { titulo: string; sub?: stri
   );
 }
 
+const CAT_PREGUNTA: Record<string, string> = {
+  llamada: "Cuando les proponemos la llamada", datos: "Cuando les pedimos el correo o el teléfono", dinero: "Cuando sale el dinero o la inversión",
+  probado: "Al preguntar qué han probado antes", tiempo: "Al preguntar cuánto tiempo llevan así", motivo: "Al preguntar por qué ahora o cuánto les importa",
+  situacion: "Al preguntar por su situación (trabajo, turnos, hijos…)", objetivo: "Al preguntar por su objetivo (peso, energía, ropa…)",
+  apertura: "Tras el primer mensaje", agradecimiento: "Tras un «gracias» sin pregunta", otra: "Otros mensajes",
+};
+const FRANJAS = ["00-05", "06-09", "10-13", "14-18", "19-23"];
+function FilaBarra({ etiqueta, valor, max, derecha, tono = "neutro", sub }: { etiqueta: React.ReactNode; valor: number; max: number; derecha: React.ReactNode; tono?: Tono; sub?: React.ReactNode }) {
+  return (
+    <div className={`pn-fb tono-${tono}`}>
+      <div className="pn-fb-top"><span>{etiqueta}</span><b>{derecha}</b></div>
+      <div className="pn-fb-barra"><div style={{ width: `${max ? Math.max(2, (100 * valor) / max) : 0}%` }} /></div>
+      {sub && <small>{sub}</small>}
+    </div>
+  );
+}
+
 // ---------- Panel ----------
 export default function PanelClient({ datos, almacen, conexiones }: { datos: Datos; almacen: boolean; conexiones: Conexiones }) {
   const [pestana, setPestana] = useState<Pestana>("resumen");
@@ -246,18 +267,67 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   }, [resultados, ventaDeLlamada]);
   const llamadas = useMemo(() => datos.agendas.filter((a) => a.estado !== "CANCELLED" && String(a.fecha).slice(0, 10) >= desde).map(evaluar), [datos.agendas, desde, evaluar]);
 
+  const [valores, setValores] = useState<Record<string, number>>(datos.valoresVenta || {});
+  const claveClienta = (v: Venta) => String(v.email || v.id).toLowerCase();
   const ventasPeriodo = useMemo(() => {
     const lista = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
     const emailsLlamada = new Set(datos.agendas.map((a) => String(a.email || "").toLowerCase()).filter(Boolean));
-    const total = lista.reduce((s, v) => s + v.importe, 0);
-    // Una clienta puede pagar en varios cobros (plazos): las ventas se cuentan por compradora y el ticket medio también.
+    const total = lista.reduce((s, v) => s + v.importe, 0); // cash collect: todo lo cobrado en el periodo
     const compradoras = new Set(lista.map((v) => v.email || v.id));
     const idsAgenda = new Set(datos.agendas.map((a) => a.id));
     const conLlamada = (v: Venta) => emailsLlamada.has(v.email) || Boolean(v.agendaId && idsAgenda.has(v.agendaId));
     const deLlamada = lista.filter(conLlamada);
     const compradorasLlamada = new Set(deLlamada.map((v) => v.email || v.agendaId || v.id));
-    return { conLlamada, lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, ticket: compradoras.size ? Math.round(total / compradoras.size) : null, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada };
-  }, [cobradas, desde, datos.agendas]);
+
+    // Clientas: primer pago, todo lo cobrado y valor de la venta (facturación).
+    const porClienta = new Map<string, { clave: string; nombre: string; email: string; producto: string; primero: string; cobros: Venta[]; cobrado: number }>();
+    [...cobradas].sort((a, b) => (a.fecha < b.fecha ? -1 : 1)).forEach((v) => {
+      const k = claveClienta(v);
+      const c = porClienta.get(k) || { clave: k, nombre: v.nombre, email: v.email, producto: v.producto, primero: v.fecha, cobros: [], cobrado: 0 };
+      c.cobros.push(v); c.cobrado += v.importe; if (!c.nombre && v.nombre) c.nombre = v.nombre;
+      porClienta.set(k, c);
+    });
+    // Importe que marcaste a mano en su llamada (valor de la venta), por correo.
+    const marcadoPorEmail = new Map<string, number>();
+    datos.agendas.forEach((a) => { const r = resultados[a.id]; const em = String(a.email || "").toLowerCase(); if (em && r && r.vendido === "si" && typeof r.importe === "number" && r.importe > 0) marcadoPorEmail.set(em, r.importe); });
+    const valorDe = (c: { clave: string; email: string; cobrado: number }) => {
+      if (typeof valores[c.clave] === "number") return { valor: valores[c.clave], fuente: "tú" };
+      const m = c.email ? marcadoPorEmail.get(c.email.toLowerCase()) : undefined;
+      if (m && m >= c.cobrado) return { valor: m, fuente: "llamada" };
+      return { valor: c.cobrado, fuente: "cobrado" };
+    };
+    const nuevas = Array.from(porClienta.values()).filter((c) => String(c.primero).slice(0, 10) >= desde)
+      .map((c) => { const v = valorDe(c); return { ...c, valor: v.valor, fuente: v.fuente, pendiente: Math.max(0, v.valor - c.cobrado) }; })
+      .sort((a, b) => (a.primero < b.primero ? 1 : -1));
+    // Ventas cerradas en llamadas del periodo, con importe, sin ningún cobro registrado (pendientes de cobrar del todo).
+    const emailsCobro = new Set(Array.from(porClienta.values()).map((c) => String(c.email || "").toLowerCase()).filter(Boolean));
+    const sinCobro = datos.agendas.filter((a) => {
+      const r = resultados[a.id]; const em = String(a.email || "").toLowerCase();
+      return String(a.fecha).slice(0, 10) >= desde && a.estado !== "CANCELLED" && r && r.vendido === "si" && typeof r.importe === "number" && r.importe > 0 && !(em && emailsCobro.has(em)) && !cobradas.some((v) => v.agendaId === a.id);
+    }).map((a) => ({ id: a.id, nombre: a.nombre, fecha: a.fecha, valor: resultados[a.id].importe as number }));
+    const facturacion = nuevas.reduce((t, c) => t + c.valor, 0) + sinCobro.reduce((t, x) => t + x.valor, 0);
+    const pendiente = nuevas.reduce((t, c) => t + c.pendiente, 0) + sinCobro.reduce((t, x) => t + x.valor, 0);
+    const clavesNuevas = new Set(nuevas.map((c) => c.clave));
+    const cashNuevas = lista.filter((v) => clavesNuevas.has(claveClienta(v))).reduce((t, v) => t + v.importe, 0);
+    const nVentas = nuevas.length + sinCobro.length;
+    return {
+      conLlamada, lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada,
+      nuevas, sinCobro, facturacion: Math.round(facturacion), pendiente: Math.round(pendiente), nVentas,
+      ticket: nVentas ? Math.round(facturacion / nVentas) : null, cashNuevas: Math.round(cashNuevas), cashAnteriores: Math.round(total - cashNuevas),
+    };
+  }, [cobradas, desde, datos.agendas, resultados, valores]);
+
+  async function guardarValor(clave: string, valor: number | null) {
+    const prev = valores[clave];
+    setValores((v) => { const n = { ...v }; if (valor == null) delete n[clave]; else n[clave] = valor; return n; });
+    try {
+      const r = await fetch("/api/panel/valores-venta", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clave, valor }) });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || "Error");
+    } catch (err) {
+      setValores((v) => { const n = { ...v }; if (prev == null) delete n[clave]; else n[clave] = prev; return n; });
+      setError(`No se ha guardado el valor: ${err instanceof Error ? err.message : "error"}`);
+    }
+  }
 
   const ventas = useMemo(() => {
     const reservadas = datos.agendas.filter((a) => String(a.reservada).slice(0, 10) >= desde);
@@ -314,6 +384,28 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
 
   const porOrigen = useMemo(() => ORIGENES.map(([o, n]) => ({ o, n, ...calcularEmbudo([o]) })), [calcularEmbudo]);
 
+  // ----- Detalle de pérdidas por paso (embudo interactivo) -----
+  const [pasoSel, setPasoSel] = useState<string>("");
+  const pdAgg = useMemo(() => {
+    const ors = origen === "todas" ? ORIGENES.map((o) => o[0]) : [origen];
+    const vacioDet = (): DetPerdida => ({ estado: {}, turnos: {}, cat: {}, ej: {} });
+    const t = { franja: {} as Record<string, number>, perdFranja: {} as Record<string, number>, seg: 0, sinSeg: 0, p2: vacioDet(), p3: vacioDet(), sinContestar: [] as { u: string; c: string; ult: string; h: number; dia: string }[], datos: [] as { u: string; c: string; dia: string }[], dias: 0 };
+    const suma = (a: Record<string, number>, b?: Record<string, number>) => Object.entries(b || {}).forEach(([k, v]) => { a[k] = (a[k] || 0) + (Number(v) || 0); });
+    const sumaDet = (a: DetPerdida, b?: DetPerdida) => { if (!b) return; suma(a.estado, b.estado); suma(a.turnos, b.turnos); suma(a.cat, b.cat); Object.entries(b.ej || {}).forEach(([k, v]) => { const l = (a.ej[k] ||= []); v.forEach((x) => { if (l.length < 4 && !l.includes(x)) l.push(x); }); }); };
+    diasEmbudo.forEach((d) => {
+      if (!d.pd) return;
+      t.dias++;
+      ors.forEach((o) => {
+        const p = d.pd?.[o]; if (!p) return;
+        suma(t.franja, p.p1_franja); suma(t.perdFranja, p.p1_perdidas_franja); t.seg += p.p1_seguimiento || 0; t.sinSeg += p.p1_sin_seguimiento || 0;
+        sumaDet(t.p2, p.p2); sumaDet(t.p3, p.p3);
+        (p.sin_contestar || []).forEach((x) => t.sinContestar.push({ ...x, dia: d.fecha }));
+        (p.datos || []).forEach((x) => t.datos.push({ ...x, dia: d.fecha }));
+      });
+    });
+    return t;
+  }, [diasEmbudo, origen]);
+
   // ----- Aperturas (bienvenidas y mensajes a seguidoras) -----
   const aperturas = useMemo(() => {
     const filas = diasEmbudo.map((d) => {
@@ -345,7 +437,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const sparkVentas = hayVentasAuto
     ? porDia((d) => cobradas.filter((v) => String(v.fecha).slice(0, 10) === d).reduce((s, v) => s + v.importe, 0))
     : porDia((d) => llamadas.filter((l) => l.vendido === "si" && String(l.fecha).slice(0, 10) === d).reduce((s, l) => s + (l.importe || 0), 0));
-  const facturacionMostrada = hayVentasAuto ? ventasPeriodo.total : ventas.facturacion;
+  const facturacionMostrada = hayVentasAuto ? ventasPeriodo.facturacion : ventas.facturacion;
+  const cashMostrado = hayVentasAuto ? ventasPeriodo.total : null;
   const ticketMostrado = hayVentasAuto ? ventasPeriodo.ticket : ventas.ticket;
 
   // ----- Contenido -----
@@ -552,6 +645,175 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     </div>
   );
 
+  // ----- Embudo interactivo -----
+  const capas = [{ id: "entran", nombre: "Entran", n: e.entran }, ...pasos.map((p) => ({ id: p.id, nombre: p.nombre, n: p.a }))];
+  const anchoCapa = (n: number) => 24 + 76 * Math.pow(Math.max(0, n) / Math.max(1, e.entran), 0.45);
+  const COLORES_CAPA = ["#2b2a2e", "#4a3b57", "#6b4a82", "#8f57a8", "#b46bbf", "#d77fc4", "#ec9ccd"];
+  const sel = pasos.find((p) => p.id === (pasoSel || cuello?.id || "responden")) || pasos[0];
+  const vistaEmbudo = (
+    <div className="pn-fun">
+      {capas.map((c, i) => {
+        const w = anchoCapa(c.n), w2 = i < capas.length - 1 ? anchoCapa(capas[i + 1].n) : w * 0.85;
+        const inset = Math.max(0, ((w - Math.min(w, w2)) / 2 / w) * 100);
+        const p = i > 0 ? pasos[i - 1] : null;
+        return (
+          <div key={c.id} className="pn-fun-fila">
+            {p && (
+              <button type="button" className={`pn-fun-drop tono-${p.tono}${sel?.id === p.id ? " is-sel" : ""}`} onClick={() => setPasoSel(p.id)} aria-pressed={sel?.id === p.id}>
+                <span className="pn-fun-drop-pasa">↓ pasa el {pct(p.tasa)}</span>
+                <span className="pn-fun-drop-pierde">se pierden <b>{int(p.perdidas)}</b>{p.tasa != null && ` (${100 - p.tasa}%)`}</span>
+                <small>objetivo {p.obj}%{cuello?.id === p.id ? " · cuello de botella" : ""}</small>
+              </button>
+            )}
+            <button type="button" className={`pn-fun-capa${sel && (sel.id === c.id || (i === 0 && sel.id === "responden")) ? " is-sel" : ""}`}
+              style={{ width: `${w}%`, background: COLORES_CAPA[i], clipPath: `polygon(0 0, 100% 0, ${100 - inset}% 100%, ${inset}% 100%)` }}
+              onClick={() => setPasoSel(i === 0 ? "responden" : c.id)} aria-label={`${c.nombre}: ${int(c.n)}`}>
+              <span>{c.nombre}</span><b>{int(c.n)}</b>
+            </button>
+          </div>
+        );
+      })}
+      {e.facturacion > 0 && <p className="pn-sub pn-fun-pie">Facturación de estas personas: <b>{eur(e.facturacion)}</b></p>}
+    </div>
+  );
+
+  const conAgendaIds = new Set(datos.agendas.filter((a) => a.estado !== "CANCELLED").map((a) => a.contacto));
+  const igLink = (u: string) => (u ? <a href={`https://instagram.com/${u}`} target="_blank" rel="noopener noreferrer">@{u}</a> : <span className="pn-sub">sin usuario</span>);
+  const bloqueParada = (d: DetPerdida, total: number, sinContestar: typeof pdAgg.sinContestar) => {
+    const est = d.estado, tot = (est.curso || 0) + (est.persona || 0) + (est.setter || 0);
+    const cats = Object.entries(d.cat).sort((a, b) => b[1] - a[1]);
+    const maxCat = Math.max(1, ...cats.map((x) => x[1]));
+    const turnos = ["1", "2", "3", "4-5", "6+"].map((k) => [k, d.turnos[k] || 0] as const);
+    const maxT = Math.max(1, ...turnos.map((x) => x[1]));
+    if (!tot) return <p className="pn-sub">El detalle se calcula en la próxima actualización completa (cada hora). Personas en este paso: {int(total)}.</p>;
+    return (
+      <>
+        <h4>Quién dejó de contestar</h4>
+        <FilaBarra etiqueta="Dejaron de contestarnos ellas" valor={est.persona || 0} max={tot} derecha={`${int(est.persona)} · ${pct(ratio(est.persona || 0, tot))}`} />
+        <FilaBarra etiqueta="Les dejamos sin contestar nosotros" valor={est.setter || 0} max={tot} tono={(est.setter || 0) > 0 ? "bad" : "ok"} derecha={`${int(est.setter)} · ${pct(ratio(est.setter || 0, tot))}`} sub={(est.setter || 0) > 0 ? "Su último mensaje lleva más de 24 h sin respuesta. Son las más fáciles de recuperar: abajo tienes la lista." : undefined} />
+        <FilaBarra etiqueta="Siguen hablando (menos de 24 h)" valor={est.curso || 0} max={tot} derecha={`${int(est.curso)} · ${pct(ratio(est.curso || 0, tot))}`} sub="Aún no se pueden dar por perdidas." />
+        {cats.length > 0 && (
+          <>
+            <h4>Después de qué mensaje del setter se callan</h4>
+            {cats.map(([k, v]) => (
+              <details key={k} className="pn-fun-cat">
+                <summary><FilaBarra etiqueta={CAT_PREGUNTA[k] || k} valor={v} max={maxCat} tono={k === cats[0][0] ? "bad" : "neutro"} derecha={`${int(v)} · ${pct(ratio(v, est.persona || 0))}`} /></summary>
+                {(d.ej[k] || []).length > 0 && <ul>{(d.ej[k] || []).map((x) => <li key={x}>«{x}»</li>)}</ul>}
+              </details>
+            ))}
+            <p className="pn-sub">Pincha en cada fila para ver ejemplos del mensaje exacto.</p>
+          </>
+        )}
+        <h4>Cuántas veces respondieron antes de pararse</h4>
+        <div className="pn-fun-turnos">
+          {turnos.map(([k, v]) => (
+            <div key={k}><div className="pn-fun-turno-barra"><div style={{ height: `${(100 * v) / maxT}%` }} /></div><b>{int(v)}</b><small>{k === "1" ? "1 vez" : `${k} veces`}</small></div>
+          ))}
+        </div>
+        {sinContestar.length > 0 && (
+          <>
+            <h4>Escríbeles hoy: se quedaron sin respuesta</h4>
+            <ul className="pn-fun-lista">
+              {sinContestar.slice(0, 25).map((x) => <li key={x.c}>{igLink(x.u)} <span className="pn-sub">· hace {x.h >= 48 ? `${Math.round(x.h / 24)} días` : `${x.h} h`}</span><q>{x.ult}</q></li>)}
+            </ul>
+          </>
+        )}
+      </>
+    );
+  };
+
+  const llamadasPasadas = llamadas.filter((l) => l.pasada);
+  const antelacion = (l: { fecha: string; reservada: string }) => { const d = Math.round((new Date(l.fecha).getTime() - new Date(l.reservada).getTime()) / 864e5); return d < 1 ? "El mismo día" : d <= 2 ? "1-2 días antes" : d <= 6 ? "3-6 días antes" : "7 días o más"; };
+  const grupoTasa = <T,>(lista: T[], clave: (x: T) => string, ok: (x: T) => boolean, orden: string[]) => orden.map((k) => { const g = lista.filter((x) => clave(x) === k); return { k, n: g.length, ok: g.filter(ok).length }; }).filter((x) => x.n > 0);
+
+  let detalleEmbudo: React.ReactNode = null;
+  if (sel) {
+    const cab = (
+      <div className={`pn-fun-det-cab tono-${sel.tono}`}>
+        <span className="pn-cuello-eti">{capas[pasos.indexOf(sel)].nombre} → {sel.nombre}{cuello?.id === sel.id ? " · cuello de botella" : ""}</span>
+        <strong>Se pierden {int(sel.perdidas)} de {int(sel.de)} ({sel.tasa == null ? "—" : `${100 - sel.tasa}%`})</strong>
+        <p>Pasa el <b>{pct(sel.tasa)}</b>; el objetivo es el {sel.obj}%.{sel.tasa != null && sel.tasa < sel.obj && sel.de > 0 ? ` Llegar al objetivo serían ${int(Math.round((sel.obj * sel.de) / 100) - sel.a)} personas más en este paso.` : ""}</p>
+      </div>
+    );
+    let cuerpo: React.ReactNode = null;
+    if (sel.id === "responden") {
+      const filasF = FRANJAS.map((f) => ({ f, n: pdAgg.franja[f] || 0, perd: pdAgg.perdFranja[f] || 0 })).filter((x) => x.n > 0);
+      const perdTot = pdAgg.seg + pdAgg.sinSeg;
+      cuerpo = (
+        <>
+          <h4>Por dónde entraron</h4>
+          {porOrigen.filter((r) => r.entran > 0).map((r) => (
+            <FilaBarra key={r.o} etiqueta={r.n} valor={Math.max(0, r.entran - r.conversan)} max={Math.max(1, ...porOrigen.map((x) => x.entran - x.conversan))} tono={tonoObjetivo(ratio(r.conversan, r.entran), OBJETIVOS.responden)}
+              derecha={`no responden ${int(Math.max(0, r.entran - r.conversan))}`} sub={`responde el ${pct(ratio(r.conversan, r.entran))} (${int(r.conversan)} de ${int(r.entran)})`} />
+          ))}
+          {filasF.length > 0 && (
+            <>
+              <h4>Según la hora de nuestro primer mensaje</h4>
+              {filasF.map((x) => { const t = ratio(x.n - x.perd, x.n); return (
+                <FilaBarra key={x.f} etiqueta={`${x.f} h`} valor={x.n - x.perd} max={Math.max(1, ...filasF.map((y) => y.n - y.perd))} tono={x.n < 30 ? "neutro" : tonoObjetivo(t, OBJETIVOS.responden)} derecha={`responde el ${pct(t)}`} sub={`${int(x.n - x.perd)} de ${int(x.n)} envíos${x.n < 30 ? " · pocos casos" : ""}`} />
+              ); })}
+              <p className="pn-sub">Solo bienvenidas y mensajes a seguidoras. Con menos de 30 envíos en una franja, el porcentaje no es fiable.</p>
+            </>
+          )}
+          {perdTot > 0 && (
+            <>
+              <h4>¿Recibieron un segundo mensaje?</h4>
+              <FilaBarra etiqueta="No: solo el primer mensaje" valor={pdAgg.sinSeg} max={perdTot} tono={pdAgg.sinSeg / perdTot > 0.8 ? "bad" : "neutro"} derecha={`${int(pdAgg.sinSeg)} · ${pct(ratio(pdAgg.sinSeg, perdTot))}`} />
+              <FilaBarra etiqueta="Sí, y tampoco respondieron" valor={pdAgg.seg} max={perdTot} derecha={`${int(pdAgg.seg)} · ${pct(ratio(pdAgg.seg, perdTot))}`} />
+            </>
+          )}
+          <button type="button" className="pn-link" onClick={() => irA("captacion")}>Ver cada plantilla de primer mensaje en Captación →</button>
+        </>
+      );
+    } else if (sel.id === "final") {
+      cuerpo = bloqueParada(pdAgg.p2, sel.perdidas, pdAgg.sinContestar);
+    } else if (sel.id === "datos") {
+      cuerpo = bloqueParada(pdAgg.p3, sel.perdidas, []);
+    } else if (sel.id === "agendan") {
+      const sinAgenda = pdAgg.datos.filter((x) => !conAgendaIds.has(x.c));
+      cuerpo = (
+        <>
+          <h4>Dieron sus datos y no han reservado la llamada ({int(sinAgenda.length)})</h4>
+          {sinAgenda.length ? <ul className="pn-fun-lista">{sinAgenda.slice(0, 40).map((x) => <li key={x.c}>{igLink(x.u)} <span className="pn-sub">· entró el {dia(x.dia)}</span></li>)}</ul> : <p className="pn-sub">Nadie en este periodo (o se calcula en la próxima actualización).</p>}
+          <p className="pn-sub">Son las más calientes del embudo: ya han dado su correo. Un mensaje o un audio con el enlace del calendario suele bastar.</p>
+        </>
+      );
+    } else if (sel.id === "vienen") {
+      const conMarca = llamadasPasadas.filter((l) => l.asistio === "si" || l.asistio === "no");
+      const porAnt = grupoTasa(conMarca, antelacion, (l) => l.asistio === "si", ["El mismo día", "1-2 días antes", "3-6 días antes", "7 días o más"]);
+      const porHora = grupoTasa(conMarca, (l) => franjaHora(l.fecha), (l) => l.asistio === "si", FRANJAS);
+      const porSetter = grupoTasa(conMarca, (l) => (l.setter === "sí" ? "La agendó el setter" : "Reservó por su cuenta"), (l) => l.asistio === "si", ["La agendó el setter", "Reservó por su cuenta"]);
+      const noVinieron = conMarca.filter((l) => l.asistio === "no");
+      const filas = (g: { k: string; n: number; ok: number }[]) => g.map((x) => <FilaBarra key={x.k} etiqueta={x.k} valor={x.ok} max={Math.max(1, ...g.map((y) => y.n))} tono={x.n < 5 ? "neutro" : tonoObjetivo(ratio(x.ok, x.n), OBJETIVOS.vienen)} derecha={`vienen ${pct(ratio(x.ok, x.n))}`} sub={`${int(x.ok)} de ${int(x.n)}${x.n < 5 ? " · pocos casos" : ""}`} />);
+      cuerpo = (
+        <>
+          <p className="pn-sub">Llamadas pasadas del periodo que tienen marcado si vino o no: {int(conMarca.length)}.</p>
+          <h4>Según cuánto antes reservaron</h4>{filas(porAnt)}
+          <h4>Según la hora de la llamada</h4>{filas(porHora)}
+          <h4>Según quién la agendó</h4>{filas(porSetter)}
+          {noVinieron.length > 0 && <><h4>No vinieron</h4><ul className="pn-fun-lista">{noVinieron.map((l) => <li key={l.id}><b>{l.nombre || "Sin nombre"}</b> {l.instagram && igLink(l.instagram)} <span className="pn-sub">· {fechaHora(l.fecha)} · reservó {antelacion(l).toLowerCase()}</span></li>)}</ul></>}
+        </>
+      );
+    } else if (sel.id === "compran") {
+      const vinieron = llamadasPasadas.filter((l) => l.asistio === "si");
+      const marcadas = vinieron.filter((l) => l.vendido === "si" || l.vendido === "no");
+      const porSetter = grupoTasa(marcadas, (l) => (l.setter === "sí" ? "La agendó el setter" : "Reservó por su cuenta"), (l) => l.vendido === "si", ["La agendó el setter", "Reservó por su cuenta"]);
+      const porAnt = grupoTasa(marcadas, antelacion, (l) => l.vendido === "si", ["El mismo día", "1-2 días antes", "3-6 días antes", "7 días o más"]);
+      const noCompraron = marcadas.filter((l) => l.vendido === "no");
+      const sinMarcar = vinieron.filter((l) => !l.vendido);
+      const filas = (g: { k: string; n: number; ok: number }[]) => g.map((x) => <FilaBarra key={x.k} etiqueta={x.k} valor={x.ok} max={Math.max(1, ...g.map((y) => y.n))} tono={x.n < 5 ? "neutro" : tonoObjetivo(ratio(x.ok, x.n), OBJETIVOS.compran)} derecha={`compran ${pct(ratio(x.ok, x.n))}`} sub={`${int(x.ok)} de ${int(x.n)}${x.n < 5 ? " · pocos casos" : ""}`} />);
+      cuerpo = (
+        <>
+          <p className="pn-sub">Llamadas del periodo en las que la persona vino: {int(vinieron.length)}{sinMarcar.length ? ` (${int(sinMarcar.length)} sin marcar si compró)` : ""}.</p>
+          <h4>Según quién la agendó</h4>{filas(porSetter)}
+          <h4>Según cuánto antes reservaron</h4>{filas(porAnt)}
+          {noCompraron.length > 0 && <><h4>Vinieron y no compraron (seguimiento)</h4><ul className="pn-fun-lista">{noCompraron.map((l) => <li key={l.id}><b>{l.nombre || "Sin nombre"}</b> {l.instagram && igLink(l.instagram)} <span className="pn-sub">· {fechaHora(l.fecha)}</span></li>)}</ul></>}
+        </>
+      );
+    }
+    detalleEmbudo = <>{cab}<div className="pn-fun-det-cuerpo">{cuerpo}</div></>;
+  }
+
   const bloqueEmbudo = (
     <div className="pn-embudo">
       {[{ nombre: "Entran", n: e.entran }, ...pasos.map((p) => ({ nombre: p.nombre, n: p.a }))].map((s, k) => {
@@ -619,7 +881,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi etiqueta="Agendas" valor={int(ventas.reservadas)} pie={`${int(ventas.canceladas)} canceladas`} spark={sparkAgendas} />
               <Kpi etiqueta="Show rate" valor={pct(ventas.show)} tono={tonoObjetivo(ventas.show, OBJETIVOS.vienen)} pie={`${int(ventas.vinieron)} vinieron · ${int(ventas.noVinieron)} no`} />
               <Kpi etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas · ${int(ventas.noCerradas)} no`} />
-              <Kpi etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`${hayVentasAuto ? `${int(ventasPeriodo.n)} clientas · ` : ""}ticket medio ${eur(ticketMostrado)}`} spark={sparkVentas} />
+              <Kpi etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`${hayVentasAuto ? `${int(ventasPeriodo.nVentas)} ventas nuevas · ` : ""}ticket medio ${eur(ticketMostrado)}`} />
+              {cashMostrado != null && <Kpi etiqueta="Cash collect" valor={eur(cashMostrado)} pie={`cobrado en el periodo · ${eur(ventasPeriodo.pendiente)} pendiente de cobro`} spark={sparkVentas} />}
             </div>
             <div className="pn-dos">
               {bloqueCuello}
@@ -644,22 +907,11 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <button type="button" aria-pressed={origen === "todas"} onClick={() => setOrigen("todas")}>Todas</button>
               {ORIGENES.map(([o, n]) => <button key={o} type="button" aria-pressed={origen === o} onClick={() => setOrigen(o)}>{n}</button>)}
             </div>
-            <div className="pn-dos">
-              <Seccion titulo="Embudo completo" sub="Cada flecha es el porcentaje que pasa al siguiente paso, comparado con su objetivo.">{bloqueEmbudo}</Seccion>
-              <div className="pn-col-v">
-                {bloqueCuello}
-                <Seccion titulo="Dónde se pierde la gente" sub="Personas que no pasan cada paso.">
-                  <div className="pn-perdidas">
-                    {pasos.map((p) => (
-                      <div key={p.id} className={`pn-perd tono-${p.tono}`}>
-                        <span>{p.nombre}</span>
-                        <div className="pn-perd-barra"><div style={{ width: `${(100 * p.perdidas) / Math.max(1, ...pasos.map((x) => x.perdidas))}%` }} /></div>
-                        <b>−{int(p.perdidas)}</b>
-                      </div>
-                    ))}
-                  </div>
-                </Seccion>
-              </div>
+            <div className="pn-fun-layout">
+              <Seccion titulo="Embudo" sub="Pincha en una capa o en lo que se pierde entre dos capas para ver exactamente dónde se queda la gente.">
+                {vistaEmbudo}
+              </Seccion>
+              <div className="pn-fun-det" aria-live="polite">{detalleEmbudo}</div>
             </div>
             <Seccion titulo="Comparativa por origen" sub="Qué tipo de entrada convierte mejor en cada paso.">
               <div className="pn-tablewrap">
@@ -862,7 +1114,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi destacado etiqueta="Coste por conversación" valor={eur2(coste(anuncios.gasto, e.conversan))} pie={`${int(e.conversan)} personas responden y conversan`} />
               <Kpi etiqueta="Coste por agenda" valor={eur(coste(anuncios.gasto, ventas.reservadas))} pie={`${int(ventas.reservadas)} llamadas agendadas`} />
               <Kpi etiqueta="Coste por venta" valor={eur(coste(anuncios.gasto, hayVentasAuto ? ventasPeriodo.n : ventas.cerradas))} pie={`${int(hayVentasAuto ? ventasPeriodo.n : ventas.cerradas)} clientas`} />
-              <Kpi etiqueta="Retorno (ROAS)" valor={anuncios.gasto ? `${(facturacionMostrada / anuncios.gasto).toLocaleString("es-ES", { maximumFractionDigits: 1 })}x` : "—"} tono={!anuncios.gasto ? "neutro" : facturacionMostrada / anuncios.gasto >= 3 ? "ok" : facturacionMostrada / anuncios.gasto >= 1 ? "warn" : "bad"} pie={`${eur(facturacionMostrada)} facturados por ${eur(anuncios.gasto)}`} />
+              <Kpi etiqueta="Retorno (ROAS)" valor={anuncios.gasto ? `${(facturacionMostrada / anuncios.gasto).toLocaleString("es-ES", { maximumFractionDigits: 1 })}x` : "—"} tono={!anuncios.gasto ? "neutro" : facturacionMostrada / anuncios.gasto >= 3 ? "ok" : facturacionMostrada / anuncios.gasto >= 1 ? "warn" : "bad"} pie={`${eur(facturacionMostrada)} facturados${cashMostrado != null ? ` (${eur(cashMostrado)} cobrados)` : ""} por ${eur(anuncios.gasto)}`} />
               <Kpi etiqueta="CPM · coste por clic" valor={eur2(cpm)} pie={`${int(anuncios.impresiones)} impresiones · ${eur2(coste(anuncios.gasto, anuncios.clics))} por clic`} />
             </div>
             <Seccion titulo="Gasto y seguidores cada día" sub="Barras: gasto del día. Al pasar por encima: seguidores nuevos de Instagram ese día y cuánto costó cada uno.">
@@ -935,7 +1187,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi destacado etiqueta="Agendas" valor={int(ventas.reservadas)} pie={`${int(ventas.proximas)} próximas · ${int(ventas.canceladas)} canceladas`} spark={sparkAgendas} />
               <Kpi destacado etiqueta="Show rate" valor={pct(ventas.show)} tono={tonoObjetivo(ventas.show, OBJETIVOS.vienen)} pie={`no-show ${pct(ventas.noshow)}`} />
               <Kpi destacado etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas de ${int(ventas.cerradas + ventas.noCerradas)} decididas`} />
-              <Kpi destacado etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`ticket medio ${eur(ticketMostrado)}${hayVentasAuto ? " · ventas registradas" : ""}`} spark={sparkVentas} />
+              <Kpi destacado etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`ventas nuevas · ticket medio ${eur(ticketMostrado)}`} />
+              {cashMostrado != null && <Kpi destacado etiqueta="Cash collect" valor={eur(cashMostrado)} pie={`lo que ha entrado · ${eur(ventasPeriodo.cashAnteriores)} de cuotas de clientas anteriores`} spark={sparkVentas} />}
             </div>
             {(
               <Seccion titulo="Ventas registradas" sub={`Cobros de ${[conexiones.hotmart && "Hotmart", conexiones.stripe && "Stripe", "ventas manuales"].filter(Boolean).join(", ")} ${nombrePeriodo}. Las que coinciden con una llamada (por correo o porque las uniste) la marcan sola como compra.`}
@@ -964,10 +1217,38 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   </form>
                 )}
                 <div className="pn-kpis">
-                  <Kpi etiqueta="Clientas que pagaron" valor={int(ventasPeriodo.n)} pie={`${int(ventasPeriodo.cobros)} cobros · ${int(ventasPeriodo.deLlamada)} tuvieron llamada`} />
-                  <Kpi etiqueta="Facturación total" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.totalLlamada)} de llamadas`} />
-                  <Kpi etiqueta="Ticket medio por clienta" valor={eur(ventasPeriodo.ticket)} pie="suma de sus cobros en el periodo" />
+                  <Kpi etiqueta="Facturación (ventas nuevas)" valor={eur(ventasPeriodo.facturacion)} pie={`${int(ventasPeriodo.nVentas)} clientas nuevas · ticket ${eur(ventasPeriodo.ticket)}`} />
+                  <Kpi etiqueta="Cash collect" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.cashNuevas)} de ventas nuevas · ${eur(ventasPeriodo.cashAnteriores)} de cuotas anteriores`} />
+                  <Kpi etiqueta="Pendiente de cobro" valor={eur(ventasPeriodo.pendiente)} tono={ventasPeriodo.pendiente > 0 ? "warn" : "ok"} pie="de las ventas nuevas del periodo" />
+                  <Kpi etiqueta="Cobros" valor={int(ventasPeriodo.cobros)} pie={`${int(ventasPeriodo.n)} clientas pagaron · ${int(ventasPeriodo.deLlamada)} con llamada`} />
                 </div>
+                <h3 className="pn-h3">Ventas nuevas del periodo (facturación)</h3>
+                <p className="pn-sub">Si una clienta paga a plazos, escribe el valor total de la venta: así la facturación cuenta la venta entera y el resto queda como pendiente de cobro.</p>
+                <div className="pn-tablewrap">
+                  <table className="pn-table">
+                    <thead><tr><th>Primer pago</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Cobrado</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th></tr></thead>
+                    <tbody>
+                      {ventasPeriodo.nuevas.map((c) => (
+                        <tr key={c.clave}>
+                          <td>{dia(c.primero)}</td><td>{c.nombre || c.email || "—"}</td><td>{c.producto || "—"}</td>
+                          <td className="r">{int(c.cobros.length)}</td><td className="r">{eur(c.cobrado)}</td>
+                          <td className="r">
+                            <input className="pn-importe" type="number" min={0} step={1} inputMode="numeric" aria-label={`Valor de la venta de ${c.nombre || c.email}`}
+                              key={`${c.clave}-${c.valor}`} defaultValue={Math.round(c.valor)}
+                              onBlur={(ev) => { const raw = ev.target.value; const v = raw === "" ? null : Math.max(0, Number(raw)); if (v === null || v !== Math.round(c.valor)) guardarValor(c.clave, v); }} />
+                            <small className="pn-fuente">{c.fuente === "tú" ? "puesto por ti" : c.fuente === "llamada" ? "de la llamada" : "lo cobrado"}</small>
+                          </td>
+                          <td className="r">{c.pendiente > 0 ? <span className="pn-pill tono-warn">{eur(c.pendiente)}</span> : "—"}</td>
+                        </tr>
+                      ))}
+                      {ventasPeriodo.sinCobro.map((x) => (
+                        <tr key={x.id}><td>{dia(x.fecha)}</td><td>{x.nombre || "—"}</td><td>venta marcada en la llamada</td><td className="r">0</td><td className="r">0 €</td><td className="r">{eur(x.valor)}</td><td className="r"><span className="pn-pill tono-warn">{eur(x.valor)}</span></td></tr>
+                      ))}
+                      {!ventasPeriodo.nuevas.length && !ventasPeriodo.sinCobro.length && <tr><td colSpan={7} className="pn-vacio">No hay ventas nuevas en este periodo.</td></tr>}
+                    </tbody>
+                  </table>
+                </div>
+                <h3 className="pn-h3">Cobros del periodo (cash collect)</h3>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
                     <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Importe</th><th>Origen</th><th>Tuvo llamada</th><th></th></tr></thead>

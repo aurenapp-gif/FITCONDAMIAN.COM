@@ -85,7 +85,7 @@ export async function GET(req: Request) {
     const clientas = new Set(l.map((v) => v.email || v.id)).size;
     const porProducto: Record<string, { cobros: number; importe: number }> = {};
     l.forEach((v) => { const k = String(v.producto || "—"); porProducto[k] = porProducto[k] || { cobros: 0, importe: 0 }; porProducto[k].cobros++; porProducto[k].importe += Number(v.importe) || 0; });
-    return { cobros: l.length, clientas, facturacion: Math.round(total), ticket_por_clienta: clientas ? Math.round(total / clientas) : null, por_producto: porProducto };
+    return { nota: "cash_collect = todo lo cobrado en el periodo (incluye cuotas de clientas anteriores); la facturación de ventas nuevas se ve en el panel", cobros: l.length, clientas, cash_collect: Math.round(total), ticket_por_clienta: clientas ? Math.round(total / clientas) : null, por_producto: porProducto };
   };
 
   // Anuncios agregados por anuncio (7 y 30 días) con su texto.
