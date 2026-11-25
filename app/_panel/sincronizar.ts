@@ -1,6 +1,7 @@
 // Lee Ninjo y guarda en el almacén del panel. Lo usan el cron diario, el botón "Actualizar" y la apertura del panel.
 import { AGENTE, enParalelo, ninjo, ninjoHerramienta } from "./ninjo";
 import { guardar, leer, marcarSync } from "./store";
+import { anunciosMeta, instagramMeta, metaListo } from "./meta";
 import { hotmartListo, stripeListo, type Venta, ventasHotmart, ventasStripe } from "./ventas";
 
 const fmtDia = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" });
@@ -52,7 +53,7 @@ export async function syncRapida(): Promise<Record<string, number | string>> {
   const posts = await ninjo<{ posts: { id: string; permalink?: string; timestamp?: string; media_type?: string; caption?: string; like_count?: number; comments_count?: number }[] }>("/api/v1/instagram-posts", { query: { limit: 30 } });
   const publicaciones = (posts.posts || []).map((x) => {
     const m = String(x.permalink || "").match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/);
-    return { codigo: m ? m[1] : x.id, fecha: x.timestamp, tipo: tipos[x.media_type || ""] || x.media_type || "", texto: String(x.caption || "").replace(/\s+/g, " ").slice(0, 90), enlace: x.permalink || "", likes: x.like_count || 0, comentarios: x.comments_count || 0 };
+    return { id: x.id, codigo: m ? m[1] : x.id, fecha: x.timestamp, tipo: tipos[x.media_type || ""] || x.media_type || "", texto: String(x.caption || "").replace(/\s+/g, " ").slice(0, 90), enlace: x.permalink || "", likes: x.like_count || 0, comentarios: x.comments_count || 0 };
   });
   await guardar("publicaciones", publicaciones); await marcarSync("publicaciones"); res.publicaciones = publicaciones.length;
 
@@ -233,11 +234,40 @@ export async function syncVentas(): Promise<Record<string, number | string>> {
   return res;
 }
 
+// ---------- Meta Ads e Instagram ----------
+export async function syncMeta(): Promise<Record<string, unknown>> {
+  if (!metaListo()) return { omitido: "sin token de Meta" };
+  const res: Record<string, unknown> = {};
+  const hoy = diaMadrid(new Date());
+  const desde = sumarDias(`${hoy.slice(0, 8)}01`, -62); // el mes en curso y los dos anteriores
+  try {
+    const filas = await anunciosMeta(desde, hoy);
+    await guardar("anuncios", { desde, hasta: hoy, filas });
+    res.anuncios = filas.length;
+    res.gasto = Math.round(filas.reduce((t, f) => t + f.gasto, 0));
+    res.conversaciones = filas.reduce((t, f) => t + f.conversaciones, 0);
+    res.seguidores_anuncios = filas.reduce((t, f) => t + f.seguidores, 0);
+  } catch (e) { res.anuncios_error = e instanceof Error ? e.message : String(e); }
+  try {
+    const pubs = await leer<{ id?: string }[]>("publicaciones", []);
+    const ig = await instagramMeta(pubs.map((p) => p.id || "").filter(Boolean));
+    const previo = await leer<{ seguidores_dia?: Record<string, number> }>("instagram", {});
+    await guardar("instagram", { ...ig, seguidores_dia: { ...(previo.seguidores_dia || {}), ...ig.seguidores_dia }, leido: new Date().toISOString() });
+    res.instagram_dias = Object.keys(ig.seguidores_dia).length;
+    res.instagram_medios = Object.values(ig.medios).filter((m) => Object.keys(m).length).length;
+    res.metricas_ejemplo = Object.keys(Object.values(ig.medios).find((m) => Object.keys(m).length) || {}).join(",");
+    if (ig.avisos.length) res.instagram_avisos = ig.avisos;
+  } catch (e) { res.instagram_error = e instanceof Error ? e.message : String(e); }
+  await marcarSync("anuncios");
+  return res;
+}
+
 // ---------- Ejecución con registro ----------
 export async function ejecutar(via: string, completo: boolean): Promise<Record<string, unknown>> {
   const informe: Record<string, unknown> = { via, inicio: new Date().toISOString() };
   try {
     informe.rapida = await syncRapida();
+    try { informe.meta = await syncMeta(); } catch (e) { informe.meta = { error: e instanceof Error ? e.message : String(e) }; }
     try { informe.ventas = await syncVentas(); } catch (e) { informe.ventas = { error: e instanceof Error ? e.message : String(e) }; }
     if (completo) informe.embudo = await syncEmbudo();
     informe.ok = true;
