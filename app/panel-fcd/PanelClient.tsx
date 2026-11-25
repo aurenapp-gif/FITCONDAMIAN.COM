@@ -5,7 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 // ---------- Tipos de los datos guardados ----------
 type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
 type DiaEmbudo = { fecha: string; ids?: Partial<Record<Origen, string[]>> } & Record<string, unknown>;
-type Agenda = { id: string; contacto: string; fecha: string; reservada: string; estado: string; nombre: string; instagram: string; telefono: string; setter: string };
+type Agenda = { id: string; contacto: string; fecha: string; reservada: string; estado: string; nombre: string; instagram: string; telefono: string; setter: string; email?: string };
+type Venta = { id: string; fuente: "hotmart" | "stripe"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string };
+const COBRADAS = new Set(["APPROVED", "COMPLETE", "PAID"]);
 type Resultado = { asistio: "" | "si" | "no"; vendido: "" | "si" | "no"; importe: number | null };
 type Publicacion = { codigo: string; fecha: string; tipo: string; texto: string; enlace: string; likes: number; comentarios: number };
 type FilaContenido = { post: string; fecha: string; entran: number; conversan: number; final: number; datos: number; ids?: string[] };
@@ -22,8 +24,9 @@ export type Datos = {
   resultados: Record<string, Resultado>;
   meta: Record<string, string>;
   control: { manuales_ninjo?: Record<string, number>; leido?: string } | null;
+  ventas: Venta[];
 };
-export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean };
+export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
 const ORIGENES: [Origen, string][] = [
   ["bienvenida", "Seguidoras nuevas"],
@@ -198,18 +201,37 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const nombrePeriodo = periodo === "mes" ? `en ${MESES_LARGOS[Number(hoy.slice(5, 7)) - 1]}` : `en los últimos ${periodo} días`;
 
   // ----- Llamadas -----
+  const cobradas = useMemo(() => (datos.ventas || []).filter((v) => COBRADAS.has(String(v.estado).toUpperCase())), [datos.ventas]);
+  const hayVentasAuto = Boolean(conexiones.hotmart || conexiones.stripe);
+  // Venta de Hotmart/Stripe del mismo correo, desde 2 días antes hasta 30 días después de la llamada.
+  const ventaDeLlamada = useMemo(() => (a: Agenda) => {
+    const em = String(a.email || "").toLowerCase();
+    if (!em) return null;
+    const t = new Date(a.fecha).getTime();
+    return cobradas.find((v) => v.email === em && new Date(v.fecha).getTime() >= t - 2 * 864e5 && new Date(v.fecha).getTime() <= t + 30 * 864e5) || null;
+  }, [cobradas]);
+
   const llamadas = useMemo(() => {
     const ahora = Date.now();
     return datos.agendas
       .filter((a) => a.estado !== "CANCELLED" && String(a.fecha).slice(0, 10) >= desde)
       .map((a) => {
         const r = resultados[a.id];
-        const asistio = r && (r.asistio === "si" || r.asistio === "no") ? r.asistio : a.estado === "SHOWED" ? "si" : a.estado === "NO_SHOW" ? "no" : "";
-        const vendido = asistio === "si" && r && (r.vendido === "si" || r.vendido === "no") ? r.vendido : "";
-        const importe = vendido === "si" && r && typeof r.importe === "number" ? r.importe : null;
-        return { ...a, pasada: new Date(a.fecha).getTime() < ahora, asistio, vendido, importe };
+        const auto = ventaDeLlamada(a);
+        const asistio = r && (r.asistio === "si" || r.asistio === "no") ? r.asistio : auto ? "si" : a.estado === "SHOWED" ? "si" : a.estado === "NO_SHOW" ? "no" : "";
+        const vendido = asistio === "si" && r && (r.vendido === "si" || r.vendido === "no") ? r.vendido : asistio === "si" && auto ? "si" : "";
+        const importe = vendido === "si" && r && typeof r.importe === "number" ? r.importe : vendido === "si" && auto ? auto.importe : null;
+        return { ...a, pasada: new Date(a.fecha).getTime() < ahora, asistio, vendido, importe, auto: Boolean(auto && !(r && r.vendido)) };
       });
-  }, [datos.agendas, resultados, desde]);
+  }, [datos.agendas, resultados, desde, ventaDeLlamada]);
+
+  const ventasPeriodo = useMemo(() => {
+    const lista = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+    const emailsLlamada = new Set(datos.agendas.map((a) => String(a.email || "").toLowerCase()).filter(Boolean));
+    const total = lista.reduce((s, v) => s + v.importe, 0);
+    const deLlamada = lista.filter((v) => emailsLlamada.has(v.email));
+    return { lista, total: Math.round(total), n: lista.length, ticket: lista.length ? Math.round(total / lista.length) : null, deLlamada: deLlamada.length, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada };
+  }, [cobradas, desde, datos.agendas]);
 
   const ventas = useMemo(() => {
     const reservadas = datos.agendas.filter((a) => String(a.reservada).slice(0, 10) >= desde);
@@ -294,7 +316,11 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const sparkEntran = porDia((d) => embPorFecha.get(d)?.entran || 0);
   const sparkResp = porDia((d) => { const f = embPorFecha.get(d); return f ? ratio(f.b_resp + f.s_resp + f.o_resp, f.b_env + f.s_env + f.o_env) || 0 : 0; });
   const sparkAgendas = porDia((d) => datos.agendas.filter((a) => a.estado !== "CANCELLED" && String(a.reservada).slice(0, 10) === d).length);
-  const sparkVentas = porDia((d) => llamadas.filter((l) => l.vendido === "si" && String(l.fecha).slice(0, 10) === d).reduce((s, l) => s + (l.importe || 0), 0));
+  const sparkVentas = hayVentasAuto
+    ? porDia((d) => cobradas.filter((v) => String(v.fecha).slice(0, 10) === d).reduce((s, v) => s + v.importe, 0))
+    : porDia((d) => llamadas.filter((l) => l.vendido === "si" && String(l.fecha).slice(0, 10) === d).reduce((s, l) => s + (l.importe || 0), 0));
+  const facturacionMostrada = hayVentasAuto ? ventasPeriodo.total : ventas.facturacion;
+  const ticketMostrado = hayVentasAuto ? ventasPeriodo.ticket : ventas.ticket;
 
   // ----- Contenido -----
   const contenido = useMemo(() => {
@@ -453,7 +479,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi etiqueta="Agendas" valor={int(ventas.reservadas)} pie={`${int(ventas.canceladas)} canceladas`} spark={sparkAgendas} />
               <Kpi etiqueta="Show rate" valor={pct(ventas.show)} tono={tonoObjetivo(ventas.show, OBJETIVOS.vienen)} pie={`${int(ventas.vinieron)} vinieron · ${int(ventas.noVinieron)} no`} />
               <Kpi etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas · ${int(ventas.noCerradas)} no`} />
-              <Kpi etiqueta="Facturación" valor={eur(ventas.facturacion)} pie={`ticket medio ${eur(ventas.ticket)}`} spark={sparkVentas} />
+              <Kpi etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`${hayVentasAuto ? `${int(ventasPeriodo.n)} ventas · ` : ""}ticket medio ${eur(ticketMostrado)}`} spark={sparkVentas} />
             </div>
             <div className="pn-dos">
               {bloqueCuello}
@@ -580,8 +606,32 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi destacado etiqueta="Agendas" valor={int(ventas.reservadas)} pie={`${int(ventas.proximas)} próximas · ${int(ventas.canceladas)} canceladas`} spark={sparkAgendas} />
               <Kpi destacado etiqueta="Show rate" valor={pct(ventas.show)} tono={tonoObjetivo(ventas.show, OBJETIVOS.vienen)} pie={`no-show ${pct(ventas.noshow)}`} />
               <Kpi destacado etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas de ${int(ventas.cerradas + ventas.noCerradas)} decididas`} />
-              <Kpi destacado etiqueta="Facturación" valor={eur(ventas.facturacion)} pie={`ticket medio ${eur(ventas.ticket)}`} spark={sparkVentas} />
+              <Kpi destacado etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`ticket medio ${eur(ticketMostrado)}${hayVentasAuto ? " · Hotmart/Stripe" : ""}`} spark={sparkVentas} />
             </div>
+            {hayVentasAuto && (
+              <Seccion titulo="Ventas registradas" sub={`Cobros de ${[conexiones.hotmart && "Hotmart", conexiones.stripe && "Stripe"].filter(Boolean).join(" y ")} ${nombrePeriodo}. Las que coinciden por correo con una llamada se marcan solas como compra.`}>
+                <div className="pn-kpis">
+                  <Kpi etiqueta="Ventas" valor={int(ventasPeriodo.n)} pie={`${int(ventasPeriodo.deLlamada)} de personas con llamada`} />
+                  <Kpi etiqueta="Facturación total" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.totalLlamada)} de llamadas`} />
+                  <Kpi etiqueta="Ticket medio" valor={eur(ventasPeriodo.ticket)} />
+                </div>
+                <div className="pn-tablewrap">
+                  <table className="pn-table">
+                    <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Importe</th><th>Origen</th><th>Tuvo llamada</th></tr></thead>
+                    <tbody>
+                      {ventasPeriodo.lista.length ? ventasPeriodo.lista.map((v) => (
+                        <tr key={v.id}>
+                          <td>{fechaHora(v.fecha)}</td><td className="pn-texto">{v.producto || "—"}</td><td>{v.nombre || v.email || "—"}</td>
+                          <td className="r">{v.moneda && v.moneda !== "EUR" ? `${Math.round(v.importe).toLocaleString("es-ES")} ${v.moneda}` : eur(v.importe)}</td>
+                          <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : "Stripe"}</span></td>
+                          <td>{ventasPeriodo.emailsLlamada.has(v.email) ? <span className="pn-pill tono-ok">sí</span> : "—"}</td>
+                        </tr>
+                      )) : <tr><td colSpan={6} className="pn-vacio">No hay ventas cobradas en este periodo.</td></tr>}
+                    </tbody>
+                  </table>
+                </div>
+              </Seccion>
+            )}
             <div className="pn-dos">
               <Seccion titulo="Resultado de las llamadas" sub="Llamadas ya pasadas del periodo.">
                 <Donut
@@ -602,7 +652,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 />
               </Seccion>
             </div>
-            <Seccion titulo="Marca cada llamada" sub="Si en GoHighLevel la marcaste como presentada o no, ya aparece marcada; lo que marques aquí manda." accion={pendientes > 0 ? <span className="pn-badge pn-badge-g">{pendientes} pendientes</span> : undefined}>
+            <Seccion titulo="Marca cada llamada" sub={hayVentasAuto ? "Las compras de Hotmart/Stripe con el mismo correo se marcan solas (etiqueta auto). Lo que marques aquí manda." : "Si en GoHighLevel la marcaste como presentada o no, ya aparece marcada; lo que marques aquí manda."} accion={pendientes > 0 ? <span className="pn-badge pn-badge-g">{pendientes} pendientes</span> : undefined}>
               {error && <p className="pn-err" role="alert">{error}</p>}
               <div className="pn-tablewrap">
                 <table className="pn-table">
@@ -610,7 +660,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   <tbody>
                     {pasadas.length ? pasadas.map((l) => (
                       <tr key={l.id} className={!l.asistio || (l.asistio === "si" && !l.vendido) ? "is-pend" : ""}>
-                        <td>{fechaHora(l.fecha)}</td><td>{l.nombre || "—"}</td><td>{l.instagram ? `@${l.instagram}` : "—"}</td>
+                        <td>{fechaHora(l.fecha)}</td><td>{l.nombre || "—"}{l.auto && <span className="pn-pill tono-ok pn-auto">auto</span>}</td><td>{l.instagram ? `@${l.instagram}` : "—"}</td>
                         <td><SiNo valor={l.asistio} etiqueta={`¿Vino ${l.nombre}?`} onCambio={(v) => marcar(l.id, { asistio: v })} /></td>
                         <td><SiNo valor={l.vendido} etiqueta={`¿Compró ${l.nombre}?`} desactivado={l.asistio !== "si"} onCambio={(v) => marcar(l.id, { asistio: "si", vendido: v })} /></td>
                         <td>
@@ -676,7 +726,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   { n: "Ninjo", ok: conexiones.ninjo, t: "Conversaciones, embudo, agendas, seguidores y publicaciones", e: conexiones.ninjo ? `Conectado · ${hace(datos.meta.agendas)}` : "Falta el usuario de Ninjo en Vercel" },
                   { n: "Meta Ads", ok: conexiones.meta, t: "Gasto, coste por seguidor, por conversación, por agenda y por venta", e: conexiones.meta ? "Conectado" : "Pendiente de conectar" },
                   { n: "Estadísticas de Instagram", ok: conexiones.meta, t: "Visualizaciones, alcance y seguidores por reel e historias", e: conexiones.meta ? "Conectado" : "Pendiente de conectar" },
-                  { n: "Hotmart y Stripe", ok: conexiones.stripe, t: "Ventas y facturación automáticas", e: conexiones.stripe ? "Conectado" : "Pendiente de conectar" },
+                  { n: "Hotmart", ok: Boolean(conexiones.hotmart), t: "Ventas y facturación automáticas", e: conexiones.hotmart ? `Conectado · ${hace(datos.meta.ventas)}` : "Pendiente de conectar" },
+                  { n: "Stripe", ok: conexiones.stripe, t: "Ventas y facturación automáticas", e: conexiones.stripe ? `Conectado · ${hace(datos.meta.ventas)}` : "Pendiente de conectar" },
                 ].map((c) => (
                   <div key={c.n} className={`pn-conx ${c.ok ? "is-ok" : ""}`}>
                     <span className={`pn-dot ${c.ok ? "tono-ok" : "tono-warn"}`} aria-hidden="true" />

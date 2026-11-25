@@ -1,6 +1,7 @@
 // Lee Ninjo y guarda en el almacén del panel. Lo usan el cron diario, el botón "Actualizar" y la apertura del panel.
 import { AGENTE, enParalelo, ninjo, ninjoHerramienta } from "./ninjo";
 import { guardar, leer, marcarSync } from "./store";
+import { hotmartListo, stripeListo, type Venta, ventasHotmart, ventasStripe } from "./ventas";
 
 const fmtDia = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" });
 export const diaMadrid = (iso: string | Date) => {
@@ -15,7 +16,7 @@ const offsetMadrid = (dia: string) => {
 };
 
 // ---------- Actualización rápida ----------
-type Schedule = { schedule_id: string; contact_id?: string; datetime: string; created_at: string; status: string; source?: string; name?: string; first_name?: string; last_name?: string; instagram_username?: string; phone_number?: string; agent_id?: string | null };
+type Schedule = { schedule_id: string; contact_id?: string; email?: string; datetime: string; created_at: string; status: string; source?: string; name?: string; first_name?: string; last_name?: string; instagram_username?: string; phone_number?: string; agent_id?: string | null };
 
 export async function syncRapida(): Promise<Record<string, number | string>> {
   const res: Record<string, number | string> = {};
@@ -34,6 +35,7 @@ export async function syncRapida(): Promise<Record<string, number | string>> {
       id: s.schedule_id, contacto: s.contact_id || "", fecha: s.datetime, reservada: s.created_at, estado: s.status, origen: s.source || "",
       nombre: titulo || [s.first_name, s.last_name].filter((x) => x && x !== "Llamada Agendada").join(" "),
       instagram: s.instagram_username || "", telefono: s.phone_number || "", setter: s.agent_id ? "sí" : "no",
+      email: String(s.email || "").toLowerCase(),
     };
   });
   await guardar("agendas", agendas); await marcarSync("agendas"); res.agendas = agendas.length;
@@ -214,11 +216,29 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     conversaciones: convs.size, total_count: p1.total_count, excluidas: p1.excluded_by_has_agent ?? "—", final: final.size, datos: datos.size, desde, hasta };
 }
 
+// ---------- Ventas (Hotmart y Stripe) ----------
+export async function syncVentas(): Promise<Record<string, number | string>> {
+  const desdeMs = Date.now() - 400 * 864e5; // algo más de un año
+  const res: Record<string, number | string> = {};
+  const todas: Venta[] = [];
+  if (hotmartListo()) { const h = await ventasHotmart(desdeMs); todas.push(...h.ventas); res.hotmart = h.ventas.length; }
+  if (stripeListo()) { const st = await ventasStripe(desdeMs); todas.push(...st.ventas); res.stripe = st.ventas.length; }
+  if (!hotmartListo() && !stripeListo()) return { omitido: "sin claves de Hotmart ni Stripe" };
+  await guardar("ventas", todas); await marcarSync("ventas");
+  // Resumen sin datos personales: cuántas por estado y suma por moneda.
+  const estados: Record<string, number> = {}, sumas: Record<string, number> = {};
+  todas.forEach((v) => { estados[v.estado] = (estados[v.estado] || 0) + 1; sumas[v.moneda] = Math.round((sumas[v.moneda] || 0) + v.importe); });
+  res.estados = JSON.stringify(estados); res.sumas = JSON.stringify(sumas);
+  res.ultima = todas.map((v) => v.fecha).sort().pop() || "";
+  return res;
+}
+
 // ---------- Ejecución con registro ----------
 export async function ejecutar(via: string, completo: boolean): Promise<Record<string, unknown>> {
   const informe: Record<string, unknown> = { via, inicio: new Date().toISOString() };
   try {
     informe.rapida = await syncRapida();
+    try { informe.ventas = await syncVentas(); } catch (e) { informe.ventas = { error: e instanceof Error ? e.message : String(e) }; }
     if (completo) informe.embudo = await syncEmbudo();
     informe.ok = true;
   } catch (e) {
