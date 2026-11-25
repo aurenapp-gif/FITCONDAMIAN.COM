@@ -98,11 +98,16 @@ export type Creativo = { titulo?: string; texto?: string; textos?: string[]; min
 export async function creativosMeta(adIds: string[]): Promise<Record<string, Creativo>> {
   const out: Record<string, Creativo> = {};
   type Cr = { title?: string; body?: string; thumbnail_url?: string; object_type?: string; video_id?: string; instagram_permalink_url?: string; call_to_action_type?: string; asset_feed_spec?: { bodies?: { text?: string }[]; titles?: { text?: string }[] } };
-  // Uno por uno (la v26 ya no admite el parámetro "ids"), de 6 en 6 a la vez.
-  for (let i = 0; i < adIds.length; i += 6) {
-    const lote = adIds.slice(i, i + 6);
-    const res = await Promise.all(lote.map((id) => graph<{ creative?: Cr }>(id, { fields: "creative{title,body,thumbnail_url,object_type,video_id,instagram_permalink_url,call_to_action_type,asset_feed_spec}" }).then((v): [string, { creative?: Cr }] => [id, v]).catch((): [string, { creative?: Cr }] => [id, {}])));
-    for (const [id, v] of res) {
+  // Todos los anuncios de la cuenta con su creatividad, paginando por cursor (la v26 no admite "ids").
+  const quiero = new Set(adIds);
+  let despues = "";
+  for (let i = 0; i < 20; i++) {
+    const params: Record<string, string> = { fields: "id,creative{title,body,thumbnail_url,object_type,video_id,instagram_permalink_url,call_to_action_type,asset_feed_spec}", limit: "100" };
+    if (despues) params.after = despues;
+    const r = await graph<{ data: { id: string; creative?: Cr }[]; paging?: { next?: string; cursors?: { after?: string } } }>(`act_${cuenta()}/ads`, params);
+    for (const v of r.data || []) {
+      if (!quiero.has(v.id)) continue;
+      const id = v.id;
       const c = v.creative || {};
       const textos = (c.asset_feed_spec?.bodies || []).map((b: { text?: string }) => b.text || "").filter(Boolean);
       out[id] = {
@@ -110,6 +115,8 @@ export async function creativosMeta(adIds: string[]): Promise<Record<string, Cre
         miniatura: c.thumbnail_url, formato: c.object_type, video: Boolean(c.video_id), enlace_ig: c.instagram_permalink_url, cta: c.call_to_action_type,
       };
     }
+    despues = r.paging?.next ? r.paging?.cursors?.after || "" : "";
+    if (!despues) break;
   }
   return out;
 }
