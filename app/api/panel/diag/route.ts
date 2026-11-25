@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
 import { cronCorrecto } from "../../../_panel/auth";
 import { ninjo, ninjoHerramienta } from "../../../_panel/ninjo";
+import { estudioAperturas } from "../../../_panel/sincronizar";
 
 // Diagnóstico (solo con CRON_SECRET): prueba parámetros de la búsqueda de conversaciones de Ninjo
 // y devuelve solo los recuentos, nunca las conversaciones.
 export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 
 export async function GET(req: Request) {
   if (!cronCorrecto(req)) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   const q = Object.fromEntries(new URL(req.url).searchParams);
   const ruta = q._ruta || "/api/v1/analytics/conversations/search";
   delete q._ruta;
+  if (q._aperturas) {
+    try { return NextResponse.json(await estudioAperturas(Number(q._aperturas) > 1 ? Number(q._aperturas) : 30)); }
+    catch (e) { return NextResponse.json({ error: e instanceof Error ? e.message : String(e) }, { status: 500 }); }
+  }
   if (q._entorno) {
     // Solo nombres y longitud de las variables de conexión, nunca sus valores.
     const nombres = Object.keys(process.env).filter((k) => /meta|fb|facebook|insta|ig_|hotmart|stripe|ads|token|cuenta|account/i.test(k) && !/^(VERCEL|NEXT|NODE|npm_|TURBO)/.test(k));

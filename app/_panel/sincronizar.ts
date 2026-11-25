@@ -308,3 +308,81 @@ export async function ejecutar(via: string, completo: boolean): Promise<Record<s
   } catch {}
   return informe;
 }
+
+// ---------- Estudio de los primeros mensajes (bienvenidas y mensajes a seguidoras) ----------
+// Agrupa cada plantilla por su texto (con el nombre de la persona sustituido por {n}) y mide cuántas responden,
+// a qué hora se envían, si el seguimiento sin respuesta funciona y qué contesta la gente. Solo para diagnóstico.
+const horaMadrid = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Madrid", hour: "2-digit", hour12: false, weekday: "short" });
+function plantilla(texto: string): string {
+  const t = texto.replace(/\s+/g, " ").trim().split(" ");
+  return t.map((w, i) => (i > 0 && /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+[,.!?]*$/.test(w) && !/[.!?]$/.test(t[i - 1]) ? `{n}${w.match(/[,.!?]*$/)?.[0] || ""}` : w)).join(" ");
+}
+export async function estudioAperturas(dias = 30) {
+  const hoy = diaMadrid(new Date());
+  const desde = sumarDias(hoy, -dias);
+  const base = { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100, last_message_after: `${desde}T00:00:00${offsetMadrid(desde)}` };
+  type Pagina = { conversations: Conversacion[]; total_pages: number };
+  const buscar = (page: number) => ninjoHerramienta<Pagina>("search_conversations", { ...base, page });
+  const p1 = await buscar(1);
+  const resto = await enParalelo(Array.from({ length: Math.max(0, (p1.total_pages || 1) - 1) }, (_, i) => i + 2), 4, (page) => buscar(page));
+  const convs = new Map<string, Conversacion>();
+  [p1, ...resto].forEach((p) => (p.conversations || []).forEach((c) => convs.set(c.conversation_id, c)));
+
+  type Est = { enviados: number; responden: number; minutos: number[] };
+  const nuevo = (): Est => ({ enviados: 0, responden: 0, minutos: [] });
+  const variantes: Record<string, Record<string, Est & { ejemplo: string; largo: number }>> = { b: {}, s: {} };
+  const porHora: Record<string, Record<string, Est>> = { b: {}, s: {} };
+  const porDiaSemana: Record<string, Record<string, Est>> = { b: {}, s: {} };
+  const seguimiento: Record<string, { sin_respuesta: number; con_seguimiento: number; responden_tras_seguimiento: number; textos: Record<string, number> }> = { b: { sin_respuesta: 0, con_seguimiento: 0, responden_tras_seguimiento: 0, textos: {} }, s: { sin_respuesta: 0, con_seguimiento: 0, responden_tras_seguimiento: 0, textos: {} } };
+  const respuestas: Record<string, string[]> = { b: [], s: [] };
+  const despuesDeResponder: Record<string, { siguiente_setter: string; segunda_respuesta: boolean }[]> = { b: [], s: [] };
+  convs.forEach((c) => {
+    const msgs = (c.messages || []).filter((m) => m.sent_at && m.status !== "FAILED").sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
+    msgs.forEach((m, i) => {
+      if (m.direction !== "OUTBOUND") return;
+      const t = tipoApertura(m.content || "");
+      if (t !== "b" && t !== "s") return;
+      if (diaMadrid(String(m.sent_at)) < desde) return;
+      // Solo la primera apertura de cada conversación (las repeticiones cuentan como seguimiento).
+      if (msgs.slice(0, i).some((x) => x.direction === "OUTBOUND" && tipoApertura(x.content || "") === t)) return;
+      const tras = msgs.slice(i + 1);
+      const iResp = tras.findIndex((x) => x.direction === "INBOUND" && x.type !== "COMMENT");
+      const resp = iResp >= 0 ? tras[iResp] : null;
+      const minutos = resp ? Math.round((new Date(String(resp.sent_at)).getTime() - new Date(String(m.sent_at)).getTime()) / 60000) : null;
+      const k = plantilla(m.content || "");
+      const v = (variantes[t][k] ||= { ...nuevo(), ejemplo: k, largo: (m.content || "").length });
+      const partes = horaMadrid.formatToParts(new Date(String(m.sent_at)));
+      const hora = partes.find((x) => x.type === "hour")?.value || "?";
+      const dsem = partes.find((x) => x.type === "weekday")?.value || "?";
+      const h = (porHora[t][hora] ||= nuevo()), d = (porDiaSemana[t][dsem] ||= nuevo());
+      [v, h, d].forEach((x) => { x.enviados++; if (resp) { x.responden++; if (minutos != null) x.minutos.push(minutos); } });
+      // Mensajes del setter antes de la primera respuesta (seguimientos).
+      const previos = (iResp >= 0 ? tras.slice(0, iResp) : tras).filter((x) => x.direction === "OUTBOUND");
+      const sg = seguimiento[t];
+      if (previos.length) {
+        sg.con_seguimiento++;
+        const pk = plantilla(previos[0].content || "").slice(0, 160);
+        sg.textos[pk] = (sg.textos[pk] || 0) + 1;
+        if (resp) sg.responden_tras_seguimiento++;
+      }
+      if (!resp) sg.sin_respuesta++;
+      if (resp && respuestas[t].length < 60) respuestas[t].push(String(resp.content || `[${resp.type}]`).replace(/\s+/g, " ").slice(0, 140));
+      if (resp && despuesDeResponder[t].length < 40) {
+        const resto2 = tras.slice(iResp + 1);
+        const sig = resto2.find((x) => x.direction === "OUTBOUND");
+        const iSig = sig ? resto2.indexOf(sig) : -1;
+        despuesDeResponder[t].push({ siguiente_setter: String(sig?.content || "").replace(/\s+/g, " ").slice(0, 220), segunda_respuesta: iSig >= 0 && resto2.slice(iSig + 1).some((x) => x.direction === "INBOUND") });
+      }
+    });
+  });
+  const res = (e: Est) => ({ enviados: e.enviados, responden: e.responden, tasa: e.enviados ? Math.round((1000 * e.responden) / e.enviados) / 10 : null, mediana_min: e.minutos.length ? e.minutos.sort((a, b) => a - b)[Math.floor(e.minutos.length / 2)] : null });
+  const out = (t: "b" | "s") => ({
+    variantes: Object.values(variantes[t]).sort((a, b) => b.enviados - a.enviados).slice(0, 15).map((v) => ({ texto: v.ejemplo, largo: v.largo, ...res(v) })),
+    por_hora: Object.fromEntries(Object.entries(porHora[t]).sort().map(([k, v]) => [k, res(v)])),
+    por_dia_semana: Object.fromEntries(Object.entries(porDiaSemana[t]).map(([k, v]) => [k, res(v)])),
+    seguimiento: { ...seguimiento[t], textos: Object.entries(seguimiento[t].textos).sort((a, b) => b[1] - a[1]).slice(0, 6) },
+    primeras_respuestas: respuestas[t],
+    despues_de_responder: despuesDeResponder[t],
+  });
+  return { desde, conversaciones: convs.size, bienvenidas: out("b"), a_seguidoras: out("s") };
+}
