@@ -9,9 +9,11 @@ type Agenda = { id: string; contacto: string; fecha: string; reservada: string; 
 type Venta = { id: string; fuente: "hotmart" | "stripe" | "manual"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string; metodo?: string; agendaId?: string; nota?: string };
 const COBRADAS = new Set(["APPROVED", "COMPLETE", "PAID"]);
 type Resultado = { asistio: "" | "si" | "no"; vendido: "" | "si" | "no"; importe: number | null };
-type Publicacion = { codigo: string; fecha: string; tipo: string; texto: string; enlace: string; likes: number; comentarios: number };
+type Publicacion = { id?: string; codigo: string; fecha: string; tipo: string; texto: string; enlace: string; likes: number; comentarios: number };
 type FilaContenido = { post: string; fecha: string; entran: number; conversan: number; final: number; datos: number; ids?: string[] };
 type FilaOrigen = { origen: string; conversaciones: number; agendas: number };
+type FilaAnuncio = { fecha: string; campana: string; conjunto: string; anuncio: string; anuncio_id: string; gasto: number; impresiones: number; alcance: number; clics: number; conversaciones: number; seguidores: number; visitas_perfil: number };
+type DatosInstagram = { seguidores_dia?: Record<string, number>; medios?: Record<string, Record<string, number>>; leido?: string };
 
 export type Datos = {
   embudo: Record<string, DiaEmbudo>;
@@ -26,6 +28,8 @@ export type Datos = {
   control: { manuales_ninjo?: Record<string, number>; leido?: string } | null;
   ventas: Venta[];
   ventasManuales: Venta[];
+  anuncios: { desde?: string; hasta?: string; filas?: FilaAnuncio[] } | null;
+  instagram: DatosInstagram | null;
 };
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
@@ -45,9 +49,10 @@ const PESTANAS = [
   ["resumen", "Resumen"],
   ["embudo", "Embudo"],
   ["captacion", "Captación"],
+  ["anuncios", "Anuncios"],
   ["ventas", "Llamadas y ventas"],
   ["contenido", "Contenido"],
-  ["fuentes", "Anuncios y conexiones"],
+  ["fuentes", "Orígenes y conexiones"],
 ] as const;
 type Pestana = (typeof PESTANAS)[number][0];
 
@@ -63,6 +68,8 @@ const fechaHora = (iso: string) => `${dia(iso)} · ${String(iso).slice(11, 16)}`
 const int = (n: number | null | undefined) => (n == null || Number.isNaN(n) ? "—" : Math.round(n).toLocaleString("es-ES"));
 const pct = (n: number | null | undefined) => (n == null ? "—" : `${n}%`);
 const eur = (n: number | null | undefined) => (n == null ? "—" : `${Math.round(n).toLocaleString("es-ES")} €`);
+const eur2 = (n: number | null | undefined) => (n == null || !Number.isFinite(n) ? "—" : `${n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`);
+const coste = (gasto: number, n: number) => (n > 0 && gasto > 0 ? gasto / n : null);
 const ratio = (a: number, b: number) => (b ? Math.round((100 * a) / b) : null);
 const num = (v: unknown) => Number(v) || 0;
 const hace = (iso?: string) => {
@@ -346,10 +353,20 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
       por.set(r.post, t);
     });
     return datos.publicaciones
-      .map((p) => { const t = por.get(p.codigo) || { entran: 0, conversan: 0, final: 0, ids: [] }; return { ...p, ...t, agendan: new Set(t.ids.filter((x) => conAgenda.has(x))).size }; })
+      .map((p) => { const t = por.get(p.codigo) || { entran: 0, conversan: 0, final: 0, ids: [] }; const ig = (p.id && datos.instagram?.medios?.[p.id]) || {}; return { ...p, ...t, ig, agendan: new Set(t.ids.filter((x) => conAgenda.has(x))).size }; })
       .sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
-  }, [datos.publicaciones, datos.contenido, datos.agendas]);
-  const maxLikes = Math.max(1, ...contenido.map((c) => c.likes));
+  }, [datos.publicaciones, datos.contenido, datos.agendas, datos.instagram]);
+  const hayIg = contenido.some((c) => Object.keys(c.ig).length > 0);
+  const medidaPost = (c: (typeof contenido)[number]) => (hayIg ? num(c.ig.views) || num(c.ig.reach) : c.likes);
+  const maxLikes = Math.max(1, ...contenido.map(medidaPost));
+  const [ordenPosts, setOrdenPosts] = useState<"fecha" | "views" | "follows" | "entran">("fecha");
+  const postsOrdenados = useMemo(() => {
+    const l = contenido.slice();
+    if (ordenPosts === "views") l.sort((a, b) => num(b.ig.views) - num(a.ig.views));
+    if (ordenPosts === "follows") l.sort((a, b) => num(b.ig.follows) - num(a.ig.follows));
+    if (ordenPosts === "entran") l.sort((a, b) => b.entran - a.entran);
+    return l;
+  }, [contenido, ordenPosts]);
 
   const semanas = useMemo(() => {
     const lunes = (iso: string) => { const d = new Date(`${String(iso).slice(0, 10)}T12:00:00Z`); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
@@ -366,6 +383,40 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     const f = Object.values(datos.seguidores).filter((x) => x.fecha >= desde).sort((a, b) => (a.fecha < b.fecha ? -1 : 1));
     return f.length > 1 ? f[f.length - 1].seguidores - f[0].seguidores : null;
   }, [datos.seguidores, desde]);
+
+  // ----- Anuncios (Meta) -----
+  const igDia = datos.instagram?.seguidores_dia || {};
+  const anuncios = useMemo(() => {
+    const filas = (datos.anuncios?.filas || []).filter((f) => f.fecha >= desde && f.fecha <= hoy);
+    const porDiaM = new Map<string, { gasto: number; clics: number; impresiones: number }>();
+    const porAnuncio = new Map<string, { anuncio: string; campana: string; gasto: number; impresiones: number; alcance: number; clics: number; dias: Set<string>; ultimo: string }>();
+    const porCampana = new Map<string, { campana: string; gasto: number; impresiones: number; clics: number; anuncios: Set<string>; dias: Set<string> }>();
+    for (const f of filas) {
+      const d = porDiaM.get(f.fecha) || { gasto: 0, clics: 0, impresiones: 0 };
+      d.gasto += f.gasto; d.clics += f.clics; d.impresiones += f.impresiones; porDiaM.set(f.fecha, d);
+      const a = porAnuncio.get(f.anuncio_id) || { anuncio: f.anuncio, campana: f.campana, gasto: 0, impresiones: 0, alcance: 0, clics: 0, dias: new Set<string>(), ultimo: "" };
+      a.gasto += f.gasto; a.impresiones += f.impresiones; a.alcance += f.alcance; a.clics += f.clics; if (f.gasto > 0) a.dias.add(f.fecha); if (f.fecha > a.ultimo && f.gasto > 0) a.ultimo = f.fecha; porAnuncio.set(f.anuncio_id, a);
+      const c = porCampana.get(f.campana) || { campana: f.campana, gasto: 0, impresiones: 0, clics: 0, anuncios: new Set<string>(), dias: new Set<string>() };
+      c.gasto += f.gasto; c.impresiones += f.impresiones; c.clics += f.clics; c.anuncios.add(f.anuncio_id); if (f.gasto > 0) c.dias.add(f.fecha); porCampana.set(f.campana, c);
+    }
+    const gasto = filas.reduce((t, f) => t + f.gasto, 0);
+    const impresiones = filas.reduce((t, f) => t + f.impresiones, 0);
+    const clics = filas.reduce((t, f) => t + f.clics, 0);
+    const diasIg = Object.keys(igDia).filter((d) => d >= desde && d <= hoy);
+    const seguidoresIg = diasIg.reduce((t, d) => t + num(igDia[d]), 0);
+    return {
+      gasto, impresiones, clics, seguidoresIg, diasIg: diasIg.length, porDia: porDiaM,
+      anuncios: Array.from(porAnuncio.values()).filter((a) => a.gasto > 0).sort((a, b) => b.gasto - a.gasto),
+      campanas: Array.from(porCampana.values()).filter((c) => c.gasto > 0).sort((a, b) => b.gasto - a.gasto),
+    };
+  }, [datos.anuncios, igDia, desde, hoy]);
+  const hayAnuncios = Boolean(datos.anuncios?.filas?.length);
+  const cpm = anuncios.impresiones ? (1000 * anuncios.gasto) / anuncios.impresiones : null;
+  const diasAnuncios = useMemo(() => serieDias.map((d) => {
+    const m = anuncios.porDia.get(d) || { gasto: 0, clics: 0, impresiones: 0 };
+    const f = embPorFecha.get(d);
+    return { fecha: d, gasto: m.gasto, clics: m.clics, seguidores: igDia[d] == null ? null : num(igDia[d]), bienvenidas: f ? f.b_env : null };
+  }), [serieDias, anuncios.porDia, embPorFecha, igDia]);
 
   // ----- Acciones -----
   async function marcar(id: string, cambios: Partial<Resultado>) {
@@ -642,6 +693,84 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
           </>
         )}
 
+        {pestana === "anuncios" && (
+          !conexiones.meta ? <p className="pn-aviso">Meta Ads no está conectado: faltan META_ACCESS_TOKEN y META_AD_ACCOUNT_ID en Vercel.</p> :
+          !hayAnuncios ? <p className="pn-aviso">Meta está conectado; los anuncios aparecerán en la próxima actualización.</p> : (
+          <>
+            <div className="pn-kpis">
+              <Kpi destacado etiqueta="Gasto en anuncios" valor={eur(anuncios.gasto)} pie={`${eur(anuncios.gasto / dias)} al día · ${int(anuncios.campanas.length)} campañas`} spark={diasAnuncios.map((d) => d.gasto)} />
+              <Kpi destacado etiqueta="Coste por seguidor" valor={eur2(coste(anuncios.gasto, anuncios.seguidoresIg))} pie={anuncios.diasIg ? `${int(anuncios.seguidoresIg)} seguidores nuevos en Instagram` : "sin datos de seguidores todavía"} spark={diasAnuncios.map((d) => d.seguidores || 0)} />
+              <Kpi destacado etiqueta="Coste por bienvenida" valor={eur2(coste(anuncios.gasto, aperturas.tot.b_env))} pie={`${int(aperturas.tot.b_env)} bienvenidas del setter`} />
+              <Kpi destacado etiqueta="Coste por conversación" valor={eur2(coste(anuncios.gasto, e.conversan))} pie={`${int(e.conversan)} personas responden y conversan`} />
+              <Kpi etiqueta="Coste por agenda" valor={eur(coste(anuncios.gasto, ventas.reservadas))} pie={`${int(ventas.reservadas)} llamadas agendadas`} />
+              <Kpi etiqueta="Coste por venta" valor={eur(coste(anuncios.gasto, hayVentasAuto ? ventasPeriodo.n : ventas.cerradas))} pie={`${int(hayVentasAuto ? ventasPeriodo.n : ventas.cerradas)} clientas`} />
+              <Kpi etiqueta="Retorno (ROAS)" valor={anuncios.gasto ? `${(facturacionMostrada / anuncios.gasto).toLocaleString("es-ES", { maximumFractionDigits: 1 })}x` : "—"} tono={!anuncios.gasto ? "neutro" : facturacionMostrada / anuncios.gasto >= 3 ? "ok" : facturacionMostrada / anuncios.gasto >= 1 ? "warn" : "bad"} pie={`${eur(facturacionMostrada)} facturados por ${eur(anuncios.gasto)}`} />
+              <Kpi etiqueta="CPM · coste por clic" valor={eur2(cpm)} pie={`${int(anuncios.impresiones)} impresiones · ${eur2(coste(anuncios.gasto, anuncios.clics))} por clic`} />
+            </div>
+            <Seccion titulo="Gasto y seguidores cada día" sub="Barras: gasto del día. Al pasar por encima: seguidores nuevos de Instagram ese día y cuánto costó cada uno.">
+              <Barras
+                filas={diasAnuncios.map((d) => ({ x: d.fecha, g: Math.round(d.gasto), s: d.seguidores ?? -1, b: d.bienvenidas ?? -1 }))}
+                series={[{ clave: "g", nombre: "Gasto (€)", color: "#343337" }]}
+                etiqueta={dia} extra={(f) => `${num(f.s) >= 0 ? `${int(num(f.s))} seguidores · ${eur2(coste(num(f.g), num(f.s)))} c/u` : "seguidores: sin dato"}${num(f.b) >= 0 ? ` · ${int(num(f.b))} bienvenidas` : ""}`}
+                vacio="Sin gasto en este periodo."
+              />
+            </Seccion>
+            <Seccion titulo="Detalle por día" sub="Los seguidores nuevos son todos los de Instagram ese día (anuncios y orgánico). Meta no separa los que vienen del anuncio.">
+              <div className="pn-tablewrap">
+                <table className="pn-table">
+                  <thead><tr><th>Día</th><th className="r">Gasto</th><th className="r">Seguidores nuevos</th><th className="r">€ / seguidor</th><th className="r">Bienvenidas</th><th className="r">€ / bienvenida</th><th className="r">Clics</th></tr></thead>
+                  <tbody>
+                    {diasAnuncios.slice().reverse().map((d) => (
+                      <tr key={d.fecha}>
+                        <td>{dia(d.fecha)}{d.fecha === hoy && <span className="pn-vivo">hoy</span>}</td>
+                        <td className="r">{eur2(d.gasto)}</td><td className="r">{int(d.seguidores)}</td><td className="r">{eur2(coste(d.gasto, d.seguidores || 0))}</td>
+                        <td className="r">{int(d.bienvenidas)}</td><td className="r">{eur2(coste(d.gasto, d.bienvenidas || 0))}</td><td className="r">{int(d.clics)}</td>
+                      </tr>
+                    ))}
+                    <tr className="pn-total">
+                      <td>Total</td><td className="r">{eur2(anuncios.gasto)}</td><td className="r">{int(anuncios.seguidoresIg)}</td><td className="r">{eur2(coste(anuncios.gasto, anuncios.seguidoresIg))}</td>
+                      <td className="r">{int(aperturas.tot.b_env)}</td><td className="r">{eur2(coste(anuncios.gasto, aperturas.tot.b_env))}</td><td className="r">{int(anuncios.clics)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Seccion>
+            <Seccion titulo="Campañas" sub={`Gasto ${nombrePeriodo}, de mayor a menor.`}>
+              <div className="pn-tablewrap">
+                <table className="pn-table">
+                  <thead><tr><th>Campaña</th><th className="r">Gasto</th><th className="r">% del gasto</th><th className="r">Anuncios</th><th className="r">Días activa</th><th className="r">Impresiones</th><th className="r">Clics</th><th className="r">€ / clic</th><th className="r">CPM</th></tr></thead>
+                  <tbody>
+                    {anuncios.campanas.map((c) => (
+                      <tr key={c.campana}>
+                        <td className="pn-td-larga">{c.campana}</td><td className="r">{eur2(c.gasto)}</td><td className="r">{pct(ratio(c.gasto, anuncios.gasto))}</td>
+                        <td className="r">{int(c.anuncios.size)}</td><td className="r">{int(c.dias.size)}</td><td className="r">{int(c.impresiones)}</td><td className="r">{int(c.clics)}</td>
+                        <td className="r">{eur2(coste(c.gasto, c.clics))}</td><td className="r">{eur2(c.impresiones ? (1000 * c.gasto) / c.impresiones : null)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Seccion>
+            <Seccion titulo="Anuncios" sub="Cada anuncio con su gasto y rendimiento en el periodo.">
+              <div className="pn-tablewrap">
+                <table className="pn-table">
+                  <thead><tr><th>Anuncio</th><th className="r">Gasto</th><th className="r">Último día con gasto</th><th className="r">Impresiones</th><th className="r">Clics</th><th className="r">CTR</th><th className="r">€ / clic</th></tr></thead>
+                  <tbody>
+                    {anuncios.anuncios.map((a) => (
+                      <tr key={`${a.campana}|${a.anuncio}|${a.ultimo}`}>
+                        <td className="pn-td-larga"><b>{a.anuncio}</b><small>{a.campana}</small></td><td className="r">{eur2(a.gasto)}</td><td className="r">{a.ultimo ? dia(a.ultimo) : "—"}</td>
+                        <td className="r">{int(a.impresiones)}</td><td className="r">{int(a.clics)}</td>
+                        <td className="r">{a.impresiones ? `${((100 * a.clics) / a.impresiones).toLocaleString("es-ES", { maximumFractionDigits: 1 })}%` : "—"}</td><td className="r">{eur2(coste(a.gasto, a.clics))}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Seccion>
+          </>
+          )
+        )}
+
         {pestana === "ventas" && (
           <>
             <div className="pn-kpis">
@@ -757,13 +886,27 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
         )}
 
         {pestana === "contenido" && (
-          <Seccion titulo="Publicaciones" sub="Me gusta, comentarios y cuánta gente entra comentando cada publicación y hasta dónde llega.">
+          <Seccion titulo="Publicaciones" sub={hayIg ? "Estadísticas de Instagram de cada publicación (desde que se publicó) y cuánta gente entra a hablar con el setter por ella y hasta dónde llega." : "Me gusta, comentarios y cuánta gente entra comentando cada publicación y hasta dónde llega."}
+            accion={hayIg ? (
+              <div className="pn-chips" role="group" aria-label="Ordenar publicaciones">
+                {([["fecha", "Recientes"], ["views", "Más vistas"], ["follows", "Más seguidores"], ["entran", "Más conversaciones"]] as const).map(([k, n]) => (
+                  <button key={k} type="button" aria-pressed={ordenPosts === k} onClick={() => setOrdenPosts(k)}>{n}</button>
+                ))}
+              </div>
+            ) : undefined}>
             <div className="pn-posts">
-              {contenido.length ? contenido.map((p) => (
+              {postsOrdenados.length ? postsOrdenados.map((p) => (
                 <article key={p.codigo} className="pn-post">
                   <div className="pn-post-top"><span className="pn-pill tono-neutro">{p.tipo}</span><span className="pn-sub">{dia(p.fecha)}</span></div>
                   <p className="pn-post-txt">{/^https:\/\//.test(p.enlace) ? <a href={p.enlace} target="_blank" rel="noopener noreferrer">{p.texto || "Ver publicación"}</a> : p.texto}</p>
-                  <div className="pn-post-bar"><div style={{ width: `${(100 * p.likes) / maxLikes}%` }} /></div>
+                  <div className="pn-post-bar"><div style={{ width: `${(100 * medidaPost(p)) / maxLikes}%` }} /></div>
+                  {Object.keys(p.ig).length > 0 && (
+                    <div className="pn-post-ig">
+                      <span><b>{int(p.ig.views)}</b> visualiz.</span><span><b>{int(p.ig.reach)}</b> alcance</span>
+                      <span className="is-dest"><b>{int(p.ig.follows)}</b> seguidores</span><span><b>{int(p.ig.saved)}</b> guardados</span>
+                      <span><b>{int(p.ig.shares)}</b> compartidos</span><span><b>{int(p.ig.profile_visits)}</b> visitas perfil</span>
+                    </div>
+                  )}
                   <div className="pn-post-nums">
                     <span><b>{int(p.likes)}</b> me gusta</span><span><b>{int(p.comentarios)}</b> coment.</span>
                     <span><b>{int(p.entran)}</b> entran</span><span><b>{int(p.final)}</b> al final</span><span><b>{int(p.agendan)}</b> agendan</span>
@@ -791,8 +934,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <div className="pn-conex">
                 {[
                   { n: "Ninjo", ok: conexiones.ninjo, t: "Conversaciones, embudo, agendas, seguidores y publicaciones", e: conexiones.ninjo ? `Conectado · ${hace(datos.meta.agendas)}` : "Falta el usuario de Ninjo en Vercel" },
-                  { n: "Meta Ads", ok: conexiones.meta, t: "Gasto, coste por seguidor, por conversación, por agenda y por venta", e: conexiones.meta ? "Conectado" : "Pendiente de conectar" },
-                  { n: "Estadísticas de Instagram", ok: conexiones.meta, t: "Visualizaciones, alcance y seguidores por reel e historias", e: conexiones.meta ? "Conectado" : "Pendiente de conectar" },
+                  { n: "Meta Ads", ok: conexiones.meta, t: "Gasto, coste por seguidor, por conversación, por agenda y por venta", e: conexiones.meta ? `Conectado · ${hace(datos.meta.anuncios)}` : "Pendiente de conectar" },
+                  { n: "Estadísticas de Instagram", ok: conexiones.meta, t: "Visualizaciones, alcance, guardados y seguidores por publicación; seguidores nuevos al día", e: conexiones.meta ? `Conectado · ${hace(datos.instagram?.leido)}` : "Pendiente de conectar" },
                   { n: "Hotmart", ok: Boolean(conexiones.hotmart), t: "Ventas y facturación automáticas", e: conexiones.hotmart ? `Conectado · ${hace(datos.meta.ventas)}` : "Pendiente de conectar" },
                   { n: "Stripe", ok: conexiones.stripe, t: "Ventas y facturación automáticas", e: conexiones.stripe ? `Conectado · ${hace(datos.meta.ventas)}` : "Pendiente de conectar" },
                 ].map((c) => (
