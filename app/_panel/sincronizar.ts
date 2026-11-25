@@ -330,7 +330,8 @@ export async function estudioAperturas(dias = 30) {
 
   type Est = { enviados: number; responden: number; minutos: number[] };
   const nuevo = (): Est => ({ enviados: 0, responden: 0, minutos: [] });
-  const variantes: Record<string, Record<string, Est & { ejemplo: string; largo: number }>> = { b: {}, s: {} };
+  const variantes: Record<string, Record<string, Est & { ejemplo: string; largo: number; franjas: Record<string, Est>; primero: string; ultimo: string }>> = { b: {}, s: {} };
+  const franja = (h: number) => (h < 10 ? "06-09" : h < 14 ? "10-13" : h < 19 ? "14-18" : "19-23");
   const porHora: Record<string, Record<string, Est>> = { b: {}, s: {} };
   const porDiaSemana: Record<string, Record<string, Est>> = { b: {}, s: {} };
   const seguimiento: Record<string, { sin_respuesta: number; con_seguimiento: number; responden_tras_seguimiento: number; textos: Record<string, number> }> = { b: { sin_respuesta: 0, con_seguimiento: 0, responden_tras_seguimiento: 0, textos: {} }, s: { sin_respuesta: 0, con_seguimiento: 0, responden_tras_seguimiento: 0, textos: {} } };
@@ -350,12 +351,14 @@ export async function estudioAperturas(dias = 30) {
       const resp = iResp >= 0 ? tras[iResp] : null;
       const minutos = resp ? Math.round((new Date(String(resp.sent_at)).getTime() - new Date(String(m.sent_at)).getTime()) / 60000) : null;
       const k = plantilla(m.content || "");
-      const v = (variantes[t][k] ||= { ...nuevo(), ejemplo: k, largo: (m.content || "").length });
+      const v = (variantes[t][k] ||= { ...nuevo(), ejemplo: k, largo: (m.content || "").length, franjas: {}, primero: String(m.sent_at), ultimo: String(m.sent_at) });
+      if (String(m.sent_at) < v.primero) v.primero = String(m.sent_at); if (String(m.sent_at) > v.ultimo) v.ultimo = String(m.sent_at);
       const partes = horaMadrid.formatToParts(new Date(String(m.sent_at)));
       const hora = partes.find((x) => x.type === "hour")?.value || "?";
       const dsem = partes.find((x) => x.type === "weekday")?.value || "?";
       const h = (porHora[t][hora] ||= nuevo()), d = (porDiaSemana[t][dsem] ||= nuevo());
-      [v, h, d].forEach((x) => { x.enviados++; if (resp) { x.responden++; if (minutos != null) x.minutos.push(minutos); } });
+      const fr = (v.franjas[franja(Number(hora))] ||= nuevo());
+      [v, h, d, fr].forEach((x) => { x.enviados++; if (resp) { x.responden++; if (minutos != null) x.minutos.push(minutos); } });
       // Mensajes del setter antes de la primera respuesta (seguimientos).
       const previos = (iResp >= 0 ? tras.slice(0, iResp) : tras).filter((x) => x.direction === "OUTBOUND");
       const sg = seguimiento[t];
@@ -377,7 +380,7 @@ export async function estudioAperturas(dias = 30) {
   });
   const res = (e: Est) => ({ enviados: e.enviados, responden: e.responden, tasa: e.enviados ? Math.round((1000 * e.responden) / e.enviados) / 10 : null, mediana_min: e.minutos.length ? e.minutos.sort((a, b) => a - b)[Math.floor(e.minutos.length / 2)] : null });
   const out = (t: "b" | "s") => ({
-    variantes: Object.values(variantes[t]).sort((a, b) => b.enviados - a.enviados).slice(0, 15).map((v) => ({ texto: v.ejemplo, largo: v.largo, ...res(v) })),
+    variantes: Object.values(variantes[t]).sort((a, b) => b.enviados - a.enviados).slice(0, 15).map((v) => ({ texto: v.ejemplo, largo: v.largo, ...res(v), desde: diaMadrid(v.primero), hasta: diaMadrid(v.ultimo), franjas: Object.fromEntries(Object.entries(v.franjas).sort().map(([k, x]) => [k, res(x)])) })),
     por_hora: Object.fromEntries(Object.entries(porHora[t]).sort().map(([k, v]) => [k, res(v)])),
     por_dia_semana: Object.fromEntries(Object.entries(porDiaSemana[t]).map(([k, v]) => [k, res(v)])),
     seguimiento: { ...seguimiento[t], textos: Object.entries(seguimiento[t].textos).sort((a, b) => b[1] - a[1]).slice(0, 6) },
