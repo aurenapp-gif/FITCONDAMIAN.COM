@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 // ---------- Tipos de los datos guardados ----------
-type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
+type Origen = "bienvenida" | "saludo" | "historia" | "leadmagnet" | "comentario" | "palabra" | "mensaje";
 type DetPerdida = { estado: Record<string, number>; turnos: Record<string, number>; cat: Record<string, number>; ej: Record<string, string[]> };
 type PerdidasDia = { p1_franja: Record<string, number>; p1_perdidas_franja: Record<string, number>; p1_seguimiento: number; p1_sin_seguimiento: number; p2: DetPerdida; p3: DetPerdida; sin_contestar: { u: string; c: string; ult: string; h: number }[]; datos: { u: string; c: string }[] };
 type DiaEmbudo = { fecha: string; ids?: Partial<Record<Origen, string[]>>; pd?: Partial<Record<Origen, PerdidasDia>> } & Record<string, unknown>;
@@ -41,12 +41,15 @@ export type Datos = {
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
 const ORIGENES: [Origen, string][] = [
-  ["bienvenida", "Seguidoras nuevas"],
-  ["saludo", "Seguidoras de antes"],
-  ["comentario", "Comentan un reel"],
+  ["bienvenida", "Bienvenidas (seguidoras nuevas)"],
+  ["saludo", "Mensajes a seguidoras existentes"],
+  ["historia", "Reaccionan a una historia"],
+  ["leadmagnet", "Lead magnet en publicación"],
+  ["palabra", "Escriben una palabra clave (QUIERO…)"],
+  ["comentario", "Otros comentarios"],
   ["mensaje", "Nos escriben ellas"],
 ];
-const COLOR_ORIGEN: Record<Origen, string> = { bienvenida: "#343337", saludo: "#b58fd6", comentario: "#e77fc5", mensaje: "#d9a441" };
+const COLOR_ORIGEN: Record<Origen, string> = { bienvenida: "#343337", saludo: "#b58fd6", historia: "#5aa6c8", leadmagnet: "#e77fc5", palabra: "#2f8f5b", comentario: "#f2b8dc", mensaje: "#d9a441" };
 const PERIODOS: (number | "mes")[] = ["mes", 7, 14, 30, 90];
 
 // Objetivos orientativos de cada paso del embudo (en %). Sirven para señalar el cuello de botella.
@@ -957,6 +960,30 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi etiqueta="Mensajes manuales del setter" valor={int(aperturas.tot.manual)} pie={manualNinjo ? `Ninjo registra ${int(manualNinjo["1"])} en 24 h` : "aperturas y seguimientos"} spark={porDia((d) => embPorFecha.get(d)?.manual || 0)} />
               <Kpi etiqueta="Seguidores" valor={int(datos.perfil?.seguidores)} pie={seguidoresNeto == null ? "crecimiento neto: en unos días" : `${seguidoresNeto >= 0 ? "+" : ""}${int(seguidoresNeto)} ${nombrePeriodo}`} />
             </div>
+            <Seccion titulo="De dónde entra cada conversación, día a día" sub="Personas que empiezan a hablar con nosotros cada día, según cómo llegan. Entre paréntesis, cuántas de ellas conversan (responden por privado).">
+              <div className="pn-tablewrap">
+                <table className="pn-table">
+                  <thead><tr><th>Día</th>{ORIGENES.map(([o, n]) => <th key={o} className="r"><i className="pn-cuadro" style={{ background: COLOR_ORIGEN[o] }} />{n}</th>)}<th className="r">Total</th></tr></thead>
+                  <tbody>
+                    {diasEmbudo.length ? diasEmbudo.slice().reverse().map((d) => (
+                      <tr key={d.fecha}>
+                        <td>{dia(d.fecha)}{d.fecha === hoy && <span className="pn-vivo">hoy</span>}</td>
+                        {ORIGENES.map(([o]) => <td key={o} className="r">{num(d[`${o}_entran`]) ? <>{int(num(d[`${o}_entran`]))} <span className="pn-sub">({int(num(d[`${o}_conversan`]))})</span></> : "—"}</td>)}
+                        <td className="r"><b>{int(ORIGENES.reduce((t, [o]) => t + num(d[`${o}_entran`]), 0))}</b> <span className="pn-sub">({int(ORIGENES.reduce((t, [o]) => t + num(d[`${o}_conversan`]), 0))})</span></td>
+                      </tr>
+                    )) : <tr><td colSpan={ORIGENES.length + 2} className="pn-vacio">Todavía no hay días calculados.</td></tr>}
+                    {diasEmbudo.length > 0 && (
+                      <tr className="pn-total">
+                        <td>Total</td>
+                        {ORIGENES.map(([o]) => { const en = diasEmbudo.reduce((t, d) => t + num(d[`${o}_entran`]), 0), cv = diasEmbudo.reduce((t, d) => t + num(d[`${o}_conversan`]), 0); return <td key={o} className="r">{int(en)} <span className="pn-sub">({int(cv)} · {pct(ratio(cv, en))})</span></td>; })}
+                        <td className="r">{int(e.entran)} <span className="pn-sub">({int(e.conversan)})</span></td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <p className="pn-sub">Lead magnet: comentan una palabra clave (o una o dos palabras) en un reel y les escribimos por privado. Palabra clave: nos escriben por privado QUIERO, INFO u otra palabra de los disparadores de Ninjo. Historia: el setter les escribe porque reaccionaron a una historia.</p>
+            </Seccion>
             <Seccion titulo="Primeros mensajes enviados y respondidos cada día">
               <Barras
                 filas={aperturas.filas.map((f) => ({ x: f.fecha, b: f.b_env, s: f.s_env, o: f.o_env, r: f.b_resp + f.s_resp + f.o_resp }))}

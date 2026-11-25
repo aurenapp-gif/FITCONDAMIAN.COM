@@ -79,8 +79,20 @@ export async function syncRapida(): Promise<Record<string, number | string>> {
 // ---------- Embudo por día de entrada ----------
 type Mensaje = { direction?: string; author?: string; type?: string; status?: string; sent_at?: string; content?: string; comment?: { post_url?: string | null } };
 type Conversacion = { conversation_id: string; contact_id: string; contact_username?: string | null; messages?: Mensaje[] };
-type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
-const ORIGENES: Origen[] = ["bienvenida", "saludo", "comentario", "mensaje"];
+type Origen = "bienvenida" | "saludo" | "historia" | "leadmagnet" | "comentario" | "palabra" | "mensaje";
+const ORIGENES: Origen[] = ["bienvenida", "saludo", "historia", "leadmagnet", "comentario", "palabra", "mensaje"];
+// Palabras clave de Ninjo (mensajes y comentarios). Se leen de los triggers en cada actualización completa; estas son por si falla.
+let PALABRAS_CLAVE = new Set(["quiero", "info", "informacion", "carpeta", "entrenamiento", "hormonas", "guia", "firme", "solucion", "herramienta", "vaqueros", "rueda", "metodo", "regalo", "aurena", "dudas", "cansancio", "inflamacion", "plan", "antojos", "celulitis", "brazos", "espalda"]);
+async function cargarPalabrasClave() {
+  try {
+    const t = await ninjoHerramienta<{ keywords?: { keyword: string }[]; comments?: { keyword: string }[] }>("list_triggers", { agent_id: AGENTE });
+    const nuevas = [...(t.keywords || []), ...(t.comments || [])].map((k) => sinAcentosTxt(k.keyword)).filter((k) => k && !k.startsWith("all_"));
+    if (nuevas.length) PALABRAS_CLAVE = new Set([...Array.from(PALABRAS_CLAVE), ...nuevas]);
+  } catch {}
+}
+const sinAcentosTxt = (t: string) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+const palabras = (t: string) => sinAcentosTxt(t).replace(/[^a-zñ0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+const tienePalabraClave = (t: string) => palabras(t).some((w) => PALABRAS_CLAVE.has(w));
 
 // Plantillas de apertura (sin acentos ni mayúsculas): b = bienvenida, s = mensaje a seguidora, o = otros, h = reacción a historia
 const sinAcentos = (t: string) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -98,16 +110,27 @@ function clasificar(c: Conversacion) {
   const m0 = msgs[0];
   if (!m0 || !m0.sent_at) return null;
   let origen: Origen; let post: string | null = null;
+  const t0 = m0.sent_at;
+  const n0 = sinAcentosTxt(m0.content || "");
   if (m0.direction === "OUTBOUND") {
     if (m0.type === "COMMENT" || m0.type === "PRIVATE_REPLY" || m0.status === "FAILED") return null;
-    origen = /bienvenida/i.test(m0.content || "") ? "bienvenida" : "saludo";
+    if (/closer|equipo de ventas|ampliando equipo|setter/.test(n0)) return null; // captación de equipo, no son clientas
+    origen = /bienvenida/.test(n0) ? "bienvenida" : /historia/.test(n0) ? "historia" : "saludo";
   } else if (m0.type === "COMMENT") {
-    origen = "comentario";
     const m = String(m0.comment?.post_url || "").match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/);
     post = m ? m[1] : null;
-  } else origen = "mensaje";
-  const t0 = m0.sent_at;
-  const conversan = origen === "mensaje" || msgs.slice(1).some((m) => m.direction === "INBOUND" && m.type !== "COMMENT" && String(m.sent_at || "") > t0);
+    // Lead magnet: comentan una palabra clave (o una o dos palabras) y les escribimos por privado.
+    const ws = palabras(m0.content || "");
+    const leEscribimos = msgs.slice(1).some((x) => x.direction === "OUTBOUND" && x.type !== "COMMENT");
+    origen = tienePalabraClave(m0.content || "") || (ws.length > 0 && ws.length <= 2 && ws.join("").length >= 3 && leEscribimos) ? "leadmagnet" : "comentario";
+  } else {
+    origen = tienePalabraClave(m0.content || "") && palabras(m0.content || "").length <= 4 ? "palabra" : "mensaje";
+  }
+  // Conversan: responden por privado después de nuestro primer mensaje. Las que nos escriben ellas cuentan siempre.
+  const primeraSalida = msgs.find((m) => m.direction === "OUTBOUND" && m.type !== "COMMENT" && String(m.sent_at || "") >= t0);
+  const conversan = origen === "mensaje" || (origen === "palabra"
+    ? Boolean(primeraSalida) && msgs.some((m) => m.direction === "INBOUND" && m.type !== "COMMENT" && String(m.sent_at || "") > String(primeraSalida?.sent_at))
+    : msgs.slice(1).some((m) => m.direction === "INBOUND" && m.type !== "COMMENT" && String(m.sent_at || "") > t0));
   return { dia: diaMadrid(t0), origen, post, conversan, contacto: c.contact_id };
 }
 
@@ -187,6 +210,7 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
   type Pagina = { conversations: Conversacion[]; total_pages: number; total_count: number; excluded_by_has_agent?: number };
   // Por MCP: la API normal solo devuelve conversaciones con agente y aquí hacen falta todas (has_agent "any").
   const buscar = (page: number) => ninjoHerramienta<Pagina>("search_conversations", { ...base, page });
+  await cargarPalabrasClave();
   const p1 = await buscar(1);
   // Si la API deja fuera las conversaciones sin agente (bienvenidas sin respuesta), el embudo saldría mal: no se toca lo guardado.
   if ((p1.excluded_by_has_agent || 0) > 0) {
@@ -206,7 +230,7 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
   type Dia = Record<string, unknown> & { ids: Record<Origen, string[]>; pd: Record<Origen, Perdidas> };
   const embudo: Record<string, Dia> = {};
   for (let d = desde; d <= hasta; d = sumarDias(d, 1)) {
-    const doc: Dia = { fecha: d, conversaciones_revisadas: 0, ids: { bienvenida: [], saludo: [], comentario: [], mensaje: [] }, pd: { bienvenida: nuevasPerdidas(), saludo: nuevasPerdidas(), comentario: nuevasPerdidas(), mensaje: nuevasPerdidas() } };
+    const doc: Dia = { fecha: d, conversaciones_revisadas: 0, ids: Object.fromEntries(ORIGENES.map((o) => [o, []])) as unknown as Record<Origen, string[]>, pd: Object.fromEntries(ORIGENES.map((o) => [o, nuevasPerdidas()])) as unknown as Record<Origen, Perdidas> };
     ORIGENES.forEach((o) => ["entran", "conversan", "final", "datos"].forEach((k) => { doc[`${o}_${k}`] = 0; }));
     ["b", "s", "o", "h"].forEach((t) => { doc[`ap_${t}`] = 0; doc[`ap_${t}_resp`] = 0; });
     doc.ap_manual = 0;
@@ -230,7 +254,7 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     if (da) inc("datos");
     // Detalle de dónde se pierde.
     const pd = e.pd[r.origen];
-    if (r.origen === "bienvenida" || r.origen === "saludo") {
+    if (r.origen === "bienvenida" || r.origen === "saludo" || r.origen === "historia") {
       const ms = (c.messages || []).filter((m) => m.sent_at).sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
       const fr = franjaDe(String(ms[0]?.sent_at));
       sumarEn(pd.p1_franja, fr);
@@ -242,7 +266,7 @@ export async function syncEmbudo(diasAtras = 21): Promise<Record<string, number 
     if (r.conversan && !llega) puntoDeParada(c, pd.p2, pd);
     if (llega && !da) puntoDeParada(c, pd.p3, pd);
     if (da && pd.datos.length < 60) pd.datos.push({ u: c.contact_username || "", c: c.contact_id });
-    if (r.origen === "comentario" && r.post) {
+    if ((r.origen === "comentario" || r.origen === "leadmagnet") && r.post) {
       const id = `${r.post}_${r.dia}`;
       const p = (contenido[id] ||= { post: r.post, fecha: r.dia, entran: 0, conversan: 0, final: 0, datos: 0, ids: [] });
       p.entran++; if (r.conversan) { p.conversan++; p.ids.push(r.contacto); } if (llega) p.final++; if (da) p.datos++;

@@ -44,7 +44,7 @@ export async function GET(req: Request) {
   const dias = Object.values(embudo).filter((d) => d.fecha >= d60).sort((a, b) => (a.fecha < b.fecha ? -1 : 1))
     .map((d) => Object.fromEntries(Object.entries(d).filter(([k]) => k !== "ids")));
   const suma = (filas: Record<string, unknown>[], k: string) => filas.reduce((t, f) => t + (Number(f[k]) || 0), 0);
-  const ORS = ["bienvenida", "saludo", "comentario", "mensaje"];
+  const ORS = ["bienvenida", "saludo", "historia", "leadmagnet", "comentario", "palabra", "mensaje"];
   const bloque = (desde: string) => {
     const f = dias.filter((d) => String(d.fecha) >= desde);
     const porOrigen = Object.fromEntries(ORS.map((o) => {
@@ -120,7 +120,7 @@ export async function GET(req: Request) {
     aperturas_detalle: aperturas,
     generado: new Date().toISOString(), hoy, objetivos_pct: OBJETIVOS,
     explicacion: {
-      embudo: "Personas por día de su PRIMER mensaje de Instagram. entran → conversan (responden) → final (el setter llega a ofrecer la llamada) → datos (dan su correo). Orígenes: bienvenida = seguidora nueva a la que el setter da la bienvenida; saludo = seguidora antigua a la que se escribe; comentario = comenta un reel; mensaje = escribe ella.",
+      embudo: "Personas por día de su PRIMER mensaje de Instagram. entran → conversan (responden) → final (el setter llega a ofrecer la llamada) → datos (dan su correo). Orígenes: bienvenida = seguidora nueva a la que el setter da la bienvenida; saludo = seguidora existente a la que se escribe; historia = reaccionó a una historia y el setter le escribe; leadmagnet = comenta una palabra clave en una publicación; comentario = otro comentario; palabra = nos escribe por privado una palabra clave (QUIERO, INFO…); mensaje = nos escribe ella sin palabra clave.",
       aperturas: "Primeros mensajes del setter contados por plantilla: bienvenidas ('me has pillado con el móvil…'), a seguidoras ('te llevo viendo un tiempo…'), otros (consejo, vídeo de turnos, historias).",
       llamadas: "Llamadas de los últimos 90 días; asistio/vendido marcados a mano en el panel o por venta enlazada (mismo correo).",
       seguidores_dia: "Seguidores nuevos de Instagram por día (incluye orgánico y anuncios).",
