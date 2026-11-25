@@ -229,8 +229,11 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     const lista = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
     const emailsLlamada = new Set(datos.agendas.map((a) => String(a.email || "").toLowerCase()).filter(Boolean));
     const total = lista.reduce((s, v) => s + v.importe, 0);
+    // Una clienta puede pagar en varios cobros (plazos): las ventas se cuentan por compradora y el ticket medio también.
+    const compradoras = new Set(lista.map((v) => v.email || v.id));
     const deLlamada = lista.filter((v) => emailsLlamada.has(v.email));
-    return { lista, total: Math.round(total), n: lista.length, ticket: lista.length ? Math.round(total / lista.length) : null, deLlamada: deLlamada.length, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada };
+    const compradorasLlamada = new Set(deLlamada.map((v) => v.email));
+    return { lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, ticket: compradoras.size ? Math.round(total / compradoras.size) : null, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada };
   }, [cobradas, desde, datos.agendas]);
 
   const ventas = useMemo(() => {
@@ -479,7 +482,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi etiqueta="Agendas" valor={int(ventas.reservadas)} pie={`${int(ventas.canceladas)} canceladas`} spark={sparkAgendas} />
               <Kpi etiqueta="Show rate" valor={pct(ventas.show)} tono={tonoObjetivo(ventas.show, OBJETIVOS.vienen)} pie={`${int(ventas.vinieron)} vinieron · ${int(ventas.noVinieron)} no`} />
               <Kpi etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas · ${int(ventas.noCerradas)} no`} />
-              <Kpi etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`${hayVentasAuto ? `${int(ventasPeriodo.n)} ventas · ` : ""}ticket medio ${eur(ticketMostrado)}`} spark={sparkVentas} />
+              <Kpi etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`${hayVentasAuto ? `${int(ventasPeriodo.n)} clientas · ` : ""}ticket medio ${eur(ticketMostrado)}`} spark={sparkVentas} />
             </div>
             <div className="pn-dos">
               {bloqueCuello}
@@ -611,9 +614,9 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
             {hayVentasAuto && (
               <Seccion titulo="Ventas registradas" sub={`Cobros de ${[conexiones.hotmart && "Hotmart", conexiones.stripe && "Stripe"].filter(Boolean).join(" y ")} ${nombrePeriodo}. Las que coinciden por correo con una llamada se marcan solas como compra.`}>
                 <div className="pn-kpis">
-                  <Kpi etiqueta="Ventas" valor={int(ventasPeriodo.n)} pie={`${int(ventasPeriodo.deLlamada)} de personas con llamada`} />
+                  <Kpi etiqueta="Clientas que pagaron" valor={int(ventasPeriodo.n)} pie={`${int(ventasPeriodo.cobros)} cobros · ${int(ventasPeriodo.deLlamada)} tuvieron llamada`} />
                   <Kpi etiqueta="Facturación total" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.totalLlamada)} de llamadas`} />
-                  <Kpi etiqueta="Ticket medio" valor={eur(ventasPeriodo.ticket)} />
+                  <Kpi etiqueta="Ticket medio por clienta" valor={eur(ventasPeriodo.ticket)} pie="suma de sus cobros en el periodo" />
                 </div>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
