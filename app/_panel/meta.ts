@@ -6,7 +6,7 @@ const env = (...n: string[]) => n.map((k) => process.env[k]).find((v) => v && v.
 const parecida = (re: RegExp) => Object.keys(process.env).filter((k) => re.test(k)).map((k) => process.env[k]).find((v) => v && v.trim())?.trim() || "";
 const token = () => env("META_ACCESS_TOKEN", "METAACCESSTOKEN") || parecida(/^(META|FB|FACEBOOK)_?(ADS_?)?(ACCESS_?)?TOKEN$/i);
 const cuenta = () => (env("META_AD_ACCOUNT_ID", "METAADACCOUNTID") || parecida(/^(META|FB|FACEBOOK)_?(AD_?)?(ACCOUNT|CUENTA)(_?ID)?$/i)).replace(/^act_/i, "").replace(/\D/g, "");
-const BASE = "https://graph.facebook.com";
+const BASE = `https://graph.facebook.com/${env("META_API_VERSION") || "v26.0"}`;
 
 export const metaListo = () => Boolean(token());
 
