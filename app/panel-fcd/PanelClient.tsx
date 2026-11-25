@@ -51,6 +51,7 @@ const OBJETIVOS = { responden: 15, final: 25, datos: 70, agendan: 60, vienen: 70
 
 const PESTANAS = [
   ["resumen", "Resumen"],
+  ["agenda", "Agenda"],
   ["estudio", "Estudio y propuestas"],
   ["embudo", "Embudo"],
   ["captacion", "Captación"],
@@ -227,11 +228,9 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     return cobradas.find((v) => v.email === em && new Date(v.fecha).getTime() >= t - 2 * 864e5 && new Date(v.fecha).getTime() <= t + 30 * 864e5) || null;
   }, [cobradas]);
 
-  const llamadas = useMemo(() => {
+  const evaluar = useMemo(() => {
     const ahora = Date.now();
-    return datos.agendas
-      .filter((a) => a.estado !== "CANCELLED" && String(a.fecha).slice(0, 10) >= desde)
-      .map((a) => {
+    return (a: Agenda) => {
         const r = resultados[a.id];
         const auto = ventaDeLlamada(a);
         if (auto && auto.agendaId === a.id) {
@@ -243,8 +242,9 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
         const vendido = asistio === "si" && r && (r.vendido === "si" || r.vendido === "no") ? r.vendido : asistio === "si" && auto ? "si" : "";
         const importe = vendido === "si" && r && typeof r.importe === "number" ? r.importe : vendido === "si" && auto ? auto.importe : null;
         return { ...a, pasada: new Date(a.fecha).getTime() < ahora, asistio, vendido, importe, auto: Boolean(auto && !(r && r.vendido)) };
-      });
-  }, [datos.agendas, resultados, desde, ventaDeLlamada]);
+    };
+  }, [resultados, ventaDeLlamada]);
+  const llamadas = useMemo(() => datos.agendas.filter((a) => a.estado !== "CANCELLED" && String(a.fecha).slice(0, 10) >= desde).map(evaluar), [datos.agendas, desde, evaluar]);
 
   const ventasPeriodo = useMemo(() => {
     const lista = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
@@ -422,6 +422,29 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     const f = embPorFecha.get(d);
     return { fecha: d, gasto: m.gasto, clics: m.clics, seguidores: igDia[d] == null ? null : num(igDia[d]), bienvenidas: f ? f.b_env : null };
   }), [serieDias, anuncios.porDia, embPorFecha, igDia]);
+
+  // ----- Agenda semanal -----
+  const [semana, setSemana] = useState(0);
+  const lunesDe = (iso: string) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
+  const lunes = sumarDias(lunesDe(hoy), 7 * semana);
+  const diasSemana = Array.from({ length: 7 }, (_, i) => sumarDias(lunes, i));
+  const agendaSemana = useMemo(() => datos.agendas
+    .filter((a) => { const d = String(a.fecha).slice(0, 10); return d >= lunes && d <= sumarDias(lunes, 6); })
+    .sort((a, b) => (a.fecha < b.fecha ? -1 : 1))
+    .map((a) => ({ ...evaluar(a), cancelada: a.estado === "CANCELLED" })), [datos.agendas, lunes, evaluar]);
+  const resSemana = useMemo(() => {
+    const act = agendaSemana.filter((l) => !l.cancelada);
+    const pas = act.filter((l) => l.pasada);
+    return {
+      total: act.length, canceladas: agendaSemana.length - act.length, proximas: act.length - pas.length,
+      vinieron: pas.filter((l) => l.asistio === "si").length, novinieron: pas.filter((l) => l.asistio === "no").length,
+      sinMarcar: pas.filter((l) => !l.asistio || (l.asistio === "si" && !l.vendido)).length,
+      vendidas: act.filter((l) => l.vendido === "si").length, facturado: act.reduce((t, l) => t + (l.vendido === "si" ? l.importe || 0 : 0), 0),
+    };
+  }, [agendaSemana]);
+  const DIAS_SEM = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  const estadoLlamada = (l: (typeof agendaSemana)[number]): [string, Tono] =>
+    l.cancelada ? ["Cancelada", "neutro"] : !l.pasada ? ["Próxima", "neutro"] : l.vendido === "si" ? ["Vendida", "ok"] : l.asistio === "si" && l.vendido === "no" ? ["Vino, no compró", "warn"] : l.asistio === "no" ? ["No vino", "bad"] : l.asistio === "si" ? ["Vino · ¿compró?", "warn"] : ["Sin marcar", "warn"];
 
   // ----- Estudio nocturno -----
   const [estudioSel, setEstudioSel] = useState(0);
@@ -714,6 +737,56 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 </table>
               </div>
             </Seccion>
+          </>
+        )}
+
+        {pestana === "agenda" && (
+          <>
+            <div className="pn-sem-nav">
+              <button type="button" className="pn-btn pn-btn-sec" onClick={() => setSemana((x) => x - 1)} aria-label="Semana anterior">←</button>
+              <div><b>{semana === 0 ? "Esta semana" : semana === 1 ? "La semana que viene" : semana === -1 ? "La semana pasada" : `Semana del ${dia(lunes)}`}</b><small>{dia(lunes)} – {dia(sumarDias(lunes, 6))}</small></div>
+              <button type="button" className="pn-btn pn-btn-sec" onClick={() => setSemana((x) => x + 1)} aria-label="Semana siguiente">→</button>
+              {semana !== 0 && <button type="button" className="pn-link" onClick={() => setSemana(0)}>Volver a esta semana</button>}
+            </div>
+            <div className="pn-kpis">
+              <Kpi destacado etiqueta="Llamadas" valor={int(resSemana.total)} pie={`${int(resSemana.proximas)} por hacer · ${int(resSemana.canceladas)} canceladas`} />
+              <Kpi etiqueta="Vinieron" valor={int(resSemana.vinieron)} pie={`${int(resSemana.novinieron)} no vinieron`} tono={resSemana.vinieron + resSemana.novinieron ? tonoObjetivo(ratio(resSemana.vinieron, resSemana.vinieron + resSemana.novinieron), OBJETIVOS.vienen) : "neutro"} />
+              <Kpi etiqueta="Ventas" valor={int(resSemana.vendidas)} pie={resSemana.facturado ? `${eur(resSemana.facturado)} facturados` : "en llamadas de esta semana"} />
+              <Kpi etiqueta="Por marcar" valor={int(resSemana.sinMarcar)} pie="llamadas pasadas sin resultado" tono={resSemana.sinMarcar ? "warn" : "ok"} />
+            </div>
+            {error && <p className="pn-err" role="alert">{error}</p>}
+            <div className="pn-sem">
+              {diasSemana.map((d, i) => {
+                const delDia = agendaSemana.filter((l) => String(l.fecha).slice(0, 10) === d);
+                return (
+                  <section key={d} className={`pn-sem-dia${d === hoy ? " is-hoy" : ""}${d < hoy ? " is-pasado" : ""}`} aria-label={`${DIAS_SEM[i]} ${dia(d)}`}>
+                    <header><b>{DIAS_SEM[i]}</b><span>{dia(d)}</span>{d === hoy && <span className="pn-vivo">hoy</span>}</header>
+                    {delDia.length ? delDia.map((l) => {
+                      const [txt, tono] = estadoLlamada(l);
+                      return (
+                        <article key={l.id} className={`pn-cita tono-${tono}${l.cancelada ? " is-cancelada" : ""}`}>
+                          <div className="pn-cita-top"><span className="pn-cita-hora">{String(l.fecha).slice(11, 16)}</span><span className={`pn-pill tono-${tono}`}>{txt}</span></div>
+                          <b className="pn-cita-nombre">{l.nombre || "Sin nombre"}</b>
+                          <div className="pn-cita-datos">
+                            {l.instagram && <a href={`https://instagram.com/${l.instagram}`} target="_blank" rel="noopener noreferrer">@{l.instagram}</a>}
+                            {l.telefono && <a href={`tel:${l.telefono}`}>{l.telefono}</a>}
+                            {l.setter === "sí" && <span className="pn-pill tono-neutro">la agendó el setter</span>}
+                          </div>
+                          {l.pasada && !l.cancelada && (
+                            <div className="pn-cita-marcar">
+                              <span>¿Vino?</span><SiNo valor={l.asistio} etiqueta={`¿Vino ${l.nombre}?`} onCambio={(v) => marcar(l.id, { asistio: v })} />
+                              <span>¿Compró?</span><SiNo valor={l.vendido} etiqueta={`¿Compró ${l.nombre}?`} desactivado={l.asistio !== "si"} onCambio={(v) => marcar(l.id, { asistio: "si", vendido: v })} />
+                              {l.vendido === "si" && l.importe ? <span className="pn-cita-imp">{eur(l.importe)}{l.auto ? " · auto" : ""}</span> : null}
+                            </div>
+                          )}
+                        </article>
+                      );
+                    }) : <p className="pn-sem-vacio">Sin llamadas</p>}
+                  </section>
+                );
+              })}
+            </div>
+            <p className="pn-sub">Llamadas del calendario de GoHighLevel (las lee Ninjo; se actualiza cada hora y al abrir el panel). El importe se pone en "Llamadas y ventas".</p>
           </>
         )}
 
