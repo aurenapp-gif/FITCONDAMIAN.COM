@@ -88,6 +88,19 @@ function leerRespuesta(texto: string): { result?: { content?: { type: string; te
 }
 
 let mcpId = 1;
+// Igual que ninjoHerramienta pero devuelve los bloques de texto tal cual (para respuestas que no son un único JSON).
+export async function ninjoHerramientaTextos(nombre: string, args: Record<string, unknown>): Promise<string[]> {
+  if (!mcpSesion) {
+    const ini = await mcpPost({ jsonrpc: "2.0", id: mcpId++, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "panel-fcd", version: "1.0" } } });
+    mcpSesion = ini.sesion;
+    await mcpPost({ jsonrpc: "2.0", method: "notifications/initialized" }).catch(() => null);
+  }
+  const { texto } = await mcpPost({ jsonrpc: "2.0", id: mcpId++, method: "tools/call", params: { name: nombre, arguments: args } });
+  const res = leerRespuesta(texto);
+  if (res.error) throw new Error(`Ninjo ${nombre}: ${res.error.message}`);
+  return (res.result?.content || []).filter((c) => c.type === "text").map((c) => c.text || "");
+}
+
 export async function ninjoHerramienta<T = unknown>(nombre: string, args: Record<string, unknown>): Promise<T> {
   if (!mcpSesion) {
     const ini = await mcpPost({ jsonrpc: "2.0", id: mcpId++, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "panel-fcd", version: "1.0" } } });

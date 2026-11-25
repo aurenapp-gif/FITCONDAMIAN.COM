@@ -1,5 +1,5 @@
 // Lee Ninjo y guarda en el almacén del panel. Lo usan el cron diario, el botón "Actualizar" y la apertura del panel.
-import { AGENTE, enParalelo, ninjo, ninjoHerramienta } from "./ninjo";
+import { AGENTE, enParalelo, ninjo, ninjoHerramienta, ninjoHerramientaTextos } from "./ninjo";
 import { guardar, leer, marcarSync } from "./store";
 import { anunciosMeta, competenciaMeta, creativosMeta, instagramMeta, metaListo, type Creativo } from "./meta";
 import { hotmartListo, stripeListo, type Venta, ventasHotmart, ventasStripe } from "./ventas";
@@ -446,7 +446,8 @@ export async function conversacionesParaEstudio(paso: "responden" | "final" | "l
 
 // Configuración del setter (prompt y ajustes), para que el analista proponga cambios sobre lo que hay.
 export async function configuracionSetter() {
-  const r = await ninjoHerramienta<Record<string, unknown>>("get_agent_config", { agent_id: AGENTE });
-  const txt = JSON.stringify(r);
-  return txt.length > 60000 ? { recortado: true, config: txt.slice(0, 60000) } : r;
+  const textos = await ninjoHerramientaTextos("get_agent_config", { agent_id: AGENTE });
+  const bloques = textos.map((t) => { try { return JSON.parse(t); } catch { return t; } });
+  const total = JSON.stringify(bloques);
+  return total.length > 120000 ? { recortado: true, bloques: total.slice(0, 120000) } : { bloques };
 }
