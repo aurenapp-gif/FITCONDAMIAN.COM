@@ -17,6 +17,26 @@ export async function GET(req: Request) {
     try { return NextResponse.json(await estudioAperturas(Number(q._aperturas) > 1 ? Number(q._aperturas) : 30)); }
     catch (e) { return NextResponse.json({ error: e instanceof Error ? e.message : String(e) }, { status: 500 }); }
   }
+  if (q._origenes) {
+    // Cómo empiezan las conversaciones: tipos de mensaje, campos disponibles y primeros textos (recortados).
+    const dias = Number(q._origenes) > 1 ? Number(q._origenes) : 7;
+    const desde = new Date(Date.now() - dias * 864e5).toISOString();
+    type M = Record<string, unknown> & { direction?: string; type?: string; content?: string; sent_at?: string; author?: string };
+    const p = await ninjoHerramienta<{ conversations: { messages?: M[]; meta?: Record<string, unknown> }[]; total_pages: number }>("search_conversations", { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100, first_message_after: desde, page: 1 });
+    const tipos: Record<string, number> = {}, campos: Record<string, number> = {}, metaCampos: Record<string, number> = {};
+    const ejemplos: Record<string, string[]> = {};
+    for (const c of p.conversations || []) {
+      Object.keys(c.meta || {}).forEach((k) => { metaCampos[k] = (metaCampos[k] || 0) + 1; });
+      const ms = (c.messages || []).slice().sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
+      const m0 = ms[0]; if (!m0) continue;
+      Object.keys(m0).forEach((k) => { campos[k] = (campos[k] || 0) + 1; });
+      const k = `${m0.direction}|${m0.type}|${m0.author}`;
+      tipos[k] = (tipos[k] || 0) + 1;
+      const l = (ejemplos[k] ||= []);
+      if (l.length < 12) l.push(JSON.stringify(Object.fromEntries(Object.entries(m0).filter(([kk]) => !["content"].includes(kk)))).slice(0, 300) + " || " + String(m0.content || "").slice(0, 90));
+    }
+    return NextResponse.json({ total: (p.conversations || []).length, tipos, campos, metaCampos, ejemplos, metaEjemplo: JSON.stringify(p.conversations?.[0]?.meta || {}).slice(0, 1500) });
+  }
   if (q._entorno) {
     // Solo nombres y longitud de las variables de conexión, nunca sus valores.
     const nombres = Object.keys(process.env).filter((k) => /meta|fb|facebook|insta|ig_|hotmart|stripe|ads|token|cuenta|account/i.test(k) && !/^(VERCEL|NEXT|NODE|npm_|TURBO)/.test(k));
