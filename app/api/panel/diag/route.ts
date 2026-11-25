@@ -41,6 +41,24 @@ export async function GET(req: Request) {
     }
     return NextResponse.json({ total: (p.conversations || []).length, tipos, campos, metaCampos, ejemplos, metaEjemplo: JSON.stringify(p.conversations?.[0]?.meta || {}).slice(0, 1500) });
   }
+  if (q._ventas) {
+    // Resumen de cobros del mes para revisar facturación frente a cash (sin correos: solo iniciales).
+    const { leer } = await import("../../../_panel/store");
+    const ventas = await leer<{ id: string; fuente: string; fecha: string; estado: string; importe: number; producto: string; email: string; nombre: string }[]>("ventas", []);
+    const manuales = await leer<typeof ventas>("ventas_manuales", []);
+    const ok = new Set(["APPROVED", "COMPLETE", "PAID"]);
+    const todas = [...ventas, ...manuales].filter((v) => ok.has(String(v.estado).toUpperCase())).sort((a, b) => (a.fecha < b.fecha ? -1 : 1));
+    const desde = String(q._ventas).length === 10 ? String(q._ventas) : new Date().toISOString().slice(0, 8) + "01";
+    const porCli = new Map<string, typeof todas>();
+    todas.forEach((v) => { const k = (v.email || v.id).toLowerCase(); porCli.set(k, [...(porCli.get(k) || []), v]); });
+    const ini = (n: string) => n.split(/\s+/).map((x) => x.slice(0, 2)).join(" ");
+    const filas = Array.from(porCli.entries()).filter(([, l]) => l.some((v) => v.fecha.slice(0, 10) >= desde)).map(([k, l]) => ({
+      cli: ini(l[0].nombre || k.slice(0, 3)), sinEmail: !l[0].email, primero: l[0].fecha.slice(0, 10), nueva: l[0].fecha.slice(0, 10) >= desde,
+      cobros: l.map((v) => `${v.fecha.slice(0, 10)} ${v.fuente} ${v.importe} [${(v.producto || "").slice(0, 40)}]`),
+    }));
+    const mes = todas.filter((v) => v.fecha.slice(0, 10) >= desde);
+    return NextResponse.json({ desde, cash: mes.reduce((t, v) => t + v.importe, 0), cobros: mes.length, clientas: filas.length, nuevas: filas.filter((f) => f.nueva).length, filas });
+  }
   if (q._entorno) {
     // Solo nombres y longitud de las variables de conexión, nunca sus valores.
     const nombres = Object.keys(process.env).filter((k) => /meta|fb|facebook|insta|ig_|hotmart|stripe|ads|token|cuenta|account/i.test(k) && !/^(VERCEL|NEXT|NODE|npm_|TURBO)/.test(k));
