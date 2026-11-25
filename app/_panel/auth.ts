@@ -60,3 +60,13 @@ export function cronCorrecto(req: Request): boolean {
   if (!t) return false;
   return iguales(req.headers.get("authorization") || "", `Bearer ${t}`) || iguales(req.headers.get("x-cron-secret") || "", t);
 }
+
+// Clave del analista nocturno: derivada de CRON_SECRET y válida solo para leer el informe y guardar estudios.
+export async function tokenEstudio(): Promise<string | null> {
+  const t = process.env.CRON_SECRET;
+  return t ? (await firmar("estudio-v1", t)).slice(0, 40) : null;
+}
+export async function estudioCorrecto(req: Request): Promise<boolean> {
+  const t = await tokenEstudio();
+  return Boolean(t) && iguales(req.headers.get("x-estudio-token") || "", t as string);
+}

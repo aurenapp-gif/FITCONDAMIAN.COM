@@ -1,7 +1,7 @@
 // Lee Ninjo y guarda en el almacén del panel. Lo usan el cron diario, el botón "Actualizar" y la apertura del panel.
 import { AGENTE, enParalelo, ninjo, ninjoHerramienta } from "./ninjo";
 import { guardar, leer, marcarSync } from "./store";
-import { anunciosMeta, instagramMeta, metaListo } from "./meta";
+import { anunciosMeta, competenciaMeta, creativosMeta, instagramMeta, metaListo, type Creativo } from "./meta";
 import { hotmartListo, stripeListo, type Venta, ventasHotmart, ventasStripe } from "./ventas";
 
 const fmtDia = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" });
@@ -258,6 +258,31 @@ export async function syncMeta(): Promise<Record<string, unknown>> {
     res.metricas_ejemplo = Object.keys(Object.values(ig.medios).find((m) => Object.keys(m).length) || {}).join(",");
     if (ig.avisos.length) res.instagram_avisos = ig.avisos;
   } catch (e) { res.instagram_error = e instanceof Error ? e.message : String(e); }
+  // Textos de los anuncios con gasto reciente y cuentas del sector: cada 12 horas como mucho.
+  const meta = await leer<Record<string, string>>("meta", {});
+  const viejo = (k: string) => !meta[k] || Date.now() - new Date(meta[k]).getTime() > 12 * 3600e3;
+  try {
+    const guardados = await leer<{ anuncios?: Record<string, Creativo> }>("creativos", {});
+    const an = await leer<{ filas?: { fecha: string; anuncio_id: string; gasto: number }[] }>("anuncios", {});
+    const limite = sumarDias(hoy, -40);
+    const ids = Array.from(new Set((an.filas || []).filter((f) => f.fecha >= limite && f.gasto > 0).map((f) => f.anuncio_id)));
+    const faltan = ids.filter((id) => !guardados.anuncios?.[id]);
+    if (faltan.length || viejo("creativos")) {
+      const nuevos = await creativosMeta(viejo("creativos") ? ids : faltan);
+      await guardar("creativos", { anuncios: { ...(guardados.anuncios || {}), ...nuevos } });
+      await marcarSync("creativos");
+      res.creativos = Object.keys(nuevos).length;
+    }
+  } catch (e) { res.creativos_error = e instanceof Error ? e.message : String(e); }
+  try {
+    const usuarios = await leer<string[]>("competidores", []);
+    if (usuarios.length && viejo("competencia")) {
+      const cuentas = await competenciaMeta(usuarios);
+      await guardar("competencia", { leido: new Date().toISOString(), cuentas });
+      await marcarSync("competencia");
+      res.competencia = cuentas.map((c) => `${c.usuario}:${c.error ? "error" : c.publicaciones.length}`).join(",");
+    }
+  } catch (e) { res.competencia_error = e instanceof Error ? e.message : String(e); }
   await marcarSync("anuncios");
   return res;
 }

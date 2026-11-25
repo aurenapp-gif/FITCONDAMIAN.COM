@@ -249,3 +249,22 @@
 .pn-post-ig { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 10px; font-size: 12px; color: var(--pn-muted); padding: 8px 0; border-bottom: 1px dashed var(--pn-line); margin-bottom: 6px; }
 .pn-post-ig b { color: var(--pn-ink); font-size: 14px; display: block; font-variant-numeric: tabular-nums; }
 .pn-post-ig .is-dest b { color: #7a4fb0; }
+
+/* Estudio nocturno */
+.pn-est-cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.pn-est-cab h2 { font-size: 22px; line-height: 1.25; margin: 4px 0 0; max-width: 760px; }
+.pn-est-sel { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--pn-muted); }
+.pn-est-sel select { font: inherit; font-size: 14px; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--pn-line); background: #fff; color: var(--pn-ink); max-width: 340px; }
+.pn-est-items { display: grid; gap: 12px; }
+.pn-est-item { border: 1px solid var(--pn-line); border-radius: 14px; padding: 14px 16px; background: #fff; }
+.pn-est-item-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.pn-est-item h3 { font-size: 16px; margin: 0; }
+.pn-est-txt { white-space: pre-wrap; line-height: 1.55; margin: 6px 0 0; font-size: 14px; }
+.pn-est-bloque { position: relative; margin-top: 10px; background: #faf7ee; border: 1px solid var(--pn-line); border-radius: 12px; padding: 12px 14px 10px; }
+.pn-est-bloque pre { white-space: pre-wrap; font-family: inherit; font-size: 14px; line-height: 1.5; margin: 0 0 6px; }
+.pn-est-medir { font-size: 13px; color: var(--pn-muted); margin: 10px 0 0; }
+.pn-est-medir b { color: var(--pn-ink); }
+.pn-est-fuentes { font-size: 13px; padding-left: 18px; word-break: break-word; }
+.pn-est-cuentas { display: grid; grid-template-columns: minmax(0, 340px) 1fr; gap: 14px; align-items: start; }
+.pn-est-cuentas textarea { font: inherit; font-size: 14px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--pn-line); width: 100%; resize: vertical; }
+@media (max-width: 720px) { .pn-est-cuentas { grid-template-columns: 1fr; } .pn-est-cab h2 { font-size: 19px; } }

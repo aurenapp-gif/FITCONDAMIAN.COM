@@ -13,6 +13,8 @@ type Publicacion = { id?: string; codigo: string; fecha: string; tipo: string; t
 type FilaContenido = { post: string; fecha: string; entran: number; conversan: number; final: number; datos: number; ids?: string[] };
 type FilaOrigen = { origen: string; conversaciones: number; agendas: number };
 type FilaAnuncio = { fecha: string; campana: string; conjunto: string; anuncio: string; anuncio_id: string; gasto: number; impresiones: number; alcance: number; clics: number; conversaciones: number; seguidores: number; visitas_perfil: number };
+type ItemEstudio = { titulo: string; etiqueta?: string; texto?: string; bloque?: string; medir?: string };
+type Estudio = { id: string; fecha: string; titular: string; cuello?: { paso?: string; tasa?: number | null; objetivo?: number | null; detalle?: string }; secciones: { id?: string; titulo: string; intro?: string; items: ItemEstudio[] }[]; fuentes?: string[] };
 type DatosInstagram = { seguidores_dia?: Record<string, number>; medios?: Record<string, Record<string, number>>; leido?: string };
 
 export type Datos = {
@@ -30,6 +32,8 @@ export type Datos = {
   ventasManuales: Venta[];
   anuncios: { desde?: string; hasta?: string; filas?: FilaAnuncio[] } | null;
   instagram: DatosInstagram | null;
+  estudios: Estudio[];
+  competidores: string[];
 };
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
@@ -47,6 +51,7 @@ const OBJETIVOS = { responden: 15, final: 25, datos: 70, agendan: 60, vienen: 70
 
 const PESTANAS = [
   ["resumen", "Resumen"],
+  ["estudio", "Estudio y propuestas"],
   ["embudo", "Embudo"],
   ["captacion", "Captación"],
   ["anuncios", "Anuncios"],
@@ -418,6 +423,24 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     return { fecha: d, gasto: m.gasto, clics: m.clics, seguidores: igDia[d] == null ? null : num(igDia[d]), bienvenidas: f ? f.b_env : null };
   }), [serieDias, anuncios.porDia, embPorFecha, igDia]);
 
+  // ----- Estudio nocturno -----
+  const [estudioSel, setEstudioSel] = useState(0);
+  const estudio = datos.estudios?.[estudioSel] || null;
+  const [copiado, setCopiado] = useState("");
+  const copiar = async (clave: string, texto: string) => { try { await navigator.clipboard.writeText(texto); setCopiado(clave); setTimeout(() => setCopiado(""), 1800); } catch {} };
+  const [cuentasTxt, setCuentasTxt] = useState((datos.competidores || []).map((c) => `@${c}`).join("\n"));
+  const [msgCuentas, setMsgCuentas] = useState("");
+  async function guardarCuentas() {
+    setMsgCuentas("Guardando…");
+    try {
+      const r = await fetch("/api/panel/competidores", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ cuentas: cuentasTxt.split(/[\s,;]+/).filter(Boolean) }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || `error ${r.status}`);
+      setCuentasTxt(j.cuentas.map((c: string) => `@${c}`).join("\n"));
+      setMsgCuentas(`Guardadas ${j.cuentas.length} cuentas. Se leen en la próxima actualización.`);
+    } catch (err) { setMsgCuentas(`No se pudo guardar: ${err instanceof Error ? err.message : "error"}`); }
+  }
+
   // ----- Acciones -----
   async function marcar(id: string, cambios: Partial<Resultado>) {
     const prev = resultados[id] || { asistio: "", vendido: "", importe: null };
@@ -500,6 +523,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
           <strong>{cuello.nombre}</strong>
           <p>Solo el <b>{pct(cuello.tasa)}</b> pasa este paso (objetivo {cuello.obj}%). Se quedan por el camino <b>{int(cuello.perdidas)}</b> personas de {int(cuello.de)}.</p>
           <button type="button" className="pn-link" onClick={() => irA("embudo")}>Ver el embudo completo →</button>
+          {datos.estudios?.length > 0 && <button type="button" className="pn-link" onClick={() => irA("estudio")}>Ver propuestas para romperlo →</button>}
         </>
       ) : <p>Aún no hay datos suficientes en este periodo.</p>}
     </div>
@@ -688,6 +712,67 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                     )}
                   </tbody>
                 </table>
+              </div>
+            </Seccion>
+          </>
+        )}
+
+        {pestana === "estudio" && (
+          <>
+            {!estudio ? (
+              <Seccion titulo="Todavía no hay ningún estudio" sub="Cada noche Claude revisa los números del panel, lee las conversaciones de Ninjo donde más gente se pierde, estudia tu contenido, el de las cuentas del sector y tus anuncios, y deja aquí propuestas concretas para probar.">
+                <p className="pn-sub">El primero aparecerá mañana por la mañana.</p>
+              </Seccion>
+            ) : (
+              <>
+                <div className="pn-est-cab">
+                  <div>
+                    <span className="pn-cuello-eti">Estudio del {dia(estudio.fecha)}</span>
+                    <h2>{estudio.titular}</h2>
+                  </div>
+                  {datos.estudios.length > 1 && (
+                    <label className="pn-est-sel">Ver otro día
+                      <select value={estudioSel} onChange={(ev) => setEstudioSel(Number(ev.target.value))}>
+                        {datos.estudios.map((x, i) => <option key={x.id} value={i}>{dia(x.fecha)} · {x.titular.slice(0, 50)}</option>)}
+                      </select>
+                    </label>
+                  )}
+                </div>
+                {estudio.cuello?.paso && (
+                  <div className={`pn-cuello tono-${estudio.cuello.tasa != null && estudio.cuello.objetivo ? tonoObjetivo(estudio.cuello.tasa, estudio.cuello.objetivo) : "warn"}`}>
+                    <span className="pn-cuello-eti">Cuello de botella detectado</span>
+                    <strong>{estudio.cuello.paso}{estudio.cuello.tasa != null && ` · ${estudio.cuello.tasa}%`}{estudio.cuello.objetivo ? ` (objetivo ${estudio.cuello.objetivo}%)` : ""}</strong>
+                    {estudio.cuello.detalle && <p className="pn-est-txt">{estudio.cuello.detalle}</p>}
+                  </div>
+                )}
+                {estudio.secciones.map((sec, si) => (
+                  <Seccion key={`${sec.titulo}-${si}`} titulo={sec.titulo} sub={sec.intro}>
+                    <div className="pn-est-items">
+                      {sec.items.map((it, ii) => (
+                        <article key={ii} className="pn-est-item">
+                          <div className="pn-est-item-top">{it.etiqueta && <span className={`pn-pill ${/alta|urgente/i.test(it.etiqueta) ? "tono-bad" : /media/i.test(it.etiqueta) ? "tono-warn" : "tono-neutro"}`}>{it.etiqueta}</span>}<h3>{it.titulo}</h3></div>
+                          {it.texto && <p className="pn-est-txt">{it.texto}</p>}
+                          {it.bloque && (
+                            <div className="pn-est-bloque">
+                              <pre>{it.bloque}</pre>
+                              <button type="button" className="pn-link" onClick={() => copiar(`${si}-${ii}`, it.bloque || "")}>{copiado === `${si}-${ii}` ? "Copiado ✓" : "Copiar"}</button>
+                            </div>
+                          )}
+                          {it.medir && <p className="pn-est-medir"><b>Cómo sabremos si funciona:</b> {it.medir}</p>}
+                        </article>
+                      ))}
+                    </div>
+                  </Seccion>
+                ))}
+                {estudio.fuentes && estudio.fuentes.length > 0 && (
+                  <details className="pn-ayuda"><summary>Fuentes consultadas</summary><ul className="pn-est-fuentes">{estudio.fuentes.map((f) => <li key={f}>{/^https?:\/\//.test(f) ? <a href={f} target="_blank" rel="noopener noreferrer">{f}</a> : f}</li>)}</ul></details>
+                )}
+              </>
+            )}
+            <Seccion titulo="Cuentas del sector que se estudian" sub="Cuentas profesionales de Instagram (de creadoras o negocios) cuyo contenido se analiza cada noche: qué publicaciones traen más comentarios e interacción. Una por línea.">
+              <div className="pn-est-cuentas">
+                <textarea rows={6} value={cuentasTxt} onChange={(ev) => setCuentasTxt(ev.target.value)} placeholder={"@cuenta1\n@cuenta2"} aria-label="Cuentas del sector" />
+                <div><button type="button" className="pn-btn" onClick={guardarCuentas}>Guardar cuentas</button>{msgCuentas && <p className="pn-sub">{msgCuentas}</p>}</div>
               </div>
             </Seccion>
           </>

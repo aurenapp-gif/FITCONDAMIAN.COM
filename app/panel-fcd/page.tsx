@@ -21,7 +21,7 @@ export default async function Panel() {
       await Promise.race([ejecutar("apertura", false).catch(() => null), new Promise((r) => setTimeout(r, 12000))]);
     }
   }
-  const [embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, registro, control, ventas, ventasManuales, anuncios, instagram] = await Promise.all([
+  const [embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, registro, control, ventas, ventasManuales, anuncios, instagram, estudios, competidores] = await Promise.all([
     leer<Datos["embudo"]>("embudo", {}),
     leer<Datos["contenido"]>("contenido", {}),
     leer<Datos["seguidores"]>("seguidores", {}),
@@ -37,13 +37,15 @@ export default async function Panel() {
     leer<Datos["ventasManuales"]>("ventas_manuales", []),
     leer<Datos["anuncios"]>("anuncios", null),
     leer<Datos["instagram"]>("instagram", null),
+    leer<Datos["estudios"]>("estudios", []),
+    leer<Datos["competidores"]>("competidores", []),
   ]);
   const ultimo = registro[0] || null;
   return (
     <PanelClient
       almacen={listo}
       conexiones={{ ninjo: conNinjo, ultimoError: ultimo && !ultimo.ok ? ultimo.error || "error" : null, meta: metaListo(), stripe: stripeListo(), hotmart: hotmartListo() }}
-      datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, control, ventas, ventasManuales, anuncios, instagram }}
+      datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, control, ventas, ventasManuales, anuncios, instagram, estudios, competidores }}
     />
   );
 }

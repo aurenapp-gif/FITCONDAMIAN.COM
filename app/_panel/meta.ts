@@ -53,7 +53,7 @@ export async function anunciosMeta(desde: string, hasta: string): Promise<FilaAn
 }
 
 // Cuenta de Instagram ligada al token (por las páginas a las que tiene acceso) o la de META_IG_ID.
-async function idInstagram(): Promise<string> {
+export async function idInstagram(): Promise<string> {
   const fijo = env("META_IG_ID", "METAIGID");
   if (fijo) return fijo;
   const r = await graph<{ data: { instagram_business_account?: { id: string } }[] }>("me/accounts", { fields: "instagram_business_account" });
@@ -91,4 +91,46 @@ export async function instagramMeta(mediaIds: string[]): Promise<{ seguidores_di
     medios[id] = res;
   }
   return { seguidores_dia, medios, avisos };
+}
+
+// Textos y formato de cada anuncio (para estudiar qué mensajes funcionan).
+export type Creativo = { titulo?: string; texto?: string; textos?: string[]; miniatura?: string; formato?: string; video?: boolean; enlace_ig?: string; cta?: string };
+export async function creativosMeta(adIds: string[]): Promise<Record<string, Creativo>> {
+  const out: Record<string, Creativo> = {};
+  type Cr = { title?: string; body?: string; thumbnail_url?: string; object_type?: string; video_id?: string; instagram_permalink_url?: string; call_to_action_type?: string; asset_feed_spec?: { bodies?: { text?: string }[]; titles?: { text?: string }[] } };
+  for (let i = 0; i < adIds.length; i += 40) {
+    const lote = adIds.slice(i, i + 40);
+    const r = await graph<Record<string, { creative?: Cr }>>("", { ids: lote.join(","), fields: "creative{title,body,thumbnail_url,object_type,video_id,instagram_permalink_url,call_to_action_type,asset_feed_spec}" });
+    for (const [id, v] of Object.entries(r)) {
+      const c = v.creative || {};
+      const textos = (c.asset_feed_spec?.bodies || []).map((b) => b.text || "").filter(Boolean);
+      out[id] = {
+        titulo: c.title || c.asset_feed_spec?.titles?.[0]?.text || undefined, texto: c.body || textos[0] || undefined, textos: textos.length > 1 ? textos : undefined,
+        miniatura: c.thumbnail_url, formato: c.object_type, video: Boolean(c.video_id), enlace_ig: c.instagram_permalink_url, cta: c.call_to_action_type,
+      };
+    }
+  }
+  return out;
+}
+
+// Publicaciones públicas de otras cuentas profesionales de Instagram (business discovery), para estudiar el sector.
+export type CuentaAjena = { usuario: string; nombre?: string; seguidores?: number; publicaciones: { fecha: string; tipo: string; texto: string; enlace: string; likes: number | null; comentarios: number | null }[]; error?: string };
+export async function competenciaMeta(usuarios: string[]): Promise<CuentaAjena[]> {
+  const ig = await idInstagram();
+  const out: CuentaAjena[] = [];
+  for (const u of usuarios.slice(0, 15)) {
+    try {
+      type M = { caption?: string; like_count?: number; comments_count?: number; media_type?: string; media_product_type?: string; permalink?: string; timestamp?: string };
+      const r = await graph<{ business_discovery?: { username: string; name?: string; followers_count?: number; media?: { data: M[] } } }>(ig, {
+        fields: `business_discovery.username(${u}){username,name,followers_count,media.limit(30){caption,like_count,comments_count,media_type,media_product_type,permalink,timestamp}}`,
+      });
+      const b = r.business_discovery;
+      if (!b) { out.push({ usuario: u, publicaciones: [], error: "sin datos" }); continue; }
+      out.push({
+        usuario: b.username, nombre: b.name, seguidores: b.followers_count,
+        publicaciones: (b.media?.data || []).map((m) => ({ fecha: m.timestamp || "", tipo: m.media_product_type === "REELS" ? "Reel" : m.media_type || "", texto: (m.caption || "").slice(0, 600), enlace: m.permalink || "", likes: m.like_count ?? null, comentarios: m.comments_count ?? null })),
+      });
+    } catch (e) { out.push({ usuario: u, publicaciones: [], error: e instanceof Error ? e.message : String(e) }); }
+  }
+  return out;
 }
