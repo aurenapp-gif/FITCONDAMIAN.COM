@@ -98,12 +98,13 @@ export type Creativo = { titulo?: string; texto?: string; textos?: string[]; min
 export async function creativosMeta(adIds: string[]): Promise<Record<string, Creativo>> {
   const out: Record<string, Creativo> = {};
   type Cr = { title?: string; body?: string; thumbnail_url?: string; object_type?: string; video_id?: string; instagram_permalink_url?: string; call_to_action_type?: string; asset_feed_spec?: { bodies?: { text?: string }[]; titles?: { text?: string }[] } };
-  for (let i = 0; i < adIds.length; i += 40) {
-    const lote = adIds.slice(i, i + 40);
-    const r = await graph<Record<string, { creative?: Cr }>>("", { ids: lote.join(","), fields: "creative{title,body,thumbnail_url,object_type,video_id,instagram_permalink_url,call_to_action_type,asset_feed_spec}" });
-    for (const [id, v] of Object.entries(r)) {
+  // Uno por uno (la v26 ya no admite el parámetro "ids"), de 6 en 6 a la vez.
+  for (let i = 0; i < adIds.length; i += 6) {
+    const lote = adIds.slice(i, i + 6);
+    const res = await Promise.all(lote.map((id) => graph<{ creative?: Cr }>(id, { fields: "creative{title,body,thumbnail_url,object_type,video_id,instagram_permalink_url,call_to_action_type,asset_feed_spec}" }).then((v): [string, { creative?: Cr }] => [id, v]).catch((): [string, { creative?: Cr }] => [id, {}])));
+    for (const [id, v] of res) {
       const c = v.creative || {};
-      const textos = (c.asset_feed_spec?.bodies || []).map((b) => b.text || "").filter(Boolean);
+      const textos = (c.asset_feed_spec?.bodies || []).map((b: { text?: string }) => b.text || "").filter(Boolean);
       out[id] = {
         titulo: c.title || c.asset_feed_spec?.titles?.[0]?.text || undefined, texto: c.body || textos[0] || undefined, textos: textos.length > 1 ? textos : undefined,
         miniatura: c.thumbnail_url, formato: c.object_type, video: Boolean(c.video_id), enlace_ig: c.instagram_permalink_url, cta: c.call_to_action_type,
