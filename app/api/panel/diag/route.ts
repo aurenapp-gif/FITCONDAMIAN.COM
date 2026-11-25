@@ -33,7 +33,7 @@ export async function GET(req: Request) {
       u.searchParams.set("access_token", tk);
       const r = await fetch(u, { cache: "no-store" });
       const j = await r.json().catch(() => ({}));
-      return NextResponse.json(j.error ? { error: `${j.error.code}/${j.error.error_subcode || ""}: ${j.error.message}` } : { ok: true, filas: j.data?.length, muestra: JSON.stringify(j.data?.[0] || {}).slice(0, 400) });
+      return NextResponse.json(j.error ? { error: `${j.error.code}/${j.error.error_subcode || ""}: ${j.error.message}` } : { ok: true, filas: j.data?.length, muestra: JSON.stringify(j.data?.[0] || {}).slice(0, 400), acciones: Object.fromEntries(((j.data?.[0]?.actions || []) as { action_type: string; value: string }[]).map((x) => [x.action_type, x.value])) });
     }
     for (const v of [q._meta === "1" ? "v26.0" : q._meta]) {
       for (const [k, ruta] of Object.entries(pruebas)) {
