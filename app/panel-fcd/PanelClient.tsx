@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 type Origen = "bienvenida" | "saludo" | "comentario" | "mensaje";
 type DiaEmbudo = { fecha: string; ids?: Partial<Record<Origen, string[]>> } & Record<string, unknown>;
 type Agenda = { id: string; contacto: string; fecha: string; reservada: string; estado: string; nombre: string; instagram: string; telefono: string; setter: string; email?: string };
-type Venta = { id: string; fuente: "hotmart" | "stripe"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string };
+type Venta = { id: string; fuente: "hotmart" | "stripe" | "manual"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string; metodo?: string; agendaId?: string; nota?: string };
 const COBRADAS = new Set(["APPROVED", "COMPLETE", "PAID"]);
 type Resultado = { asistio: "" | "si" | "no"; vendido: "" | "si" | "no"; importe: number | null };
 type Publicacion = { codigo: string; fecha: string; tipo: string; texto: string; enlace: string; likes: number; comentarios: number };
@@ -25,6 +25,7 @@ export type Datos = {
   meta: Record<string, string>;
   control: { manuales_ninjo?: Record<string, number>; leido?: string } | null;
   ventas: Venta[];
+  ventasManuales: Venta[];
 };
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
@@ -201,10 +202,13 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const nombrePeriodo = periodo === "mes" ? `en ${MESES_LARGOS[Number(hoy.slice(5, 7)) - 1]}` : `en los últimos ${periodo} días`;
 
   // ----- Llamadas -----
-  const cobradas = useMemo(() => (datos.ventas || []).filter((v) => COBRADAS.has(String(v.estado).toUpperCase())), [datos.ventas]);
-  const hayVentasAuto = Boolean(conexiones.hotmart || conexiones.stripe);
+  const [manuales, setManuales] = useState<Venta[]>(datos.ventasManuales || []);
+  const cobradas = useMemo(() => [...(datos.ventas || []), ...manuales].filter((v) => COBRADAS.has(String(v.estado).toUpperCase())), [datos.ventas, manuales]);
+  const hayVentasAuto = Boolean(conexiones.hotmart || conexiones.stripe || manuales.length);
   // Venta de Hotmart/Stripe del mismo correo, desde 2 días antes hasta 30 días después de la llamada.
   const ventaDeLlamada = useMemo(() => (a: Agenda) => {
+    const porLlamada = cobradas.find((v) => v.agendaId === a.id);
+    if (porLlamada) return porLlamada;
     const em = String(a.email || "").toLowerCase();
     if (!em) return null;
     const t = new Date(a.fecha).getTime();
@@ -218,6 +222,11 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
       .map((a) => {
         const r = resultados[a.id];
         const auto = ventaDeLlamada(a);
+        if (auto && auto.agendaId === a.id) {
+          // Venta unida a esta llamada a propósito: manda sobre lo marcado.
+          const imp = r && r.vendido === "si" && typeof r.importe === "number" ? r.importe : auto.importe;
+          return { ...a, pasada: new Date(a.fecha).getTime() < ahora, asistio: "si", vendido: "si", importe: imp, auto: true };
+        }
         const asistio = r && (r.asistio === "si" || r.asistio === "no") ? r.asistio : auto ? "si" : a.estado === "SHOWED" ? "si" : a.estado === "NO_SHOW" ? "no" : "";
         const vendido = asistio === "si" && r && (r.vendido === "si" || r.vendido === "no") ? r.vendido : asistio === "si" && auto ? "si" : "";
         const importe = vendido === "si" && r && typeof r.importe === "number" ? r.importe : vendido === "si" && auto ? auto.importe : null;
@@ -231,9 +240,11 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     const total = lista.reduce((s, v) => s + v.importe, 0);
     // Una clienta puede pagar en varios cobros (plazos): las ventas se cuentan por compradora y el ticket medio también.
     const compradoras = new Set(lista.map((v) => v.email || v.id));
-    const deLlamada = lista.filter((v) => emailsLlamada.has(v.email));
-    const compradorasLlamada = new Set(deLlamada.map((v) => v.email));
-    return { lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, ticket: compradoras.size ? Math.round(total / compradoras.size) : null, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada };
+    const idsAgenda = new Set(datos.agendas.map((a) => a.id));
+    const conLlamada = (v: Venta) => emailsLlamada.has(v.email) || Boolean(v.agendaId && idsAgenda.has(v.agendaId));
+    const deLlamada = lista.filter(conLlamada);
+    const compradorasLlamada = new Set(deLlamada.map((v) => v.email || v.agendaId || v.id));
+    return { conLlamada, lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, ticket: compradoras.size ? Math.round(total / compradoras.size) : null, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada };
   }, [cobradas, desde, datos.agendas]);
 
   const ventas = useMemo(() => {
@@ -371,6 +382,34 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
       setResultados((r) => ({ ...r, [id]: prev }));
       setError(`No se ha guardado: ${err instanceof Error ? err.message : "error"}. Vuelve a intentarlo.`);
     }
+  }
+
+  const vacio = { fecha: hoyMadrid(), importe: "", nombre: "", email: "", producto: "", metodo: "Transferencia", agendaId: "", nota: "" };
+  const [formVenta, setFormVenta] = useState<typeof vacio | null>(null);
+  const [guardandoVenta, setGuardandoVenta] = useState(false);
+  const [errVenta, setErrVenta] = useState("");
+
+  async function guardarVenta(ev: React.FormEvent) {
+    ev.preventDefault();
+    if (!formVenta) return;
+    setGuardandoVenta(true); setErrVenta("");
+    const ag = datos.agendas.find((a) => a.id === formVenta.agendaId);
+    const cuerpo = { ...formVenta, importe: Number(String(formVenta.importe).replace(",", ".")), nombre: formVenta.nombre || ag?.nombre || "", email: formVenta.email || ag?.email || "" };
+    try {
+      const r = await fetch("/api/panel/ventas-manuales", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || `error ${r.status}`);
+      setManuales((m) => [...m, j.venta]);
+      setFormVenta(null);
+    } catch (err) {
+      setErrVenta(err instanceof Error ? err.message : "No se pudo guardar");
+    }
+    setGuardandoVenta(false);
+  }
+
+  async function borrarVenta(id: string) {
+    const r = await fetch(`/api/panel/ventas-manuales?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    if (r.ok) setManuales((m) => m.filter((v) => v.id !== id));
   }
 
   async function actualizar(completo: boolean) {
@@ -609,10 +648,34 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi destacado etiqueta="Agendas" valor={int(ventas.reservadas)} pie={`${int(ventas.proximas)} próximas · ${int(ventas.canceladas)} canceladas`} spark={sparkAgendas} />
               <Kpi destacado etiqueta="Show rate" valor={pct(ventas.show)} tono={tonoObjetivo(ventas.show, OBJETIVOS.vienen)} pie={`no-show ${pct(ventas.noshow)}`} />
               <Kpi destacado etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas de ${int(ventas.cerradas + ventas.noCerradas)} decididas`} />
-              <Kpi destacado etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`ticket medio ${eur(ticketMostrado)}${hayVentasAuto ? " · Hotmart/Stripe" : ""}`} spark={sparkVentas} />
+              <Kpi destacado etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`ticket medio ${eur(ticketMostrado)}${hayVentasAuto ? " · ventas registradas" : ""}`} spark={sparkVentas} />
             </div>
-            {hayVentasAuto && (
-              <Seccion titulo="Ventas registradas" sub={`Cobros de ${[conexiones.hotmart && "Hotmart", conexiones.stripe && "Stripe"].filter(Boolean).join(" y ")} ${nombrePeriodo}. Las que coinciden por correo con una llamada se marcan solas como compra.`}>
+            {(
+              <Seccion titulo="Ventas registradas" sub={`Cobros de ${[conexiones.hotmart && "Hotmart", conexiones.stripe && "Stripe", "ventas manuales"].filter(Boolean).join(", ")} ${nombrePeriodo}. Las que coinciden con una llamada (por correo o porque las uniste) la marcan sola como compra.`}
+                accion={<button type="button" className="pn-btn" onClick={() => { setErrVenta(""); setFormVenta(formVenta ? null : vacio); }}>{formVenta ? "Cancelar" : "+ Añadir venta"}</button>}>
+                {formVenta && (
+                  <form className="pn-form" onSubmit={guardarVenta}>
+                    <label>Fecha<input id="v-fecha" type="date" required value={formVenta.fecha} onChange={(ev) => setFormVenta({ ...formVenta, fecha: ev.target.value })} /></label>
+                    <label>Importe (€)<input id="v-importe" type="text" inputMode="decimal" required placeholder="1200" value={formVenta.importe} onChange={(ev) => setFormVenta({ ...formVenta, importe: ev.target.value })} /></label>
+                    <label>Cómo pagó
+                      <select id="v-metodo" value={formVenta.metodo} onChange={(ev) => setFormVenta({ ...formVenta, metodo: ev.target.value })}>
+                        {["Transferencia", "Bizum", "Efectivo", "PayPal", "Otro"].map((m) => <option key={m}>{m}</option>)}
+                      </select>
+                    </label>
+                    <label className="pn-form-ancho">¿De qué llamada viene? (opcional)
+                      <select id="v-llamada" value={formVenta.agendaId} onChange={(ev) => { const ag = datos.agendas.find((a) => a.id === ev.target.value); setFormVenta({ ...formVenta, agendaId: ev.target.value, nombre: ag?.nombre || formVenta.nombre, email: ag?.email || formVenta.email }); }}>
+                        <option value="">— Sin llamada —</option>
+                        {datos.agendas.filter((a) => a.estado !== "CANCELLED" && new Date(a.fecha).getTime() < Date.now()).sort((a, b) => (a.fecha < b.fecha ? 1 : -1)).slice(0, 80).map((a) => <option key={a.id} value={a.id}>{fechaHora(a.fecha)} · {a.nombre}{a.instagram ? ` (@${a.instagram})` : ""}</option>)}
+                      </select>
+                    </label>
+                    <label>Nombre<input id="v-nombre" type="text" value={formVenta.nombre} onChange={(ev) => setFormVenta({ ...formVenta, nombre: ev.target.value })} /></label>
+                    <label>Correo (opcional)<input id="v-email" type="email" value={formVenta.email} onChange={(ev) => setFormVenta({ ...formVenta, email: ev.target.value })} /></label>
+                    <label>Producto (opcional)<input id="v-producto" type="text" placeholder="Programa Método RHS" value={formVenta.producto} onChange={(ev) => setFormVenta({ ...formVenta, producto: ev.target.value })} /></label>
+                    <label className="pn-form-ancho">Nota (opcional)<input id="v-nota" type="text" value={formVenta.nota} onChange={(ev) => setFormVenta({ ...formVenta, nota: ev.target.value })} /></label>
+                    {errVenta && <p className="pn-err pn-form-ancho" role="alert">{errVenta}</p>}
+                    <div className="pn-form-ancho"><button type="submit" className="pn-btn" disabled={guardandoVenta}>{guardandoVenta ? "Guardando…" : "Guardar venta"}</button></div>
+                  </form>
+                )}
                 <div className="pn-kpis">
                   <Kpi etiqueta="Clientas que pagaron" valor={int(ventasPeriodo.n)} pie={`${int(ventasPeriodo.cobros)} cobros · ${int(ventasPeriodo.deLlamada)} tuvieron llamada`} />
                   <Kpi etiqueta="Facturación total" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.totalLlamada)} de llamadas`} />
@@ -620,16 +683,17 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 </div>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
-                    <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Importe</th><th>Origen</th><th>Tuvo llamada</th></tr></thead>
+                    <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Importe</th><th>Origen</th><th>Tuvo llamada</th><th></th></tr></thead>
                     <tbody>
                       {ventasPeriodo.lista.length ? ventasPeriodo.lista.map((v) => (
                         <tr key={v.id}>
-                          <td>{fechaHora(v.fecha)}</td><td className="pn-texto">{v.producto || "—"}</td><td>{v.nombre || v.email || "—"}</td>
+                          <td>{v.fuente === "manual" ? dia(v.fecha) : fechaHora(v.fecha)}</td><td className="pn-texto" title={v.nota || ""}>{v.producto || "—"}</td><td>{v.nombre || v.email || "—"}</td>
                           <td className="r">{v.moneda && v.moneda !== "EUR" ? `${Math.round(v.importe).toLocaleString("es-ES")} ${v.moneda}` : eur(v.importe)}</td>
-                          <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : "Stripe"}</span></td>
-                          <td>{ventasPeriodo.emailsLlamada.has(v.email) ? <span className="pn-pill tono-ok">sí</span> : "—"}</td>
+                          <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : v.fuente === "stripe" ? "Stripe" : v.metodo || "Manual"}</span></td>
+                          <td>{ventasPeriodo.conLlamada(v) ? <span className="pn-pill tono-ok">sí</span> : "—"}</td>
+                          <td>{v.fuente === "manual" && <button type="button" className="pn-link" onClick={() => borrarVenta(v.id)}>Borrar</button>}</td>
                         </tr>
-                      )) : <tr><td colSpan={6} className="pn-vacio">No hay ventas cobradas en este periodo.</td></tr>}
+                      )) : <tr><td colSpan={7} className="pn-vacio">No hay ventas cobradas en este periodo.</td></tr>}
                     </tbody>
                   </table>
                 </div>

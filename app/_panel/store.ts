@@ -9,7 +9,7 @@ const LOCAL = process.env.NODE_ENV !== "production" ? process.env.PANEL_LOCAL_DI
 
 const PREFIJO = "panel/";
 
-export const TIPOS = ["embudo", "contenido", "seguidores", "agendas", "perfil", "publicaciones", "origenes", "resultados", "meta", "registro", "control", "ventas"] as const;
+export const TIPOS = ["embudo", "contenido", "seguidores", "agendas", "perfil", "publicaciones", "origenes", "resultados", "meta", "registro", "control", "ventas", "ventas_manuales"] as const;
 export type Tipo = (typeof TIPOS)[number];
 
 export function almacenListo(): boolean {
