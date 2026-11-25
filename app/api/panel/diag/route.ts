@@ -27,6 +27,14 @@ export async function GET(req: Request) {
       mis_cuentas: `me/adaccounts?fields=name,account_id&limit=10`,
     };
     const out: Record<string, unknown> = { cuenta_largo: cta.length };
+    if (q._meta === "raw") {
+      // Ruta libre relativa a la cuenta publicitaria, p. ej. p=insights?fields=spend
+      const u = new URL(`https://graph.facebook.com/v26.0/act_${cta}/${q.p || ""}`);
+      u.searchParams.set("access_token", tk);
+      const r = await fetch(u, { cache: "no-store" });
+      const j = await r.json().catch(() => ({}));
+      return NextResponse.json(j.error ? { error: `${j.error.code}/${j.error.error_subcode || ""}: ${j.error.message}` } : { ok: true, filas: j.data?.length, muestra: JSON.stringify(j.data?.[0] || {}).slice(0, 400) });
+    }
     for (const v of [q._meta === "1" ? "v26.0" : q._meta]) {
       for (const [k, ruta] of Object.entries(pruebas)) {
         const r = await fetch(`https://graph.facebook.com/${v}/${ruta}&access_token=${encodeURIComponent(tk)}`.replace(/\?([^?]*)&access/, (m) => m).replace(/^([^?]*)&/, "$1?"), { cache: "no-store" });
