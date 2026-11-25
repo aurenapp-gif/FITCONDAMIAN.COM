@@ -390,7 +390,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   }, [datos.seguidores, desde]);
 
   // ----- Anuncios (Meta) -----
-  const igDia = datos.instagram?.seguidores_dia || {};
+  const igDia = useMemo(() => datos.instagram?.seguidores_dia || {}, [datos.instagram]);
   const anuncios = useMemo(() => {
     const filas = (datos.anuncios?.filas || []).filter((f) => f.fecha >= desde && f.fecha <= hoy);
     const porDiaM = new Map<string, { gasto: number; clics: number; impresiones: number }>();
@@ -786,7 +786,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 );
               })}
             </div>
-            <p className="pn-sub">Llamadas del calendario de GoHighLevel (las lee Ninjo; se actualiza cada hora y al abrir el panel). El importe se pone en "Llamadas y ventas".</p>
+            <p className="pn-sub">Llamadas del calendario de GoHighLevel (las lee Ninjo; se actualiza cada hora y al abrir el panel). El importe se pone en «Llamadas y ventas».</p>
           </>
         )}
 
