@@ -11,6 +11,11 @@ export async function GET(req: Request) {
   const q = Object.fromEntries(new URL(req.url).searchParams);
   const ruta = q._ruta || "/api/v1/analytics/conversations/search";
   delete q._ruta;
+  if (q._entorno) {
+    // Solo nombres y longitud de las variables de conexión, nunca sus valores.
+    const nombres = Object.keys(process.env).filter((k) => /meta|fb|facebook|insta|ig_|hotmart|stripe|ads|token|cuenta|account/i.test(k) && !/^(VERCEL|NEXT|NODE|npm_|TURBO)/.test(k));
+    return NextResponse.json({ entorno: process.env.VERCEL_ENV, commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7), variables: nombres.sort().map((k) => ({ nombre: k, largo: (process.env[k] || "").length })) });
+  }
   try {
     if (q._herramienta) {
       const nombre = q._herramienta; delete q._herramienta;

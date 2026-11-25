@@ -2,8 +2,10 @@
 // Variables: META_ACCESS_TOKEN y META_AD_ACCOUNT_ID (también sin guiones bajos). Opcional: META_IG_ID.
 
 const env = (...n: string[]) => n.map((k) => process.env[k]).find((v) => v && v.trim())?.trim() || "";
-const token = () => env("META_ACCESS_TOKEN", "METAACCESSTOKEN");
-const cuenta = () => env("META_AD_ACCOUNT_ID", "METAADACCOUNTID").replace(/^act_/i, "").replace(/\D/g, "");
+// Además de los nombres exactos, acepta cualquier variable con un nombre parecido (META_TOKEN, FB_ACCESS_TOKEN…).
+const parecida = (re: RegExp) => Object.keys(process.env).filter((k) => re.test(k)).map((k) => process.env[k]).find((v) => v && v.trim())?.trim() || "";
+const token = () => env("META_ACCESS_TOKEN", "METAACCESSTOKEN") || parecida(/^(META|FB|FACEBOOK)_?(ADS_?)?(ACCESS_?)?TOKEN$/i);
+const cuenta = () => (env("META_AD_ACCOUNT_ID", "METAADACCOUNTID") || parecida(/^(META|FB|FACEBOOK)_?(AD_?)?(ACCOUNT|CUENTA)(_?ID)?$/i)).replace(/^act_/i, "").replace(/\D/g, "");
 const BASE = "https://graph.facebook.com";
 
 export const metaListo = () => Boolean(token());
