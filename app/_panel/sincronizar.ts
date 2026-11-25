@@ -389,3 +389,64 @@ export async function estudioAperturas(dias = 30) {
   });
   return { desde, conversaciones: convs.size, bienvenidas: out("b"), a_seguidoras: out("s") };
 }
+
+// ---------- Conversaciones anonimizadas para el analista nocturno ----------
+// paso "responden": aperturas con y sin respuesta · "final": respondieron pero no llegaron a la oferta de llamada ·
+// "llegan": llegaron al final (para comparar). Sin nombres de usuario, correos, teléfonos ni enlaces personales.
+type ConvConUsuario = Conversacion & { contact_username?: string | null };
+function anonimizar(texto: string, usuario?: string | null): string {
+  let t = String(texto || "");
+  if (usuario) t = t.split(usuario).join("[usuario]");
+  return t
+    .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, "[correo]")
+    .replace(/\+?\d[\d\s-]{7,}\d/g, "[teléfono]")
+    .replace(/@[\w.]{2,30}/g, "@[cuenta]")
+    .replace(/https?:\/\/\S+/g, (u) => (/instagram\.com\/(p|reel)\//.test(u) ? u : "[enlace]"))
+    .slice(0, 900);
+}
+export async function conversacionesParaEstudio(paso: "responden" | "final" | "llegan", dias = 14, n = 30) {
+  const hoy = diaMadrid(new Date());
+  const desde = sumarDias(hoy, -dias);
+  const base = { has_agent: "any", channel: "INSTAGRAM", sort_by: "first_message_at", limit: 100, first_message_after: `${desde}T00:00:00${offsetMadrid(desde)}` };
+  type Pagina = { conversations: ConvConUsuario[]; total_pages: number };
+  const p1 = await ninjoHerramienta<Pagina>("search_conversations", { ...base, page: 1 });
+  const paginas = Math.min(6, p1.total_pages || 1);
+  const resto = await enParalelo(Array.from({ length: paginas - 1 }, (_, i) => i + 2), 4, (page) => ninjoHerramienta<Pagina>("search_conversations", { ...base, page }));
+  const convs = [p1, ...resto].flatMap((p) => p.conversations || []);
+  const final = await idsContactos({ id: "booking_data_requested", value: "true" }, sumarDias(hoy, -(dias + 40)), sumarDias(hoy, 1));
+  const responde = (c: Conversacion) => (c.messages || []).some((m) => m.direction === "INBOUND" && m.type !== "COMMENT" && m.status !== "FAILED");
+  const nInbound = (c: Conversacion) => (c.messages || []).filter((m) => m.direction === "INBOUND" && m.type !== "COMMENT").length;
+  const conApertura = (c: Conversacion) => (c.messages || []).some((m) => m.direction === "OUTBOUND" && tipoApertura(m.content || ""));
+  let elegidas: (ConvConUsuario & { grupo: string })[] = [];
+  if (paso === "responden") {
+    const ap = convs.filter(conApertura);
+    elegidas = [...ap.filter(responde).slice(0, Math.ceil(n / 2)).map((c) => ({ ...c, grupo: "respondió" })), ...ap.filter((c) => !responde(c)).slice(0, Math.floor(n / 2)).map((c) => ({ ...c, grupo: "no respondió" }))];
+  } else if (paso === "final") {
+    elegidas = convs.filter((c) => responde(c) && !final.has(c.contact_id)).sort((a, b) => nInbound(b) - nInbound(a)).slice(0, n).map((c) => ({ ...c, grupo: "respondió pero no llegó al final" }));
+  } else {
+    elegidas = convs.filter((c) => final.has(c.contact_id)).slice(0, n).map((c) => ({ ...c, grupo: "llegó al final" }));
+  }
+  return {
+    paso, desde, revisadas: convs.length, total_que_cumplen: elegidas.length,
+    conversaciones: elegidas.map((c, i) => {
+      const msgs = (c.messages || []).filter((m) => m.sent_at).sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
+      const t0 = msgs.length ? new Date(String(msgs[0].sent_at)).getTime() : 0;
+      return {
+        n: i + 1, grupo: c.grupo,
+        mensajes: msgs.slice(0, 40).map((m) => ({
+          de: m.direction === "INBOUND" ? "persona" : m.author === "automation" ? "setter humano" : m.author === "agent" || m.author === "ai" ? "setter IA" : `setter (${m.author || "?"})`,
+          min: Math.round((new Date(String(m.sent_at)).getTime() - t0) / 60000),
+          tipo: m.type && m.type !== "TEXT" ? m.type : undefined, fallido: m.status === "FAILED" || undefined,
+          texto: anonimizar(m.content || "", c.contact_username),
+        })),
+      };
+    }),
+  };
+}
+
+// Configuración del setter (prompt y ajustes), para que el analista proponga cambios sobre lo que hay.
+export async function configuracionSetter() {
+  const r = await ninjoHerramienta<Record<string, unknown>>("get_agent_config", { agent_id: AGENTE });
+  const txt = JSON.stringify(r);
+  return txt.length > 60000 ? { recortado: true, config: txt.slice(0, 60000) } : r;
+}

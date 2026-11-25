@@ -5,7 +5,7 @@ import { COOKIE, sesionValida } from "./app/_panel/auth";
 // Todo lo del panel sale con cabeceras para que no se indexe ni se guarde en caché.
 export const config = { matcher: ["/panel-fcd", "/panel-fcd/:path*", "/api/panel/:path*"] };
 
-const LIBRES = new Set(["/panel-fcd/entrar", "/api/panel/login", "/api/panel/sync", "/api/panel/cron", "/api/panel/diag", "/api/panel/informe", "/api/panel/estudio"]);
+const LIBRES = new Set(["/panel-fcd/entrar", "/api/panel/login", "/api/panel/sync", "/api/panel/cron", "/api/panel/diag", "/api/panel/informe", "/api/panel/estudio", "/api/panel/conversaciones"]);
 
 export async function middleware(req: NextRequest) {
   const ruta = req.nextUrl.pathname;
