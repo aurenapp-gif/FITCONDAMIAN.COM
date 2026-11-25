@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { cronCorrecto, estudioCorrecto } from "../../../_panel/auth";
 import { leer } from "../../../_panel/store";
+import { estudioAperturas } from "../../../_panel/sincronizar";
 
 // Informe compacto para el analista nocturno: todos los números del panel sin datos personales
 // (ni nombres, ni correos, ni teléfonos). Solo con CRON_SECRET o la clave del analista.
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 const OBJETIVOS = { responden: 15, final: 25, datos: 70, agendan: 60, vienen: 70, compran: 25 };
 const COBRADAS = new Set(["APPROVED", "COMPLETE", "PAID"]);
@@ -110,7 +111,13 @@ export async function GET(req: Request) {
   Object.values(contenido).forEach((r) => { const t = porPost.get(r.post) || { entran: 0, conversan: 0, final: 0, datos: 0 }; t.entran += Number(r.entran) || 0; t.conversan += Number(r.conversan) || 0; t.final += Number(r.final) || 0; t.datos += Number(r.datos) || 0; porPost.set(r.post, t); });
   const posts = publicaciones.map((p) => ({ fecha: p.fecha, tipo: p.tipo, texto: String(p.texto || "").slice(0, 700), enlace: p.enlace, likes: p.likes, comentarios: p.comentarios, instagram: (p.id && instagram.medios?.[p.id]) || null, setter: porPost.get(p.codigo) || null }));
 
+  // Con ?aperturas=1: estudio de los primeros mensajes (variantes, franja horaria, seguimientos y respuestas). Tarda ~1 min.
+  let aperturas: unknown = undefined;
+  if (new URL(req.url).searchParams.get("aperturas")) {
+    try { aperturas = await estudioAperturas(30); } catch (e) { aperturas = { error: e instanceof Error ? e.message : String(e) }; }
+  }
   return NextResponse.json({
+    aperturas_detalle: aperturas,
     generado: new Date().toISOString(), hoy, objetivos_pct: OBJETIVOS,
     explicacion: {
       embudo: "Personas por día de su PRIMER mensaje de Instagram. entran → conversan (responden) → final (el setter llega a ofrecer la llamada) → datos (dan su correo). Orígenes: bienvenida = seguidora nueva a la que el setter da la bienvenida; saludo = seguidora antigua a la que se escribe; comentario = comenta un reel; mensaje = escribe ella.",
