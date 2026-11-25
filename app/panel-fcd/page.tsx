@@ -2,6 +2,7 @@ import { ninjoListo } from "../_panel/ninjo";
 import { ejecutar } from "../_panel/sincronizar";
 import { almacenListo, leer } from "../_panel/store";
 import { hotmartListo, stripeListo } from "../_panel/ventas";
+import { metaListo } from "../_panel/meta";
 import PanelClient, { type Datos } from "./PanelClient";
 
 export const dynamic = "force-dynamic";
@@ -39,7 +40,7 @@ export default async function Panel() {
   return (
     <PanelClient
       almacen={listo}
-      conexiones={{ ninjo: conNinjo, ultimoError: ultimo && !ultimo.ok ? ultimo.error || "error" : null, meta: false, stripe: stripeListo(), hotmart: hotmartListo() }}
+      conexiones={{ ninjo: conNinjo, ultimoError: ultimo && !ultimo.ok ? ultimo.error || "error" : null, meta: metaListo(), stripe: stripeListo(), hotmart: hotmartListo() }}
       datos={{ embudo, contenido, seguidores, agendas, perfil, publicaciones, origenes, resultados, meta, control, ventas, ventasManuales }}
     />
   );
