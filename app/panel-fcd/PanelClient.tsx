@@ -37,7 +37,13 @@ export type Datos = {
   estudios: Estudio[];
   competidores: string[];
   valoresVenta: Record<string, number>;
+  gastos: Gasto[];
 };
+type Gasto = { id: string; concepto: string; categoria: string; importe: number; tipo: "mensual" | "puntual"; fecha?: string; desde?: string; hasta?: string; captacion: boolean; nota?: string };
+const CATEGORIAS_GASTO: [string, boolean][] = [
+  ["Marketing / agencia", true], ["Consultoría / mentoría", true], ["Equipo de ventas (setter, closer)", true], ["Publicidad (otras plataformas)", true],
+  ["Contenido (grabación, edición)", true], ["Herramientas y software", false], ["Equipo y salarios", false], ["Otros", false],
+];
 export type Conexiones = { ninjo: boolean; ultimoError: string | null; meta: boolean; stripe: boolean; hotmart?: boolean };
 
 const ORIGENES: [Origen, string][] = [
@@ -62,6 +68,7 @@ const PESTANAS = [
   ["embudo", "Embudo"],
   ["captacion", "Captación"],
   ["anuncios", "Anuncios"],
+  ["gastos", "Gastos y beneficio"],
   ["ventas", "Llamadas y ventas"],
   ["contenido", "Contenido"],
   ["fuentes", "Orígenes y conexiones"],
@@ -336,6 +343,29 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     };
   }, [cobradas, desde, datos.agendas, resultados, valores]);
 
+  const gastoVacio = () => ({ id: "", concepto: "", categoria: CATEGORIAS_GASTO[0][0], importe: "", tipo: "mensual" as "mensual" | "puntual", fecha: hoyMadrid(), desde: `${hoyMadrid().slice(0, 8)}01`, hasta: "", captacion: true });
+  const [formGasto, setFormGasto] = useState<ReturnType<typeof gastoVacio> | null>(null);
+  const [guardandoGasto, setGuardandoGasto] = useState(false);
+  const [errGasto, setErrGasto] = useState("");
+  async function enviarGasto(cuerpo: Record<string, unknown>) {
+    const r = await fetch("/api/panel/gastos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.ok) throw new Error(j.error || `error ${r.status}`);
+    setGastos((l) => { const i = l.findIndex((x) => x.id === j.gasto.id); if (i >= 0) { const n = [...l]; n[i] = j.gasto; return n; } return [...l, j.gasto]; });
+  }
+  async function guardarGasto(ev: React.FormEvent) {
+    ev.preventDefault(); if (!formGasto) return;
+    setGuardandoGasto(true); setErrGasto("");
+    try { await enviarGasto({ ...formGasto, id: formGasto.id || undefined, hasta: formGasto.hasta || undefined }); setFormGasto(null); }
+    catch (err) { setErrGasto(err instanceof Error ? err.message : "No se pudo guardar"); }
+    setGuardandoGasto(false);
+  }
+  async function guardarGastoDirecto(g: Gasto) { try { await enviarGasto(g as unknown as Record<string, unknown>); } catch (err) { setError(`No se ha guardado: ${err instanceof Error ? err.message : "error"}`); } }
+  async function borrarGasto(id: string) {
+    const r = await fetch(`/api/panel/gastos?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    if (r.ok) setGastos((l) => l.filter((x) => x.id !== id));
+  }
+
   async function guardarValor(clave: string, valor: number | null) {
     const prev = valores[clave];
     setValores((v) => { const n = { ...v }; if (valor == null) delete n[clave]; else n[clave] = valor; return n; });
@@ -528,6 +558,30 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     };
   }, [datos.anuncios, igDia, desde, hoy]);
   const hayAnuncios = Boolean(datos.anuncios?.filas?.length);
+
+  // ----- Gastos (editables) prorrateados al periodo -----
+  const [gastos, setGastos] = useState<Gasto[]>(datos.gastos || []);
+  const gastosPeriodo = useMemo(() => {
+    const diasEntre = (a: string, b: string) => Math.max(0, Math.round((Date.parse(`${b}T12:00:00Z`) - Date.parse(`${a}T12:00:00Z`)) / 864e5) + 1);
+    const lineas = gastos.map((g) => {
+      let imp = 0;
+      if (g.tipo === "puntual") imp = g.fecha && g.fecha >= desde && g.fecha <= hoy ? g.importe : 0;
+      else if (g.desde) {
+        const ini = g.desde > desde ? g.desde : desde, fin = g.hasta && g.hasta < hoy ? g.hasta : hoy;
+        imp = ini <= fin ? (g.importe * 12 / 365) * diasEntre(ini, fin) : 0;
+      }
+      return { g, imp };
+    });
+    const total = lineas.reduce((t, l) => t + l.imp, 0);
+    const captacion = lineas.filter((l) => l.g.captacion).reduce((t, l) => t + l.imp, 0);
+    const porCat: Record<string, { total: number; captacion: number }> = {};
+    lineas.forEach((l) => { const c = (porCat[l.g.categoria] ||= { total: 0, captacion: 0 }); c.total += l.imp; if (l.g.captacion) c.captacion += l.imp; });
+    return { lineas, total, captacion, porCat };
+  }, [gastos, desde, hoy]);
+  const [incluirGastos, setIncluirGastos] = useState(true);
+  const costeCaptacion = anuncios.gasto + gastosPeriodo.captacion;
+  const baseCoste = incluirGastos ? costeCaptacion : anuncios.gasto;
+  const gastoTotal = anuncios.gasto + gastosPeriodo.total;
   const cpm = anuncios.impresiones ? (1000 * anuncios.gasto) / anuncios.impresiones : null;
   const diasAnuncios = useMemo(() => serieDias.map((d) => {
     const m = anuncios.porDia.get(d) || { gasto: 0, clics: 0, impresiones: 0 };
@@ -902,6 +956,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
               <Kpi etiqueta="Tasa de cierre" valor={pct(ventas.cierre)} tono={tonoObjetivo(ventas.cierre, OBJETIVOS.compran)} pie={`${int(ventas.cerradas)} cerradas · ${int(ventas.noCerradas)} no`} />
               <Kpi etiqueta="Facturación" valor={eur(facturacionMostrada)} pie={`${hayVentasAuto ? `${int(ventasPeriodo.nVentas)} ventas nuevas · ` : ""}ticket medio ${eur(ticketMostrado)}`} />
               {cashMostrado != null && <Kpi etiqueta="Cash collect" valor={eur(cashMostrado)} pie={`cobrado en el periodo · ${eur(ventasPeriodo.pendiente)} pendiente de cobro`} spark={sparkVentas} />}
+              {cashMostrado != null && <Kpi etiqueta="Beneficio (caja)" valor={eur(cashMostrado - gastoTotal)} tono={cashMostrado - gastoTotal >= 0 ? "ok" : "bad"} pie={`cash ${eur(cashMostrado)} − gastos ${eur(gastoTotal)}`} />}
+              <Kpi etiqueta="Coste por agenda" valor={eur(coste(costeCaptacion, ventas.reservadas))} pie={`captación ${eur(costeCaptacion)} · venta ${eur(coste(costeCaptacion, hayVentasAuto ? ventasPeriodo.nVentas : ventas.cerradas))}`} />
             </div>
             <div className="pn-dos">
               {bloqueCuello}
@@ -1150,14 +1206,21 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
           !conexiones.meta ? <p className="pn-aviso">Meta Ads no está conectado: faltan META_ACCESS_TOKEN y META_AD_ACCOUNT_ID en Vercel.</p> :
           !hayAnuncios ? <p className="pn-aviso">Meta está conectado; los anuncios aparecerán en la próxima actualización.</p> : (
           <>
+            <div className="pn-coste-modo">
+              <div className="pn-chips" role="group" aria-label="Qué gastos se cuentan">
+                <button type="button" aria-pressed={incluirGastos} onClick={() => setIncluirGastos(true)}>Anuncios + otros gastos de captación</button>
+                <button type="button" aria-pressed={!incluirGastos} onClick={() => setIncluirGastos(false)}>Solo anuncios</button>
+              </div>
+              <p className="pn-sub">{incluirGastos ? <>Los costes por bienvenida, conversación, agenda y venta usan <b>{eur(costeCaptacion)}</b>: {eur(anuncios.gasto)} de Meta Ads + {eur(gastosPeriodo.captacion)} de otros gastos de captación del periodo. <button type="button" className="pn-link" onClick={() => irA("gastos")}>Editar gastos →</button></> : <>Solo el gasto de Meta Ads: {eur(anuncios.gasto)}.</>}</p>
+            </div>
             <div className="pn-kpis">
               <Kpi destacado etiqueta="Gasto en anuncios" valor={eur(anuncios.gasto)} pie={`${eur(anuncios.gasto / dias)} al día · ${int(anuncios.campanas.length)} campañas`} spark={diasAnuncios.map((d) => d.gasto)} />
               <Kpi destacado etiqueta="Coste por seguidor" valor={eur2(coste(anuncios.gasto, anuncios.seguidoresIg))} pie={anuncios.diasIg ? `${int(anuncios.seguidoresIg)} seguidores nuevos en Instagram` : "sin datos de seguidores todavía"} spark={diasAnuncios.map((d) => d.seguidores || 0)} />
-              <Kpi destacado etiqueta="Coste por bienvenida" valor={eur2(coste(anuncios.gasto, aperturas.tot.b_env))} pie={`${int(aperturas.tot.b_env)} bienvenidas del setter`} />
-              <Kpi destacado etiqueta="Coste por conversación" valor={eur2(coste(anuncios.gasto, e.conversan))} pie={`${int(e.conversan)} personas responden y conversan`} />
-              <Kpi etiqueta="Coste por agenda" valor={eur(coste(anuncios.gasto, ventas.reservadas))} pie={`${int(ventas.reservadas)} llamadas agendadas`} />
-              <Kpi etiqueta="Coste por venta" valor={eur(coste(anuncios.gasto, hayVentasAuto ? ventasPeriodo.n : ventas.cerradas))} pie={`${int(hayVentasAuto ? ventasPeriodo.n : ventas.cerradas)} clientas`} />
-              <Kpi etiqueta="Retorno (ROAS)" valor={anuncios.gasto ? `${(facturacionMostrada / anuncios.gasto).toLocaleString("es-ES", { maximumFractionDigits: 1 })}x` : "—"} tono={!anuncios.gasto ? "neutro" : facturacionMostrada / anuncios.gasto >= 3 ? "ok" : facturacionMostrada / anuncios.gasto >= 1 ? "warn" : "bad"} pie={`${eur(facturacionMostrada)} facturados${cashMostrado != null ? ` (${eur(cashMostrado)} cobrados)` : ""} por ${eur(anuncios.gasto)}`} />
+              <Kpi destacado etiqueta="Coste por bienvenida" valor={eur2(coste(baseCoste, aperturas.tot.b_env))} pie={`${int(aperturas.tot.b_env)} bienvenidas del setter`} />
+              <Kpi destacado etiqueta="Coste por conversación" valor={eur2(coste(baseCoste, e.conversan))} pie={`${int(e.conversan)} personas responden y conversan`} />
+              <Kpi destacado etiqueta="Coste por agenda" valor={eur(coste(baseCoste, ventas.reservadas))} pie={`${int(ventas.reservadas)} llamadas agendadas`} />
+              <Kpi destacado etiqueta="Coste por venta" valor={eur(coste(baseCoste, hayVentasAuto ? ventasPeriodo.nVentas : ventas.cerradas))} pie={`${int(hayVentasAuto ? ventasPeriodo.nVentas : ventas.cerradas)} ventas nuevas`} />
+              <Kpi etiqueta={incluirGastos ? "Retorno de la captación" : "Retorno (ROAS)"} valor={baseCoste ? `${(facturacionMostrada / baseCoste).toLocaleString("es-ES", { maximumFractionDigits: 1 })}x` : "—"} tono={!baseCoste ? "neutro" : facturacionMostrada / baseCoste >= 3 ? "ok" : facturacionMostrada / baseCoste >= 1 ? "warn" : "bad"} pie={`${eur(facturacionMostrada)} facturados${cashMostrado != null ? ` (${eur(cashMostrado)} cobrados)` : ""} por ${eur(baseCoste)}`} />
               <Kpi etiqueta="CPM · coste por clic" valor={eur2(cpm)} pie={`${int(anuncios.impresiones)} impresiones · ${eur2(coste(anuncios.gasto, anuncios.clics))} por clic`} />
             </div>
             <Seccion titulo="Gasto y seguidores cada día" sub="Barras: gasto del día. Al pasar por encima: seguidores nuevos de Instagram ese día y cuánto costó cada uno.">
@@ -1222,6 +1285,82 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
             </Seccion>
           </>
           )
+        )}
+
+        {pestana === "gastos" && (
+          <>
+            <div className="pn-kpis">
+              <Kpi destacado etiqueta="Gastos del periodo" valor={eur(gastoTotal)} pie={`${eur(anuncios.gasto)} Meta Ads + ${eur(gastosPeriodo.total)} otros`} />
+              <Kpi destacado etiqueta="Coste de captación" valor={eur(costeCaptacion)} pie={`${eur(anuncios.gasto)} anuncios + ${eur(gastosPeriodo.captacion)} otros de captación`} />
+              {cashMostrado != null && <Kpi destacado etiqueta="Beneficio (caja)" valor={eur(cashMostrado - gastoTotal)} tono={cashMostrado - gastoTotal >= 0 ? "ok" : "bad"} pie={`margen ${pct(ratio(cashMostrado - gastoTotal, cashMostrado))} del cash collect`} />}
+              <Kpi destacado etiqueta="Beneficio (facturación)" valor={eur(facturacionMostrada - gastoTotal)} tono={facturacionMostrada - gastoTotal >= 0 ? "ok" : "bad"} pie={`margen ${pct(ratio(facturacionMostrada - gastoTotal, facturacionMostrada))} de lo facturado`} />
+              <Kpi etiqueta="Coste por conversación" valor={eur2(coste(costeCaptacion, e.conversan))} pie={`${int(e.conversan)} conversaciones`} />
+              <Kpi etiqueta="Coste por agenda" valor={eur(coste(costeCaptacion, ventas.reservadas))} pie={`${int(ventas.reservadas)} agendas`} />
+              <Kpi etiqueta="Coste por venta (CAC)" valor={eur(coste(costeCaptacion, hayVentasAuto ? ventasPeriodo.nVentas : ventas.cerradas))} pie={`${int(hayVentasAuto ? ventasPeriodo.nVentas : ventas.cerradas)} ventas nuevas · ticket ${eur(ticketMostrado)}`} />
+              <Kpi etiqueta="Retorno de la captación" valor={costeCaptacion ? `${(facturacionMostrada / costeCaptacion).toLocaleString("es-ES", { maximumFractionDigits: 1 })}x` : "—"} pie="facturación ÷ coste de captación" />
+            </div>
+            <Seccion titulo="Tus gastos" sub={`Los mensuales se reparten por días: en "${nombrePeriodo}" cuenta solo la parte de esos días. Marca "captación" en lo que sirve para conseguir clientas (marketing, consultoría, setter…): entra en el coste por conversación, agenda y venta. Todo entra en el beneficio. Meta Ads se suma solo.`}
+              accion={<button type="button" className="pn-btn" onClick={() => { setErrGasto(""); setFormGasto(formGasto ? null : gastoVacio()); }}>{formGasto ? "Cancelar" : "+ Añadir gasto"}</button>}>
+              {formGasto && (
+                <form className="pn-form" onSubmit={guardarGasto}>
+                  <label className="pn-form-ancho">Concepto<input type="text" required placeholder="Consultoría de ventas" value={formGasto.concepto} onChange={(ev) => setFormGasto({ ...formGasto, concepto: ev.target.value })} /></label>
+                  <label>Categoría
+                    <select value={formGasto.categoria} onChange={(ev) => { const c = CATEGORIAS_GASTO.find((x) => x[0] === ev.target.value); setFormGasto({ ...formGasto, categoria: ev.target.value, captacion: c ? c[1] : formGasto.captacion }); }}>
+                      {CATEGORIAS_GASTO.map(([c]) => <option key={c}>{c}</option>)}
+                    </select>
+                  </label>
+                  <label>Importe (€)<input type="text" inputMode="decimal" required placeholder="1500" value={formGasto.importe} onChange={(ev) => setFormGasto({ ...formGasto, importe: ev.target.value })} /></label>
+                  <label>Tipo
+                    <select value={formGasto.tipo} onChange={(ev) => setFormGasto({ ...formGasto, tipo: ev.target.value as "mensual" | "puntual" })}>
+                      <option value="mensual">Cada mes</option><option value="puntual">Una sola vez</option>
+                    </select>
+                  </label>
+                  {formGasto.tipo === "puntual"
+                    ? <label>Fecha<input type="date" required value={formGasto.fecha} onChange={(ev) => setFormGasto({ ...formGasto, fecha: ev.target.value })} /></label>
+                    : <>
+                        <label>Desde<input type="date" required value={formGasto.desde} onChange={(ev) => setFormGasto({ ...formGasto, desde: ev.target.value })} /></label>
+                        <label>Hasta (vacío si sigue)<input type="date" value={formGasto.hasta} onChange={(ev) => setFormGasto({ ...formGasto, hasta: ev.target.value })} /></label>
+                      </>}
+                  <label className="pn-form-check"><input type="checkbox" checked={formGasto.captacion} onChange={(ev) => setFormGasto({ ...formGasto, captacion: ev.target.checked })} /> Es gasto de captación (cuenta en el coste por agenda y por venta)</label>
+                  {errGasto && <p className="pn-err pn-form-ancho" role="alert">{errGasto}</p>}
+                  <div className="pn-form-ancho"><button type="submit" className="pn-btn" disabled={guardandoGasto}>{guardandoGasto ? "Guardando…" : formGasto.id ? "Guardar cambios" : "Añadir gasto"}</button></div>
+                </form>
+              )}
+              <div className="pn-tablewrap">
+                <table className="pn-table">
+                  <thead><tr><th>Concepto</th><th>Categoría</th><th>Tipo</th><th className="r">Importe</th><th className="r">En este periodo</th><th>Captación</th><th></th></tr></thead>
+                  <tbody>
+                    <tr className="pn-fila-auto"><td>Meta Ads</td><td>Publicidad</td><td>automático</td><td className="r">—</td><td className="r">{eur(anuncios.gasto)}</td><td><span className="pn-pill tono-ok">sí</span></td><td className="pn-sub">se lee de Meta</td></tr>
+                    {gastosPeriodo.lineas.map(({ g, imp }) => (
+                      <tr key={g.id}>
+                        <td>{g.concepto}</td><td>{g.categoria}</td>
+                        <td>{g.tipo === "puntual" ? `puntual · ${dia(g.fecha || "")}` : `mensual · desde ${dia(g.desde || "")}${g.hasta ? ` hasta ${dia(g.hasta)}` : ""}`}</td>
+                        <td className="r">{eur(g.importe)}{g.tipo === "mensual" ? "/mes" : ""}</td>
+                        <td className="r">{eur(imp)}</td>
+                        <td><button type="button" className={`pn-pill ${g.captacion ? "tono-ok" : "tono-neutro"} pn-pill-btn`} onClick={() => guardarGastoDirecto({ ...g, captacion: !g.captacion })} title="Cambiar">{g.captacion ? "sí" : "no"}</button></td>
+                        <td className="pn-acc"><button type="button" className="pn-link" onClick={() => { setErrGasto(""); setFormGasto({ id: g.id, concepto: g.concepto, categoria: g.categoria, importe: String(g.importe), tipo: g.tipo, fecha: g.fecha || hoy, desde: g.desde || hoy, hasta: g.hasta || "", captacion: g.captacion }); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Editar</button> <button type="button" className="pn-link" onClick={() => { if (confirm(`¿Borrar «${g.concepto}»?`)) borrarGasto(g.id); }}>Borrar</button></td>
+                      </tr>
+                    ))}
+                    {!gastos.length && <tr><td colSpan={7} className="pn-vacio">Añade aquí consultoría, marketing, setter, herramientas… para ver el coste real por agenda y por venta.</td></tr>}
+                    <tr className="pn-total"><td colSpan={4}>Total del periodo</td><td className="r">{eur(gastoTotal)}</td><td colSpan={2} className="pn-sub">captación {eur(costeCaptacion)}</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </Seccion>
+            {Object.keys(gastosPeriodo.porCat).length > 0 && (
+              <Seccion titulo="Por categoría" sub={`Gasto ${nombrePeriodo}, incluido Meta Ads.`}>
+                <div className="pn-perdidas">
+                  {[["Meta Ads", { total: anuncios.gasto, captacion: anuncios.gasto }] as const, ...Object.entries(gastosPeriodo.porCat)].sort((a, b) => b[1].total - a[1].total).map(([c, v]) => (
+                    <div key={c} className="pn-perd tono-neutro">
+                      <span>{c}</span>
+                      <div className="pn-perd-barra"><div style={{ width: `${(100 * v.total) / Math.max(1, gastoTotal)}%` }} /></div>
+                      <b>{eur(v.total)}</b><small>{pct(ratio(v.total, gastoTotal))}</small>
+                    </div>
+                  ))}
+                </div>
+              </Seccion>
+            )}
+          </>
         )}
 
         {pestana === "ventas" && (

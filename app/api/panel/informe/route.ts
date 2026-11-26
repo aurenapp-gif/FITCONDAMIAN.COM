@@ -116,7 +116,9 @@ export async function GET(req: Request) {
   if (new URL(req.url).searchParams.get("aperturas")) {
     try { aperturas = await estudioAperturas(30); } catch (e) { aperturas = { error: e instanceof Error ? e.message : String(e) }; }
   }
+  const gastos = await leer<{ concepto: string; categoria: string; importe: number; tipo: string; fecha?: string; desde?: string; hasta?: string; captacion: boolean }[]>("gastos", []);
   return NextResponse.json({
+    gastos_configurados: { nota: "Gastos fijos y puntuales que Damián introduce en el panel; 'mensual' se reparte por días; 'captacion' = cuenta en el coste por conversación/agenda/venta junto con Meta Ads.", lista: gastos },
     aperturas_detalle: aperturas,
     generado: new Date().toISOString(), hoy, objetivos_pct: OBJETIVOS,
     explicacion: {
