@@ -38,6 +38,7 @@ export type Datos = {
   competidores: string[];
   valoresVenta: Record<string, number>;
   gastos: Gasto[];
+  ventasExcluidas: Record<string, { fecha: string; motivo?: string }>;
 };
 type Gasto = { id: string; concepto: string; categoria: string; importe: number; tipo: "mensual" | "puntual"; fecha?: string; desde?: string; hasta?: string; captacion: boolean; nota?: string };
 const CATEGORIAS_GASTO: [string, boolean][] = [
@@ -247,7 +248,20 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
 
   // ----- Llamadas -----
   const [manuales, setManuales] = useState<Venta[]>(datos.ventasManuales || []);
-  const cobradas = useMemo(() => [...(datos.ventas || []), ...manuales].filter((v) => COBRADAS.has(String(v.estado).toUpperCase())), [datos.ventas, manuales]);
+  const [excluidas, setExcluidas] = useState<Record<string, { fecha: string; motivo?: string }>>(datos.ventasExcluidas || {});
+  const cobradas = useMemo(() => [...(datos.ventas || []), ...manuales].filter((v) => COBRADAS.has(String(v.estado).toUpperCase()) && !excluidas[v.id]), [datos.ventas, manuales, excluidas]);
+  const ventasExcluidasLista = useMemo(() => (datos.ventas || []).filter((v) => excluidas[v.id]).sort((a, b) => (a.fecha < b.fecha ? 1 : -1)), [datos.ventas, excluidas]);
+  async function excluirVenta(v: Venta, excluir: boolean) {
+    const prev = excluidas;
+    setExcluidas((e) => { const n = { ...e }; if (excluir) n[v.id] = { fecha: new Date().toISOString() }; else delete n[v.id]; return n; });
+    try {
+      const r = await fetch("/api/panel/ventas-excluidas", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: v.id, excluir }) });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || "Error");
+    } catch (err) {
+      setExcluidas(prev);
+      setErrVenta(`No se ha podido ${excluir ? "quitar" : "recuperar"} la venta: ${err instanceof Error ? err.message : "error"}`);
+    }
+  }
   const hayVentasAuto = Boolean(conexiones.hotmart || conexiones.stripe || manuales.length);
   // Venta de Hotmart/Stripe del mismo correo, desde 2 días antes hasta 30 días después de la llamada.
   const ventaDeLlamada = useMemo(() => (a: Agenda) => {
@@ -1409,7 +1423,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 <p className="pn-cuadre">Cash collect {eur(ventasPeriodo.total)} = {eur(ventasPeriodo.cashNuevas)} de las ventas de este periodo + {eur(ventasPeriodo.cashAnteriores)} de cuotas de ventas anteriores · Facturación {eur(ventasPeriodo.facturacion)} = {eur(ventasPeriodo.cashNuevas)} ya cobrados + {eur(ventasPeriodo.pendiente)} pendientes</p>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
-                    <thead><tr><th>Fecha de la venta</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Cobrado</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th></tr></thead>
+                    <thead><tr><th>Fecha de la venta</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Cobrado</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th><th></th></tr></thead>
                     <tbody>
                       {ventasPeriodo.nuevas.map((c) => (
                         <tr key={c.clave}>
@@ -1422,12 +1436,16 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                             <small className="pn-fuente">{c.fuente === "tú" ? "puesto por ti" : c.fuente === "llamada" ? "de la llamada" : c.fuente === "cobrado" ? "lo cobrado" : c.fuente}</small>
                           </td>
                           <td className="r">{c.pendiente > 0 ? <span className="pn-pill tono-warn">{eur(c.pendiente)}</span> : "—"}</td>
+                          <td><button type="button" className="pn-link" onClick={() => {
+                            if (!confirm(`¿Quitar de la contabilidad la venta de ${c.nombre || c.email || "esta clienta"} (${c.cobros.length} cobro${c.cobros.length > 1 ? "s" : ""}, ${eur(c.cobrado)})? Los cobros de Hotmart o Stripe se pueden recuperar; los manuales se borran.`)) return;
+                            c.cobros.forEach((v) => { if (v.fuente === "manual") borrarVenta(v.id); else excluirVenta(v, true); });
+                          }}>Quitar</button></td>
                         </tr>
                       ))}
                       {ventasPeriodo.sinCobro.map((x) => (
-                        <tr key={x.id}><td>{dia(x.fecha)}</td><td>{x.nombre || "—"}</td><td>venta marcada en la llamada</td><td className="r">0</td><td className="r">0 €</td><td className="r">{eur(x.valor)}</td><td className="r"><span className="pn-pill tono-warn">{eur(x.valor)}</span></td></tr>
+                        <tr key={x.id}><td>{dia(x.fecha)}</td><td>{x.nombre || "—"}</td><td>venta marcada en la llamada</td><td className="r">0</td><td className="r">0 €</td><td className="r">{eur(x.valor)}</td><td className="r"><span className="pn-pill tono-warn">{eur(x.valor)}</span></td><td className="pn-sub">se quita desmarcando la llamada</td></tr>
                       ))}
-                      {!ventasPeriodo.nuevas.length && !ventasPeriodo.sinCobro.length && <tr><td colSpan={7} className="pn-vacio">No hay ventas nuevas en este periodo.</td></tr>}
+                      {!ventasPeriodo.nuevas.length && !ventasPeriodo.sinCobro.length && <tr><td colSpan={8} className="pn-vacio">No hay ventas nuevas en este periodo.</td></tr>}
                     </tbody>
                   </table>
                 </div>
@@ -1442,12 +1460,34 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                           <td className="r">{v.moneda && v.moneda !== "EUR" ? `${Math.round(v.importe).toLocaleString("es-ES")} ${v.moneda}` : eur(v.importe)}</td>
                           <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : v.fuente === "stripe" ? "Stripe" : v.metodo || "Manual"}</span></td>
                           <td>{ventasPeriodo.conLlamada(v) ? <span className="pn-pill tono-ok">sí</span> : "—"}</td>
-                          <td>{v.fuente === "manual" && <button type="button" className="pn-link" onClick={() => borrarVenta(v.id)}>Borrar</button>}</td>
+                          <td className="pn-acc">{v.fuente === "manual"
+                            ? <button type="button" className="pn-link" onClick={() => { if (confirm(`¿Borrar la venta manual de ${v.nombre || v.email || "esta clienta"} (${eur(v.importe)})?`)) borrarVenta(v.id); }}>Borrar</button>
+                            : <button type="button" className="pn-link" onClick={() => { if (confirm(`¿Quitar de la contabilidad este cobro de ${v.fuente === "hotmart" ? "Hotmart" : "Stripe"} (${v.nombre || v.email || "—"}, ${eur(v.importe)})? Podrás recuperarlo abajo.`)) excluirVenta(v, true); }}>Quitar</button>}</td>
                         </tr>
                       )) : <tr><td colSpan={7} className="pn-vacio">No hay ventas cobradas en este periodo.</td></tr>}
                     </tbody>
                   </table>
                 </div>
+                {ventasExcluidasLista.length > 0 && (
+                  <details className="pn-ayuda">
+                    <summary>Cobros quitados de la contabilidad ({ventasExcluidasLista.length})</summary>
+                    <p className="pn-sub">No cuentan en la facturación, el cash collect, el ticket ni el coste por venta. Siguen existiendo en Hotmart o Stripe; aquí solo se ignoran.</p>
+                    <div className="pn-tablewrap">
+                      <table className="pn-table">
+                        <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Importe</th><th>Origen</th><th></th></tr></thead>
+                        <tbody>
+                          {ventasExcluidasLista.map((v) => (
+                            <tr key={v.id}>
+                              <td>{fechaHora(v.fecha)}</td><td>{v.producto || "—"}</td><td>{v.nombre || v.email || "—"}</td><td className="r">{eur(v.importe)}</td>
+                              <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : "Stripe"}</span></td>
+                              <td><button type="button" className="pn-link" onClick={() => excluirVenta(v, false)}>Recuperar</button></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+                )}
               </Seccion>
             )}
             <div className="pn-dos">

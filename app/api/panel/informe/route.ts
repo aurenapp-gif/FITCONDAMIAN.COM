@@ -60,7 +60,8 @@ export async function GET(req: Request) {
   };
 
   // Llamadas: estado, asistencia y cierre (marcados a mano o por venta enlazada).
-  const cobradas = [...ventas, ...manuales].filter((v) => COBRADAS.has(String(v.estado).toUpperCase()));
+  const excluidas = await leer<Record<string, unknown>>("ventas_excluidas", {});
+  const cobradas = [...ventas, ...manuales].filter((v) => COBRADAS.has(String(v.estado).toUpperCase()) && !excluidas[String(v.id)]);
   const llamadas = agendas.filter((a) => String(a.fecha).slice(0, 10) >= d90).map((a) => {
     const r = resultados[a.id] || {};
     const em = String(a.email || "").toLowerCase();
