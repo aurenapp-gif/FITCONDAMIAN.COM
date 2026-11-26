@@ -59,6 +59,12 @@ export async function GET(req: Request) {
     const mes = todas.filter((v) => v.fecha.slice(0, 10) >= desde);
     return NextResponse.json({ desde, cash: mes.reduce((t, v) => t + v.importe, 0), cobros: mes.length, clientas: filas.length, nuevas: filas.filter((f) => f.nueva).length, filas });
   }
+  if (q._oembed) {
+    const tk = process.env.META_ACCESS_TOKEN || process.env.METAACCESSTOKEN || "";
+    const u = new URL("https://graph.facebook.com/v26.0/instagram_oembed"); u.searchParams.set("url", q._oembed); u.searchParams.set("omitscript", "true"); u.searchParams.set("access_token", tk);
+    const r = await fetch(u, { cache: "no-store" }); const j = await r.json();
+    return NextResponse.json(j.error ? { error: j.error.message } : { author_name: j.author_name, author_url: j.author_url, title: j.title, thumbnail_url: j.thumbnail_url });
+  }
   if (q._ig) {
     // Publicaciones públicas de una cuenta profesional de Instagram (business discovery), con enlace al vídeo.
     const { idInstagram } = await import("../../../_panel/meta");
