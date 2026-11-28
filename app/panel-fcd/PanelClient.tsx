@@ -8,7 +8,7 @@ type DetPerdida = { estado: Record<string, number>; turnos: Record<string, numbe
 type PerdidasDia = { p1_franja: Record<string, number>; p1_perdidas_franja: Record<string, number>; p1_seguimiento: number; p1_sin_seguimiento: number; p2: DetPerdida; p3: DetPerdida; sin_contestar: { u: string; c: string; ult: string; h: number }[]; datos: { u: string; c: string }[] };
 type DiaEmbudo = { fecha: string; ids?: Partial<Record<Origen, string[]>>; pd?: Partial<Record<Origen, PerdidasDia>> } & Record<string, unknown>;
 type Agenda = { id: string; contacto: string; fecha: string; reservada: string; estado: string; nombre: string; instagram: string; telefono: string; setter: string; email?: string };
-type Venta = { id: string; fuente: "hotmart" | "stripe" | "manual"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string; metodo?: string; agendaId?: string; nota?: string };
+type Venta = { id: string; fuente: "hotmart" | "stripe" | "manual"; fecha: string; estado: string; importe: number; neto?: number; comision?: number; moneda: string; producto: string; email: string; nombre: string; metodo?: string; agendaId?: string; nota?: string };
 const COBRADAS = new Set(["APPROVED", "COMPLETE", "PAID"]);
 type Resultado = { asistio: "" | "si" | "no"; vendido: "" | "si" | "no"; importe: number | null };
 type Publicacion = { id?: string; codigo: string; fecha: string; tipo: string; texto: string; enlace: string; likes: number; comentarios: number };
@@ -39,7 +39,10 @@ export type Datos = {
   valoresVenta: Record<string, number>;
   gastos: Gasto[];
   ventasExcluidas: Record<string, { fecha: string; motivo?: string }>;
+  comisiones: Record<string, number>;
 };
+// Métodos de cobro manual y comisión por defecto (%) cuando no se apunta lo que llega neto.
+const METODOS_COBRO: [string, number][] = [["Transferencia", 0], ["Bizum", 0], ["Efectivo", 0], ["Sequra", 0], ["PayPal", 3.4], ["Tarjeta (TPV)", 1.5], ["Otro", 0]];
 type Gasto = { id: string; concepto: string; categoria: string; importe: number; tipo: "mensual" | "puntual"; fecha?: string; desde?: string; hasta?: string; captacion: boolean; nota?: string };
 const CATEGORIAS_GASTO: [string, boolean][] = [
   ["Marketing / agencia", true], ["Consultoría / mentoría", true], ["Equipo de ventas (setter, closer)", true], ["Publicidad (otras plataformas)", true],
@@ -250,6 +253,14 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const [manuales, setManuales] = useState<Venta[]>(datos.ventasManuales || []);
   const [excluidas, setExcluidas] = useState<Record<string, { fecha: string; motivo?: string }>>(datos.ventasExcluidas || {});
   const cobradas = useMemo(() => [...(datos.ventas || []), ...manuales].filter((v) => COBRADAS.has(String(v.estado).toUpperCase()) && !excluidas[v.id]), [datos.ventas, manuales, excluidas]);
+  const [comisiones, setComisiones] = useState<Record<string, number>>(datos.comisiones || {});
+  const pctComision = (v: Venta) => {
+    const k = v.fuente === "manual" ? String(v.metodo || "Transferencia") : v.fuente;
+    if (typeof comisiones[k] === "number") return comisiones[k];
+    return v.fuente === "manual" ? (METODOS_COBRO.find((m) => m[0] === k)?.[1] ?? 0) : 0;
+  };
+  // Lo que llega de verdad: el neto exacto si la plataforma lo da o lo apuntaste; si no, se descuenta el % del método.
+  const netoDe = (v: Venta) => (typeof v.neto === "number" ? v.neto : Math.round(v.importe * (1 - pctComision(v) / 100) * 100) / 100);
   const ventasExcluidasLista = useMemo(() => (datos.ventas || []).filter((v) => excluidas[v.id]).sort((a, b) => (a.fecha < b.fecha ? 1 : -1)), [datos.ventas, excluidas]);
   async function excluirVenta(v: Venta, excluir: boolean) {
     const prev = excluidas;
@@ -296,7 +307,8 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
   const ventasPeriodo = useMemo(() => {
     const lista = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
     const emailsLlamada = new Set(datos.agendas.map((a) => String(a.email || "").toLowerCase()).filter(Boolean));
-    const total = lista.reduce((s, v) => s + v.importe, 0); // cash collect: todo lo cobrado en el periodo
+    const bruto = lista.reduce((s, v) => s + v.importe, 0); // lo que pagaron las clientas en el periodo
+    const total = lista.reduce((s, v) => s + netoDe(v), 0); // cash collect: lo que te llega tras comisiones
     const compradoras = new Set(lista.map((v) => v.email || v.id));
     const idsAgenda = new Set(datos.agendas.map((a) => a.id));
     const conLlamada = (v: Venta) => emailsLlamada.has(v.email) || Boolean(v.agendaId && idsAgenda.has(v.agendaId));
@@ -337,7 +349,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
       return { valor: c.cobrado, fuente: "cobrado" };
     };
     const nuevas = ventasAgr.filter((c) => String(c.primero).slice(0, 10) >= desde)
-      .map((c) => { const v = valorDe(c); return { ...c, valor: v.valor, fuente: v.fuente, pendiente: Math.max(0, v.valor - c.cobrado) }; })
+      .map((c) => { const v = valorDe(c); return { ...c, valor: v.valor, fuente: v.fuente, pendiente: Math.max(0, v.valor - c.cobrado), netoCobrado: c.cobros.reduce((t, x) => t + netoDe(x), 0) }; })
       .sort((a, b) => (a.primero < b.primero ? 1 : -1));
     // Ventas cerradas en llamadas del periodo, con importe, sin ningún cobro registrado (pendientes de cobrar del todo).
     const emailsCobro = new Set(cobradas.map((v) => String(v.email || "").toLowerCase()).filter(Boolean));
@@ -348,14 +360,17 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     const facturacion = nuevas.reduce((t, c) => t + c.valor, 0) + sinCobro.reduce((t, x) => t + x.valor, 0);
     const pendiente = nuevas.reduce((t, c) => t + c.pendiente, 0) + sinCobro.reduce((t, x) => t + x.valor, 0);
     const idsNuevas = new Set(nuevas.flatMap((c) => c.cobros.map((v) => v.id)));
-    const cashNuevas = lista.filter((v) => idsNuevas.has(v.id)).reduce((t, v) => t + v.importe, 0);
+    const cashNuevas = lista.filter((v) => idsNuevas.has(v.id)).reduce((t, v) => t + netoDe(v), 0);
+    const brutoNuevas = lista.filter((v) => idsNuevas.has(v.id)).reduce((t, v) => t + v.importe, 0);
     const nVentas = nuevas.length + sinCobro.length;
     return {
       conLlamada, lista, total: Math.round(total), n: compradoras.size, cobros: lista.length, deLlamada: compradorasLlamada.size, totalLlamada: Math.round(deLlamada.reduce((s, v) => s + v.importe, 0)), emailsLlamada,
       nuevas, sinCobro, facturacion: Math.round(facturacion), pendiente: Math.round(pendiente), nVentas,
       ticket: nVentas ? Math.round(facturacion / nVentas) : null, cashNuevas: Math.round(cashNuevas), cashAnteriores: Math.round(total - cashNuevas),
+      bruto: Math.round(bruto), comisionesPeriodo: Math.round(bruto - total), brutoNuevas: Math.round(brutoNuevas),
     };
-  }, [cobradas, desde, datos.agendas, resultados, valores]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cobradas, desde, datos.agendas, resultados, valores, comisiones]);
 
   const gastoVacio = () => ({ id: "", concepto: "", categoria: CATEGORIAS_GASTO[0][0], importe: "", tipo: "mensual" as "mensual" | "puntual", fecha: hoyMadrid(), desde: `${hoyMadrid().slice(0, 8)}01`, hasta: "", captacion: true });
   const [formGasto, setFormGasto] = useState<ReturnType<typeof gastoVacio> | null>(null);
@@ -661,7 +676,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     }
   }
 
-  const vacio = { fecha: hoyMadrid(), importe: "", nombre: "", email: "", producto: "", metodo: "Transferencia", agendaId: "", nota: "" };
+  const vacio = { fecha: hoyMadrid(), importe: "", neto: "", nombre: "", email: "", producto: "", metodo: "Transferencia", agendaId: "", nota: "" };
   const [formVenta, setFormVenta] = useState<typeof vacio | null>(null);
   const [guardandoVenta, setGuardandoVenta] = useState(false);
   const [errVenta, setErrVenta] = useState("");
@@ -1392,10 +1407,11 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 {formVenta && (
                   <form className="pn-form" onSubmit={guardarVenta}>
                     <label>Fecha<input id="v-fecha" type="date" required value={formVenta.fecha} onChange={(ev) => setFormVenta({ ...formVenta, fecha: ev.target.value })} /></label>
-                    <label>Importe (€)<input id="v-importe" type="text" inputMode="decimal" required placeholder="1200" value={formVenta.importe} onChange={(ev) => setFormVenta({ ...formVenta, importe: ev.target.value })} /></label>
+                    <label>Lo que paga la clienta (€)<input id="v-importe" type="text" inputMode="decimal" required placeholder="1200" value={formVenta.importe} onChange={(ev) => setFormVenta({ ...formVenta, importe: ev.target.value })} /></label>
+                    <label>Lo que te llega (€, opcional)<input id="v-neto" type="text" inputMode="decimal" placeholder={formVenta.importe ? String(Math.round(Number(String(formVenta.importe).replace(",", ".")) * (1 - ((comisiones[formVenta.metodo] ?? METODOS_COBRO.find((m) => m[0] === formVenta.metodo)?.[1] ?? 0) / 100)) * 100) / 100) : "si hay comisión"} value={formVenta.neto} onChange={(ev) => setFormVenta({ ...formVenta, neto: ev.target.value })} /></label>
                     <label>Cómo pagó
                       <select id="v-metodo" value={formVenta.metodo} onChange={(ev) => setFormVenta({ ...formVenta, metodo: ev.target.value })}>
-                        {["Transferencia", "Bizum", "Efectivo", "PayPal", "Otro"].map((m) => <option key={m}>{m}</option>)}
+                        {METODOS_COBRO.map(([m]) => <option key={m}>{m}</option>)}
                       </select>
                     </label>
                     <label className="pn-form-ancho">¿De qué llamada viene? (opcional)
@@ -1414,21 +1430,21 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                 )}
                 <div className="pn-kpis">
                   <Kpi etiqueta="Facturación (ventas nuevas)" valor={eur(ventasPeriodo.facturacion)} pie={`${int(ventasPeriodo.nVentas)} ventas · ticket ${eur(ventasPeriodo.ticket)}`} />
-                  <Kpi etiqueta="Cash collect" valor={eur(ventasPeriodo.total)} pie={`${eur(ventasPeriodo.cashNuevas)} de ventas nuevas · ${eur(ventasPeriodo.cashAnteriores)} de cuotas anteriores`} />
+                  <Kpi etiqueta="Cash collect (te llega)" valor={eur(ventasPeriodo.total)} pie={`cobrado ${eur(ventasPeriodo.bruto)} − comisiones ${eur(ventasPeriodo.comisionesPeriodo)} · ${eur(ventasPeriodo.cashAnteriores)} de cuotas anteriores`} />
                   <Kpi etiqueta="Pendiente de cobro" valor={eur(ventasPeriodo.pendiente)} tono={ventasPeriodo.pendiente > 0 ? "warn" : "ok"} pie="de las ventas nuevas del periodo" />
                   <Kpi etiqueta="Cobros" valor={int(ventasPeriodo.cobros)} pie={`${int(ventasPeriodo.n)} clientas pagaron · ${int(ventasPeriodo.deLlamada)} con llamada`} />
                 </div>
                 <h3 className="pn-h3">Ventas nuevas del periodo (facturación)</h3>
                 <p className="pn-sub">Cada compra cuenta como venta, también si la clienta ya había comprado antes. Las ventas a plazos se valoran por el precio del programa que encaja con la cuota (estimado); si no es así, escribe el valor real y lo pendiente se recalcula. El cash collect puede superar a la facturación en un mes en el que entran muchas cuotas de ventas de meses anteriores.</p>
-                <p className="pn-cuadre">Cash collect {eur(ventasPeriodo.total)} = {eur(ventasPeriodo.cashNuevas)} de las ventas de este periodo + {eur(ventasPeriodo.cashAnteriores)} de cuotas de ventas anteriores · Facturación {eur(ventasPeriodo.facturacion)} = {eur(ventasPeriodo.cashNuevas)} ya cobrados + {eur(ventasPeriodo.pendiente)} pendientes</p>
+                <p className="pn-cuadre">Facturación (lo vendido) {eur(ventasPeriodo.facturacion)} = {eur(ventasPeriodo.brutoNuevas)} ya pagados por las clientas + {eur(ventasPeriodo.pendiente)} pendientes · Cash collect (lo que te llega) {eur(ventasPeriodo.total)} = {eur(ventasPeriodo.bruto)} cobrados − {eur(ventasPeriodo.comisionesPeriodo)} de comisiones (incluye {eur(ventasPeriodo.cashAnteriores)} de cuotas de ventas anteriores)</p>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
-                    <thead><tr><th>Fecha de la venta</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Cobrado</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th><th></th></tr></thead>
+                    <thead><tr><th>Fecha de la venta</th><th>Clienta</th><th>Producto</th><th className="r">Cobros</th><th className="r">Pagado</th><th className="r">Te llega</th><th className="r">Valor de la venta (€)</th><th className="r">Pendiente</th><th></th></tr></thead>
                     <tbody>
                       {ventasPeriodo.nuevas.map((c) => (
                         <tr key={c.clave}>
                           <td>{dia(c.primero)}</td><td>{c.nombre || c.email || "—"}</td><td>{c.producto || "—"}</td>
-                          <td className="r">{int(c.cobros.length)}</td><td className="r">{eur(c.cobrado)}</td>
+                          <td className="r">{int(c.cobros.length)}</td><td className="r">{eur(c.cobrado)}</td><td className="r">{eur(c.netoCobrado)}</td>
                           <td className="r">
                             <input className="pn-importe" type="number" min={0} step={1} inputMode="numeric" aria-label={`Valor de la venta de ${c.nombre || c.email}`}
                               key={`${c.clave}-${c.valor}`} defaultValue={Math.round(c.valor)}
@@ -1443,31 +1459,50 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                         </tr>
                       ))}
                       {ventasPeriodo.sinCobro.map((x) => (
-                        <tr key={x.id}><td>{dia(x.fecha)}</td><td>{x.nombre || "—"}</td><td>venta marcada en la llamada</td><td className="r">0</td><td className="r">0 €</td><td className="r">{eur(x.valor)}</td><td className="r"><span className="pn-pill tono-warn">{eur(x.valor)}</span></td><td className="pn-sub">se quita desmarcando la llamada</td></tr>
+                        <tr key={x.id}><td>{dia(x.fecha)}</td><td>{x.nombre || "—"}</td><td>venta marcada en la llamada</td><td className="r">0</td><td className="r">0 €</td><td className="r">0 €</td><td className="r">{eur(x.valor)}</td><td className="r"><span className="pn-pill tono-warn">{eur(x.valor)}</span></td><td className="pn-sub">se quita desmarcando la llamada</td></tr>
                       ))}
-                      {!ventasPeriodo.nuevas.length && !ventasPeriodo.sinCobro.length && <tr><td colSpan={8} className="pn-vacio">No hay ventas nuevas en este periodo.</td></tr>}
+                      {!ventasPeriodo.nuevas.length && !ventasPeriodo.sinCobro.length && <tr><td colSpan={9} className="pn-vacio">No hay ventas nuevas en este periodo.</td></tr>}
                     </tbody>
                   </table>
                 </div>
                 <h3 className="pn-h3">Cobros del periodo (cash collect)</h3>
                 <div className="pn-tablewrap">
                   <table className="pn-table">
-                    <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Importe</th><th>Origen</th><th>Tuvo llamada</th><th></th></tr></thead>
+                    <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Pagado</th><th className="r">Comisión</th><th className="r">Te llega</th><th>Origen</th><th>Tuvo llamada</th><th></th></tr></thead>
                     <tbody>
                       {ventasPeriodo.lista.length ? ventasPeriodo.lista.map((v) => (
                         <tr key={v.id}>
                           <td>{v.fuente === "manual" ? dia(v.fecha) : fechaHora(v.fecha)}</td><td className="pn-texto" title={v.nota || ""}>{v.producto || "—"}</td><td>{v.nombre || v.email || "—"}</td>
-                          <td className="r">{v.moneda && v.moneda !== "EUR" ? `${Math.round(v.importe).toLocaleString("es-ES")} ${v.moneda}` : eur(v.importe)}</td>
+                          <td className="r">{v.moneda && v.moneda !== "EUR" ? `${Math.round(v.importe).toLocaleString("es-ES")} ${v.moneda}` : eur2(v.importe)}</td>
+                          <td className="r pn-sub" title={typeof v.neto === "number" ? "comisión real" : `estimada: ${pctComision(v)} %`}>{v.importe - netoDe(v) > 0 ? `−${eur2(v.importe - netoDe(v))}` : "0 €"}{typeof v.neto !== "number" && v.importe - netoDe(v) > 0 ? " *" : ""}</td>
+                          <td className="r"><b>{eur2(netoDe(v))}</b></td>
                           <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : v.fuente === "stripe" ? "Stripe" : v.metodo || "Manual"}</span></td>
                           <td>{ventasPeriodo.conLlamada(v) ? <span className="pn-pill tono-ok">sí</span> : "—"}</td>
                           <td className="pn-acc">{v.fuente === "manual"
                             ? <button type="button" className="pn-link" onClick={() => { if (confirm(`¿Borrar la venta manual de ${v.nombre || v.email || "esta clienta"} (${eur(v.importe)})?`)) borrarVenta(v.id); }}>Borrar</button>
                             : <button type="button" className="pn-link" onClick={() => { if (confirm(`¿Quitar de la contabilidad este cobro de ${v.fuente === "hotmart" ? "Hotmart" : "Stripe"} (${v.nombre || v.email || "—"}, ${eur(v.importe)})? Podrás recuperarlo abajo.`)) excluirVenta(v, true); }}>Quitar</button>}</td>
                         </tr>
-                      )) : <tr><td colSpan={7} className="pn-vacio">No hay ventas cobradas en este periodo.</td></tr>}
+                      )) : <tr><td colSpan={9} className="pn-vacio">No hay ventas cobradas en este periodo.</td></tr>}
                     </tbody>
                   </table>
                 </div>
+                <p className="pn-sub">«Pagado» es lo que pagó la clienta (cuenta en la facturación); «Te llega» es lo que recibes tras la comisión (cuenta en el cash collect). Stripe y Hotmart dan la comisión exacta de cada cobro; las marcadas con * son estimadas con el % de abajo.</p>
+                <details className="pn-ayuda">
+                  <summary>Comisiones por método de cobro (%)</summary>
+                  <p className="pn-sub">Se usan solo cuando el cobro no trae la comisión exacta ni apuntaste lo que te llega. Para Sequra pon el % que te descuentan.</p>
+                  <div className="pn-comis">
+                    {[...METODOS_COBRO.map((m) => m[0]), "hotmart", "stripe"].map((k) => (
+                      <label key={k}>{k === "hotmart" ? "Hotmart (si no da la comisión)" : k === "stripe" ? "Stripe (si no da la comisión)" : k}
+                        <input type="number" min={0} max={60} step={0.1} inputMode="decimal" defaultValue={comisiones[k] ?? (METODOS_COBRO.find((m) => m[0] === k)?.[1] ?? 0)}
+                          onBlur={async (ev) => {
+                            const val = Number(ev.target.value); if (!Number.isFinite(val)) return;
+                            const nuevo = { ...comisiones, [k]: val }; setComisiones(nuevo);
+                            await fetch("/api/panel/comisiones", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nuevo) }).catch(() => null);
+                          }} /> %
+                      </label>
+                    ))}
+                  </div>
+                </details>
                 {ventasExcluidasLista.length > 0 && (
                   <details className="pn-ayuda">
                     <summary>Cobros quitados de la contabilidad ({ventasExcluidasLista.length})</summary>

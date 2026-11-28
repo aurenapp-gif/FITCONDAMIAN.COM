@@ -1,7 +1,8 @@
 // Ventas desde Hotmart y Stripe. Cada fuente se activa sola si tiene sus claves en Vercel
 // (se aceptan los nombres con o sin guiones bajos: HOTMART_CLIENT_ID o HOTMARTCLIENTID).
 
-export type Venta = { id: string; fuente: "hotmart" | "stripe"; fecha: string; estado: string; importe: number; moneda: string; producto: string; email: string; nombre: string };
+// importe = lo que paga la clienta (bruto); neto = lo que te llega tras la comisión de la plataforma.
+export type Venta = { id: string; fuente: "hotmart" | "stripe"; fecha: string; estado: string; importe: number; neto?: number; comision?: number; moneda: string; producto: string; email: string; nombre: string };
 
 const env = (...nombres: string[]) => nombres.map((n) => process.env[n]).find((v) => v && v.trim())?.trim() || "";
 const hotmart = () => ({
@@ -31,7 +32,7 @@ async function tokenHotmart(): Promise<string> {
 type ItemHotmart = {
   product?: { id?: number; name?: string };
   buyer?: { name?: string; email?: string };
-  purchase?: { transaction?: string; order_date?: number; approved_date?: number; status?: string; price?: { value?: number; currency_code?: string } };
+  purchase?: { transaction?: string; order_date?: number; approved_date?: number; status?: string; price?: { value?: number; currency_code?: string }; hotmart_fee?: { total?: number; fixed?: number; percentage?: number; base?: number } };
 };
 
 export async function ventasHotmart(desdeMs: number): Promise<{ ventas: Venta[]; total: number }> {
@@ -53,9 +54,11 @@ export async function ventasHotmart(desdeMs: number): Promise<{ ventas: Venta[];
       const p = it.purchase || {};
       const f = p.approved_date || p.order_date;
       if (!p.transaction || !f) continue;
+      const bruto = Number(p.price?.value) || 0;
+      const fee = Number(p.hotmart_fee?.total);
       ventas.push({
         id: `hotmart:${p.transaction}`, fuente: "hotmart", fecha: new Date(f).toISOString(), estado: String(p.status || ""),
-        importe: Number(p.price?.value) || 0, moneda: String(p.price?.currency_code || "EUR"), producto: String(it.product?.name || ""),
+        importe: bruto, ...(Number.isFinite(fee) && fee > 0 ? { comision: Math.round(fee * 100) / 100, neto: Math.round((bruto - fee) * 100) / 100 } : {}), moneda: String(p.price?.currency_code || "EUR"), producto: String(it.product?.name || ""),
         email: String(it.buyer?.email || "").toLowerCase(), nombre: String(it.buyer?.name || ""),
       });
     }
@@ -66,7 +69,7 @@ export async function ventasHotmart(desdeMs: number): Promise<{ ventas: Venta[];
 }
 
 // ---------- Stripe ----------
-type CargoStripe = { id: string; created: number; status: string; paid: boolean; refunded: boolean; amount: number; amount_refunded: number; currency: string; description?: string | null; receipt_email?: string | null; billing_details?: { email?: string | null; name?: string | null } };
+type CargoStripe = { id: string; created: number; status: string; paid: boolean; refunded: boolean; amount: number; amount_refunded: number; currency: string; balance_transaction?: { fee?: number; net?: number } | string | null; description?: string | null; receipt_email?: string | null; billing_details?: { email?: string | null; name?: string | null } };
 
 export async function ventasStripe(desdeMs: number): Promise<{ ventas: Venta[]; total: number }> {
   const ventas: Venta[] = [];
@@ -74,6 +77,7 @@ export async function ventasStripe(desdeMs: number): Promise<{ ventas: Venta[]; 
   for (let i = 0; i < 40; i++) {
     const url = new URL("https://api.stripe.com/v1/charges");
     url.searchParams.set("limit", "100");
+    url.searchParams.append("expand[]", "data.balance_transaction"); // comisión real de cada cobro
     url.searchParams.set("created[gte]", String(Math.floor(desdeMs / 1000)));
     if (despues) url.searchParams.set("starting_after", despues);
     const r = await fetch(url, { headers: { Authorization: `Bearer ${stripeClave()}` }, cache: "no-store" });
@@ -81,11 +85,13 @@ export async function ventasStripe(desdeMs: number): Promise<{ ventas: Venta[]; 
     const j = (await r.json()) as { data: CargoStripe[]; has_more: boolean };
     for (const c of j.data) {
       if (!c.paid || c.status !== "succeeded") continue;
-      const neto = (c.amount - (c.amount_refunded || 0)) / 100;
+      const neto = (c.amount - (c.amount_refunded || 0)) / 100; // lo pagado por la clienta, menos devoluciones
       if (neto <= 0) continue;
+      const bt = typeof c.balance_transaction === "object" && c.balance_transaction ? c.balance_transaction : null;
+      const fee = bt && typeof bt.fee === "number" ? bt.fee / 100 : null;
       ventas.push({
         id: `stripe:${c.id}`, fuente: "stripe", fecha: new Date(c.created * 1000).toISOString(), estado: c.refunded ? "REFUNDED" : "PAID",
-        importe: neto, moneda: c.currency.toUpperCase(), producto: String(c.description || ""),
+        importe: neto, ...(fee != null ? { comision: Math.round(fee * 100) / 100, neto: Math.round((neto - fee) * 100) / 100 } : {}), moneda: c.currency.toUpperCase(), producto: String(c.description || ""),
         email: String(c.billing_details?.email || c.receipt_email || "").toLowerCase(), nombre: String(c.billing_details?.name || ""),
       });
     }

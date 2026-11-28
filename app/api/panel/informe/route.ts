@@ -83,10 +83,11 @@ export async function GET(req: Request) {
   const ventasDesde = (desde: string) => {
     const l = cobradas.filter((v) => String(v.fecha).slice(0, 10) >= desde);
     const total = l.reduce((t, v) => t + (Number(v.importe) || 0), 0);
+    const netoTotal = l.reduce((t, v) => t + (typeof v.neto === "number" ? v.neto : Number(v.importe) || 0), 0);
     const clientas = new Set(l.map((v) => v.email || v.id)).size;
     const porProducto: Record<string, { cobros: number; importe: number }> = {};
     l.forEach((v) => { const k = String(v.producto || "—"); porProducto[k] = porProducto[k] || { cobros: 0, importe: 0 }; porProducto[k].cobros++; porProducto[k].importe += Number(v.importe) || 0; });
-    return { nota: "cash_collect = todo lo cobrado en el periodo (incluye cuotas de clientas anteriores); la facturación de ventas nuevas se ve en el panel", cobros: l.length, clientas, cash_collect: Math.round(total), ticket_por_clienta: clientas ? Math.round(total / clientas) : null, por_producto: porProducto };
+    return { nota: "vendido_bruto = lo que pagaron las clientas; cash_collect = lo que llega neto tras comisiones de Hotmart/Stripe (las de métodos manuales se configuran en el panel); incluye cuotas de clientas anteriores", cobros: l.length, clientas, vendido_bruto: Math.round(total), cash_collect: Math.round(netoTotal), comisiones: Math.round(total - netoTotal), ticket_por_clienta: clientas ? Math.round(total / clientas) : null, por_producto: porProducto };
   };
 
   // Anuncios agregados por anuncio (7 y 30 días) con su texto.

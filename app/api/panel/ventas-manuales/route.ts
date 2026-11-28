@@ -5,7 +5,7 @@ import { almacenListo, guardar, leer } from "../../../_panel/store";
 export const dynamic = "force-dynamic";
 
 export type VentaManual = {
-  id: string; fuente: "manual"; fecha: string; estado: "PAID"; importe: number; moneda: "EUR";
+  id: string; fuente: "manual"; fecha: string; estado: "PAID"; importe: number; neto?: number; moneda: "EUR";
   producto: string; email: string; nombre: string; metodo: string; agendaId: string; nota: string; creada: string;
 };
 
@@ -19,10 +19,13 @@ export async function POST(req: Request) {
   const fecha = texto(b.fecha, 10);
   if (!Number.isFinite(importe) || importe <= 0) return NextResponse.json({ error: "Pon un importe mayor que 0." }, { status: 400 });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return NextResponse.json({ error: "Pon la fecha de la venta." }, { status: 400 });
+  const netoNum = b.neto === "" || b.neto == null ? NaN : Number(String(b.neto).replace(",", "."));
+  if (Number.isFinite(netoNum) && (netoNum < 0 || netoNum > importe)) return NextResponse.json({ error: "Lo que te llega no puede ser mayor que lo vendido." }, { status: 400 });
   const venta: VentaManual = {
     id: `manual:${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, fuente: "manual",
     fecha: `${fecha}T12:00:00.000Z`, estado: "PAID", importe: Math.round(importe * 100) / 100, moneda: "EUR",
     producto: texto(b.producto) || "Venta manual", email: texto(b.email).toLowerCase(), nombre: texto(b.nombre),
+    ...(Number.isFinite(netoNum) ? { neto: Math.round(netoNum * 100) / 100 } : {}),
     metodo: texto(b.metodo, 40) || "Transferencia", agendaId: texto(b.agendaId, 64), nota: texto(b.nota, 500), creada: new Date().toISOString(),
   };
   const todas = await leer<VentaManual[]>("ventas_manuales", []);
