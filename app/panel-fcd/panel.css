@@ -365,3 +365,4 @@
 .pn-comis { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px 14px; margin-top: 8px; }
 .pn-comis label { display: flex; align-items: center; gap: 6px; font-size: 13px; justify-content: space-between; }
 .pn-comis input { width: 70px; font: inherit; padding: 5px 8px; border: 1px solid var(--pn-line); border-radius: 8px; text-align: right; }
+.pn-metodo { font: inherit; font-size: 12px; padding: 4px 6px; border: 1px solid var(--pn-line); border-radius: 8px; background: #fff; }

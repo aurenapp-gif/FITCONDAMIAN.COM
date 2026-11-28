@@ -43,3 +43,24 @@ export async function DELETE(req: Request) {
   await guardar("ventas_manuales", quedan);
   return NextResponse.json({ ok: true });
 }
+
+// Corregir una venta manual ya apuntada: lo que te llega (neto) y el método de cobro.
+export async function PATCH(req: Request) {
+  if (!almacenListo()) return NextResponse.json({ error: "Falta conectar el almacenamiento." }, { status: 503 });
+  let b: Record<string, unknown>;
+  try { b = await req.json(); } catch { return NextResponse.json({ error: "Datos no válidos" }, { status: 400 }); }
+  const todas = await leer<VentaManual[]>("ventas_manuales", []);
+  const v = todas.find((x) => x.id === String(b.id || ""));
+  if (!v) return NextResponse.json({ error: "No existe esa venta." }, { status: 404 });
+  if ("neto" in b) {
+    if (b.neto === null || b.neto === "") delete v.neto;
+    else {
+      const n = Number(String(b.neto).replace(",", "."));
+      if (!Number.isFinite(n) || n < 0 || n > v.importe) return NextResponse.json({ error: "Lo que te llega tiene que estar entre 0 y lo que pagó la clienta." }, { status: 400 });
+      v.neto = Math.round(n * 100) / 100;
+    }
+  }
+  if (typeof b.metodo === "string" && b.metodo.trim()) v.metodo = b.metodo.trim().slice(0, 40);
+  await guardar("ventas_manuales", todas);
+  return NextResponse.json({ ok: true, venta: v });
+}

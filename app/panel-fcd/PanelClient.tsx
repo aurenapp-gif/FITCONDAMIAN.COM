@@ -699,6 +699,15 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
     setGuardandoVenta(false);
   }
 
+  async function corregirManual(id: string, cambios: { neto?: number | null; metodo?: string }) {
+    try {
+      const r = await fetch("/api/panel/ventas-manuales", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, ...cambios }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || `error ${r.status}`);
+      setManuales((m) => m.map((x) => (x.id === id ? j.venta : x)));
+    } catch (err) { setErrVenta(`No se ha guardado: ${err instanceof Error ? err.message : "error"}`); }
+  }
+
   async function borrarVenta(id: string) {
     const r = await fetch(`/api/panel/ventas-manuales?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     if (r.ok) setManuales((m) => m.filter((v) => v.id !== id));
@@ -1466,6 +1475,7 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                   </table>
                 </div>
                 <h3 className="pn-h3">Cobros del periodo (cash collect)</h3>
+                {errVenta && !formVenta && <p className="pn-err" role="alert">{errVenta}</p>}
                 <div className="pn-tablewrap">
                   <table className="pn-table">
                     <thead><tr><th>Fecha</th><th>Producto</th><th>Compradora</th><th className="r">Pagado</th><th className="r">Comisión</th><th className="r">Te llega</th><th>Origen</th><th>Tuvo llamada</th><th></th></tr></thead>
@@ -1475,8 +1485,14 @@ export default function PanelClient({ datos, almacen, conexiones }: { datos: Dat
                           <td>{v.fuente === "manual" ? dia(v.fecha) : fechaHora(v.fecha)}</td><td className="pn-texto" title={v.nota || ""}>{v.producto || "—"}</td><td>{v.nombre || v.email || "—"}</td>
                           <td className="r">{v.moneda && v.moneda !== "EUR" ? `${Math.round(v.importe).toLocaleString("es-ES")} ${v.moneda}` : eur2(v.importe)}</td>
                           <td className="r pn-sub" title={typeof v.neto === "number" ? "comisión real" : `estimada: ${pctComision(v)} %`}>{v.importe - netoDe(v) > 0 ? `−${eur2(v.importe - netoDe(v))}` : "0 €"}{typeof v.neto !== "number" && v.importe - netoDe(v) > 0 ? " *" : ""}</td>
-                          <td className="r"><b>{eur2(netoDe(v))}</b></td>
-                          <td><span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : v.fuente === "stripe" ? "Stripe" : v.metodo || "Manual"}</span></td>
+                          <td className="r">{v.fuente === "manual"
+                            ? <input className="pn-importe" type="number" min={0} step={0.01} inputMode="decimal" aria-label={`Lo que te llega de ${v.nombre || "esta venta"}`}
+                                key={`${v.id}-${v.neto ?? "x"}-${netoDe(v)}`} defaultValue={netoDe(v)} title="Lo que te llega de verdad (escríbelo si hubo comisión)"
+                                onBlur={(ev) => { const raw = ev.target.value; const n = raw === "" ? null : Number(raw); if (n === null || Math.abs(n - netoDe(v)) > 0.004) corregirManual(v.id, { neto: n }); }} />
+                            : <b>{eur2(netoDe(v))}</b>}</td>
+                          <td>{v.fuente === "manual"
+                            ? <select className="pn-metodo" value={v.metodo || "Transferencia"} aria-label="Método de cobro" onChange={(ev) => corregirManual(v.id, { metodo: ev.target.value })}>{METODOS_COBRO.map(([m]) => <option key={m}>{m}</option>)}</select>
+                            : <span className="pn-pill tono-neutro">{v.fuente === "hotmart" ? "Hotmart" : "Stripe"}</span>}</td>
                           <td>{ventasPeriodo.conLlamada(v) ? <span className="pn-pill tono-ok">sí</span> : "—"}</td>
                           <td className="pn-acc">{v.fuente === "manual"
                             ? <button type="button" className="pn-link" onClick={() => { if (confirm(`¿Borrar la venta manual de ${v.nombre || v.email || "esta clienta"} (${eur(v.importe)})?`)) borrarVenta(v.id); }}>Borrar</button>
