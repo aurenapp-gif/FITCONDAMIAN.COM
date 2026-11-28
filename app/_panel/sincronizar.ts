@@ -424,6 +424,10 @@ export async function estudioAperturas(dias = 30) {
   const porDiaSemana: Record<string, Record<string, Est>> = { b: {}, s: {} };
   const seguimiento: Record<string, { sin_respuesta: number; con_seguimiento: number; responden_tras_seguimiento: number; textos: Record<string, number> }> = { b: { sin_respuesta: 0, con_seguimiento: 0, responden_tras_seguimiento: 0, textos: {} }, s: { sin_respuesta: 0, con_seguimiento: 0, responden_tras_seguimiento: 0, textos: {} } };
   const respuestas: Record<string, string[]> = { b: [], s: [] };
+  // Hora real de envío y de respuesta, y comparación dentro del mismo día.
+  type Cruce = { enviados: number; responden: number; minutos: number[]; horaResp: Record<string, number> };
+  const porEnvio: Record<string, Record<string, Cruce>> = { b: {}, s: {} };
+  const porDia: Record<string, Record<string, Record<string, { enviados: number; responden: number }>>> = { b: {}, s: {} };
   const despuesDeResponder: Record<string, { siguiente_setter: string; segunda_respuesta: boolean }[]> = { b: [], s: [] };
   convs.forEach((c) => {
     const msgs = (c.messages || []).filter((m) => m.sent_at && m.status !== "FAILED").sort((a, b) => String(a.sent_at).localeCompare(String(b.sent_at)));
@@ -446,6 +450,17 @@ export async function estudioAperturas(dias = 30) {
       const dsem = partes.find((x) => x.type === "weekday")?.value || "?";
       const h = (porHora[t][hora] ||= nuevo()), d = (porDiaSemana[t][dsem] ||= nuevo());
       const fr = (v.franjas[franja(Number(hora))] ||= nuevo());
+      const fe = franja(Number(hora));
+      const cx = (porEnvio[t][fe] ||= { enviados: 0, responden: 0, minutos: [], horaResp: {} });
+      cx.enviados++;
+      if (resp) {
+        cx.responden++; if (minutos != null) cx.minutos.push(minutos);
+        const hr = horaMadrid.formatToParts(new Date(String(resp.sent_at))).find((x) => x.type === "hour")?.value || "?";
+        cx.horaResp[hr] = (cx.horaResp[hr] || 0) + 1;
+      }
+      const dd = diaMadrid(String(m.sent_at));
+      const pd = ((porDia[t][dd] ||= {})[fe] ||= { enviados: 0, responden: 0 });
+      pd.enviados++; if (resp) pd.responden++;
       [v, h, d, fr].forEach((x) => { x.enviados++; if (resp) { x.responden++; if (minutos != null) x.minutos.push(minutos); } });
       // Mensajes del setter antes de la primera respuesta (seguimientos).
       const previos = (iResp >= 0 ? tras.slice(0, iResp) : tras).filter((x) => x.direction === "OUTBOUND");
@@ -474,6 +489,12 @@ export async function estudioAperturas(dias = 30) {
     seguimiento: { ...seguimiento[t], textos: Object.entries(seguimiento[t].textos).sort((a, b) => b[1] - a[1]).slice(0, 6) },
     primeras_respuestas: respuestas[t],
     despues_de_responder: despuesDeResponder[t],
+    por_franja_de_envio: Object.fromEntries(Object.entries(porEnvio[t]).sort().map(([k, c]) => {
+      const m = c.minutos.slice().sort((a, b) => a - b);
+      return [k, { enviados: c.enviados, responden: c.responden, tasa: c.enviados ? Math.round((1000 * c.responden) / c.enviados) / 10 : null,
+        mediana_minutos_en_responder: m.length ? m[Math.floor(m.length / 2)] : null, hora_de_la_respuesta: Object.fromEntries(Object.entries(c.horaResp).sort()) }];
+    })),
+    por_dia: porDia[t],
   });
   return { desde, conversaciones: convs.size, bienvenidas: out("b"), a_seguidoras: out("s") };
 }
