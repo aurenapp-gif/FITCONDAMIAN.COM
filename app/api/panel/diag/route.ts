@@ -54,7 +54,7 @@ export async function GET(req: Request) {
     const ini = (n: string) => n.split(/\s+/).map((x) => x.slice(0, 2)).join(" ");
     const filas = Array.from(porCli.entries()).filter(([, l]) => l.some((v) => v.fecha.slice(0, 10) >= desde)).map(([k, l]) => ({
       cli: ini(l[0].nombre || k.slice(0, 3)), sinEmail: !l[0].email, primero: l[0].fecha.slice(0, 10), nueva: l[0].fecha.slice(0, 10) >= desde,
-      cobros: l.map((v) => `${v.fecha.slice(0, 10)} ${v.fuente} ${v.importe} [${(v.producto || "").slice(0, 40)}]`),
+      cobros: l.map((v) => `${v.fecha.slice(0, 10)} ${v.fuente} ${v.importe} neto ${(v as { neto?: number }).neto ?? "-"} [${(v.producto || "").slice(0, 40)}]`),
     }));
     const mes = todas.filter((v) => v.fecha.slice(0, 10) >= desde);
     return NextResponse.json({ desde, cash: mes.reduce((t, v) => t + v.importe, 0), cobros: mes.length, clientas: filas.length, nuevas: filas.filter((f) => f.nueva).length, filas });
