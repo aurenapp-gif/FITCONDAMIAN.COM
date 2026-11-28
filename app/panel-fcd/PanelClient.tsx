@@ -42,7 +42,7 @@ export type Datos = {
   comisiones: Record<string, number>;
 };
 // Métodos de cobro manual y comisión por defecto (%) cuando no se apunta lo que llega neto.
-const METODOS_COBRO: [string, number][] = [["Transferencia", 0], ["Bizum", 0], ["Efectivo", 0], ["Sequra", 0], ["PayPal", 3.4], ["Tarjeta (TPV)", 1.5], ["Otro", 0]];
+const METODOS_COBRO: [string, number][] = [["Transferencia", 0], ["Bizum", 0], ["Efectivo", 0], ["Sequra", 20.97], ["PayPal", 3.4], ["Tarjeta (TPV)", 1.5], ["Otro", 0]];
 type Gasto = { id: string; concepto: string; categoria: string; importe: number; tipo: "mensual" | "puntual"; fecha?: string; desde?: string; hasta?: string; captacion: boolean; nota?: string };
 const CATEGORIAS_GASTO: [string, boolean][] = [
   ["Marketing / agencia", true], ["Consultoría / mentoría", true], ["Equipo de ventas (setter, closer)", true], ["Publicidad (otras plataformas)", true],
